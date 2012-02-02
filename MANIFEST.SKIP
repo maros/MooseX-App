@@ -1,0 +1,42 @@
+# Avoid version control files.
+\B.git$
+\B.gitignore$
+
+# Avoid Makemaker generated and utility files.
+\bMakefile$
+\bblib
+\bMakeMaker-\d
+\bpm_to_blib$
+\bblibdirs$
+^MANIFEST\.SKIP$
+
+# Avoid Module::Build generated and utility files.
+\bBuild$
+\bBuild.bat$
+\b_build
+
+# Avoid Devel::Cover generated files
+\bcover_db
+
+# Avoid temp and backup files.
+~$
+\B.swp$
+\.tmp$
+\.old$
+\.bak$
+\#$
+\.#
+\.rej$
+
+# Avoid eclipse files/dirs
+\B\.includepath
+\B\.project
+\B\.settings
+
+# Avoid OS-specific files/dirs
+#   Mac OSX metadata
+\B\.DS_Store
+#   Mac OSX SMB mount metadata files
+\B\._
+
+TEMPLATE-\d\.\d+\.tar\.gz

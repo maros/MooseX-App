@@ -1,0 +1,14 @@
+Changes for Game-Lacuna-Task
+
+2.01 Fri, Jan 13, 2012
+    * Incompatible database changes: Distinguish between probed (currently 
+      probed by empire or alliance) and known solar systems (body data 
+      available in cache)
+    * new empire_find action
+    * new star_cache_export action
+    * renamed build_star_cache action to star_cache_build
+    * fix broken mining action
+    * basic locking mechanism
+
+2.00 Fri, Jan 13, 2012
+    * First stable version released on CPAN
