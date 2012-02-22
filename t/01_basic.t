@@ -10,7 +10,7 @@ use lib 't/testlib';
 
 use Test01;
 
-is(Test01->meta->command_namespace,'Test01','Command namespace ok');
+is(Test01->meta->app_namespace,'Test01','Command namespace ok');
 is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01::CommandB','Commands found');
 
 {
@@ -32,46 +32,31 @@ is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01
 {
     explain('Test 3: wrong command');
     local @ARGV = qw(xxxx --global 10);
-    stdout_is(
-        sub { Test01->new_with_command },
-        "Unknown command 'xxxx'
-usage: 
-    01_basic.t command [long options...]
+    my $test03 = Test01->new_with_command;
+    isa_ok($test03,'MooseX::App::Message::Envelope');
+    is($test03->blocks->[0]->header,"Unknown command 'xxxx'",'Message is set');
+    is($test03->blocks->[0]->type,"error",'Message is of type error');
+    is($test03->blocks->[1]->header,"usage:",'Usage set');
+    is($test03->blocks->[1]->body,"    01_basic.t command [long options...]
     01_basic.t help
-    01_basic.t command --help
-
-global options:
-    --global           test [Required]
-    --help --usage -?  Prints this usage information.
-
-available commands:
-    command_a  Hase
-    command_b  
-    help       Prints this usage information
-",
-        "Global help",
-    );
+    01_basic.t command --help",'Usage body set');
+    is($test03->blocks->[2]->header,"global options:",'Global options set');
+    is($test03->blocks->[2]->body,"    --config           Path to command config file
+    --global           test [Required; Integer; Important!]
+    --help --usage -?  Prints this usage information. [Flag]",'Global options body set');
+    is($test03->blocks->[3]->header,"available commands:",'Available commands set');
+    is($test03->blocks->[3]->body,"    command_a  Hase
+    command_b  Test class command B for test 01
+    help       Prints this usage information",'Available commands body set');
 }
 
 {
-    explain('Test 4: command help');
+    explain('Test 4: help for command');
     local @ARGV = qw(command_a --help);
-    stdout_is(
-        sub { Test01->new_with_command },
-        "usage: 
-    01_basic.t command_a [long options...]
-    01_basic.t help
-    01_basic.t command_a --help
-
-short description:
-    Hase
-
-options:
-    --commanda_loca1   some docs
-    --commanda_loca2   
-    --global           test [Required]
-    --help --usage -?  Prints this usage information.
-",
-        "Command help",
-    );
+    my $test04 = Test01->new_with_command;
+    isa_ok($test04,'MooseX::App::Message::Envelope');
+    is($test03->blocks->[0]->header,"usage:",'Usage is set');
+    is($test03->blocks->[1]->header,"description:",'Description is set');
+    is($test03->blocks->[2]->header,"options:",'Options are set');
+    print $test04;
 }

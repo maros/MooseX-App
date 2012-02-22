@@ -9,7 +9,7 @@ has 'global' => (
     is              => 'rw',
     required        => 1,
     documentation   => q[test],
-    command_tags    => ['hase'],
+    command_tags    => ['Important!'],
 );
 
 1;
