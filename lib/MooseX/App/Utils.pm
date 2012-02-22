@@ -39,7 +39,10 @@ sub command_to_class {
 sub format_text {
     my ($text) = @_;
     
-    my @lines = split_string($SCREEN_WIDTH-$INDENT,$text);
+    my @lines;
+    foreach my $line (split(/\n/,$text)) {
+        push(@lines,split_string($SCREEN_WIDTH-$INDENT,$line));
+    }
     
     return join(
         "\n",
