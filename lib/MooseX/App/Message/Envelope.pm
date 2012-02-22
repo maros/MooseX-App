@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Message;
+package MooseX::App::Message::Envelope;
 # ============================================================================
 
 use 5.010;
@@ -7,18 +7,14 @@ use utf8;
 
 use Moose;
 
+use MooseX::App::Message::Block;
+
 use overload
     '""' => "stringify";
 
-has 'message' => (
-    is          => 'rw',
-    isa         => 'Str',
-    predicate   => 'has_message',
-);
-
 has 'blocks' => (
     isa         => 'rw',
-    isa         => 'ArrayRef[Str]',
+    isa         => 'ArrayRef[MooseX::App::Message::Block]',
     traits      => ['Array'],
     handles     => {
         add_block       => 'push',
@@ -26,15 +22,34 @@ has 'blocks' => (
     },
 );
 
+around 'BUILDARGS' => sub {
+    my $orig = shift;
+    my $self = shift;
+    my @args = @_;
+    
+    my @blocks;
+    foreach my $element (@args) {
+        if (blessed $element
+            && $element->isa('MooseX::App::Message::Block')) {
+            push(@blocks,$element);
+        } else {
+            push(@blocks,MooseX::App::Message::Block->new(
+                header  => $element,
+            ));
+        }
+    }
+
+    return $self->$orig({ 
+        blocks  => \@blocks,
+    });
+};
+
 sub stringify {
     my ($self) = @_;
     
     my $message = '';
-    $message .= $self->message."\n"
-        if $self->has_message;
-    
     foreach my $block ($self->list_blocks) {
-        $message .= $block."\n\n";
+        $message .= $block->stringify;
     }
     
     return $message;
