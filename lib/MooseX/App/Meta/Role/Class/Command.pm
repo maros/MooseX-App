@@ -5,7 +5,10 @@ use 5.010;
 
 use Moose::Role;
 
-#use Pod::Elemental;
+use Pod::Elemental;
+use Pod::Elemental::Selectors qw();
+use Pod::Elemental::Transformer::Pod5;
+use Pod::Elemental::Transformer::Nester;
 
 has 'command_short_description' => (
     is          => 'rw',
@@ -34,22 +37,22 @@ sub _build_command_long_description {
 }
 
 sub _build_command_pod {
-    my ($self) = @_;
+    my ($self,$part) = @_;
     
-    my $package_name = $self->name;
-    $package_name =~ s/::/\//g;
-    $package_name .= '.pm';
-    return "POD for $package_name";
+    my $package_filename = $self->name;
+    $package_filename =~ s/::/\//g;
+    $package_filename .= '.pm';
     
-#    my $filename;
-#    if (defined $INC{$package_name}) {
-#        $filename = $INC{$package_name};
-#        $filename =~ s/\/{2,}/\//g;
-#    }
-#    
-#    return 
-#        unless defined $filename;
-#    
+    my $package_filepath;
+    if (defined $INC{$package_filename}) {
+        $package_filepath = $INC{$package_filename};
+        $package_filepath =~ s/\/{2,}/\//g;
+    }
+    
+    return 
+        unless defined $package_filepath
+        && -e $package_filepath;
+
 #    use Pod::Simple::SimpleTree;
 #    my $parser = Pod::Simple::SimpleTree->new();
 #    my $pod = $parser->parse_file( $filename );
@@ -59,56 +62,95 @@ sub _build_command_pod {
 #      local $Data::Dumper::Maxdepth = 4;
 #      warn __FILE__.':line'.__LINE__.':'.Dumper($pod->{root});
 #    }
-#    
-#    my $document = Pod::Elemental->read_file($filename);
-#    
-#    use Pod::Elemental::Selectors qw(s_command s_flat);
-#    use Pod::Elemental::Transformer::Nester;
-#    
-#    my $nester = Pod::Elemental::Transformer::Nester->new({
-#        top_selector      => s_command('head1'),
-#        content_selectors => [
-#          s_command([ qw(head2 head3 head4) ]),
-#          s_flat
-#        ],
-#      });
-#        $nester->transform_node($document);
-#    #      s_flat(),
-#    #Pod::Elemental::Transformer::Pod5->new->transform_node($document);
-#    
-#    use Data::Dumper;
-#    {
-#      local $Data::Dumper::Maxdepth = 5;
-#      die __FILE__.':line'.__LINE__.':'.Dumper($document);
-#    }
-#    
-#    
-#    
-#    my $current_element;
-#    foreach my $element (@{$document->children}) {
-#        next
-#            if $element->isa('Pod::Elemental::Element::Pod5::Nonpod');
-#            
-#        if ($element->isa('Pod::Elemental::Element::Pod5::Command')) {
-#            next
-#                unless $element->command =~ /^head\d/i;
-#            
-#            if ($element->content eq 'DESCRIPTION') {
-#                $current_element = 'command_long_description';
-#            } elsif ($element->content eq 'NAME') {
-#                $current_element = 'command_short_description';
-#            } elsif ($element->content eq 'SYNOPSIS' || $element->content eq 'USAGE') {
-#                $current_element = 'command_usage';
-#            }
-#        } elsif ($element->isa('Pod::Elemental::Element::Pod5::Ordinary')) {
-#
-#            #warn $current_element;
-#            warn '<X'.$element->as_pod_string.'X>';
-#        
-#        }
-#        
-#    }
     
+    my $document = Pod::Elemental->read_file($package_filepath);
+
+    Pod::Elemental::Transformer::Pod5->new->transform_node($document);
+    
+    my $nester_head = Pod::Elemental::Transformer::Nester->new({
+        top_selector      => Pod::Elemental::Selectors::s_command('head1'),
+        content_selectors => [ 
+            Pod::Elemental::Selectors::s_command([ qw(head2 head3 head4 over back item) ]),
+            Pod::Elemental::Selectors::s_flat() 
+        ],
+    });
+    $document = $nester_head->transform_node($document);
+    
+    my %pod;
+    foreach my $element (@{$document->children}) {
+        next
+            unless $element->isa('Pod::Elemental::Element::Nested')
+            && $element->command eq 'head1';
+
+        given ($element->content) {
+            when('NAME') {
+                my $name = $self->name;
+                my $content = $self->_pod_node_to_text($element->children);
+                $content =~ s/^$name(\s-)?\s//;
+                $pod{command_short_description} = $content;
+            }
+            when([qw(DESCRIPTION OVERVIEW)]) {
+                my $content = $self->_pod_node_to_text($element->children);
+                $pod{command_long_description} = $content;
+            }
+        }
+    }
+    
+    while (my ($key,$value) = each %pod) {
+        my $meta_attribute = $self->meta->get_attribute($key);
+        $meta_attribute->set_raw_value($self,$value);
+    }
+    
+    return $pod{$part};
+}
+
+sub _pod_node_to_text {
+    my ($self,$node,$indent) = @_;
+    
+    unless (defined $indent) {
+        my $indent_init = 0;
+        $indent = \$indent_init;
+    }
+    
+    my (@lines);
+    if (ref $node eq 'ARRAY') {
+        foreach my $element (@$node) {
+            push (@lines, $self->_pod_node_to_text($element,$indent));
+        }
+        
+    } else {
+        given (ref($node)) {
+            when ('Pod::Elemental::Element::Pod5::Ordinary') {
+                 push (@lines,$node->content);
+            }
+            when ('Pod::Elemental::Element::Pod5::Verbatim') {
+                push (@lines,$node->content);
+            }
+            when ('Pod::Elemental::Element::Pod5::Command') {
+                given ($node->command) {
+                    when ('over') {
+                        ${$indent}++;
+                    }
+                    when ('item') {
+                        push (@lines,('  ' x ($$indent-1)) . $node->content);
+                    }
+                    when ('back') {
+                        ${$indent}--;
+                    }
+                }
+            }
+        }
+    }
+    
+    return
+        unless scalar @lines;
+    
+    my $return = join ("\n", grep { defined $_ } @lines);
+    $return =~ s/I<([^>]+)>/_$1_/g;
+    $return =~ s/B<([^>]+)>/*$1*/g;
+    $return =~ s/[LCBI]<([^>]+)>/$1/g;
+    $return =~ s/[LCBI]<([^>]+)>/$1/g;
+    return $return;
 }
 
 #{
