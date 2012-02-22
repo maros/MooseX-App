@@ -21,6 +21,11 @@ requires        'MooseX::Types::Path::Class'    => 0;
 requires        'Config::Any'                   => 0;
 requires        'String::CamelCase'             => 0;
 requires        'List::Util'                    => 0;
+requires        'Pod::Elemental'                => 0;
+
+feature 'Colorfull output',
+    -default   => 1,
+    'Term::ANSIColor'                           => 0;
 
 build_requires  'Test::Most'                    => 0;
 build_requires  'Test::NoWarnings'              => 0;
