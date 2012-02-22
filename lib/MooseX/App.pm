@@ -11,7 +11,7 @@ use Moose::Exporter;
 use Module::Pluggable::Object;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [ 'command_namespace','app_base' ],
+    with_meta => [ 'app_namespace','app_base' ],
     also      => 'Moose',
 );
 
@@ -39,9 +39,9 @@ sub init_meta {
     return $meta;
 }
 
-sub command_namespace($) {
+sub app_namespace($) {
     my ( $meta, $name ) = @_;
-    return $meta->command_namespace($name);
+    return $meta->app_namespace($name);
 }
 
 sub app_base($) {

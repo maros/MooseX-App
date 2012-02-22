@@ -67,7 +67,7 @@ sub proto_config {
         use_ext => 1,
     });
     
-    my $command_name = MooseX::App::Utils::class_to_command($command_class,$meta->command_namespace);
+    my $command_name = MooseX::App::Utils::class_to_command($command_class,$meta->app_namespace);
     
     my ($config_data) = values %{$configs->[0]};
     
