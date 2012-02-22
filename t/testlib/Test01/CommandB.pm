@@ -9,6 +9,14 @@ has 'email' => (
     is          => 'rw',
 );
 
+sub run { 
+    print "RUN COMMAND-B";
+    use Data::Dumper;
+    {
+      local $Data::Dumper::Maxdepth = 2;
+      warn __FILE__.':line'.__LINE__.':'.Dumper(shift);
+    }
+}
 
 =encoding utf8
 
@@ -20,23 +28,38 @@ Test01::CommandB - Test class command B for test 01
 
 Some description of B<command B>
 
+ some code
+ some code
+
+soe more desc
+
 =over
 
 =item * item 1
 
 =item * item 2
 
+=over
+
+=item * item 2.1
+
+=item * item 2.2
+
 =back
 
-=head2 SUB A
+=back
+
+hase ist super
+
+=head1 METHODS
 
 hase
 
-=head2 SUB B
+=head2 SUB A
 
 bär
 
-=head1 METHODS
+=head1 SUB B
 
 some methods
 

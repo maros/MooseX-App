@@ -14,11 +14,19 @@ has 'commanda_loca1' => (
 has 'commanda_loca2' => (
     isa             => 'Str',
     is              => 'rw',
-    documentation   => q[xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxX]
+    documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly]
 );
 
-command_long_description "Hase ist sooo super das geht auf keine Kuhaut mehr, das ist soo abartig. Echt das ist die Wahrheit";
-command_short_description "Hase";
+command_long_description "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dui velit, varius nec iaculis vitae, elementum eget mi. 
+* bullet1
+* bullet2
+* bullet3
+Cras eget mi nisi. In hac habitasse platea dictumst.";
 
+command_short_description "Command A!";
+
+sub run { 
+    print "RUN COMMAND-A";
+}
 
 1;

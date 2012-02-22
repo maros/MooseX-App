@@ -45,7 +45,7 @@ is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01
     --global           test [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]",'Global options body set');
     is($test03->blocks->[3]->header,"available commands:",'Available commands set');
-    is($test03->blocks->[3]->body,"    command_a  Hase
+    is($test03->blocks->[3]->body,"    command_a  Command A!
     command_b  Test class command B for test 01
     help       Prints this usage information",'Available commands body set');
 }
@@ -55,8 +55,8 @@ is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01
     local @ARGV = qw(command_a --help);
     my $test04 = Test01->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
-    is($test03->blocks->[0]->header,"usage:",'Usage is set');
-    is($test03->blocks->[1]->header,"description:",'Description is set');
-    is($test03->blocks->[2]->header,"options:",'Options are set');
-    print $test04;
+    is($test04->blocks->[0]->header,"usage:",'Usage is set');
+    is($test04->blocks->[1]->header,"description:",'Description is set');
+    is($test04->blocks->[2]->header,"options:",'Options are set');
+    #print $test04;
 }
