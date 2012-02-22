@@ -43,13 +43,15 @@ sub matching_commands {
     } else {
         my @candidates;
         my $candidate_length = length($command);
+        my $lc_command = lc($command);
         
         # Compare all commands to find matching candidates
         foreach my $command_name (keys %commands) {
-            if (lc($command) eq lc($command_name)) {
+            my $lc_command_name = lc($command_name);
+            if ($lc_command eq $lc_command_name) {
                 return $command_name;
             }
-            if ($command eq substr($command_name,0,$candidate_length)) {
+            if ($lc_command eq substr($lc_command_name,0,$candidate_length)) {
                 push(@candidates,$command_name);
             }
         }
