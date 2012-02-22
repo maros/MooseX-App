@@ -11,4 +11,9 @@ has 'command_tags' => (
     predicate   => 'has_command_tags',
 );
 
+{
+    package Moose::Meta::Attribute::Custom::Trait::AppBase;
+    sub register_implementation { 'MooseX::App::Meta::Role::Attribute' }
+}
+
 1;
