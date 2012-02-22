@@ -5,7 +5,6 @@ package MooseX::App::Command;
 use 5.010;
 use utf8;
 
-use Moose ();
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(

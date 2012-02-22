@@ -5,7 +5,6 @@ package MooseX::App;
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.00';
 
-use Moose ();
 use Moose::Exporter;
 
 use Module::Pluggable::Object;

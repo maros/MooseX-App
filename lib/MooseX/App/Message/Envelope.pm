@@ -13,7 +13,7 @@ use overload
     '""' => "stringify";
 
 has 'blocks' => (
-    isa         => 'rw',
+    is          => 'rw',
     isa         => 'ArrayRef[MooseX::App::Message::Block]',
     traits      => ['Array'],
     handles     => {
@@ -71,4 +71,5 @@ sub AUTOLOAD {
     sub AUTOLOAD { return $NULL }
 }
 
+__PACKAGE__->meta->make_immutable;
 1;

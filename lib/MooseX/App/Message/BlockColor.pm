@@ -52,4 +52,5 @@ sub stringify {
     return $message;
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
