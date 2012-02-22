@@ -40,11 +40,15 @@ around 'proto_command' => sub {
     my ($orig,$class,$command_class) = @_;
     
     my $result = $class->$orig($command_class);
+    delete $result->{config}
+        unless defined $result->{config};
+    
     return $class->proto_config($command_class,$result);
 };
 
 sub proto_config {
     my ($class,$command_class,$result) = @_;
+    
     
     # Check if we have a config
     return $result
