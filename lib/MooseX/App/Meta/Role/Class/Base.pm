@@ -8,7 +8,13 @@ use Moose::Role;
 use MooseX::App::Utils;
 use Path::Class;
 
-has 'command_namespace' => (
+has 'app_messageclass' => (
+    is          => 'rw',
+    isa         => 'Str',
+    default     => 'MooseX::App::Message::Block',
+);
+
+has 'app_namespace' => (
     is          => 'rw',
     isa         => 'Str',
     lazy_build  => 1,
@@ -20,7 +26,7 @@ has 'app_base' => (
     default     => sub { Path::Class::File->new($0)->basename },
 );
 
-sub _build_command_namespace {
+sub _build_app_namespace {
     my ($self) = @_;
     return $self->name;
 }
@@ -51,16 +57,23 @@ sub matching_commands {
     }
 }
 
+sub command_message {
+    my ($self,@args) = @_;
+    my $messageclass = $self->app_messageclass;
+    Class::MOP::load_class($messageclass);
+    return $messageclass->new(@args);
+}
+
 sub commands {
     my ($self) = @_;
     
     my $mpo = Module::Pluggable::Object->new(
-        search_path => [ $self->command_namespace ],
+        search_path => [ $self->app_namespace ],
     );
     
     my %return;
     foreach my $command_class ($mpo->plugins) {
-        my $command = MooseX::App::Utils::class_to_command($command_class,$self->command_namespace);
+        my $command = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
         $return{$command} = $command_class;
     }
     
@@ -167,32 +180,45 @@ sub command_usage_header {
     
     my $caller = $self->app_base;
     
-    return "usage: 
-    $caller $command [long options...]
+    return $self->command_message(
+        header  => 'usage:',
+        body    => qq[    $caller $command [long options...]
     $caller help
-    $caller $command --help";
+    $caller $command --help]);
 }
 
 sub command_usage_command {
     my ($self,$command_class) = @_;
     
-    my $comand_name = MooseX::App::Utils::class_to_command($command_class,$self->command_namespace);
+    my $comand_name = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
     
     my @usage;
     push (@usage,$self->command_usage_header($comand_name));
     
     if ($command_class->meta->can('command_long_description')
         && $command_class->meta->command_long_description) {
-        push(@usage,"description:\n".MooseX::App::Utils::format_text($command_class->meta->command_long_description));
+        push(@usage,
+            $self->command_message(
+                header  => 'description:',
+                body    => MooseX::App::Utils::format_text($command_class->meta->command_long_description),
+            )
+        );
     } elsif ($command_class->meta->can('command_short_description')
         && $command_class->meta->command_short_description) {
-        push(@usage,"short description:\n".MooseX::App::Utils::format_text($command_class->meta->command_short_description));
+        push(@usage,
+            $self->command_message(
+                header  => 'short description:',
+                body    => MooseX::App::Utils::format_text($command_class->meta->command_short_description),
+            )
+        );
     }
     
-    my $options = $self->command_usage_attributes($command_class->meta);
-    push (@usage,"options:\n$options");
+    push (@usage,$self->command_message(
+        header  => 'options:',
+        body    => MooseX::App::Utils::format_list($self->command_usage_attributes_raw($command_class->meta)),
+    ));
     
-    return \@usage;
+    return @usage;
 }
 
 sub command_usage_global {
@@ -207,8 +233,7 @@ sub command_usage_global {
         Class::MOP::load_class($class);
         my $description;
         $description = $class->meta->command_short_description
-            if $class->meta->can('command_short_description') 
-            && $class->meta->has_command_short_description();
+            if $class->meta->can('command_short_description');
         
         $description ||= '';
         push(@commands,[$command,$description]);
@@ -216,16 +241,26 @@ sub command_usage_global {
     
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
     my $global_options = $self->command_usage_attributes();
-    my $available_commands = MooseX::App::Utils::format_list(@commands);
     
     my @usage;
     push (@usage,$self->command_usage_header());
     if ($global_options) {
-         push (@usage,"global options:\n$global_options");
+        push (@usage,
+            $self->command_message(
+                header  => 'global options:',
+                body    => $global_options,
+            )
+        );
     }
-    push (@usage,"available commands:\n$available_commands");
     
-    return \@usage;
+    push (@usage,
+        $self->command_message(
+            header  => 'available commands:',
+            body    => MooseX::App::Utils::format_list(@commands),
+        )
+    );
+    
+    return @usage;
 }
 
 
