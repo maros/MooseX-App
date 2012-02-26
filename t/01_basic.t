@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::More tests => 30;
+use Test::More tests => 22+1;
 use Test::NoWarnings;
 use Test::Output;
 
@@ -56,7 +56,23 @@ is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01
     my $test04 = Test01->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
     is($test04->blocks->[0]->header,"usage:",'Usage is set');
+    is($test04->blocks->[0]->body,"    01_basic.t command_a [long options...]
+    01_basic.t help
+    01_basic.t command_a --help",'Usage body set');
     is($test04->blocks->[1]->header,"description:",'Description is set');
-    is($test04->blocks->[2]->header,"options:",'Options are set');
+    is($test04->blocks->[1]->body,"    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dui velit,
+    varius nec iaculis vitae, elementum eget mi.
+    * bullet1
+    * bullet2
+    * bullet3
+    Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
+    is($test04->blocks->[2]->header,"options:",'Options header is set');
+    is($test04->blocks->[2]->body,"    --commanda_loca1   some docs about the long texts that seem to occur
+                       randomly [Integer; Important]
+    --commanda_loca2   Verylongwordwithoutwhitespacestotestiftextformatingwor
+                       ksproperly
+    --config           Path to command config file
+    --global           test [Required; Integer; Important!]
+    --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
     #print $test04;
 }

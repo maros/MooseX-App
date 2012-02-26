@@ -2,7 +2,7 @@
 
 # t/03_utils.t
 
-use Test::More tests => 9+1;
+use Test::Most tests => 9+1;
 use Test::NoWarnings;
 
 use MooseX::App::Utils;
