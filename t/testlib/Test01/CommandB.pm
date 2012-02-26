@@ -11,11 +11,6 @@ has 'email' => (
 
 sub run { 
     print "RUN COMMAND-B";
-    use Data::Dumper;
-    {
-      local $Data::Dumper::Maxdepth = 2;
-      warn __FILE__.':line'.__LINE__.':'.Dumper(shift);
-    }
 }
 
 =encoding utf8
