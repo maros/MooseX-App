@@ -29,7 +29,6 @@ feature 'Colorfull output',
 
 build_requires  'Test::Most'                    => 0;
 build_requires  'Test::NoWarnings'              => 0;
-build_requires  'Test::Output'                  => 0;
 
 author_requires 'Test::Pod'                     => '1.14';
 author_requires 'Test::Pod::Coverage'           => '1.04';

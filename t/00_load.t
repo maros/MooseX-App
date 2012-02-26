@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::More tests => 12;
+use Test::Most tests => 12;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::Command' );

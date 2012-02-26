@@ -2,9 +2,8 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::More tests => 22+1;
+use Test::Most tests => 22+1;
 use Test::NoWarnings;
-use Test::Output;
 
 use lib 't/testlib';
 
