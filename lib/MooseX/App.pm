@@ -7,8 +7,6 @@ our $VERSION = '1.00';
 
 use Moose::Exporter;
 
-use Module::Pluggable::Object;
-
 Moose::Exporter->setup_import_methods(
     with_meta => [ 'app_namespace','app_base' ],
     also      => 'Moose',

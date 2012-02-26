@@ -7,6 +7,7 @@ use Moose::Role;
 
 use MooseX::App::Utils;
 use Path::Class;
+use Module::Pluggable::Object;
 
 has 'app_messageclass' => (
     is          => 'rw',
