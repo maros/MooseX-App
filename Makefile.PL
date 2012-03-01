@@ -23,7 +23,7 @@ requires        'String::CamelCase'             => 0;
 requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
 
-feature 'Colorfull output',
+feature 'Colorful output',
     -default   => 1,
     'Term::ANSIColor'                           => 0;
 
