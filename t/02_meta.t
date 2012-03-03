@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 16+1;
+use Test::Most tests => 20+1;
 use Test::NoWarnings;
 use Test::Output;
 
@@ -13,18 +13,22 @@ use Test01;
 my $meta = Test01->meta;
 
 is($meta->app_namespace,'Test01','Command namespace ok');
+my %commands = $meta->commands;
+is(join(',',sort keys %commands),'command_a,command_b,command_c1','Commands found');
+is(join(',',sort values %commands),'Test01::CommandA,Test01::CommandB,Test01::CommandC1','Commands found');
+
+is($meta->app_namespace,'Test01','Command namespace ok');
 is($meta->app_base,'02_meta.t','Command base ok');
 is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
 
 ok(Test01->can('new_with_command'),'Role applied to base class');
 ok(Test01->can('initialize_command'),'Role applied to base class');
 
-my %commands = $meta->commands;
-
-is(scalar keys %commands,2,'Found two commands');
+is(scalar keys %commands,3,'Found tthree commands');
 is($commands{command_a},'Test01::CommandA','Command A found');
 is($meta->matching_commands('COMMAND_a'),'command_a','Command A matched');
-is(join(',',$meta->matching_commands('COMMAND')),'command_a,command_b','Command A and B matched');
+is(join(',',$meta->matching_commands('COMMAND')),'command_a,command_b,command_c1','Command A and B matched');
+is(join(',',$meta->matching_commands('command_c')),'command_c1','Command C1 matched');
 
 cmp_deeply([ $meta->command_usage_attributes_raw ],
 [

@@ -2,15 +2,12 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 22+1;
+use Test::Most tests => 20+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
 
 use Test01;
-
-is(Test01->meta->app_namespace,'Test01','Command namespace ok');
-is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01::CommandB','Commands found');
 
 {
     explain('Test 1: excact command with option');
@@ -44,9 +41,10 @@ is(join(',',Test01->meta->commands),'command_a,Test01::CommandA,command_b,Test01
     --global           test [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]",'Global options body set');
     is($test03->blocks->[3]->header,"available commands:",'Available commands set');
-    is($test03->blocks->[3]->body,"    command_a  Command A!
-    command_b  Test class command B for test 01
-    help       Prints this usage information",'Available commands body set');
+    is($test03->blocks->[3]->body,"    command_a   Command A!
+    command_b   Test class command B for test 01
+    command_c1  
+    help        Prints this usage information",'Available commands body set');
 }
 
 {

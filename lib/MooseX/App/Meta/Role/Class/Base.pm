@@ -57,8 +57,9 @@ sub matching_commands {
             if ($lc_command eq substr($lc_command_name,0,$candidate_length)) {
                 push(@candidates,$command_name);
             }
+            
         }
-        return @candidates;
+        return (sort @candidates);
     }
 }
 
@@ -262,9 +263,7 @@ sub command_usage_global {
     
     my @usage;
     push (@usage,$self->command_usage_header());
-    
     push (@usage,$self->command_usage_attributes($self,'global options:'));
-    
     push (@usage,
         $self->command_message(
             header  => 'available commands:',
