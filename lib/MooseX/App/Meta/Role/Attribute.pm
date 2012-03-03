@@ -14,7 +14,7 @@ has 'command_tags' => (
 );
 
 {
-    package Moose::Meta::Attribute::Custom::Trait::AppBase;
+    package Moose::Meta::Attribute::Custom::Trait::App::Tags;
     sub register_implementation { 'MooseX::App::Meta::Role::Attribute' }
 }
 

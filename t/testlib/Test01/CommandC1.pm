@@ -1,4 +1,4 @@
-package Test01::CommandC1;
+package Test01::CommandC1 ;
 
 use Moose;
 use MooseX::App::Command;

@@ -74,19 +74,9 @@ sub _build_command_pod {
     return 
         unless defined $package_filepath
         && -e $package_filepath;
-
-#    use Pod::Simple::SimpleTree;
-#    my $parser = Pod::Simple::SimpleTree->new();
-#    my $pod = $parser->parse_file( $filename );
-#    
-#    use Data::Dumper;
-#    {
-#      local $Data::Dumper::Maxdepth = 4;
-#      warn __FILE__.':line'.__LINE__.':'.Dumper($pod->{root});
-#    }
     
     my $document = Pod::Elemental->read_file($package_filepath);
-
+    
     Pod::Elemental::Transformer::Pod5->new->transform_node($document);
     
     my $nester_head = Pod::Elemental::Transformer::Nester->new({
@@ -103,7 +93,7 @@ sub _build_command_pod {
         next
             unless $element->isa('Pod::Elemental::Element::Nested')
             && $element->command eq 'head1';
-
+        
         given ($element->content) {
             when('NAME') {
                 my $name = $self->name;
