@@ -106,6 +106,22 @@ sub command_usage_attributes_raw {
 sub command_usage_attribute_detail {
     my ($self,$attribute) = @_;
     
+    my $name = $self->command_usage_attribute_name($attribute);
+    my @tags = $self->command_usage_attribute_tags($attribute);
+    my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
+    
+    if (scalar @tags) {
+        $description .= ' '
+            if $description;
+        $description .= '['.join('; ',@tags).']';
+    }
+    
+    return ($name,$description);
+}
+
+sub command_usage_attribute_name {
+    my ($self,$attribute) = @_;
+    
     my @names;
     if ($attribute->can('cmd_flag')) {
         push(@names,$attribute->cmd_flag);
@@ -117,18 +133,7 @@ sub command_usage_attribute_detail {
         && $attribute->cmd_aliases) {
         push(@names, @{$attribute->cmd_aliases});
     }
-    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } @names);
-    
-    my @tags = $self->command_usage_attribute_tags($attribute);
-    my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
-    
-    if (scalar @tags) {
-        $description .= ' '
-            if $description;
-        $description .= '['.join('; ',@tags).']';
-    }
-    
-    return ($name,$description);
+    return join(' ', map { (length($_) == 1) ? "-$_":"--$_" } @names);
 }
 
 sub command_usage_attribute_tags {
@@ -173,9 +178,20 @@ sub command_usage_attribute_tags {
 
 
 sub command_usage_attributes {
-    my ($self,$metaclass) = @_;
+    my ($self,$metaclass,$headline) = @_;
     
-    return MooseX::App::Utils::format_list($self->command_usage_attributes_raw($metaclass));
+    $headline ||= 'options:';
+    $metaclass ||= $self;
+    
+    my @attributes = $self->command_usage_attributes_raw($metaclass);
+    
+    return
+        unless scalar @attributes;
+    
+    return $self->command_message(
+        header  => $headline,
+        body    => MooseX::App::Utils::format_list(@attributes),
+    );
 }
 
 sub command_usage_header {
@@ -192,36 +208,34 @@ sub command_usage_header {
     $caller $command --help]);
 }
 
+sub command_usage_description {
+    my ($self,$command_class) = @_;
+    
+    if ($command_class->meta->can('command_long_description')
+        && $command_class->meta->has_command_long_description) {
+        return $self->command_message(
+            header  => 'description:',
+            body    => MooseX::App::Utils::format_text($command_class->meta->command_long_description),
+        );
+    } elsif ($command_class->meta->can('command_short_description')
+        && $command_class->meta->has_command_short_description) {
+        return $self->command_message(
+            header  => 'short description:',
+            body    => MooseX::App::Utils::format_text($command_class->meta->command_short_description),
+        );
+    }
+    return;
+}
+
 sub command_usage_command {
     my ($self,$command_class) = @_;
     
-    my $comand_name = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
+    my $command_name = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
     
     my @usage;
-    push (@usage,$self->command_usage_header($comand_name));
-    
-    if ($command_class->meta->can('command_long_description')
-        && $command_class->meta->command_long_description) {
-        push(@usage,
-            $self->command_message(
-                header  => 'description:',
-                body    => MooseX::App::Utils::format_text($command_class->meta->command_long_description),
-            )
-        );
-    } elsif ($command_class->meta->can('command_short_description')
-        && $command_class->meta->command_short_description) {
-        push(@usage,
-            $self->command_message(
-                header  => 'short description:',
-                body    => MooseX::App::Utils::format_text($command_class->meta->command_short_description),
-            )
-        );
-    }
-    
-    push (@usage,$self->command_message(
-        header  => 'options:',
-        body    => MooseX::App::Utils::format_list($self->command_usage_attributes_raw($command_class->meta)),
-    ));
+    push(@usage,$self->command_usage_header($command_name));
+    push(@usage,$self->command_usage_description($command_class));
+    push(@usage,$self->command_usage_attributes($command_class->meta));
     
     return @usage;
 }
@@ -245,18 +259,11 @@ sub command_usage_global {
     }
     
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
-    my $global_options = $self->command_usage_attributes();
     
     my @usage;
     push (@usage,$self->command_usage_header());
-    if ($global_options) {
-        push (@usage,
-            $self->command_message(
-                header  => 'global options:',
-                body    => $global_options,
-            )
-        );
-    }
+    
+    push (@usage,$self->command_usage_attributes($self,'global options:'));
     
     push (@usage,
         $self->command_message(
