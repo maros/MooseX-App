@@ -26,7 +26,7 @@ Some description of B<command B>
  some code
  some code
 
-soe more desc
+some more desc
 
 =over
 
