@@ -14,17 +14,20 @@ use Pod::Elemental::Transformer::Nester;
 
 has 'command_short_description' => (
     is          => 'rw',
-    isa         => 'Str',
-    predicate   => 'has_command_short_description',
+    isa         => 'Maybe[Str]',
     lazy_build  => 1,
 );
 
 has 'command_long_description' => (
     is          => 'rw',
-    isa         => 'Str',
-    predicate   => 'has_command_long_description',
+    isa         => 'Maybe[Str]',
     lazy_build  => 1,
 );
+
+sub has_command_short_description {
+    my ($self) = @_;    
+    return $self->_command_description_predicate('command_short_description');
+}
 
 sub _build_command_short_description {
     my ($self) = @_;
@@ -32,10 +35,27 @@ sub _build_command_short_description {
     return $self->_build_command_pod('command_short_description');
 }
 
-sub _build_command_long_description {
+sub has_command_long_description {
     my ($self) = @_;
     
     return $self->_build_command_pod('command_long_description');
+}
+
+sub _build_command_long_description {
+    my ($self) = @_;
+    
+    return $self->_command_description_predicate('command_long_description');
+}
+
+sub _command_description_predicate {
+    my ($self,$field) = @_;
+    
+    my $attribute = $self->meta->find_attribute_by_name($field);
+    
+    return 0
+        unless $attribute->has_value($self);
+        
+    return (defined $attribute->get_value($self) ? 1:0);
 }
 
 sub _build_command_pod {
