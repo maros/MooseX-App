@@ -1,4 +1,3 @@
-# ============================================================================
 package MooseX::App;
 # ============================================================================
 
@@ -7,10 +6,33 @@ our $VERSION = '1.00';
 
 use Moose::Exporter;
 
-Moose::Exporter->setup_import_methods(
-    with_meta => [ 'app_namespace','app_base' ],
-    also      => 'Moose',
+my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
+    with_meta           => [ 'app_namespace','app_base' ],
+    also                => 'Moose',
+    install             => [qw(unimport init_meta)],
 );
+
+sub import {
+    my ( $class, @plugins ) = @_;
+    
+    # Get caller
+    my ($caller_class) = caller();
+    
+    # Call Moose-Exporter generated importer
+    $class->$IMPORT( { into => $caller_class } );
+    
+    # Loop all requested plugins
+    foreach my $plugin (@plugins) {
+        
+        my $plugin_class = 'MooseX::App::Plugin::'.$plugin;
+        # TODO eval plugin class
+        Class::MOP::load_class($plugin_class);
+        
+        $plugin_class->init_meta(
+            for_class   => $caller_class,
+        )
+    }
+}
 
 sub init_meta {
     shift;
@@ -22,15 +44,15 @@ sub init_meta {
     Moose::Util::MetaRole::apply_metaroles(
         for             => $args{for_class},
         class_metaroles => {
-            class           => ['MooseX::App::Meta::Role::Class::Base'],
-            attribute       => ['MooseX::App::Meta::Role::Attribute'],
+            class               => ['MooseX::App::Meta::Role::Class::Base'],
+            attribute           => ['MooseX::App::Meta::Role::Attribute'],
         },
     );
     
     # Add class role
     Moose::Util::MetaRole::apply_base_class_roles(
         for   => $args{for_class},
-        roles => ['MooseX::App::Role::Base'],
+        roles => ['MooseX::App::Base'],
     );
     
     return $meta;
