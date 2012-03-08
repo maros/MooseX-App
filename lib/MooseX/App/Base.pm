@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Role::Base;
+package MooseX::App::Base;
 # ============================================================================
 
 use 5.010;
@@ -68,7 +68,9 @@ sub initialize_command {
     my ($class,$command_name,%args) = @_;
     
     my $meta = $class->meta;
-    my $command_class = MooseX::App::Utils::command_to_class($command_name,$meta->app_namespace);
+    
+    my %commands = $meta->commands;
+    my $command_class = $commands{$command_name};
     
     eval {
         Class::MOP::load_class($command_class);
