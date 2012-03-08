@@ -228,10 +228,23 @@ sub command_usage_description {
     return;
 }
 
+sub command_class_to_command {
+    my ($self,$command_class) = @_;
+    
+    my %commands = $self->commands;
+    foreach my $element (keys %commands) {
+        if ($command_class eq $commands{$element}) {
+            return $element;
+        }
+    }
+    
+    return;
+}
+
 sub command_usage_command {
     my ($self,$command_class) = @_;
     
-    my $command_name = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
+    my $command_name = $self->command_class_to_command($command_class);
     
     my @usage;
     push(@usage,$self->command_usage_header($command_name));
