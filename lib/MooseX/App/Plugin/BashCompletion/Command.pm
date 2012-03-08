@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Meta::Role::BashCompletition;
+package MooseX::App::Plugin::BashCompletion::Command;
 # ============================================================================
 
 use 5.010;
@@ -8,8 +8,7 @@ use utf8;
 use Moose;
 use MooseX::App::Command;
 
-command_short_description q();
-command_long_description q();
+command_short_description q(Bash completion automator);
 
 sub BUILD {
     my ($self) = @_;
