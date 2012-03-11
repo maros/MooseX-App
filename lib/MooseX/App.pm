@@ -60,9 +60,6 @@ sub init_meta {
                 }
             }
         }
-        if ($plugin_class->can('init_plugin')) {
-            $plugin_class->init_plugin($args{for_class});
-        }
     }
     
     # Add meta roles
@@ -76,6 +73,12 @@ sub init_meta {
         for             => $args{for_class},
         roles           => \@apply_roles,
     );
+    
+    foreach my $plugin_class (@{$plugins}) {
+        if ($plugin_class->can('init_plugin')) {
+            $plugin_class->init_plugin($args{for_class});
+        }
+    }
     
     return $meta;
 }
