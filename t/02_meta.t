@@ -4,7 +4,6 @@
 
 use Test::Most tests => 20+1;
 use Test::NoWarnings;
-use Test::Output;
 
 use lib 't/testlib';
 

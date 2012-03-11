@@ -61,7 +61,6 @@ sub new_with_command {
             );
         }
     }
-    return;
 }
 
 sub initialize_command {
@@ -88,7 +87,8 @@ sub initialize_command {
     
     my $proto_result = $class->proto_command($command_class);
     
-    return 
+    # TODO return some kind of null class object
+    return
         unless defined $proto_result;
     
     return $proto_result
@@ -115,6 +115,7 @@ sub initialize_command {
         };
         if (my $error = $@) {
             $error =~ s/\n.+//s;
+            chomp $error;
             return MooseX::App::Message::Envelope->new(
                 $meta->command_message(
                     header          => $error,
@@ -125,7 +126,6 @@ sub initialize_command {
         }
         # TODO exitval 0 ..  ok , 1 .. error, 2..fatal error
         return $command_object;
-        
     }
 }
 
