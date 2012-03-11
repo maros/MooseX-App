@@ -2,20 +2,17 @@
 
 # t/03_utils.t
 
-use Test::Most tests => 9+1;
+use Test::Most tests => 7+1;
 use Test::NoWarnings;
 
 use MooseX::App::Utils;
 
 {
-    explain "Class to/from command";
+    explain "Class to command";
     
     is(MooseX::App::Utils::class_to_command('MyApp::Commands::Command','MyApp::Commands'),'command','Command ok');
     is(MooseX::App::Utils::class_to_command('MyApp::Commands::CommandSuper','MyApp::Commands'),'command_super','Command ok');
     is(MooseX::App::Utils::class_to_command('MyApp::Commands::CommandBA','MyApp::Commands'),'command_ba','Command ok');
-    
-    is(MooseX::App::Utils::command_to_class('command_ba','MyApp::Commands'),'MyApp::Commands::CommandBa','Command ok');
-    is(MooseX::App::Utils::command_to_class('command','MyApp::Commands'),'MyApp::Commands::Command','Command ok');
 }
 
 {

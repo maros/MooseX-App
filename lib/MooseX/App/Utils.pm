@@ -25,17 +25,6 @@ sub class_to_command {
     return decamelize($class);
 }
 
-sub command_to_class {
-    my ($command,$namespace) = @_;
-    
-    return 
-        unless defined $command;
-    
-    my $class = $namespace.'::'.camelize($command);
-    
-    return $class;
-}
-
 sub format_text {
     my ($text) = @_;
     
