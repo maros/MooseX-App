@@ -1,6 +1,5 @@
 package MooseX::App;
-# ============================================================================
-
+# ============================================================================«
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.00';
 
@@ -12,47 +11,70 @@ my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
     install             => [qw(unimport init_meta)],
 );
 
+my %PLUGIN_SPEC;
+
 sub import {
     my ( $class, @plugins ) = @_;
     
     # Get caller
     my ($caller_class) = caller();
     
-    # Call Moose-Exporter generated importer
-    $class->$IMPORT( { into => $caller_class } );
-    
     # Loop all requested plugins
+    my @plugin_classes;
     foreach my $plugin (@plugins) {
-        
         my $plugin_class = 'MooseX::App::Plugin::'.$plugin;
+        
         # TODO eval plugin class
         Class::MOP::load_class($plugin_class);
         
-        $plugin_class->init_meta(
-            for_class   => $caller_class,
-        )
+        push (@plugin_classes,$plugin_class);
     }
+    
+    # Store plugin spec
+    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;
+    
+    # Call Moose-Exporter generated importer
+    $class->$IMPORT( { into => $caller_class } );
 }
 
 sub init_meta {
     shift;
     my (%args) = @_;
     
-    my $meta = Moose->init_meta( %args );
+    my $meta            = Moose->init_meta( %args );
+    my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
+    my %apply_metaroles = (
+        class               => ['MooseX::App::Meta::Role::Class::Base'],
+        attribute           => ['MooseX::App::Meta::Role::Attribute'],
+    );
+    my @apply_roles     = ('MooseX::App::Base',@$plugins);
     
-    # Add meta role
+    # Process all plugins in the given order
+    foreach my $plugin_class (@{$plugins}) {
+        if ($plugin_class->can('plugin_metaroles')) {
+            my ($metaroles) = $plugin_class->plugin_metaroles($args{for_class});
+            if (ref $metaroles eq 'HASH') {
+                foreach my $type (keys %$metaroles) {
+                    $apply_metaroles{$type} ||= [];
+                    push (@{$apply_metaroles{$type}},@{$metaroles->{$type}});
+                }
+            }
+        }
+        if ($plugin_class->can('init_plugin')) {
+            $plugin_class->init_plugin($args{for_class});
+        }
+    }
+    
+    # Add meta roles
     Moose::Util::MetaRole::apply_metaroles(
         for             => $args{for_class},
-        class_metaroles => {
-            class               => ['MooseX::App::Meta::Role::Class::Base'],
-            attribute           => ['MooseX::App::Meta::Role::Attribute'],
-        },
+        class_metaroles => \%apply_metaroles
     );
     
-    # Add class role
+    # Add class roles
     Moose::Util::MetaRole::apply_base_class_roles(
-        for   => $args{for_class},
-        roles => ['MooseX::App::Base'],
+        for             => $args{for_class},
+        roles           => \@apply_roles,
     );
     
     return $meta;
