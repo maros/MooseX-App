@@ -7,7 +7,7 @@ use utf8;
 
 use Moose;
 use MooseX::App::Command;
-with qw(MooseX::App::Base);
+with qw(MooseX::Getopt);
 
 command_short_description q(Bash completion automator);
 
