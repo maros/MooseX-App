@@ -1,8 +1,7 @@
 package Test01;
 
 use Moose;
-use MooseX::App;
-with qw(MooseX::App::Role::Config);
+use MooseX::App qw(Config);
 
 has 'global' => (
     isa             => 'Int',
