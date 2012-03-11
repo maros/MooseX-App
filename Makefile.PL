@@ -1,16 +1,15 @@
 # Load the Module::Install bundled in ./inc/
 use strict;
-use inc::Module::Install 0.92;
+use inc::Module::Install 1.05;
 
-my $from = 'lib/TEMPLATE-PATH';
+my $from = 'lib/MooseX/App.pm';
 
 # Define metadata
-name            'TEMPLATE-NAME';
+name            'MooseX-App';
 all_from        $from;
 readme_from     $from;
-readme_markdown_from $from;
 
-perl_version    '5.008';
+perl_version    '5.010';
 
 # Specific dependencies
 requires        'Moose'                         => '2.00';
@@ -35,6 +34,6 @@ author_requires 'Test::Pod::Coverage'           => '1.04';
 author_requires 'Test::Perl::Critic'            => 0;
 author_requires 'Module::Install::ReadmeFromPod'=> 0;
 
-repository 'git://github.com/maros/TEMPLATE-NAME.git';
+repository 'git://github.com/maros/MooseX-App.git';
 
 WriteAll;
