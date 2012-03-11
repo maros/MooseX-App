@@ -62,9 +62,13 @@ sub proto_config {
     my $config_file = Path::Class::File->new($result->{config});
     
     unless (-e $config_file->stringify) {
-        say "Could not find config file '".$config_file->stringify."'";
-        say $meta->command_usage_command($command_class);
-        return;
+        return MooseX::App::Message::Envelope->new(
+            $meta->command_message(
+                header          => "Could not find config file '".$config_file->stringify."'",
+                type            => "error",
+            ),
+            $meta->command_usage_command($command_class),
+        );
     }
     
     my $config_file_name = $config_file->stringify;

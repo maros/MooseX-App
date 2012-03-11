@@ -91,6 +91,9 @@ sub initialize_command {
     return 
         unless defined $proto_result;
     
+    return $proto_result
+        if (blessed($proto_result) && $proto_result->isa('MooseX::App::Message::Envelope'));
+    
     if ($proto_result->{help}) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_command($command_class),
