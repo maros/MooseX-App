@@ -134,6 +134,18 @@ sub command_usage_attribute_name {
         && $attribute->cmd_aliases) {
         push(@names, @{$attribute->cmd_aliases});
     }
+    
+    my $type_constraint = $attribute->type_constraint;
+    if ($type_constraint->equals('Bool')
+        && 
+            ( 
+                ($attribute->has_default && ! $attribute->is_default_a_coderef && $attribute->default == 1)
+                || (! $attribute->has_default && $attribute->is_required)
+            )
+        ) {
+        push(@names,'no'.$names[0]);
+    }
+    
     return join(' ', map { (length($_) == 1) ? "-$_":"--$_" } @names);
 }
 
@@ -204,9 +216,9 @@ sub command_usage_header {
     
     return $self->command_message(
         header  => 'usage:',
-        body    => qq[    $caller $command [long options...]
-    $caller help
-    $caller $command --help]);
+        body    => MooseX::App::Utils::format_text("$caller $command [long options...]
+$caller help
+$caller $command --help"));
 }
 
 sub command_usage_description {
