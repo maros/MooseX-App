@@ -7,10 +7,10 @@ use utf8;
 
 use Moose::Role;
 
-before 'new_with_command' => sub {
-    my ($self) = @_;
+sub init_plugin {
+    my ($self,$class) = @_;
     
-    $self->meta->app_messageclass('MooseX::App::Message::BlockColor');
+    $class->meta->app_messageclass('MooseX::App::Message::BlockColor');
 }; 
 
 1;
