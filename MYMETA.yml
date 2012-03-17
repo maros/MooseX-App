@@ -1,0 +1,33 @@
+---
+abstract: unknown
+author:
+  - 'MaroÅ¡ KollÃ¡r'
+build_requires:
+  ExtUtils::MakeMaker: 6.59
+  Test::Most: 0
+  Test::NoWarnings: 0
+configure_requires:
+  ExtUtils::MakeMaker: 0
+dynamic_config: 0
+generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120630'
+license: perl
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: MooseX-App
+no_index:
+  directory:
+    - t
+    - inc
+requires:
+  Config::Any: 0
+  List::Util: 0
+  Module::Pluggable: 0
+  Moose: 2.00
+  MooseX::Getopt: 0
+  MooseX::Types::Path::Class: 0
+  Path::Class: 0
+  Pod::Elemental: 0
+  String::CamelCase: 0
+  perl: 5.010
+version: 1.00

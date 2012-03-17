@@ -1,5 +1,5 @@
 # Avoid version control files.
-\B.git$
+^.git
 \B.gitignore$
 
 # Avoid Makemaker generated and utility files.
@@ -39,4 +39,6 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 
-TEMPLATE-\d\.\d+\.tar\.gz
+^MooseX-App-\d\.\d+\.tar\.gz
+^t/test\d{2}\.pl
+^t/testlib/Test02/

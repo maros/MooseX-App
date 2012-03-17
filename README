@@ -1,0 +1,37 @@
+NAME
+    TEMPLATE - Description
+
+SYNOPSIS
+      use TEMPLATE;
+
+DESCRIPTION
+METHODS
+  Constructors
+  Accessors
+  Methods
+EXAMPLE
+CAVEATS
+SEE ALSO
+SUPPORT
+    Please report any bugs or feature requests to
+    "bug-TEMPLATE@rt.cpan.org", or through the web interface at
+    <http://rt.cpan.org/Public/Bug/Report.html?Queue=TEMPLATE>. I will be
+    notified, and then you'll automatically be notified of progress on your
+    report as I make changes.
+
+AUTHOR
+        Maroš Kollár
+        CPAN ID: MAROS
+        maros [at] k-1.com
+    
+        http://www.k-1.com
+
+COPYRIGHT
+    MooseX::App is Copyright (c) 2012 Maroš Kollár.
+
+    This library is free software and may be distributed under the same
+    terms as perl itself. The full text of the licence can be found in the
+    LICENCE file included with this module.
+
+    1;
+
