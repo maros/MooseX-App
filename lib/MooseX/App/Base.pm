@@ -29,7 +29,7 @@ sub new_with_command {
             $meta->command_usage_global(),
         );
     # Requested help
-    } elsif ($first_argv =~ m/^-{0,2}(help|h|\?|usage)$/) {
+    } elsif (lc($first_argv) =~ m/^-{0,2}(help|h|\?|usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
