@@ -15,7 +15,7 @@ perl_version    '5.010';
 requires        'Moose'                         => '2.00';
 requires        'MooseX::Getopt'                => 0;
 requires        'Module::Pluggable'             => 0;
-requires        'Path::Class'                    => 0;
+requires        'Path::Class'                   => 0;
 requires        'MooseX::Types::Path::Class'    => 0;
 requires        'Config::Any'                   => 0;
 requires        'String::CamelCase'             => 0;
@@ -25,6 +25,10 @@ requires        'Pod::Elemental'                => 0;
 feature 'Colorful output',
     -default   => 1,
     'Term::ANSIColor'                           => 0;
+
+feature 'Config files in users home directory',
+    -default   => 0,
+    'File::HomeDir'                             => 0;
 
 build_requires  'Test::Most'                    => 0;
 build_requires  'Test::NoWarnings'              => 0;
