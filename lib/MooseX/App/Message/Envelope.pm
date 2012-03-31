@@ -73,3 +73,52 @@ sub AUTOLOAD {
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Message::Envelope - message presented to the user
+
+=head1 DESCRIPTION
+
+Whenever MooseX::App needs to pass a message to the user it does so by 
+generating a MooseX::App::Message::Envelope object. The object usually 
+contains one or more blocks (L<MooseX::App::Message::Block>) and can be
+easily stringified.
+
+Usually a MooseX::App::Message::Envelope object is generated and returned
+by the L<new_with_command method in MooseX::App::Base|MooseX::App::Base/new_with_command>
+if there is an error,
+
+To avoid useless object type checks when working with this method, 
+MooseX::App::Message::Envelope acts as a Null-class. So you can do this:
+
+ MyApp->new_with_command()->some_method->only_called_if_successful;
+
+=head1 METHODS
+
+=head2 stringify
+
+Stringifies the messages
+
+=head2 add_block
+
+Adds a new message block. Param must be a L<MooseX::App::Message::Block>
+
+=head2 list_blocks
+
+Returns a list on message blocks.
+
+=head2 blocks
+
+Message block accessor.
+
+=head2 OVERLOAD
+
+
+
+=head2 AUTOLOAD
+
+
+

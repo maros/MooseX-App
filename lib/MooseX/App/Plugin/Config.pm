@@ -104,3 +104,57 @@ sub proto_config {
 };
 
 1;
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Plugin::Config - Config files your MooseX::App appications
+
+=head1 SYNOPSIS
+
+In your base class:
+
+ package MyApp;
+ use MooseX::App qw(Config);
+ 
+ has 'global_option' => (
+     is          => 'rw',
+     isa         => 'Int',
+ );
+
+In your command class:
+
+ package MyApp::Some_Command;
+ use MooseX::App::Command;
+ extends qw(MyApp);
+ 
+ has 'some_option' => (
+     is          => 'rw',
+     isa         => 'Str',
+ );
+
+Now create a config file (see L<Config::Any>) eg. a yaml file:
+
+ ---
+ global:
+   global_option: 123
+ some_command:
+   global_option: 234
+   some_option: "hello world"
+
+The user can now call the program with a config file:
+
+ bash$ myapp some_command --config /path/to/config.yml
+
+=head1 DESCRIPTION
+
+TODO
+
+=head1 SEE ALSO
+
+L<Config::Any>
+
+=cut

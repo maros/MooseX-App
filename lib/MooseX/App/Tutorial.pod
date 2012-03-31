@@ -1,0 +1,8 @@
+__END__
+=pod
+
+=head1 NAME
+
+MooseX::App::Tutorial - getting started with MooseX::App
+
+=head1 SYNOPSIS

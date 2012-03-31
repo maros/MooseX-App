@@ -1,0 +1,59 @@
+__END__
+=pod
+
+=head1 NAME
+
+MooseX::App::WritingPlugings - writing plugins for MooseX::App
+
+=head1 DESCRIPTION
+
+ package MooseX::App::Plugin::MyPlugin;
+ 
+ use Moose::Role;
+ 
+ sub plugin_metaroles {
+     my ($self,$class) = @_;
+     return {
+         class   => ['MooseX::App::Plugin::MyPlugin::Meta::Class'],
+     }
+ }
+ 
+ around 'some_method' => sub {
+    ...
+ };
+
+=head1 DESCRIPTION
+
+Plugins are implemented as Moose roles and must reside in the
+MooseX::App::Plugin::* namespace. Metaclasses can be altered via the the 
+'plugin_metaroles' callback method. Furthermore Moose method modifiers 
+(around, after, before) can be used to alter the behaviour of MooseX::App.
+
+=head1 CALLBACKS
+
+=head2 plugin_metaroles 
+
+Optional callback method that should return a hash reference specifying which
+metaroles will be applied to the class metaclass and its contained metaclasses 
+and helper classes.
+
+Each key should in turn point to an array reference of role names.
+
+It accepts the following keys:
+
+=over
+
+=item * class
+=item * attribute
+=item * method
+=item * wrapped_method
+=item * instance
+=item * constructor
+=item * destructor
+=item * error 
+
+=back
+
+=head1 CALLBACKS
+
+=cut

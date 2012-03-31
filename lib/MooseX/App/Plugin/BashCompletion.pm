@@ -29,3 +29,33 @@ around 'initialize_command' => sub {
 };
 
 1;
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Plugin::BashCompletion - Bash completion for your MooseX::App appications
+
+=head1 SYNOPSIS
+
+In your base class:
+
+ package MyApp;
+ use MooseX::App qw(BashCompletion);
+
+In your shell
+
+ bash$ myapp bash_completion > myapp-complete.sh
+ bash$ source myapp-complete.sh
+
+=head1 DESCRIPTION
+
+TODO
+
+=head1 SEE ALSO
+
+L<MooseX::App::Cmd::Command::BashComplete>
+
+=cut

@@ -100,33 +100,113 @@ no Moose;
 
 =head1 NAME
 
-TEMPLATE - Description
+MooseX::App - write user-friendly command line apps with even less suffering
 
 =head1 SYNOPSIS
 
-  use TEMPLATE;
+In your base class:
+
+  package MyApp;
+  use MooseX::App qw(Config Color);
+ 
+  has 'global_option' => (
+      is            => 'rw',
+      isa           => 'Bool',
+      documentation => q[Enable this to do fancy stuff],
+  );
+
+Write multiple command classes:
+
+  package MyApp::SomeCommand;
+  use MooseX::App::Command;
+  extends qw(MyApp);
+  
+  has 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+      documentation => q[Very important option!],
+  );
+  
+  sub run {
+      my ($self) = @_;
+      # Do something
+  }
+
+And then in some simple wrapper script:
+ 
+ #!/usr/bin/env perl
+ use MyApp;
+ MyApp->new_with_command->run;
 
 =head1 DESCRIPTION
 
+MooseX-App is a highly customizeable helper to write user-friendly 
+command-line applications without having to worry about most of the annoying 
+things usually involved. Just take any existing Moose class, add a single 
+line (C<use MooseX-App qw(PluginA PluginB ...)>) and create one class
+for each command in an underlying namespace.
+
+MooseX-App will then take care of
+
+=over
+
+=item * Findng, loading and initializing the command classes
+
+=item * Creating automated doucumentation
+
+=item * Reading and validating the command line options entered by the user
+
+=back
+
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+MooseX::App command line application.
+
 =head1 METHODS
 
-=head2 Constructors
+=head2 new_with_command 
 
-=head2 Accessors 
+ MyApp->new_with_command->run();
 
-=head2 Methods
+This method reads the command line arguments from the user and tries to create
+a command object. If it fails it retuns a L<MooseX::App::Message::Envelope> 
+object holding an error message.
 
-=head1 EXAMPLE
+=head1 FUNCTIONS
 
-=head1 CAVEATS 
+=head2 app_base
+
+ app_base 'my_script';
+
+Usually MooseX::App will take the name of the calling wrapper script to 
+construct the programm name in various help messages. This name is can 
+be changed via the app_base function.
+
+=head2 app_namespace
+
+ app_namespace 'MyApp::Commands';
+
+Usually MooseX::App will take the package name of the base class as the 
+namespace for commands. This namespace can be changed.
+
+=head1 PLUGINS
+
+The behaviour of MooseX-App can be customized with plugins. To load a
+plugin just pass a list if plugin names to C<use> when loading MooseX-App.
+
+ use MooseX::App qw(PluginA PluginB);
+
+Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
+documentation if you want to create your own plugins.
 
 =head1 SEE ALSO
+
+L<MooseX::App::Cmd>, L<MooseX::Getopt> and L<App::Cmd>
 
 =head1 SUPPORT
 
 Please report any bugs or feature requests to 
-C<bug-TEMPLATE@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/Public/Bug/Report.html?Queue=TEMPLATE>.  
+C<bug-moosex-app@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org/Public/Bug/Report.html?Queue=MooseX-App>.  
 I will be notified, and then you'll automatically be notified of progress on 
 your report as I make changes.
 
@@ -145,6 +225,5 @@ MooseX::App is Copyright (c) 2012 Maroš Kollár.
 This library is free software and may be distributed under the same terms as 
 perl itself. The full text of the licence can be found in the LICENCE file 
 included with this module.
-
 
 1;

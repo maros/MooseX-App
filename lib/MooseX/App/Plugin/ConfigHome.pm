@@ -30,3 +30,24 @@ around 'proto_config' => sub {
 };
 
 1;
+
+__END__
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Plugin::ConfigHome - Config files in users home directory
+
+=head1 SYNOPSIS
+
+In your base class:
+
+ package MyApp;
+ use MooseX::App qw(ConfigHome);
+
+=head1 DESCRIPTION
+
+TODO
+
+=cut

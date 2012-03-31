@@ -43,59 +43,28 @@ sub command_long_description($) {
     return $meta->command_long_description($description);
 }
 
-
 no Moose;
+1;
 
-=encoding utf8
+__END__
+
+=pod
 
 =head1 NAME
 
-TEMPLATE - Description
-
-=head1 SYNOPSIS
-
-  use TEMPLATE;
+MooseX::App::Command - Use documentation attributes in a command class
 
 =head1 DESCRIPTION
 
-=head1 METHODS
-
-=head2 Constructors
-
-=head2 Accessors 
-
-=head2 Methods
-
-=head1 EXAMPLE
-
-=head1 CAVEATS 
-
-=head1 SEE ALSO
-
-=head1 SUPPORT
-
-Please report any bugs or feature requests to 
-C<bug-TEMPLATE@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/Public/Bug/Report.html?Queue=TEMPLATE>.  
-I will be notified, and then you'll automatically be notified of progress on 
-your report as I make changes.
-
-=head1 AUTHOR
-
-    Maroš Kollár
-    CPAN ID: MAROS
-    maros [at] k-1.com
-    http://www.k-1.com
-
-=head1 COPYRIGHT
-
-TEMPLATE is Copyright (c) 2010 Maroš Kollár.
-
-This library is free software and may be distributed under the same terms as 
-perl itself.
-
-The full text of the license can be found in the LICENSE file included with 
-this module.
+ package MyApp::SomeCommand;
+ 
+ use Moose; # optional
+ use MooseX::App::Command
+ 
+ has 'testattr' => (
+    isa             => 'rw',
+    command_tags    => [qw(Important! Nice))],
+ );
 
 =cut
 

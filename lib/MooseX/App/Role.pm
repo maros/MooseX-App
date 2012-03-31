@@ -29,3 +29,25 @@ sub init_meta {
 }
 
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+MooseX::App::Role - Use documentation attributes in a role
+
+=head1 DESCRIPTION
+
+ package MyApp::Role::SomeRole;
+ 
+ use Moose::Role; # optional
+ use MooseX::App::Role;
+ 
+ has 'testattr' => (
+    isa             => 'rw',
+    command_tags    => [qw(Important! Nice))],
+ );
+
+=cut
