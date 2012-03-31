@@ -14,7 +14,7 @@ use Module::Pluggable::Object;
 has 'app_messageclass' => (
     is          => 'rw',
     isa         => 'Str',
-    default     => 'MooseX::App::Message::Block',
+    lazy_build  => 1,
 );
 
 has 'app_namespace' => (
@@ -28,6 +28,11 @@ has 'app_base' => (
     isa         => 'Str',
     default     => sub { Path::Class::File->new($0)->basename },
 );
+
+sub _build_app_messageclass {
+    my ($self) = @_;
+    return 'MooseX::App::Message::Block'
+}
 
 sub _build_app_namespace {
     my ($self) = @_;
