@@ -12,7 +12,7 @@ use MooseX::Types::Path::Class;
 use Config::Any;
 
 has 'config' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'Path::Class::File',
     coerce          => 1,
     predicate       => 'has_config',
@@ -20,7 +20,7 @@ has 'config' => (
 );
 
 has '_config_data' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'HashRef',
     predicate       => 'has_config_data',
     traits          => ['NoGetopt'],
