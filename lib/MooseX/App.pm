@@ -47,7 +47,11 @@ sub init_meta {
         class               => ['MooseX::App::Meta::Role::Class::Base'],
         attribute           => ['MooseX::App::Meta::Role::Attribute'],
     );
-    my @apply_roles     = ('MooseX::App::Base',@$plugins);
+    my @apply_roles     = ('MooseX::App::Base');
+    
+    foreach my $plugin (@$plugins) {
+        push(@apply_roles,$plugin,{ -excludes => [ 'plugin_metaroles' ] } )
+    }
     
     # Process all plugins in the given order
     foreach my $plugin_class (@{$plugins}) {
