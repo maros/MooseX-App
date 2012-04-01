@@ -149,9 +149,15 @@ The user can now call the program with a config file:
 
  bash$ myapp some_command --config /path/to/config.yml
 
-=head1 DESCRIPTION
+=head1 METHODS
 
-TODO
+=head2 config
+
+Read the config filename
+
+=head2 _config_data
+
+The full content of the loaded config file
 
 =head1 SEE ALSO
 

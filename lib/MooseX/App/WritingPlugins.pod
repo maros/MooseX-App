@@ -1,11 +1,12 @@
-__END__
+=encoding utf8
+
 =pod
 
 =head1 NAME
 
-MooseX::App::WritingPlugings - writing plugins for MooseX::App
+MooseX::App::WritingPlugings - Writing plugins for MooseX::App
 
-=head1 DESCRIPTION
+=head1 SYNOPSIS
 
  package MooseX::App::Plugin::MyPlugin;
  
@@ -18,7 +19,7 @@ MooseX::App::WritingPlugings - writing plugins for MooseX::App
      }
  }
  
- around 'some_method' => sub {
+ around 'initialize_command' => sub {
     ...
  };
 
@@ -54,6 +55,8 @@ It accepts the following keys:
 
 =back
 
-=head1 CALLBACKS
+=head1 METACLASSES
+
+TODO
 
 =cut

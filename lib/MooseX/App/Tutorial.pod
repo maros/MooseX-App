@@ -5,4 +5,141 @@ __END__
 
 MooseX::App::Tutorial - getting started with MooseX::App
 
-=head1 SYNOPSIS
+=head1 GETTING STARTED
+
+To create a simple command-line application with MooseX::App you need
+
+=over
+
+=item * A base class
+
+=item * Multiple command classes
+
+=item * and a invocation script
+
+=back
+
+=head1 BASE CLASS
+
+The simplest possible base class just contains a single use statement. Which
+loads all roles and metaclasses you need to get started as well as Moose.
+
+  package MyApp;
+  use MooseX::App;
+  1;
+
+The base class can be customized by
+
+=over
+
+=item * adding MooseX-App plugins
+
+=item * Changing the command-class namespace
+
+=item * and defining global attributes used by all command classes
+
+=back
+
+  package MyApp;
+  use MooseX::App qw(Config); # Loads the Config plugin
+  
+  has 'some_global_option' => (
+      is                => 'rw',
+      isa               => 'Str',
+      documentation     => q[Some important global option],
+  );
+  
+  1;
+
+When adding attributes make sure to include a documentation and possibly
+a type constraint. MooseX-App will use this information to build a user
+documentation for each command.
+
+=head1 COMMAND CLASSES
+
+After you have created a base class it is time to create one class for
+each command you want to provide. The command classes must reside in the
+namespace of the base class (eg. 'MyApp::SomeCommand'). The namespace
+for the command classes however can be changed via the 'app_namespace' 
+function in the base class.
+
+All command classes must load MooseX::App::Command.
+
+  package MyApp::SomeCommand;
+  use MooseX::App::Command;
+
+If you want to use global options defined in the base class you have to 
+extend the base class with your command class.
+
+  package MyApp::SomeCommand;
+  use MooseX::App::Command;
+  extends qw(MyApp);
+
+If you want to provide a description of what the command does to the users
+you need add C<command_short_description> and C<command_long_description>
+information. The command descriptions may contain linebreaks.
+
+ command_short_description q[This command is awesome];
+ command_long_description q[This command is awesome, yadda yadda yadda];
+
+If not provided MooseX-App will try to parse the command description from POD.
+The NAME section will become the short description and the DESCRIPTION 
+or OVERVIEW section the long description.
+
+Attributes can be documented using the Moose built-in C<documentation> option
+as well as C<command_tags> which is defined by MooseX-App. 
+
+  has 'some_option' => (
+      is                => 'rw',
+      isa               => 'Integer',
+      required          => 1,
+      documentation     => q[Some important option],
+      command_tags      => [qw(Important!)],
+  );
+
+The help for this command would look something like this:
+
+  usage:
+    my_app some_command [long options...]
+    my_app help
+    my_app some_command --help
+  
+  description:
+    This command is awesome, yadda yadda yadda
+  
+  options:
+    --config           Path to command config file
+    --some_option      Some important option [Required; Integer; Important!]
+    --help --usage -?  Prints this usage information. [Flag]
+
+If you do not want to include an attribute in the help text use the
+C<NoGetopt> trait from L<MooseX-Getopt>
+
+  has '_private' => (
+      is                => 'rw',
+      traits            => ['NoGetopt'],
+  );
+
+Finally your command classes will need a method which should be called
+if the command is invoked by the user.
+
+ sub run {
+    my ($self) = @_;
+    # do something
+ }
+
+=head1 INVOCATION SCRIPT
+
+Once you have the base and command classes ready you need to write a small
+invocation script:
+ 
+ #!/usr/bin/env perl
+ use MyApp;
+ MyApp->new_with_command->run();
+
+C<MyApp-E<gt>new_with_command> will try to instantiate a command class. If it
+fails it will return a L<MooseX::App::Messgae::Envelope> object possibly
+containing an error message and a user help message. Since 
+L<MooseX::App::Messgae::Envelope> follows the null object pattern you can 
+call any method on it without checking the object type.
+

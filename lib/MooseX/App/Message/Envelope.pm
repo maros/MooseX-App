@@ -74,6 +74,8 @@ sub AUTOLOAD {
 __PACKAGE__->meta->make_immutable;
 1;
 
+__END__
+
 =encoding utf8
 
 =head1 NAME
@@ -89,10 +91,11 @@ easily stringified.
 
 Usually a MooseX::App::Message::Envelope object is generated and returned
 by the L<new_with_command method in MooseX::App::Base|MooseX::App::Base/new_with_command>
-if there is an error,
+if there is an error or if the user requests help.
 
 To avoid useless object type checks when working with this method, 
-MooseX::App::Message::Envelope acts as a Null-class. So you can do this:
+MooseX::App::Message::Envelope follows the Null-class pattern. So you can do 
+this:
 
  MyApp->new_with_command->some_method->only_called_if_successful;
 

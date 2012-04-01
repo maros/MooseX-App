@@ -169,11 +169,15 @@ MooseX::App command line application.
 
 =head2 new_with_command 
 
- MyApp->new_with_command->run();
+ my $myapp_command = MyApp->new_with_command();
 
 This method reads the command line arguments from the user and tries to create
 a command object. If it fails it retuns a L<MooseX::App::Message::Envelope> 
 object holding an error message.
+
+You can pass a hash of default params to new_with_command
+
+ MyApp->new_with_command( %default );
 
 =head1 FUNCTIONS
 

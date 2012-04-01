@@ -30,6 +30,11 @@ sub init_meta {
         },
     );
     
+    Moose::Util::MetaRole::apply_base_class_roles(
+        for             => $args{for_class},
+        roles           => ['MooseX::Getopt'],
+    );
+    
     return $meta;
 }
 
