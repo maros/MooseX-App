@@ -24,27 +24,24 @@ has 'command_long_description' => (
     lazy_build  => 1,
 );
 
-sub has_command_short_description {
-    my ($self) = @_;    
+sub command_short_description_predicate {
+    my ($self) = @_;  
     return $self->_command_description_predicate('command_short_description');
 }
 
 sub _build_command_short_description {
     my ($self) = @_;
-    
     return $self->_build_command_pod('command_short_description');
 }
 
-sub has_command_long_description {
+sub command_long_description_predicate {
     my ($self) = @_;
-    
-    return $self->_build_command_pod('command_long_description');
+    return $self->_command_description_predicate('command_long_description');
 }
 
 sub _build_command_long_description {
     my ($self) = @_;
-    
-    return $self->_command_description_predicate('command_long_description');
+    return $self->_build_command_pod('command_long_description');
 }
 
 sub _command_description_predicate {
@@ -52,8 +49,9 @@ sub _command_description_predicate {
     
     my $attribute = $self->meta->find_attribute_by_name($field);
     
-    return 0
-        unless $attribute->has_value($self);
+    unless ($attribute->has_value($self)) {
+        $self->_build_command_pod($field);
+    }
         
     return (defined $attribute->get_value($self) ? 1:0);
 }

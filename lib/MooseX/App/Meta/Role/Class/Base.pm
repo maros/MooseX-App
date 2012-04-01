@@ -229,14 +229,16 @@ $caller $command --help"));
 sub command_usage_description {
     my ($self,$command_class) = @_;
     
-    if ($command_class->meta->can('command_long_description')
-        && $command_class->meta->has_command_long_description) {
+    my $command_meta_class = $command_class->meta;
+    
+    if ($command_meta_class->can('command_long_description')
+        && $command_meta_class->command_long_description_predicate) {
         return $self->command_message(
             header  => 'description:',
             body    => MooseX::App::Utils::format_text($command_class->meta->command_long_description),
         );
-    } elsif ($command_class->meta->can('command_short_description')
-        && $command_class->meta->has_command_short_description) {
+    } elsif ($command_meta_class->can('command_short_description')
+        && $command_meta_class->command_short_description_predicate) {
         return $self->command_message(
             header  => 'short description:',
             body    => MooseX::App::Utils::format_text($command_class->meta->command_short_description),
