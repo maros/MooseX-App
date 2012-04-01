@@ -52,9 +52,9 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Command - Use documentation attributes in a command class
+MooseX::App::Command - Load command class metaclasses
 
-=head1 DESCRIPTION
+=head1 SYNOPSIS
 
  package MyApp::SomeCommand;
  
@@ -65,6 +65,33 @@ MooseX::App::Command - Use documentation attributes in a command class
     isa             => 'rw',
     command_tags    => [qw(Important! Nice))],
  );
+ 
+ command_short_description 'This is a short description';
+
+=head1 DESCRIPTION
+
+By loading this class into your command classes you enable all documentation
+features such as:
+ 
+=over
+
+=item * Parsing command documentation from POD
+
+=item * Setting the command documentation manually via C<command_short_description> and C<command_long_description>
+
+=item * Adding the C<command_tags> option to attributes
+
+=back
+
+=head1 FUNCTIONS
+
+=head2 command_short_description
+
+Set the short description
+
+=head2 command_long_description
+
+Set the long description
 
 =cut
 

@@ -52,7 +52,7 @@ In your shell
 
 =head1 DESCRIPTION
 
-TODO
+This plugin generates a bash completion definition for your application.
 
 =head1 SEE ALSO
 

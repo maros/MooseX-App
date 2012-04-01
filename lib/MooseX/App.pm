@@ -195,12 +195,12 @@ namespace for commands. This namespace can be changed.
 =head1 PLUGINS
 
 The behaviour of MooseX-App can be customized with plugins. To load a
-plugin just pass a list if plugin names to C<use> when loading MooseX-App.
+plugin just pass a list of plugin names after the C<use MooseX-App> statement.
 
  use MooseX::App qw(PluginA PluginB);
 
 Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
-documentation if you want to create your own plugins.
+documentation on how to create your own plugins.
 
 =head1 SEE ALSO
 

@@ -78,7 +78,7 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 NAME
 
-MooseX::App::Message::Envelope - message presented to the user
+MooseX::App::Message::Envelope - Message presented to the user
 
 =head1 DESCRIPTION
 
@@ -94,7 +94,7 @@ if there is an error,
 To avoid useless object type checks when working with this method, 
 MooseX::App::Message::Envelope acts as a Null-class. So you can do this:
 
- MyApp->new_with_command()->some_method->only_called_if_successful;
+ MyApp->new_with_command->some_method->only_called_if_successful;
 
 =head1 METHODS
 
@@ -116,9 +116,8 @@ Message block accessor.
 
 =head2 OVERLOAD
 
-
+Stringification of this object is overloaded
 
 =head2 AUTOLOAD
 
-
-
+You can call any method on the message class.
