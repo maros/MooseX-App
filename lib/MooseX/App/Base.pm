@@ -96,7 +96,7 @@ sub initialize_command {
     
     if ($proto_result->{help}) {
         return MooseX::App::Message::Envelope->new(
-            $meta->command_usage_command($command_class),
+            $meta->command_usage_command($command_class->meta),
         );
     } else {
         my $command_object = eval {

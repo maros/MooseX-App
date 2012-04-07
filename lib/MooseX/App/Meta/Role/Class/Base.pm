@@ -227,21 +227,21 @@ $caller $command --help"));
 }
 
 sub command_usage_description {
-    my ($self,$command_class) = @_;
+    my ($self,$command_meta_class) = @_;
     
-    my $command_meta_class = $command_class->meta;
+    $command_meta_class ||= $self;
     
     if ($command_meta_class->can('command_long_description')
         && $command_meta_class->command_long_description_predicate) {
         return $self->command_message(
             header  => 'description:',
-            body    => MooseX::App::Utils::format_text($command_class->meta->command_long_description),
+            body    => MooseX::App::Utils::format_text($command_meta_class->command_long_description),
         );
     } elsif ($command_meta_class->can('command_short_description')
         && $command_meta_class->command_short_description_predicate) {
         return $self->command_message(
             header  => 'short description:',
-            body    => MooseX::App::Utils::format_text($command_class->meta->command_short_description),
+            body    => MooseX::App::Utils::format_text($command_meta_class->command_short_description),
         );
     }
     return;
@@ -261,14 +261,17 @@ sub command_class_to_command {
 }
 
 sub command_usage_command {
-    my ($self,$command_class) = @_;
+    my ($self,$command_meta_class) = @_;
     
+    $command_meta_class ||= $self;
+    
+    my $command_class = $command_meta_class->name;
     my $command_name = $self->command_class_to_command($command_class);
     
     my @usage;
     push(@usage,$self->command_usage_header($command_name));
-    push(@usage,$self->command_usage_description($command_class));
-    push(@usage,$self->command_usage_attributes($command_class->meta));
+    push(@usage,$self->command_usage_description($command_meta_class));
+    push(@usage,$self->command_usage_attributes($command_meta_class));
     
     return @usage;
 }
