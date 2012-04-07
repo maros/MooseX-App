@@ -1,4 +1,3 @@
-__END__
 =pod
 
 =head1 NAME
@@ -21,7 +20,7 @@ To create a simple command-line application with MooseX::App you need
 
 =head1 BASE CLASS
 
-The simplest possible base class just contains a single use statement. Which
+The simplest possible base class just contains a single use statement which
 loads all roles and metaclasses you need to get started as well as Moose.
 
   package MyApp;
@@ -76,13 +75,13 @@ extend the base class with your command class.
   extends qw(MyApp);
 
 If you want to provide a description of what the command does to the users
-you need add C<command_short_description> and C<command_long_description>
+you need to add C<command_short_description> and C<command_long_description>
 information. The command descriptions may contain linebreaks.
 
  command_short_description q[This command is awesome];
  command_long_description q[This command is awesome, yadda yadda yadda];
 
-If not provided MooseX-App will try to parse the command description from POD.
+If not provided, MooseX-App will try to parse the command description from POD.
 The NAME section will become the short description and the DESCRIPTION 
 or OVERVIEW section the long description.
 
@@ -130,7 +129,7 @@ if the command is invoked by the user.
 
 =head1 INVOCATION SCRIPT
 
-Once you have the base and command classes ready you need to write a small
+Once you have the base and command classes ready, you need to write a small
 invocation script:
  
  #!/usr/bin/env perl

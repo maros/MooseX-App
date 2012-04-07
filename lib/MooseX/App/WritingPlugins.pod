@@ -26,7 +26,7 @@ MooseX::App::WritingPlugings - Writing plugins for MooseX::App
 =head1 DESCRIPTION
 
 Plugins are implemented as Moose roles and must reside in the
-MooseX::App::Plugin::* namespace. Metaclasses can be altered via the the 
+MooseX::App::Plugin::* namespace. Metaclasses can be altered via the 
 'plugin_metaroles' callback method. Furthermore Moose method modifiers 
 (around, after, before) can be used to alter the behaviour of MooseX::App.
 

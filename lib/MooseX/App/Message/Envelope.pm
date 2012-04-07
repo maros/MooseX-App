@@ -84,7 +84,7 @@ MooseX::App::Message::Envelope - Message presented to the user
 
 =head1 DESCRIPTION
 
-Whenever MooseX::App needs to pass a message to the user it does so by 
+Whenever MooseX::App needs to pass a message to the user, it does so by 
 generating a MooseX::App::Message::Envelope object. The object usually 
 contains one or more blocks (L<MooseX::App::Message::Block>) and can be
 easily stringified.
@@ -119,7 +119,7 @@ Message block accessor.
 
 =head2 OVERLOAD
 
-Stringification of this object is overloaded
+Stringification of this object is overloaded.
 
 =head2 AUTOLOAD
 

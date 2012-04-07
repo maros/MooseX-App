@@ -100,6 +100,8 @@ sub app_base($) {
 no Moose;
 1;
 
+__END__
+
 =encoding utf8
 
 =head1 NAME
@@ -154,7 +156,7 @@ MooseX-App will then take care of
 
 =over
 
-=item * Findng, loading and initializing the command classes
+=item * Finding, loading and initializing the command classes
 
 =item * Creating automated doucumentation
 
@@ -186,7 +188,7 @@ You can pass a hash of default params to new_with_command
  app_base 'my_script';
 
 Usually MooseX::App will take the name of the calling wrapper script to 
-construct the programm name in various help messages. This name is can 
+construct the programm name in various help messages. This name can 
 be changed via the app_base function.
 
 =head2 app_namespace

@@ -48,6 +48,9 @@ In your base class:
 
 =head1 DESCRIPTION
 
-TODO
+Works just like L<MooseX::App::Plugin::Config> but assumes that the config
+file always resides in the user's home directory.
+
+ ~/.${app-base}/config.(yml|xml|ini|...)
 
 =cut
