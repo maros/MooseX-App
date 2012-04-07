@@ -22,10 +22,13 @@ lib/MooseX/App/Plugin/BashCompletion.pm
 lib/MooseX/App/Plugin/BashCompletion/Command.pm
 lib/MooseX/App/Plugin/BashCompletion/Meta/Class.pm
 lib/MooseX/App/Plugin/Color.pm
+lib/MooseX/App/Plugin/Color/Meta/Class.pm
 lib/MooseX/App/Plugin/Config.pm
 lib/MooseX/App/Plugin/ConfigHome.pm
 lib/MooseX/App/Role.pm
+lib/MooseX/App/Tutorial.pod
 lib/MooseX/App/Utils.pm
+lib/MooseX/App/WritingPlugins.pod
 LICENCE
 Makefile.PL
 MANIFEST			This list of files
