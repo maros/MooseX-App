@@ -236,4 +236,4 @@ This library is free software and may be distributed under the same terms as
 perl itself. The full text of the licence can be found in the LICENCE file 
 included with this module.
 
-1;
+=cut

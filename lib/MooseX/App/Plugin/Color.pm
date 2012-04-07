@@ -23,7 +23,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Color - Colorful output for your MooseX::App appications
+MooseX::App::Plugin::Color - Colorful output for your MooseX::App applications
 
 =head1 SYNOPSIS
 

@@ -111,7 +111,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Config - Config files your MooseX::App appications
+MooseX::App::Plugin::Config - Config files your MooseX::App applications
 
 =head1 SYNOPSIS
 
