@@ -57,6 +57,18 @@ It accepts the following keys:
 
 =head1 METACLASSES
 
-TODO
+Most of MooseX-App behaviour is implemented in metaclass roles. When writing
+plugings you will most likely need to alter/augument the behviour of these
+roles.
+
+=over
+
+=item * L<MooseX::App::Meta::Role::Class::Base>
+
+=item * L<MooseX::App::Meta::Role::Class::Command>
+
+=item * L<MooseX::App::Meta::Role::Attribute>
+
+=back
 
 =cut

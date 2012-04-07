@@ -169,3 +169,43 @@ sub _pod_node_to_text {
 #}
 
 1;
+
+__END__
+
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Meta::Role::Class::Command - Meta class role for command classes
+
+=head1 DESCRIPTION
+
+This meta class role will automatically be applied to all command classes.
+
+=head1 ACCESSORS
+
+=head2 command_short_description
+
+Read/set the short command description. Will be extracted from the Pod NAME
+section if not set.
+
+=head2 command_long_description
+
+Read/set the long command description. Will be extracted from the Pod 
+DESCRIPTION or OVERVIEW section if not set.
+
+=head1 METHODS
+
+=head2 _build_command_pod
+
+Parses the Pod from the command class.
+
+=head2 _pod_node_to_text
+
+ my $pod_text = $meta->_pod_node_to_text($pod_elemental,$indent);
+
+Converts a Pod::Elemental::Element object to plain text.
+
+=cut

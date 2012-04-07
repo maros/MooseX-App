@@ -313,3 +313,122 @@ sub command_usage_global {
 #}
 
 1;
+
+__END__
+
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+MooseX::App::Meta::Role::Class::Base - Meta class role for application base class
+
+=head1 DESCRIPTION
+
+This meta class role will automatically be applied to the application base
+class.
+
+=head1 ACCESSORS
+
+=head2 app_messageclass
+
+Message class for generating error messages. Defaults to
+MooseX::App::Message::Block. The default can be overwritten by altering
+the C<_build_app_messageclass> method.
+
+=head2 app_namespace
+
+Usually MooseX::App will take the package name of the base class as the 
+namespace for commands. This namespace can be changed.
+
+=head2 app_base
+
+Usually MooseX::App will take the name of the calling wrapper script to 
+construct the programm name in various help messages. This name can 
+be changed via the app_base accessor.
+
+=head1 METHODS
+
+=head2 command_class_to_command
+
+ my $command_moniker = $meta->command_class_to_command($command_class);
+
+Returns the command moniker for the given command class name.
+
+=head2 command_message
+
+ my $message = $meta->command_message( header => $header, type => 'error', body => $message );
+
+Generates a message object (based on L<app_messageclass>)
+
+=head2 command_usage_attributes
+
+ my $message = $meta->command_usage_attributes($metaclass,$headline);
+
+Returns a message object containing the attribute documentation for a given
+meta class.
+
+=head2 command_usage_attributes_raw
+
+ my @attributes = $meta->command_usage_attributes_raw($metaclass);
+
+Returns a list of attribute documentations for a given meta class.
+
+=head2 command_usage_attribute_detail
+
+ my ($name,$description) = $meta->command_usage_attribute_detail($metaattribute);
+
+Returns a name and description for a given meta attribute class.
+
+=head2 command_usage_attribute_name
+
+ my ($name,$description) = $meta->command_usage_attribute_name($metaattribute);
+
+Returns a name for a given meta attribute class.
+
+=head2 command_usage_attribute_tag
+
+ my @tags = $meta->command_usage_attribute_name($metaattribute);
+
+Returns a list of tags for a given meta attribute class.
+
+=head2 command_usage_command
+
+ my @messages = $meta->command_usage_command($command_metaclass);
+
+Returns a list of messages containing the documentation for a given
+command meta class.
+
+=head2 command_usage_description
+
+ my $message = $meta->command_usage_description($command_metaclass);
+
+Returns a messages with the basic command description.
+
+=head2 command_usage_global
+
+ my @messages = $meta->command_usage_global();
+
+Returns a list of messages containing the documentation for the application.
+
+=head2 command_usage_header
+
+ my $message = $meta->command_usage_header();
+ my $message = $meta->command_usage_header($command_name);
+
+Returns a message containing the basic usage documentation
+
+=head2 commands
+
+ my %commands = $meta->commands;
+
+Returns a list/hash of command name and command class pairs.
+
+=head2 matching_commands
+
+ my @commands = $meta->matching_commands($user_command_input);
+
+Returns a list of command names matching the user input
+
+=cut
