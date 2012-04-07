@@ -52,7 +52,7 @@ $meta_attribute->command_tags(['Use with care']);
 is(join(',',$meta->command_usage_attribute_tags($meta_attribute)),'Required,Integer,Use with care','Changed tags ok');
 
 require Test01::CommandA;
-my $description = $meta->command_usage_description('Test01::CommandA');
+my $description = $meta->command_usage_description(Test01::CommandA->meta);
 
 isa_ok($description,'MooseX::App::Message::Block');
 like($description->body,qr/varius nec iaculis vitae/,'Description body ok');
