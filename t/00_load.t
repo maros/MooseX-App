@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 13;
+use Test::Most tests => 14;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::Command' );
@@ -25,5 +25,15 @@ SKIP :{
     };
     unless ($ok) {
         skip "Term::ANSIColor is not installed",2;
+    }
+}
+
+SKIP :{
+    my $ok = eval {
+        Class::MOP::load_class('File::HomeDir');
+        use_ok( 'MooseX::App::Plugin::ConfigHome' );
+    };
+    unless ($ok) {
+        skip "File::HomeDir is not installed",1;
     }
 }
