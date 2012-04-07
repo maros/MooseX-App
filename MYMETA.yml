@@ -1,15 +1,15 @@
 ---
-abstract: unknown
+abstract: 'write user-friendly command line apps with even less suffering'
 author:
-  - 'MaroÅ¡ KollÃ¡r'
+  - 'Maroš Kollár'
 build_requires:
   ExtUtils::MakeMaker: 6.59
   Test::Most: 0
   Test::NoWarnings: 0
 configure_requires:
-  ExtUtils::MakeMaker: 0
+  ExtUtils::MakeMaker: 6.59
 dynamic_config: 0
-generated_by: 'ExtUtils::MakeMaker version 6.62, CPAN::Meta::Converter version 2.120630'
+generated_by: 'Module::Install version 1.06, CPAN::Meta::Converter version 2.120630'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
@@ -17,8 +17,9 @@ meta-spec:
 name: MooseX-App
 no_index:
   directory:
-    - t
     - inc
+    - t
+    - xt
 requires:
   Config::Any: 0
   List::Util: 0
@@ -30,4 +31,7 @@ requires:
   Pod::Elemental: 0
   String::CamelCase: 0
   perl: 5.010
+resources:
+  license: http://dev.perl.org/licenses/
+  repository: git://github.com/maros/MooseX-App.git
 version: 1.00
