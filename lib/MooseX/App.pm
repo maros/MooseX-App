@@ -1,7 +1,11 @@
 package MooseX::App;
 # ============================================================================«
+
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.00';
+
+use strict;
+use warnings;
 
 use Moose::Exporter;
 
@@ -106,7 +110,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App - write user-friendly command line apps with even less suffering
+MooseX::App - Write user-friendly command line apps with even less suffering
 
 =head1 SYNOPSIS
 
