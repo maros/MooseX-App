@@ -12,7 +12,7 @@ use Test01;
 
 {
     explain('Test 1: Command with config');
-    local @ARGV = qw(command_a --config t/config.yml);
+    local @ARGV = qw(command_a --config t/config.pl);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     
@@ -24,7 +24,7 @@ use Test01;
 
 {
     explain('Test 2: Another command with config');
-    local @ARGV = qw(command_b --config t/config.yml);
+    local @ARGV = qw(command_b --config t/config.pl);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandB');
     is($test01->global,'123','Arg from command config');
@@ -32,7 +32,7 @@ use Test01;
 
 {
     explain('Test 3: Command with config and argv');
-    local @ARGV = qw(command_a --config t/config.yml --global 1234);
+    local @ARGV = qw(command_a --config t/config.pl --global 1234);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'1234','Arg from command config');
@@ -41,7 +41,7 @@ use Test01;
 
 {
     explain('Test 4: Missing config');
-    local @ARGV = qw(command_a --config t/nosuchfile.yml --global 1234);
+    local @ARGV = qw(command_a --config t/nosuchfile.pl --global 1234);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     like($test01->blocks->[0]->header,qr/Could not find/,'Error message set');
