@@ -5,6 +5,7 @@ package MooseX::App::Message::Block;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose;
 
 use MooseX::App::Utils;

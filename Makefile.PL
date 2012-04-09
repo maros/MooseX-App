@@ -14,6 +14,7 @@ perl_version    '5.010';
 # Specific dependencies
 requires        'Moose'                         => '2.00';
 requires        'MooseX::Getopt'                => 0;
+requires        'namespace::autoclean'          => 0;
 requires        'Module::Pluggable'             => 0;
 requires        'Path::Class'                   => 0;
 requires        'MooseX::Types::Path::Class'    => 0;

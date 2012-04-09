@@ -5,6 +5,7 @@ package MooseX::App::Base;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose::Role;
 with qw(MooseX::Getopt);
 

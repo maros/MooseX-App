@@ -5,6 +5,7 @@ package MooseX::App::Meta::Role::Class::Base;
 use utf8;
 use 5.010;
 
+use namespace::autoclean;
 use Moose::Role;
 
 use MooseX::App::Utils;

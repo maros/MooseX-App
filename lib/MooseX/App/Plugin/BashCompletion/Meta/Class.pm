@@ -5,6 +5,7 @@ package MooseX::App::Plugin::BashCompletion::Meta::Class;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose::Role;
 use MooseX::App::Plugin::BashCompletion::Command;
 

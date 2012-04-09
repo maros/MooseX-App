@@ -5,6 +5,7 @@ package MooseX::App::Message::BlockColor;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose;
 extends qw(MooseX::App::Message::Block);
 

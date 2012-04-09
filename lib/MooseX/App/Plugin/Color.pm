@@ -5,6 +5,7 @@ package MooseX::App::Plugin::Color;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose::Role;
 
 sub plugin_metaroles {

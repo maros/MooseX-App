@@ -5,6 +5,7 @@ package MooseX::App::Plugin::BashCompletion;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose::Role;
 
 sub plugin_metaroles {

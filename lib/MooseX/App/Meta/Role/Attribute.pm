@@ -5,6 +5,7 @@ package MooseX::App::Meta::Role::Attribute;
 use utf8;
 use 5.010;
 
+use namespace::autoclean;
 use Moose::Role;
 
 has 'command_tags' => (

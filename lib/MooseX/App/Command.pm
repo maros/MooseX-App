@@ -48,7 +48,6 @@ sub command_long_description($) {
     return $meta->command_long_description($description);
 }
 
-no Moose;
 1;
 
 __END__

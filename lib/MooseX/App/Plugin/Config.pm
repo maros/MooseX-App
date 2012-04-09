@@ -5,6 +5,7 @@ package MooseX::App::Plugin::Config;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose::Role;
 use MooseX::App::Role;
 

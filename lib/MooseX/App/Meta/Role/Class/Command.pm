@@ -5,6 +5,7 @@ package MooseX::App::Meta::Role::Class::Command;
 use utf8;
 use 5.010;
 
+use namespace::autoclean;
 use Moose::Role;
 
 use Pod::Elemental;

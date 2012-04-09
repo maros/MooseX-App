@@ -5,6 +5,7 @@ package MooseX::App::Plugin::BashCompletion::Command;
 use 5.010;
 use utf8;
 
+use namespace::autoclean;
 use Moose;
 use MooseX::App::Command;
 with qw(MooseX::Getopt);
