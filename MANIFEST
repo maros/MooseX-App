@@ -41,7 +41,7 @@ t/01_basic.t
 t/02_meta.t
 t/03_utils.t
 t/04_plugin_config.t
-t/config.yml
+t/config.pl
 t/testlib/Test01.pm
 t/testlib/Test01/CommandA.pm
 t/testlib/Test01/CommandB.pm
