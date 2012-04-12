@@ -1,4 +1,9 @@
 Changes for MooseX-App
 
+1.01
+    - Fix text failures
+    - Fix Pod
+    - Add missing tutorials to manifest
+
 1.00 Sat, Apr 7, 2012
     - Initial version
