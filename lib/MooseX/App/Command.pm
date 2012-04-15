@@ -23,10 +23,10 @@ sub init_meta {
         for             => $meta,
         class_metaroles => {
             class           => ['MooseX::App::Meta::Role::Class::Command'],
-            attribute       => ['MooseX::App::Meta::Role::Attribute'],
+            attribute       => ['MooseX::App::Meta::Role::Attribute','MooseX::Getopt::Meta::Attribute::Trait'],
         },
         role_metaroles => {
-            attribute       => ['MooseX::App::Meta::Role::Attribute'],
+            attribute       => ['MooseX::App::Meta::Role::Attribute','MooseX::Getopt::Meta::Attribute::Trait'],
         },
     );
     
