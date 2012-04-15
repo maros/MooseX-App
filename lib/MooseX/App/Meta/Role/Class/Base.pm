@@ -142,15 +142,16 @@ sub command_usage_attribute_name {
         push(@names, @{$attribute->cmd_aliases});
     }
     
-    my $type_constraint = $attribute->type_constraint;
-    if ($type_constraint->equals('Bool')
-        && 
-            ( 
-                ($attribute->has_default && ! $attribute->is_default_a_coderef && $attribute->default == 1)
-                || (! $attribute->has_default && $attribute->is_required)
-            )
-        ) {
-        push(@names,'no'.$names[0]);
+    if ($attribute->has_type_constraint
+        && $attribute->type_constraint->equals('Bool')) {
+        if ($attribute->has_default 
+            && ! $attribute->is_default_a_coderef
+            && $attribute->default == 1) {
+            @names = map { 'no'.$_ } @names;    
+        } elsif (! $attribute->has_default
+            && $attribute->is_required) {
+            push(@names,map { 'no'.$_ } @names);        
+        }
     }
     
     return join(' ', map { (length($_) == 1) ? "-$_":"--$_" } @names);
@@ -168,7 +169,16 @@ sub command_usage_attribute_tags {
     }
     
     if ($attribute->has_default && ! $attribute->is_default_a_coderef) {
-        push(@tags,'Default:"'.$attribute->default.'"');
+        if ($attribute->has_type_constraint
+            && $attribute->type_constraint->equals('Bool')) {
+#            if ($attribute->default) {
+#                push(@tags,'Default:Enabled');
+#            } else {
+#                push(@tags,'Default:Disabled');
+#            }
+        } else {
+            push(@tags,'Default:"'.$attribute->default.'"');
+        }
     }
     
     if ($attribute->has_type_constraint) {
