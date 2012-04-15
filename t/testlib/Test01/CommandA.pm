@@ -8,7 +8,7 @@ has 'commanda_loca1' => (
     isa             => 'Int',
     is              => 'rw',
     documentation   => 'some docs about the long texts that seem to occur randomly',
-    command_tags    => [qw(Important)],
+    cmd_tags        => [qw(Important)],
 );
 
 has 'commanda_loca2' => (

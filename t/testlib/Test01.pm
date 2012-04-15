@@ -8,7 +8,7 @@ has 'global' => (
     is              => 'rw',
     required        => 1,
     documentation   => q[test],
-    command_tags    => ['Important!'],
+    cmd_tags        => ['Important!'],
 );
 
 1;

@@ -48,7 +48,7 @@ cmp_deeply([ $meta->command_usage_attributes_raw ],
 
 my $meta_attribute = $meta->find_attribute_by_name('global');
 is(join(',',$meta->command_usage_attribute_tags($meta_attribute)),'Required,Integer,Important!','Tags ok');
-$meta_attribute->command_tags(['Use with care']);
+$meta_attribute->cmd_tags(['Use with care']);
 is(join(',',$meta->command_usage_attribute_tags($meta_attribute)),'Required,Integer,Use with care','Changed tags ok');
 
 require Test01::CommandA;

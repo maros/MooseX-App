@@ -130,7 +130,8 @@ sub command_usage_attribute_name {
     my ($self,$attribute) = @_;
     
     my @names;
-    if ($attribute->can('cmd_flag')) {
+    if ($attribute->can('cmd_flag')
+        && $attribute->has_cmd_flag) {
         push(@names,$attribute->cmd_flag);
     } else {
         push(@names,$attribute->name);
@@ -186,10 +187,10 @@ sub command_usage_attribute_tags {
         }
     }
     
-    if ($attribute->can('command_tags')
-        && $attribute->can('has_command_tags')
-        && $attribute->has_command_tags) {
-        push(@tags,@{$attribute->command_tags});
+    if ($attribute->can('cmd_tags')
+        && $attribute->can('cmd_tags')
+        && $attribute->has_cmd_tags) {
+        push(@tags,@{$attribute->cmd_tags});
     }
     
     return @tags;

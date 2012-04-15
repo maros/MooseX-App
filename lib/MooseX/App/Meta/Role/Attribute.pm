@@ -8,10 +8,10 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
-has 'command_tags' => (
+has 'cmd_tags' => (
     is          => 'rw',
     isa         => 'ArrayRef[Str]',
-    predicate   => 'has_command_tags',
+    predicate   => 'has_cmd_tags',
 );
 
 {
