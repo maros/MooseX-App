@@ -122,7 +122,7 @@ sub initialize_command {
                     header          => $error,
                     type            => "error",
                 ),
-                $meta->command_usage_command($command_class),
+                $meta->command_usage_command($command_class->meta),
             );
         }
         # TODO exitval 0 ..  ok , 1 .. error, 2..fatal error
