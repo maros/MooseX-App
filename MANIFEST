@@ -47,6 +47,8 @@ t/testlib/Test01/CommandA.pm
 t/testlib/Test01/CommandB.pm
 t/testlib/Test01/CommandC1.pm
 t/testlib/Test02.pm
+t/testlib/Test03.pm
+t/testlib/Test03/SomeCommand.pm
 xt/perlcritic.t
 xt/pod.t
 xt/podcoverage.t

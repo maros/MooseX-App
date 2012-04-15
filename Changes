@@ -1,6 +1,11 @@
 Changes for MooseX-App
 
-1.01
+1.02 Sun, Apr 15, 2012
+    - Fix command usage generation bug
+    - Automatically apply MooseX-Getopt attribute traits
+    - Rename command_tag to cmd_tag attribute
+
+1.01 Thu, Apr 12, 2012
     - Fix text failures
     - Fix Pod
     - Add missing tutorials to manifest

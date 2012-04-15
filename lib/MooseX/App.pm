@@ -2,7 +2,7 @@ package MooseX::App;
 # ============================================================================«
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.01';
+our $VERSION = '1.02';
 
 use strict;
 use warnings;
