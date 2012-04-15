@@ -10,5 +10,10 @@ has 'local1' => (
     required        => 1,
 );
 
+has 'local2' => (
+    isa             => 'Bool',
+    is              => 'rw',
+    default         => 1,
+);
 
 1;
