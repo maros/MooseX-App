@@ -86,14 +86,16 @@ The NAME section will become the short description and the DESCRIPTION
 or OVERVIEW section the long description.
 
 Attributes can be documented using the Moose built-in C<documentation> option
-as well as C<command_tags> which is defined by MooseX-App. 
+as well as C<cmd_tags> which is defined by MooseX-App. Additionally the
+C<cmd_flag> and C<cmd_aliases> attributes defined in 
+L<MooseX::Getopt::Meta::Attribute::Trait> are also honoured.
 
   has 'some_option' => (
       is                => 'rw',
       isa               => 'Integer',
       required          => 1,
       documentation     => q[Some important option],
-      command_tags      => [qw(Important!)],
+      cmd_tags          => [qw(Important!)],
   );
 
 The help for this command would look something like this:
@@ -112,7 +114,7 @@ The help for this command would look something like this:
     --help --usage -?  Prints this usage information. [Flag]
 
 If you do not want to include an attribute in the help text use the
-C<NoGetopt> trait from L<MooseX-Getopt>
+L<MooseX::Getopt::Meta::Attribute::NoGetopt> trait from L<MooseX-Getopt>
 
   has '_private' => (
       is                => 'rw',
@@ -137,8 +139,8 @@ invocation script:
  MyApp->new_with_command->run();
 
 C<MyApp-E<gt>new_with_command> will try to instantiate a command class. If it
-fails it will return a L<MooseX::App::Messgae::Envelope> object possibly
+fails it will return a L<MooseX::App::Message::Envelope> object possibly
 containing an error message and a user help message. Since 
-L<MooseX::App::Messgae::Envelope> follows the null object pattern you can 
+L<MooseX::App::Message::Envelope> follows the null object pattern you can 
 call any method on it without checking the object type.
 

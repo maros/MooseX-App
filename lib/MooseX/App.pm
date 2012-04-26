@@ -128,8 +128,8 @@ In your base class:
 Write multiple command classes:
 
   package MyApp::SomeCommand;
-  use MooseX::App::Command;
-  extends qw(MyApp);
+  use MooseX::App::Command; # important
+  extends qw(MyApp); # purely optional
   
   has 'some_option' => (
       is            => 'rw',
@@ -162,7 +162,7 @@ MooseX-App will then take care of
 
 =item * Finding, loading and initializing the command classes
 
-=item * Creating automated doucumentation
+=item * Creating automated doucumentation from pod and attributes
 
 =item * Reading and validating the command line options entered by the user
 
@@ -213,6 +213,9 @@ Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins>
 documentation on how to create your own plugins.
 
 =head1 SEE ALSO
+
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+MooseX::App command line application.
 
 L<MooseX::App::Cmd>, L<MooseX::Getopt> and L<App::Cmd>
 
