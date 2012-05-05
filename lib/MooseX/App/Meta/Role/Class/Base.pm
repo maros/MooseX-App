@@ -40,6 +40,26 @@ sub _build_app_namespace {
     return $self->name;
 }
 
+sub proto_command {
+    my ($self,$command_class) = @_;
+    
+    my $opt_parser = Getopt::Long::Parser->new( config => [ qw( no_auto_help pass_through ) ] );
+    my $result = {};
+    $opt_parser->getoptions(
+        $self->proto_options($result)
+    );
+    return $result;
+}
+
+sub proto_options {
+    my ($self,$result) = @_;
+    
+    $result->{help} = 0;
+    return (
+        "help|usage|?"      => \$result->{help},
+    );
+}
+
 sub matching_commands {
     my ($self,$command) = @_;
     

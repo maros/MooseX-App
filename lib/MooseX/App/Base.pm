@@ -86,7 +86,7 @@ sub initialize_command {
         return;
     }
     
-    my $proto_result = $class->proto_command($command_class);
+    my $proto_result = $meta->proto_command($command_class);
     
     # TODO return some kind of null class object
     return
@@ -130,24 +130,6 @@ sub initialize_command {
     }
 }
 
-sub proto_command {
-    my ($class,$command_class) = @_;
-    
-    my $opt_parser = Getopt::Long::Parser->new( config => [ qw( no_auto_help pass_through ) ] );
-    my $result = {};
-    $opt_parser->getoptions(
-        $class->proto_options($result)
-    );
-    return $result;
-}
 
-sub proto_options {
-    my ($class,$result) = @_;
-    
-    $result->{help} = 0;
-    return (
-        "help|usage|?"      => \$result->{help},
-    );
-}
 
 1;
