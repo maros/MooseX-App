@@ -30,6 +30,20 @@ has 'app_base' => (
     default     => sub { Path::Class::File->new($0)->basename },
 );
 
+has 'app_commands' => (
+    is          => 'rw',
+    isa         => 'HashRef[Str]',
+    traits      => ['Hash'],
+    handles     => {
+        command_register    => 'set',   
+    },
+    lazy_build  => 1,
+);
+
+sub BUILD {
+    warn 'CALLED BUILD'.join(',',@_);   
+}
+
 sub _build_app_messageclass {
     my ($self) = @_;
     return 'MooseX::App::Message::Block'
@@ -38,6 +52,22 @@ sub _build_app_messageclass {
 sub _build_app_namespace {
     my ($self) = @_;
     return $self->name;
+}
+
+sub _build_app_commands {
+    my ($self) = @_;
+    
+    my $mpo = Module::Pluggable::Object->new(
+        search_path => [ $self->app_namespace ],
+    );
+    
+    my %return;
+    foreach my $command_class ($mpo->plugins) {
+        my $command = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
+        $return{$command} = $command_class;
+    }
+    
+    return \%return;
 }
 
 sub proto_command {
@@ -60,13 +90,13 @@ sub proto_options {
     );
 }
 
-sub matching_commands {
+sub command_matching {
     my ($self,$command) = @_;
     
-    my %commands = $self->commands;
+    my $commands = $self->app_commands;
     
     # Exact match
-    if (defined $commands{$command}) {
+    if (defined $commands->{$command}) {
         return $command;
     # Fuzzy match
     } else {
@@ -75,7 +105,7 @@ sub matching_commands {
         my $lc_command = lc($command);
         
         # Compare all commands to find matching candidates
-        foreach my $command_name (keys %commands) {
+        foreach my $command_name (keys %$commands) {
             my $lc_command_name = lc($command_name);
             if ($lc_command eq $lc_command_name) {
                 return $command_name;
@@ -94,22 +124,6 @@ sub command_message {
     my $messageclass = $self->app_messageclass;
     Class::MOP::load_class($messageclass);
     return $messageclass->new(@args);
-}
-
-sub commands {
-    my ($self) = @_;
-    
-    my $mpo = Module::Pluggable::Object->new(
-        search_path => [ $self->app_namespace ],
-    );
-    
-    my %return;
-    foreach my $command_class ($mpo->plugins) {
-        my $command = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
-        $return{$command} = $command_class;
-    }
-    
-    return %return;
 }
 
 sub command_usage_attributes_raw {
@@ -282,9 +296,9 @@ sub command_usage_description {
 sub command_class_to_command {
     my ($self,$command_class) = @_;
     
-    my %commands = $self->commands;
-    foreach my $element (keys %commands) {
-        if ($command_class eq $commands{$element}) {
+    my $commands = $self->app_commands;
+    foreach my $element (keys %$commands) {
+        if ($command_class eq $commands->{$element}) {
             return $element;
         }
     }
@@ -314,9 +328,9 @@ sub command_usage_global {
     my @commands;
     push(@commands,['help','Prints this usage information']);
     
-    my %commands = $self->commands;
+    my $commands = $self->app_commands;
     
-    while (my ($command,$class) = each %commands) {
+    while (my ($command,$class) = each %$commands) {
         Class::MOP::load_class($class);
         my $description;
         $description = $class->meta->command_short_description

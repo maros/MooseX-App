@@ -17,13 +17,13 @@ sub bash_completion {
     
     my %command_map;
     my $app_meta        = $app->meta;
-    my %commands        = $app_meta->commands;
-    my $command_list    = join (' ', keys %commands);
+    my $commands        = $app_meta->app_commands;
+    my $command_list    = join (' ', keys %{$commands});
     my $package         = __PACKAGE__;
     my $prefix          = $app_meta->app_base;
     $prefix =~ tr/./_/;
     
-    while (my ($command,$command_class) = each %commands) {
+    while (my ($command,$command_class) = each %$commands) {
         Class::MOP::load_class($command_class);
         $command_map{$command} = [ $command_class->_attrs_to_options ];
     }

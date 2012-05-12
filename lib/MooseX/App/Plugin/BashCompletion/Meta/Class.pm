@@ -9,13 +9,15 @@ use namespace::autoclean;
 use Moose::Role;
 use MooseX::App::Plugin::BashCompletion::Command;
 
-around 'commands' => sub {
-    my ($orig,$self) = @_;
+around '_build_app_commands' => sub {
+    my $orig = shift;
+    my $self = shift;
     
-    my %commands = $self->$orig();
-    $commands{bash_completion} = 'MooseX::App::Plugin::BashCompletion::Command';
+    my $return = $self->$orig(@_);
+    $return->{bash_completion} ||= 'MooseX::App::Plugin::BashCompletion::Command';
+    #$self->command_register('bash_completion','MooseX::App::Plugin::BashCompletion::Command');
     
-    return %commands;
+    return $return;
 };
 
 1;

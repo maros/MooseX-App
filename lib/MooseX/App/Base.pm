@@ -36,7 +36,7 @@ sub new_with_command {
         );
     # Looks like a command
     } else {
-        my @candidates = $meta->matching_commands($first_argv);
+        my @candidates = $meta->command_matching($first_argv);
         # No candidates
         if (scalar @candidates == 0) {
             return MooseX::App::Message::Envelope->new(
@@ -69,8 +69,8 @@ sub initialize_command {
     
     my $meta = $class->meta;
     
-    my %commands = $meta->commands;
-    my $command_class = $commands{$command_name};
+    my $commands = $meta->app_commands;
+    my $command_class = $commands->{$command_name};
     
     eval {
         Class::MOP::load_class($command_class);
