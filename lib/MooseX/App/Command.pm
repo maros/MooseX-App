@@ -10,6 +10,7 @@ use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
     with_meta => [ 'command_short_description', 'command_long_description', 'option'],
+    as_is     => ['_compute_getopt_attrs'],
     also      => 'Moose',
 );
 
@@ -50,6 +51,16 @@ sub command_long_description($) {
 
 sub option {
     goto &MooseX::App::option;
+}
+
+# Dirty hack to hide private attributes from MooseX-Getopt
+sub _compute_getopt_attrs {
+    my ($class) = @_;
+
+    return
+        sort { $a->insertion_order <=> $b->insertion_order }
+        grep { $_->does('AppOption') } 
+        $class->meta->get_all_attributes
 }
 
 1;

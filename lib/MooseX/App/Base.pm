@@ -141,6 +141,14 @@ sub initialize_command {
     }
 }
 
+# Dirty hack to hide private attributes from MooseX-Getopt
+sub _compute_getopt_attrs {
+    my ($class) = @_;
 
+    return
+        sort { $a->insertion_order <=> $b->insertion_order }
+        grep { $_->does('AppOption') } 
+        $class->meta->get_all_attributes
+}
 
 1;

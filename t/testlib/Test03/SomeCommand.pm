@@ -17,6 +17,11 @@ option 'another_option' => (
     cmd_flag      => 'another',
     cmd_tags      => ['Not important'],
 );
+
+has 'private' => (
+    is              => 'rw',
+    isa             => 'Str',
+);
  
 sub run {
     my ($self) = @_;
