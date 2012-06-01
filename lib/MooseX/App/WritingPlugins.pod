@@ -59,7 +59,7 @@ It accepts the following keys:
 
 Most of MooseX-App behaviour is implemented in metaclass roles. When writing
 plugins you will most likely need to alter/augument the behaviour of these
-roles.
+roles. Implementation details can be found in the respective packages.
 
 =over
 
@@ -67,7 +67,7 @@ roles.
 
 =item * L<MooseX::App::Meta::Role::Class::Command>
 
-=item * L<MooseX::App::Meta::Role::Attribute>
+=item * L<MooseX::App::Meta::Role::Attribute::Base>
 
 =back
 

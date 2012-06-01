@@ -210,7 +210,7 @@ You can pass a hash of default params to new_with_command
 
  MyApp->new_with_command( %default );
 
-=head1 FUNCTIONS
+=head1 OPTIONS
 
 =head2 app_base
 

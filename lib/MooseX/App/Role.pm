@@ -41,7 +41,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Role - Use documentation attributes in a role
+MooseX::App::Role - Define attributes in a role
 
 =head1 SYNOPSIS
 
