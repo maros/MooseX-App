@@ -2,6 +2,7 @@ package Test03::SomeCommand;
 
 use MooseX::App::Command;
 extends qw(Test03);
+with qw(Test03::Role::TestRole);
  
 option 'some_option' => (
     is            => 'rw',
