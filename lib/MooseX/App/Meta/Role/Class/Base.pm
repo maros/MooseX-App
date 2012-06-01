@@ -126,15 +126,28 @@ sub command_message {
     return $messageclass->new(@args);
 }
 
+sub command_usage_attributes_list {
+    my ($self,$metaclass) = @_;
+    
+    $metaclass ||= $self;
+    
+    my @return;
+    foreach my $attribute ($metaclass->get_all_attributes) {
+        next
+            unless $attribute->does('AppOption');
+        push(@return,$attribute);
+    }
+    
+    return @return;
+}
+
 sub command_usage_attributes_raw {
     my ($self,$metaclass) = @_;
     
     $metaclass ||= $self;
     
     my @attributes;
-    foreach my $attribute ($metaclass->get_all_attributes) {
-        next
-            if $attribute->does('NoGetopt');
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
         
         my ($attribute_name,$attribute_description) = $self->command_usage_attribute_detail($attribute);
         

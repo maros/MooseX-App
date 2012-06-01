@@ -69,10 +69,11 @@ sub proto_config {
     $result->{_config_data} = $config_data;
     
     # Lopp all attributes
-    foreach my $attribute ($command_class->meta->get_all_attributes) {
+    
+    foreach my $attribute ($self->command_usage_attributes_list($command_class->meta)) {
         my $attribute_name = $attribute->name;
         next
-            if $attribute_name eq 'config';
+            if $attribute_name eq 'config' || $attribute_name eq 'help_flag';
         $result->{$attribute_name} = $config_data->{global}{$attribute_name}
             if defined $config_data->{global}{$attribute_name};
         $result->{$attribute_name} = $config_data->{$command_name}{$attribute_name}
