@@ -58,8 +58,10 @@ sub _command_description_predicate {
     unless ($attribute->has_value($self)) {
         $self->_build_command_pod($field);
     }
+    
+    my $value = $attribute->get_value($self); 
         
-    return (defined $attribute->get_value($self) ? 1:0);
+    return (defined $value && $value ? 1:0);
 }
 
 sub _build_command_pod {
