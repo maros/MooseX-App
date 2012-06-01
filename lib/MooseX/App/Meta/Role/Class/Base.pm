@@ -433,6 +433,12 @@ Generates a message object (based on L<app_messageclass>)
 Returns a message object containing the attribute documentation for a given
 meta class.
 
+=head2 command_usage_attributes_list
+
+ my @attributes = $meta->command_usage_attributes($metaclass);
+
+Returns a list of attributes/command options.
+
 =head2 command_usage_attributes_raw
 
  my @attributes = $meta->command_usage_attributes_raw($metaclass);

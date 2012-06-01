@@ -69,7 +69,7 @@ MooseX::App::Command - Load command class metaclasses
  use Moose; # optional
  use MooseX::App::Command
  
- has 'testattr' => (
+ option 'testattr' => (
     isa             => 'rw',
     cmd_tags        => [qw(Important! Nice))],
  );

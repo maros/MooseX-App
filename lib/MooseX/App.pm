@@ -210,6 +210,12 @@ You can pass a hash of default params to new_with_command
 
  MyApp->new_with_command( %default );
 
+=head2 initialize_command
+
+ my $myapp_command = MyApp->new_with_command($command_name,%default);
+
+Helper method to initialize the command class for the given command.
+
 =head1 OPTIONS
 
 =head2 app_base

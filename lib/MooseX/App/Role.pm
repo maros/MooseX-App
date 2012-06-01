@@ -58,7 +58,8 @@ MooseX::App::Role - Define attributes in a role
 =head1 DESCRIPTION
 
 When loading this package in a role you can use the C<cmd_tags>
-attribute to document an attribute. 
+attribute to document an attribute and declare attributes with the
+'option' keyword.
 
 Alternatively you can also just use attribute traits:
 
