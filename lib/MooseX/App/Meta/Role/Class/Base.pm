@@ -59,6 +59,9 @@ sub _build_app_commands {
     
     my %return;
     foreach my $command_class ($mpo->plugins) {
+        my $plugin_class_name =  substr($command_class,length($self->app_namespace)+2);
+        next
+            if $plugin_class_name =~ m/::/;
         my $command = MooseX::App::Utils::class_to_command($command_class,$self->app_namespace);
         $return{$command} = $command_class;
     }
