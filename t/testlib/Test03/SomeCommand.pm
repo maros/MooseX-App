@@ -3,13 +3,13 @@ package Test03::SomeCommand;
 use MooseX::App::Command;
 extends qw(Test03);
  
-has 'some_option' => (
+option 'some_option' => (
     is            => 'rw',
     isa           => 'Str',
     documentation => q[Very important option!],
 );
 
-has 'another_option' => (
+option 'another_option' => (
     is            => 'rw',
     isa           => 'Str',
     required      => 1,
@@ -19,7 +19,7 @@ has 'another_option' => (
  
 sub run {
     my ($self) = @_;
-    # Do something
+    print "RUN";
 }
 
 1;
