@@ -4,13 +4,13 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test02);
 
-has 'local1' => (
+option 'local1' => (
     isa             => 'Int',
     is              => 'rw',
     required        => 1,
 );
 
-has 'local2' => (
+option 'local2' => (
     isa             => 'Bool',
     is              => 'rw',
     default         => 1,
