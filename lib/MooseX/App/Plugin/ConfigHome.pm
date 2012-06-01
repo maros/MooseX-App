@@ -13,7 +13,10 @@ sub plugin_metaroles {
     my ($self,$class) = @_;
     
     return {
-        class   => ['MooseX::App::Plugin::Config::Meta::Class','MooseX::App::Plugin::ConfigHome::Meta::Class'],
+        class   => [
+            'MooseX::App::Plugin::Config::Meta::Class',
+            'MooseX::App::Plugin::ConfigHome::Meta::Class'
+        ],
     }
 }
 

@@ -40,10 +40,6 @@ has 'app_commands' => (
     lazy_build  => 1,
 );
 
-#sub BUILD {
-#    warn 'CALLED BUILD'.join(',',@_);   
-#}
-
 sub _build_app_messageclass {
     my ($self) = @_;
     return 'MooseX::App::Message::Block'
@@ -73,7 +69,9 @@ sub _build_app_commands {
 sub proto_command {
     my ($self,$command_class) = @_;
     
-    my $opt_parser = Getopt::Long::Parser->new( config => [ qw( no_auto_help pass_through ) ] );
+    my $opt_parser = Getopt::Long::Parser->new( 
+        config => [ qw( no_auto_help pass_through ) ] 
+    );
     my $result = {};
     $opt_parser->getoptions(
         $self->proto_options($result)
