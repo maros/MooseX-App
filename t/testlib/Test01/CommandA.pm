@@ -4,17 +4,22 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test01);
 
-has 'commanda_loca1' => (
+option 'command_local1' => (
     isa             => 'Int',
     is              => 'rw',
     documentation   => 'some docs about the long texts that seem to occur randomly',
     cmd_tags        => [qw(Important)],
 );
 
-has 'commanda_loca2' => (
+option 'command_local2' => (
     isa             => 'Str',
     is              => 'rw',
     documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly]
+);
+
+has 'anotherprivate' => (
+    is              => 'rw',
+    isa             => 'Str',
 );
 
 command_long_description "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dui velit, varius nec iaculis vitae, elementum eget mi. 

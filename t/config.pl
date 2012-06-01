@@ -4,6 +4,6 @@
     },
     command_a   => {
         global          => 234,
-        commanda_loca1  => 22,
+        command_local1  => 22,
     },
 }

@@ -17,7 +17,7 @@ use Test01;
     isa_ok($test01,'Test01::CommandA');
     
     is($test01->global,'234','Arg from command config');
-    is($test01->commanda_loca1,'22','Arg from command config');
+    is($test01->command_local1,'22','Arg from command config');
     isa_ok($test01->config,'Path::Class::File');
     is($test01->_config_data->{global}{global},'123','Config loaded');
 }
@@ -36,7 +36,7 @@ use Test01;
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'1234','Arg from command config');
-    is($test01->commanda_loca1,'22','Arg from command config');
+    is($test01->command_local1,'22','Arg from command config');
 }
 
 {

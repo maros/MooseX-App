@@ -64,9 +64,9 @@ use Test01;
     * bullet3
     Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
     is($test04->blocks->[2]->header,"options:",'Options header is set');
-    is($test04->blocks->[2]->body,"    --commanda_loca1   some docs about the long texts that seem to occur
+    is($test04->blocks->[2]->body,"    --command_local1   some docs about the long texts that seem to occur
                        randomly [Integer; Important]
-    --commanda_loca2   Verylongwordwithoutwhitespacestotestiftextformatingwor
+    --command_local2   Verylongwordwithoutwhitespacestotestiftextformatingwor
                        ksproperly
     --config           Path to command config file
     --global           test [Required; Integer; Important!]
