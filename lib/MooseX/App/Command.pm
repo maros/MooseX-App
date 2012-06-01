@@ -9,7 +9,7 @@ use Moose ();
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [ 'command_short_description', 'command_long_description' ],
+    with_meta => [ 'command_short_description', 'command_long_description', 'option'],
     also      => 'Moose',
 );
 
@@ -23,10 +23,10 @@ sub init_meta {
         for             => $meta,
         class_metaroles => {
             class           => ['MooseX::App::Meta::Role::Class::Command'],
-            attribute       => ['MooseX::App::Meta::Role::Attribute','MooseX::Getopt::Meta::Attribute::Trait'],
+            attribute       => ['MooseX::App::Meta::Role::Attribute::Base','MooseX::Getopt::Meta::Attribute::Trait'],
         },
         role_metaroles => {
-            attribute       => ['MooseX::App::Meta::Role::Attribute','MooseX::Getopt::Meta::Attribute::Trait'],
+            attribute       => ['MooseX::App::Meta::Role::Attribute::Base','MooseX::Getopt::Meta::Attribute::Trait'],
         },
     );
     
@@ -46,6 +46,10 @@ sub command_short_description($) {
 sub command_long_description($) {
     my ( $meta, $description ) = @_;
     return $meta->command_long_description($description);
+}
+
+sub option {
+    goto &MooseX::App::option;
 }
 
 1;

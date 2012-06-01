@@ -19,13 +19,18 @@ sub init_meta {
     my $meta = Moose::Role->init_meta( %args );
     
     Moose::Util::MetaRole::apply_metaroles(
+        with_meta       => [ 'option' ],
         for             => $meta,
         role_metaroles  => {
-            applied_attribute=> ['MooseX::App::Meta::Role::Attribute'],
+            applied_attribute=> ['MooseX::App::Meta::Role::Attribute::Base'],
         },
     );
     
     return $meta;
+}
+
+sub option {
+    goto &MooseX::App::option;
 }
 
 1;

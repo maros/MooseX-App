@@ -18,13 +18,13 @@ has 'config' => (
     coerce          => 1,
     predicate       => 'has_config',
     documentation   => q[Path to command config file],
+    traits          => ['AppOption'],
 );
 
 has '_config_data' => (
     is              => 'ro',
     isa             => 'HashRef',
     predicate       => 'has_config_data',
-    traits          => ['NoGetopt'],
 );
 
 sub plugin_metaroles {
@@ -52,7 +52,7 @@ In your base class:
  package MyApp;
  use MooseX::App qw(Config);
  
- has 'global_option' => (
+ option 'global_option' => (
      is          => 'rw',
      isa         => 'Int',
  );
@@ -63,7 +63,7 @@ In your command class:
  use MooseX::App::Command;
  extends qw(MyApp);
  
- has 'some_option' => (
+ option 'some_option' => (
      is          => 'rw',
      isa         => 'Str',
  );

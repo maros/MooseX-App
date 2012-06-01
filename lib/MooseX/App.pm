@@ -8,9 +8,10 @@ use strict;
 use warnings;
 
 use Moose::Exporter;
+use MooseX::App::Meta::Role::Attribute::Option;
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace','app_base' ],
+    with_meta           => [ 'app_namespace','app_base', 'option' ],
     also                => 'Moose',
     install             => [qw(unimport init_meta)],
 );
@@ -49,7 +50,7 @@ sub init_meta {
     my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
     my %apply_metaroles = (
         class               => ['MooseX::App::Meta::Role::Class::Base'],
-        attribute           => ['MooseX::App::Meta::Role::Attribute'],
+        attribute           => ['MooseX::App::Meta::Role::Attribute::Base'],
     );
     my @apply_roles     = ('MooseX::App::Base');
     
@@ -91,6 +92,26 @@ sub init_meta {
     return $meta;
 }
 
+sub option {
+    my $meta = shift;
+    my $name = shift;
+ 
+    Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
+        if @_ % 2 == 1;
+ 
+    my %options = ( definition_context => Moose::Util::_caller_info(), @_ );
+    my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
+    $options{traits} ||= [];
+    
+    push (@{$options{traits}},'MooseX::App::Meta::Role::Attribute::Option')
+        unless grep { 
+            $_ eq 'MooseX::App::Meta::Role::Attribute::Option' 
+            || $_ eq 'App::Option' 
+        } @{$options{traits}};
+    
+    $meta->add_attribute( $_, %options ) for @$attrs;
+}
+
 sub app_namespace($) {
     my ( $meta, $name ) = @_;
     return $meta->app_namespace($name);
@@ -119,11 +140,15 @@ In your base class:
   package MyApp;
   use MooseX::App qw(Config Color);
  
-  has 'global_option' => (
+  option 'global_option' => (
       is            => 'rw',
       isa           => 'Bool',
       documentation => q[Enable this to do fancy stuff],
   );
+  
+  has 'private' => ( 
+      is              => 'rw',
+  ); # not exposed
 
 Write multiple command classes:
 
@@ -131,7 +156,7 @@ Write multiple command classes:
   use MooseX::App::Command; # important
   extends qw(MyApp); # purely optional
   
-  has 'some_option' => (
+  option 'some_option' => (
       is            => 'rw',
       isa           => 'Str',
       documentation => q[Very important option!],

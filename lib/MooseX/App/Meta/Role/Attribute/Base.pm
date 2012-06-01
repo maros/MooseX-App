@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Meta::Role::Attribute;
+package MooseX::App::Meta::Role::Attribute::Base;
 # ============================================================================
 
 use utf8;
@@ -15,8 +15,8 @@ has 'cmd_tags' => (
 );
 
 {
-    package Moose::Meta::Attribute::Custom::Trait::App::Tags;
-    sub register_implementation { 'MooseX::App::Meta::Role::Attribute' }
+    package Moose::Meta::Attribute::Custom::Trait::AppBase;
+    sub register_implementation { 'MooseX::App::Meta::Role::Attribute::Base' }
 }
 
 1;
