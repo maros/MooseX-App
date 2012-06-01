@@ -42,11 +42,17 @@ The base class can be customized by
   package MyApp;
   use MooseX::App qw(Config); # Loads the Config plugin
   
-  has 'some_global_option' => (
+  option 'some_global_option' => (
       is                => 'rw',
       isa               => 'Str',
       documentation     => q[Some important global option],
   );
+  
+  # This will not be exposed
+  has 'private_option' => (
+      is              => 'rw',
+      isa             => 'Str',
+  ); 
   
   1;
 
@@ -90,7 +96,7 @@ as well as C<cmd_tags> which is defined by MooseX-App. Additionally the
 C<cmd_flag> and C<cmd_aliases> attributes defined in 
 L<MooseX::Getopt::Meta::Attribute::Trait> are also honoured.
 
-  has 'some_option' => (
+  option 'some_option' => (
       is                => 'rw',
       isa               => 'Integer',
       required          => 1,
@@ -113,12 +119,13 @@ The help for this command would look something like this:
     --some_option      Some important option [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]
 
-If you do not want to include an attribute in the help text use the
-L<MooseX::Getopt::Meta::Attribute::NoGetopt> trait from L<MooseX-Getopt>
+If you do not want to include an attribute not defined with 'option'
+you can use the 'App::Option' Trait 
+L<MooseX::Getopt::Meta::Attribute::NoGetopt> trait.
 
-  has '_private' => (
+  has 'option' => (
       is                => 'rw',
-      traits            => ['NoGetopt'],
+      traits            => ['App::Option'],
   );
 
 Finally your command classes will need a method which should be called

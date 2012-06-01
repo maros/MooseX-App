@@ -50,7 +50,7 @@ MooseX::App::Role - Use documentation attributes in a role
  use Moose::Role; # optional
  use MooseX::App::Role;
  
- has 'testattr' => (
+ option 'testattr' => (
     isa             => 'rw',
     cmd_tags        => [qw(Important! Nice))],
  );
@@ -64,7 +64,7 @@ Alternatively you can also just use attribute traits:
 
  has 'testattr' => (
     isa             => 'rw',
-    traits          => [qw(App::Tags)]
+    traits          => ['AppBase','AppOption'],
     cmd_tags        => [qw(Important! Nice))],
  );
 

@@ -75,6 +75,7 @@ MooseX::App::Command - Load command class metaclasses
  );
  
  command_short_description 'This is a short description';
+ command_long_description 'This is a much longer description yadda yadda';
 
 =head1 DESCRIPTION
 

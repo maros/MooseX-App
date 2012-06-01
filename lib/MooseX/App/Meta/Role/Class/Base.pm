@@ -480,15 +480,15 @@ Returns a list of messages containing the documentation for the application.
 
 Returns a message containing the basic usage documentation
 
-=head2 commands
+=head2 app_commands
 
- my %commands = $meta->commands;
+ my $commands = $meta->app_commands;
 
-Returns a list/hash of command name and command class pairs.
+Returns a hashref of command name and command class.
 
-=head2 matching_commands
+=head2 command_matching
 
- my @commands = $meta->matching_commands($user_command_input);
+ my @commands = $meta->command_matching($user_command_input);
 
 Returns a list of command names matching the user input
 
