@@ -69,7 +69,7 @@ sub proto_config {
     $result->{_config_data} = $config_data;
     
     # Lopp all attributes
-    foreach my $attribute ($self->get_all_attributes) {
+    foreach my $attribute ($command_class->meta->get_all_attributes) {
         my $attribute_name = $attribute->name;
         next
             if $attribute_name eq 'config';

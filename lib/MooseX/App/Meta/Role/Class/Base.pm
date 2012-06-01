@@ -40,9 +40,9 @@ has 'app_commands' => (
     lazy_build  => 1,
 );
 
-sub BUILD {
-    warn 'CALLED BUILD'.join(',',@_);   
-}
+#sub BUILD {
+#    warn 'CALLED BUILD'.join(',',@_);   
+#}
 
 sub _build_app_messageclass {
     my ($self) = @_;
