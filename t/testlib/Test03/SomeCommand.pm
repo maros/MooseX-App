@@ -29,15 +29,3 @@ sub run {
 }
 
 1;
-
-=encoding utf8
-
-=head1 NAME
-
-Test03::SomeCommand - Some command description
-
-=head1 DESCRIPTION
-
-Some long command description
-
-=cut
