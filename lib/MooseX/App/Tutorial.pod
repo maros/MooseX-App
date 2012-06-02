@@ -120,8 +120,8 @@ The help for this command would look something like this:
     --help --usage -?  Prints this usage information. [Flag]
 
 If you do not want to include an attribute not defined with 'option'
-you can use the 'AppOption' Trait 
-L<MooseX::Getopt::Meta::Attribute::NoGetopt> trait.
+you can use the 'AppOption' trait 
+(L<MooseX::App::Meta::Attribute::Option>).
 
   has 'option' => (
       is                => 'rw',
