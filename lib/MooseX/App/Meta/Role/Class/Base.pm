@@ -70,7 +70,7 @@ sub _build_app_commands {
 }
 
 sub proto_command {
-    my ($self,$command_class) = @_;
+    my ($self) = @_;
     
     my $opt_parser = Getopt::Long::Parser->new( 
         config => [ qw( no_auto_help pass_through ) ] 
@@ -452,6 +452,12 @@ Returns a list of attribute documentations for a given meta class.
 
 Returns a name and description for a given meta attribute class.
 
+=head2 command_usage_attribute_tags
+
+ my (@tags) = $meta->command_usage_attribute_tags($metaattribute);
+
+Returns a list of tags for the given attribute.
+
 =head2 command_usage_attribute_name
 
  my ($name,$description) = $meta->command_usage_attribute_name($metaattribute);
@@ -501,5 +507,17 @@ Returns a hashref of command name and command class.
  my @commands = $meta->command_matching($user_command_input);
 
 Returns a list of command names matching the user input
+
+=head2 proto_command
+
+ my $result = $meta->proto_command();
+
+Returns the proto command command-line options.
+
+=head2 proto_options
+
+ my @getopt_options = $meta->proto_command($result_hashref);
+
+Sets the GetOpt::Long options for the proto command
 
 =cut
