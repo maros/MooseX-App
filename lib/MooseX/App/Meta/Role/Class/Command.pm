@@ -105,10 +105,12 @@ sub _build_command_pod {
                 my $name = $self->name;
                 my $content = $self->_pod_node_to_text($element->children);
                 $content =~ s/^$name(\s-)?\s//;
+                chomp($content);
                 $pod{command_short_description} = $content;
             }
             when([qw(DESCRIPTION OVERVIEW)]) {
                 my $content = $self->_pod_node_to_text($element->children);
+                chomp($content);
                 $pod{command_long_description} = $content;
             }
         }
@@ -141,10 +143,15 @@ sub _pod_node_to_text {
     } else {
         given (ref($node)) {
             when ('Pod::Elemental::Element::Pod5::Ordinary') {
-                 push (@lines,$node->content);
+                my $content = $node->content;
+                return
+                    if $content =~ m/^=cut/;
+                $content =~ s/\n/ /g;
+                $content =~ s/\s+/ /g;
+                push (@lines,$content."\n");
             }
             when ('Pod::Elemental::Element::Pod5::Verbatim') {
-                push (@lines,$node->content);
+                push (@lines,$node->content."\n");
             }
             when ('Pod::Elemental::Element::Pod5::Command') {
                 given ($node->command) {
@@ -155,6 +162,7 @@ sub _pod_node_to_text {
                         push (@lines,('  ' x ($$indent-1)) . $node->content);
                     }
                     when ('back') {
+                        push (@lines,"\n");
                         ${$indent}--;
                     }
                 }
@@ -166,6 +174,7 @@ sub _pod_node_to_text {
         unless scalar @lines;
     
     my $return = join ("\n", grep { defined $_ } @lines);
+    $return =~ s/\n\n\n+/\n\n/g; # Max one empty line
     $return =~ s/I<([^>]+)>/_$1_/g;
     $return =~ s/B<([^>]+)>/*$1*/g;
     $return =~ s/[LCBI]<([^>]+)>/$1/g;

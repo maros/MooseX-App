@@ -44,7 +44,10 @@ some more desc
 
 =back
 
-hase ist super
+hase ist so super and this is a very long sentence witch breaks after i have
+written some bla bla.
+
+another interesting paragraph.
 
 =head1 METHODS
 

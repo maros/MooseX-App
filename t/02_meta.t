@@ -23,7 +23,7 @@ is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
 ok(Test01->can('new_with_command'),'Role applied to base class');
 ok(Test01->can('initialize_command'),'Role applied to base class');
 
-is(scalar keys %{$commands},3,'Found tthree commands');
+is(scalar keys %{$commands},3,'Found three commands');
 is($commands->{command_a},'Test01::CommandA','Command A found');
 is($meta->command_matching('COMMAND_a'),'command_a','Command A matched');
 is(join(',',$meta->command_matching('COMMAND')),'command_a,command_b,command_c1','Command A and B matched');
@@ -60,12 +60,17 @@ like($description->body,qr/varius nec iaculis vitae/,'Description body ok');
 require Test01::CommandB;
 is(Test01::CommandB->meta->command_short_description,'Test class command B for test 01','Pod short description parsed ok');
 is(Test01::CommandB->meta->command_long_description,'Some description of *command B*
+
  some code
  some code
+
 some more desc
+
 * item 1
 * item 2
   * item 2.1
   * item 2.2
-hase ist super','Pod long description parsed ok');
 
+hase ist so super and this is a very long sentence witch breaks after i have written some bla bla.
+
+another interesting paragraph.','Pod long description parsed ok');
