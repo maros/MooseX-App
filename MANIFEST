@@ -15,7 +15,8 @@ lib/MooseX/App/Command.pm
 lib/MooseX/App/Message/Block.pm
 lib/MooseX/App/Message/BlockColor.pm
 lib/MooseX/App/Message/Envelope.pm
-lib/MooseX/App/Meta/Role/Attribute.pm
+lib/MooseX/App/Meta/Role/Attribute/Base.pm
+lib/MooseX/App/Meta/Role/Attribute/Option.pm
 lib/MooseX/App/Meta/Role/Class/Base.pm
 lib/MooseX/App/Meta/Role/Class/Command.pm
 lib/MooseX/App/Plugin/BashCompletion.pm
@@ -24,7 +25,9 @@ lib/MooseX/App/Plugin/BashCompletion/Meta/Class.pm
 lib/MooseX/App/Plugin/Color.pm
 lib/MooseX/App/Plugin/Color/Meta/Class.pm
 lib/MooseX/App/Plugin/Config.pm
+lib/MooseX/App/Plugin/Config/Meta/Class.pm
 lib/MooseX/App/Plugin/ConfigHome.pm
+lib/MooseX/App/Plugin/ConfigHome/Meta/Class.pm
 lib/MooseX/App/Role.pm
 lib/MooseX/App/Tutorial.pod
 lib/MooseX/App/Utils.pm
@@ -41,6 +44,7 @@ t/01_basic.t
 t/02_meta.t
 t/03_utils.t
 t/04_plugin_config.t
+t/05_extended.t
 t/config.pl
 t/testlib/Test01.pm
 t/testlib/Test01/CommandA.pm
@@ -48,6 +52,7 @@ t/testlib/Test01/CommandB.pm
 t/testlib/Test01/CommandC1.pm
 t/testlib/Test02.pm
 t/testlib/Test03.pm
+t/testlib/Test03/Role/TestRole.pm
 t/testlib/Test03/SomeCommand.pm
 xt/perlcritic.t
 xt/pod.t

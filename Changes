@@ -1,5 +1,13 @@
 Changes for MooseX-App
 
+1.03 Sat, Jun 2, 2012
+    - Do not expose all attributes as options but only those defined via 
+      'option' keyword
+    - More tests
+    - Internal changes (move methods to meta class, calculate loadable commands 
+      only once, ...)
+    - Fix various bugs
+
 1.02 Sun, Apr 15, 2012
     - Fix command usage generation bug
     - Automatically apply MooseX-Getopt attribute traits

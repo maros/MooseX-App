@@ -8,19 +8,23 @@ SYNOPSIS
       package MyApp;
       use MooseX::App qw(Config Color);
  
-      has 'global_option' => (
+      option 'global_option' => (
           is            => 'rw',
           isa           => 'Bool',
           documentation => q[Enable this to do fancy stuff],
       );
+  
+      has 'private' => ( 
+          is              => 'rw',
+      ); # not exposed
 
     Write multiple command classes:
 
       package MyApp::SomeCommand;
-      use MooseX::App::Command;
-      extends qw(MyApp);
+      use MooseX::App::Command; # important
+      extends qw(MyApp); # purely optional
   
-      has 'some_option' => (
+      option 'some_option' => (
           is            => 'rw',
           isa           => 'Str',
           documentation => q[Very important option!],
@@ -48,9 +52,25 @@ DESCRIPTION
 
     *   Finding, loading and initializing the command classes
 
-    *   Creating automated doucumentation
+    *   Creating automated doucumentation from pod and attributes
 
     *   Reading and validating the command line options entered by the user
+
+    Commandline options are defined using the 'option' keyword which accepts
+    the same attributes as Moose' 'has' keyword.
+
+      option 'some_option' => (
+          is            => 'rw',
+          isa           => 'Str',
+      );
+
+    This is equivalent to
+
+      has 'some_option' => (
+          is            => 'rw',
+          isa           => 'Str',
+          traits        => ['AppOption'],
+      );
 
     Read the Tutorial for getting started with a simple MooseX::App command
     line application.
@@ -67,7 +87,12 @@ METHODS
 
      MyApp->new_with_command( %default );
 
-FUNCTIONS
+  initialize_command
+     my $myapp_command = MyApp->new_with_command($command_name,%default);
+
+    Helper method to initialize the command class for the given command.
+
+OPTIONS
   app_base
      app_base 'my_script';
 
@@ -92,6 +117,9 @@ PLUGINS
     own plugins.
 
 SEE ALSO
+    Read the Tutorial for getting started with a simple MooseX::App command
+    line application.
+
     MooseX::App::Cmd, MooseX::Getopt and App::Cmd
 
 SUPPORT
