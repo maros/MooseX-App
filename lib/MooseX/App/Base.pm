@@ -7,18 +7,9 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
-with qw(MooseX::Getopt);
 
 use MooseX::App::Message::Envelope;
 use List::Util qw(max);
-
-has 'help_flag' => (
-    is              => 'ro', isa => 'Bool',
-    traits          => ['AppOption','Getopt'],
-    cmd_flag        => 'help',
-    cmd_aliases     => [ qw(usage ?) ],
-    documentation   => 'Prints this usage information.',
-);
 
 sub new_with_command {
     my ($class,%args) = @_;
