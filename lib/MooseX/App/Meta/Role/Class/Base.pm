@@ -265,7 +265,7 @@ sub command_usage_attributes {
     my @attributes = $self->command_usage_attributes_raw($metaclass);
     
     return
-        unless scalar @attributes;
+        unless scalar @attributes > 1;
     
     return $self->command_message(
         header  => $headline,
