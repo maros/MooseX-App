@@ -1,5 +1,11 @@
 Changes for MooseX-App
 
+1.04 Sat, Jun 2, 2012
+    - Fix bugs in BashCompletion plugin
+    - Remove code duplication
+    - Fix --help flag in command classes
+    - Fix pod to text conversion
+
 1.03 Sat, Jun 2, 2012
     - Do not expose all attributes as options but only those defined via 
       'option' keyword

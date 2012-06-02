@@ -7,6 +7,7 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
+
 use MooseX::App::Plugin::BashCompletion::Command;
 
 around '_build_app_commands' => sub {

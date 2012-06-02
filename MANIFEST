@@ -12,6 +12,7 @@ inc/Module/Install/WriteAll.pm
 lib/MooseX/App.pm
 lib/MooseX/App/Base.pm
 lib/MooseX/App/Command.pm
+lib/MooseX/App/Common.pm
 lib/MooseX/App/Message/Block.pm
 lib/MooseX/App/Message/BlockColor.pm
 lib/MooseX/App/Message/Envelope.pm

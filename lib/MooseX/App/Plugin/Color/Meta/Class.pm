@@ -7,6 +7,7 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
+
 use MooseX::App::Message::BlockColor;
 
 around '_build_app_messageclass' => sub {
