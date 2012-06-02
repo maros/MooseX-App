@@ -5,7 +5,9 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
-with 'MooseX::Getopt' => { -excludes => [ 'help_flag', '_compute_getopt_attrs' ] };
+with 'MooseX::Getopt' => { 
+    -excludes => [ 'help_flag', '_compute_getopt_attrs','new_with_command' ] 
+};
 
 has 'help_flag' => (
     is              => 'ro', isa => 'Bool',
