@@ -115,7 +115,9 @@ sub _build_command_pod {
     }
     
     while (my ($key,$value) = each %pod) {
-        my $meta_attribute = $self->meta->get_attribute($key);
+        my $meta_attribute = $self->meta->find_attribute_by_name($key);
+        next
+            unless defined $meta_attribute;
         $meta_attribute->set_raw_value($self,$value);
     }
     
