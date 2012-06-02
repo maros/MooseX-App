@@ -133,6 +133,7 @@ sub command_usage_attributes_list {
     $metaclass ||= $self;
     
     my @return;
+    # TODO order by insertion order
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('AppOption');

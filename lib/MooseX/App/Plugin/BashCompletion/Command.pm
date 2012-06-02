@@ -25,7 +25,10 @@ sub bash_completion {
     
     while (my ($command,$command_class) = each %$commands) {
         Class::MOP::load_class($command_class);
-        $command_map{$command} = [ $command_class->_attrs_to_options ];
+        my @attributes = $app_meta->command_usage_attributes_raw($command_class->meta);
+        $command_map{$command} = [ 
+            map { $_->[0] } @attributes
+        ];
     }
     
     print <<"EOT";
@@ -47,7 +50,7 @@ EOT
  
     while (my ($c, $o) = each %command_map) {
         print "_${prefix}_macc_$c() {\n    _compreply \"",
-            join(" ", map {"--" . $_->{name}} @$o),
+            join(" ", @$o),
                 "\"\n}\n\n";
     }
  
@@ -72,7 +75,7 @@ _${prefix}_macc() {
  
 EOT
  
-    print "complete -o default -F _${prefix}_macc ", $app_meta->app_base, "\n";
+    return "complete -o default -F _${prefix}_macc ". $app_meta->app_base. "\n";
 }
 
 1;

@@ -23,10 +23,11 @@ around 'initialize_command' => sub {
     my $return = $self->$orig(@_);
     
     if (blessed $return && $return->isa('MooseX::App::Plugin::BashCompletion::Command')) {
-        $return->bash_completion($self);
+        my $bash_completion_syntax = $return->bash_completion($self);
+        print $bash_completion_syntax;
     }
     
-    return $return;
+    return MooseX::App::Null->new();
 };
 
 1;
