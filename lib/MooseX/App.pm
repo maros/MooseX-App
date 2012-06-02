@@ -107,7 +107,7 @@ sub option {
     push (@{$options{traits}},'MooseX::App::Meta::Role::Attribute::Option')
         unless grep { 
             $_ eq 'MooseX::App::Meta::Role::Attribute::Option' 
-            || $_ eq 'App::Option' 
+            || $_ eq 'AppOption' 
         } @{$options{traits}};
     
     $meta->add_attribute( $_, %options ) for @$attrs;
