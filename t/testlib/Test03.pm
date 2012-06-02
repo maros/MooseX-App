@@ -1,6 +1,6 @@
 package Test03;
 
-use MooseX::App qw(Config Color);
+use MooseX::App;
  
 option 'global_option' => (
     is            => 'rw',

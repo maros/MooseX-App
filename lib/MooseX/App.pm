@@ -12,6 +12,7 @@ use MooseX::App::Meta::Role::Attribute::Option;
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
     with_meta           => [ 'app_namespace','app_base', 'option' ],
+    as_is               => [ '_compute_getopt_attrs' ],
     also                => 'Moose',
     install             => [qw(unimport init_meta)],
 );
@@ -120,6 +121,16 @@ sub app_namespace($) {
 sub app_base($) {
     my ( $meta, $name ) = @_;
     return $meta->app_base($name);
+}
+
+# Dirty hack to hide private attributes from MooseX-Getopt
+sub _compute_getopt_attrs {
+    my ($class) = @_;
+
+    return
+        sort { $a->insertion_order <=> $b->insertion_order }
+        grep { $_->does('AppOption') } 
+        $class->meta->get_all_attributes
 }
 
 no Moose;

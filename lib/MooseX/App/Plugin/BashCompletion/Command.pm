@@ -8,7 +8,7 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 use MooseX::App::Command;
-with qw(MooseX::Getopt);
+#with qw(MooseX::Getopt);
 
 command_short_description q(Bash completion automator);
 
