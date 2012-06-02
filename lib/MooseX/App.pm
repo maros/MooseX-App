@@ -204,6 +204,22 @@ MooseX-App will then take care of
 
 =back
 
+Commandline options are defined using the 'option' keyword which accepts
+the same attributes as Moose' 'has' keyword.
+
+  option 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+  );
+
+This is equivalent to
+
+  has 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+      traits        => ['AppOption'],
+  );
+
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
 MooseX::App command line application.
 
