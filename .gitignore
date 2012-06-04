@@ -11,4 +11,5 @@ MANIFEST.bak
 Makefile.old
 MooseX-App-*.tar.gz
 cover_db/
-.DS_Store
+.DS_Store/
+/MYMETA.*

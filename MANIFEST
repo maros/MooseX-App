@@ -16,7 +16,6 @@ lib/MooseX/App/Common.pm
 lib/MooseX/App/Message/Block.pm
 lib/MooseX/App/Message/BlockColor.pm
 lib/MooseX/App/Message/Envelope.pm
-lib/MooseX/App/Meta/Role/Attribute/Base.pm
 lib/MooseX/App/Meta/Role/Attribute/Option.pm
 lib/MooseX/App/Meta/Role/Class/Base.pm
 lib/MooseX/App/Meta/Role/Class/Command.pm

@@ -1,5 +1,9 @@
 Changes for MooseX-App
 
+1.05 Mon, Jun 4, 2012
+    - Fix broken load tests
+    - Join M::A::Meta::Attribute::Base and M::A::Meta::Attribute::Option
+
 1.04 Sat, Jun 2, 2012
     - Fix bugs in BashCompletion plugin
     - Remove code duplication
