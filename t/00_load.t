@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 22;
+use Test::Most tests => 21;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::Command' );
@@ -12,7 +12,6 @@ use_ok( 'MooseX::App::Common' );
 use_ok( 'MooseX::App::Utils' );
 use_ok( 'MooseX::App::Message::Block' );
 use_ok( 'MooseX::App::Message::Envelope' );
-use_ok( 'MooseX::App::Meta::Role::Attribute::Base' );
 use_ok( 'MooseX::App::Meta::Role::Attribute::Option' );
 use_ok( 'MooseX::App::Meta::Role::Class::Base' );
 use_ok( 'MooseX::App::Meta::Role::Class::Command' );
