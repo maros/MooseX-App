@@ -50,7 +50,7 @@ sub init_meta {
     my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
     my %apply_metaroles = (
         class               => ['MooseX::App::Meta::Role::Class::Base'],
-        attribute           => ['MooseX::App::Meta::Role::Attribute::Base'],
+        #attribute           => ['MooseX::Getopt::Meta::Attribute::Trait'],
     );
     my @apply_roles     = ('MooseX::App::Base','MooseX::App::Common');
     

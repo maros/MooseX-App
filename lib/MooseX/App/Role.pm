@@ -13,21 +13,21 @@ Moose::Exporter->setup_import_methods(
     with_meta => [ 'option' ],
 );
 
-sub init_meta {
-    shift;
-    my (%args) = @_;
-    
-    my $meta = Moose::Role->init_meta( %args );
-    
-    Moose::Util::MetaRole::apply_metaroles(
-        for             => $meta,
-        role_metaroles  => {
-            applied_attribute=> ['MooseX::App::Meta::Role::Attribute::Base'],
-        },
-    );
-    
-    return $meta;
-}
+#sub init_meta {
+#    shift;
+#    my (%args) = @_;
+#    
+#    my $meta = Moose::Role->init_meta( %args );
+#    
+#    Moose::Util::MetaRole::apply_metaroles(
+#        for             => $meta,
+#        role_metaroles  => {
+#            #applied_attribute=> ['MooseX::Getopt::Meta::Attribute::Trait'],
+#        },
+#    );
+#    
+#    return $meta;
+#}
 
 sub option {
     goto &MooseX::App::option;
@@ -65,7 +65,7 @@ Alternatively you can also just use attribute traits:
 
  has 'testattr' => (
     isa             => 'rw',
-    traits          => ['AppBase','AppOption'],
+    traits          => ['AppOption'],
     cmd_tags        => [qw(Important! Nice))],
  );
 

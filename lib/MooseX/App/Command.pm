@@ -23,10 +23,10 @@ sub init_meta {
         for             => $meta,
         class_metaroles => {
             class           => ['MooseX::App::Meta::Role::Class::Command'],
-            attribute       => ['MooseX::App::Meta::Role::Attribute::Base','MooseX::Getopt::Meta::Attribute::Trait'],
+            #attribute       => ['MooseX::Getopt::Meta::Attribute::Trait'],
         },
         role_metaroles => {
-            attribute       => ['MooseX::App::Meta::Role::Attribute::Base','MooseX::Getopt::Meta::Attribute::Trait'],
+            #attribute       => ['MooseX::Getopt::Meta::Attribute::Trait'],
         },
     );
     
@@ -88,7 +88,7 @@ features such as:
 
 =item * Setting the command documentation manually via C<command_short_description> and C<command_long_description>
 
-=item * Adding the C<cmd_tags> option to attributes
+=item * Adding the C<cmd_tags> option to options
 
 =item * Adding all attributes available in L<MooseX::Getopt::Meta::Attribute::Trait> such as C<cmd_flag> nad C<cmd_aliases>.
 

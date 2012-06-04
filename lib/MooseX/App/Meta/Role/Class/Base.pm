@@ -370,12 +370,6 @@ sub command_usage_global {
     return @usage;
 }
 
-
-#{
-#    package Moose::Meta::Class::Custom::Trait::AppBase;
-#    sub register_implementation { 'MooseX::App::Meta::Role::Class::Base' }
-#}
-
 1;
 
 __END__
