@@ -14,8 +14,7 @@ Moose::Exporter->setup_import_methods(
 );
 
 sub init_meta {
-    shift;
-    my (%args) = @_;
+    my ($class,%args) = @_;
     
     my $meta = Moose->init_meta( %args );
     

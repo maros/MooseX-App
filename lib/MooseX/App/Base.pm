@@ -82,7 +82,6 @@ sub initialize_command {
             ),
             $meta->command_usage_global(),
         );
-        return;
     }
     
     my $command_meta = $command_class->meta;

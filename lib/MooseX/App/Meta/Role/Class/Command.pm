@@ -35,6 +35,7 @@ sub _build_command_short_description {
     my %pod = $self->_build_command_pod();
     return $pod{'command_short_description'}
         if defined $pod{'command_short_description'};
+    return;
 }
 
 sub command_long_description_predicate {
@@ -44,10 +45,10 @@ sub command_long_description_predicate {
 
 sub _build_command_long_description {
     my ($self) = @_;
-    return $self->_build_command_pod();
     my %pod = $self->_build_command_pod();
     return $pod{'command_long_description'}
         if defined $pod{'command_long_description'};
+    return;
 }
 
 sub _command_description_predicate {
@@ -184,7 +185,7 @@ sub _pod_node_to_text {
 
 #{
 #    package Moose::Meta::Class::Custom::Trait::AppCommand;
-#    sub register_implementation { 'MooseX::App::Meta::Role::Class::Command' }
+#    sub register_implementation { return 'MooseX::App::Meta::Role::Class::Command' }
 #}
 
 1;

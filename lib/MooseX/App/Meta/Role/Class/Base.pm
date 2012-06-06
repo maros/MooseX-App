@@ -156,7 +156,8 @@ sub command_usage_attributes_raw {
         push(@attributes,[$attribute_name,$attribute_description]);
     }
     
-    return sort { $a->[0] cmp $b->[0] } @attributes;
+    @attributes = sort { $a->[0] cmp $b->[0] } @attributes;
+    return @attributes;
 }
 
 sub command_usage_attribute_detail {

@@ -1,11 +1,11 @@
 package MooseX::App;
 # ============================================================================«
 
-our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.05';
-
 use strict;
 use warnings;
+
+our $AUTHORITY = 'cpan:MAROS';
+our $VERSION = '1.05';
 
 use Moose::Exporter;
 use MooseX::App::Meta::Role::Attribute::Option;
@@ -39,12 +39,11 @@ sub import {
     $PLUGIN_SPEC{$caller_class} = \@plugin_classes;
     
     # Call Moose-Exporter generated importer
-    $class->$IMPORT( { into => $caller_class } );
+    return $class->$IMPORT( { into => $caller_class } );
 }
 
 sub init_meta {
-    shift;
-    my (%args) = @_;
+    my ($class,%args) = @_;
     
     my $meta            = Moose->init_meta( %args );
     my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
@@ -110,6 +109,8 @@ sub option {
         } @{$options{traits}};
     
     $meta->add_attribute( $_, %options ) for @$attrs;
+    
+    return;
 }
 
 sub app_namespace($) {

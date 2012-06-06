@@ -21,10 +21,11 @@ has 'help_flag' => (
 sub _compute_getopt_attrs {
     my ($class) = @_;
 
-    return
-        sort { $a->insertion_order <=> $b->insertion_order }
+    my @attrrs = sort { $a->insertion_order <=> $b->insertion_order }
         grep { $_->does('AppOption') } 
-        $class->meta->get_all_attributes
+        $class->meta->get_all_attributes;
+
+    return @attrrs;
 }
 
 

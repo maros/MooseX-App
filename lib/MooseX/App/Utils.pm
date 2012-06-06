@@ -93,7 +93,7 @@ sub split_string {
     push(@lines,$line)
         if ($line ne '');
     
-    @lines = map { s/^\s*(.+?)\s*$/$1/; $_ } @lines;
+    @lines =  map { m/^\s*(.+?)\s*$/ ? $1 : $_  } @lines;
     
     return @lines;
 }

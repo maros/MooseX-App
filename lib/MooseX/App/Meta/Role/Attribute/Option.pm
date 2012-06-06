@@ -18,7 +18,7 @@ has 'cmd_tags' => (
 
 {
     package Moose::Meta::Attribute::Custom::Trait::AppOption;
-    sub register_implementation { 'MooseX::App::Meta::Role::Attribute::Option' }
+    sub register_implementation { return 'MooseX::App::Meta::Role::Attribute::Option' }
 }
 
 1;
