@@ -228,7 +228,7 @@ You can pass a hash of default params to new_with_command
 
 =head2 initialize_command
 
- my $myapp_command = MyApp->new_with_command($command_name,%default);
+ my $myapp_command = MyApp->initialize_command($command_name,%default);
 
 Helper method to initialize the command class for the given command.
 
