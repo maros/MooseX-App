@@ -77,10 +77,7 @@ sub init_meta {
     );
     
     # Add class roles
-    Moose::Util::MetaRole::apply_base_class_roles(
-        for             => $args{for_class},
-        roles           => \@apply_roles,
-    );
+    Moose::Util::apply_all_roles($args{for_class},@apply_roles);
     
     foreach my $plugin_class (@{$plugins}) {
         if ($plugin_class->can('init_plugin')) {
