@@ -77,4 +77,5 @@ EOT
     return "complete -o default -F _${prefix}_macc ". $app_meta->app_base. "\n";
 }
 
+__PACKAGE__->meta->make_immutable;
 1;
