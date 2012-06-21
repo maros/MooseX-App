@@ -64,6 +64,10 @@ sub AUTOLOAD {
 
 {
     package MooseX::App::Null;
+    
+    use strict;
+    use warnings;
+    
     use overload
       'bool'   => sub { 0 },
       '""'     => sub { '' },
