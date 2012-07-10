@@ -14,7 +14,7 @@ use Module::Pluggable::Object;
 
 has 'app_messageclass' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => 'ClassName',
     lazy_build  => 1,
 );
 
