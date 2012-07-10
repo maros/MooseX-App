@@ -20,7 +20,13 @@ sub bash_completion {
     my $command_list    = join (' ', keys %{$commands});
     my $package         = __PACKAGE__;
     my $prefix          = $app_meta->app_base;
-    $prefix =~ tr/./_/;
+    
+    my ($sec,$min,$hour,$mday,$mon,$year) = localtime(time);
+    $year               += 1900;
+    $mday               = sprintf('%02i',$mday);
+    $mon                = sprintf('%02i',$mon);
+    
+    $prefix             =~ tr/./_/;
     
     while (my ($command,$command_class) = each %$commands) {
         Class::MOP::load_class($command_class);
@@ -30,10 +36,12 @@ sub bash_completion {
         ];
     }
     
-    print <<"EOT";
+    my $syntax = '';;
+    
+    $syntax .= <<"EOT";
 #!/bin/bash
  
-# Built with $package;
+# Built with $package on $year/$mon/$mday
  
 ${prefix}_COMMANDS='help $command_list'
  
@@ -48,13 +56,13 @@ _${prefix}_macc_help() {
 EOT
  
     while (my ($c, $o) = each %command_map) {
-        print "_${prefix}_macc_$c() {\n    _compreply \"",
-            join(" ", @$o),
-                "\"\n}\n\n";
+        $syntax .= "_${prefix}_macc_$c() {\n    _compreply \"";
+        $syntax .= join(" ", @$o);
+        $syntax .= "\"\n}\n\n";
     }
  
  
-print <<"EOT";
+    $syntax .= <<"EOT";
 _${prefix}_compreply() {
     COMPREPLY=(\$(compgen -W "\$1" -- \${COMP_WORDS[COMP_CWORD]}))
 }
@@ -74,7 +82,8 @@ _${prefix}_macc() {
  
 EOT
  
-    return "complete -o default -F _${prefix}_macc ". $app_meta->app_base. "\n";
+    $syntax .= "complete -o default -F _${prefix}_macc ". $app_meta->app_base. "\n";
+    return $syntax;
 }
 
 __PACKAGE__->meta->make_immutable;
