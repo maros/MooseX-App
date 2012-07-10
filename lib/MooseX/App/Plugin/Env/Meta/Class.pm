@@ -25,7 +25,7 @@ around 'proto_command' => sub {
     
     my $result = $self->$orig($command_class);
     
-    foreach my $attribute ($command_class->meta->command_usage_attributes_list) {
+    foreach my $attribute ($self->command_usage_attributes_list($command_class->meta)) {
         next
             unless $attribute->can('has_cmd_env')
             && $attribute->has_cmd_env;
