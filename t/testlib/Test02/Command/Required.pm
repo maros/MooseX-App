@@ -8,6 +8,7 @@ option 'local1' => (
     isa             => 'Int',
     is              => 'rw',
     required        => 1,
+    cmd_env         => 'LOCAL1',
 );
 
 option 'local2' => (
