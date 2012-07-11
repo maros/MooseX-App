@@ -17,8 +17,11 @@ sub version {
     my $version = '';
     
     $version .= $app->meta->app_base. ' version '.$app->VERSION."\n";
-    $version .= "";
+    $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
+    $version .= "Perl version ".sprintf("%vd", $^V)."\n";
     
+    # TODO add copyright
+        
     return $version;
 }
 
