@@ -6,6 +6,7 @@ use 5.010;
 use utf8;
 
 use Moose ();
+use MooseX::App::Exporter qw(option command_short_description command_long_description);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
@@ -22,33 +23,15 @@ sub init_meta {
         for             => $meta,
         class_metaroles => {
             class           => ['MooseX::App::Meta::Role::Class::Command'],
-            #attribute       => ['MooseX::Getopt::Meta::Attribute::Trait'],
-        },
-        role_metaroles => {
-            #attribute       => ['MooseX::Getopt::Meta::Attribute::Trait'],
         },
     );
     
     Moose::Util::MetaRole::apply_base_class_roles(
         for             => $args{for_class},
-        roles           => ['MooseX::App::Common'],
+        roles           => ['MooseX::App::Role::Common'],
     );
     
     return $meta;
-}
-
-sub command_short_description($) {
-    my ( $meta, $description ) = @_;
-    return $meta->command_short_description($description);
-}
-
-sub command_long_description($) {
-    my ( $meta, $description ) = @_;
-    return $meta->command_long_description($description);
-}
-
-sub option {
-    goto &MooseX::App::option;
 }
 
 1;

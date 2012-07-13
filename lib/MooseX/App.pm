@@ -9,16 +9,17 @@ use warnings;
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.05';
 
-use Moose::Exporter;
+use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
+use MooseX::App::Exporter qw(app_base option);
+use MooseX::App::Message::Envelope;
+use Moose::Exporter;
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace','app_base', 'option' ],
+    with_meta           => [ 'app_namespace', 'app_base', 'option' ],
     also                => 'Moose',
-    install             => [qw(unimport init_meta)],
+    install             => [ 'unimport', 'init_meta' ],
 );
-
-my %PLUGIN_SPEC;
 
 sub import {
     my ( $class, @plugins ) = @_;
@@ -26,19 +27,8 @@ sub import {
     # Get caller
     my ($caller_class) = caller();
     
-    # Loop all requested plugins
-    my @plugin_classes;
-    foreach my $plugin (@plugins) {
-        my $plugin_class = 'MooseX::App::Plugin::'.$plugin;
-        
-        # TODO eval plugin class
-        Class::MOP::load_class($plugin_class);
-        
-        push (@plugin_classes,$plugin_class);
-    }
-    
-    # Store plugin spec
-    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;
+    # Process plugins
+    MooseX::App::Exporter->process_plugins($caller_class,@plugins);
     
     # Call Moose-Exporter generated importer
     return $class->$IMPORT( { into => $caller_class } );
@@ -47,79 +37,17 @@ sub import {
 sub init_meta {
     my ($class,%args) = @_;
     
-    my $meta            = Moose->init_meta( %args );
-    my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
-    my %apply_metaroles = (
+    $args{roles}        = ['MooseX::App::Role::Base'];
+    $args{metaroles}    = {
         class               => ['MooseX::App::Meta::Role::Class::Base'],
-        #attribute           => ['MooseX::Getopt::Meta::Attribute::Trait'],
-    );
-    my @apply_roles     = ('MooseX::App::Base','MooseX::App::Common');
+    };
     
-    foreach my $plugin (@$plugins) {
-        push(@apply_roles,$plugin,{ -excludes => [ 'plugin_metaroles' ] } )
-    }
-    
-    # Process all plugins in the given order
-    foreach my $plugin_class (@{$plugins}) {
-        if ($plugin_class->can('plugin_metaroles')) {
-            my ($metaroles) = $plugin_class->plugin_metaroles($args{for_class});
-            if (ref $metaroles eq 'HASH') {
-                foreach my $type (keys %$metaroles) {
-                    $apply_metaroles{$type} ||= [];
-                    push (@{$apply_metaroles{$type}},@{$metaroles->{$type}});
-                }
-            }
-        }
-    }
-    
-    # Add meta roles
-    Moose::Util::MetaRole::apply_metaroles(
-        for             => $args{for_class},
-        class_metaroles => \%apply_metaroles
-    );
-    
-    # Add class roles
-    Moose::Util::apply_all_roles($args{for_class},@apply_roles);
-    
-    foreach my $plugin_class (@{$plugins}) {
-        if ($plugin_class->can('init_plugin')) {
-            $plugin_class->init_plugin($args{for_class});
-        }
-    }
-    
-    return $meta;
-}
-
-sub option {
-    my $meta = shift;
-    my $name = shift;
- 
-    Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
-        if @_ % 2 == 1;
- 
-    my %options = ( definition_context => Moose::Util::_caller_info(), @_ );
-    my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
-    $options{traits} ||= [];
-    
-    push (@{$options{traits}},'MooseX::App::Meta::Role::Attribute::Option')
-        unless grep { 
-            $_ eq 'MooseX::App::Meta::Role::Attribute::Option' 
-            || $_ eq 'AppOption' 
-        } @{$options{traits}};
-    
-    $meta->add_attribute( $_, %options ) for @$attrs;
-    
-    return;
+    return MooseX::App::Exporter->process_init_meta(%args);
 }
 
 sub app_namespace($) {
     my ( $meta, $name ) = @_;
     return $meta->app_namespace($name);
-}
-
-sub app_base($) {
-    my ( $meta, $name ) = @_;
-    return $meta->app_base($name);
 }
 
 no Moose;
