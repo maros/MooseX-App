@@ -16,6 +16,7 @@ sub new_with_command {
     
     my $meta = $class->meta;
     
+    local @ARGV = @ARGV;
     my $first_argv = shift(@ARGV);
     
     # No args
