@@ -17,15 +17,6 @@ sub plugin_metaroles {
     }
 }
 
-around 'initialize_command' => sub {
-    my $orig = shift;
-    my $self = shift;
-    
-    my $return = $self->$orig(@_);
-    
-    return $return;
-};
-
 1;
 
 __END__
