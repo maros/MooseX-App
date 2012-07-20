@@ -10,7 +10,7 @@ use Moose::Role;
 sub new_with_options {
     my ($self,%args) = @_;
     
-    $self->_initialize_command($self,%args);
+    $self->initialize_command($self,%args);
 }
 
 1;

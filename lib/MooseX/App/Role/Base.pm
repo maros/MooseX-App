@@ -63,7 +63,7 @@ sub new_with_command {
                     $meta->command_usage_global(),
                 );
             }
-            return $class->_initialize_command($candidates[0],%args);
+            return $class->initialize_command($candidates[0],%args);
         # Multiple candidates
         } else {
             my $message = "Ambiguous command '$first_argv'\nWhich command did you mean?";
