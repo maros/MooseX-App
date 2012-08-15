@@ -102,6 +102,7 @@ L<MooseX::Getopt::Meta::Attribute::Trait> are also honoured.
       required          => 1,
       documentation     => q[Some important option],
       cmd_tags          => [qw(Important!)],
+      cmd_aliases       => [qw(so)], # From MooseX::Getopt
   );
 
 The help for this command would look something like this:
@@ -116,7 +117,7 @@ The help for this command would look something like this:
   
   options:
     --config           Path to command config file
-    --some_option      Some important option [Required; Integer; Important!]
+    --some_option --so Some important option [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]
 
 If you do not want to include an attribute not defined with 'option'
