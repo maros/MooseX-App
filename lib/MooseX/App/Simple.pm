@@ -36,11 +36,16 @@ sub import {
 sub init_meta {
     my ($class,%args) = @_;
     
+    my $for_class       = $args{for_class};
     $args{roles}        = ['MooseX::App::Role::Simple' ];
     $args{metaroles}    = {
         class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Command'],
     };
-    return MooseX::App::Exporter->process_init_meta(%args);
+    my $meta = MooseX::App::Exporter->process_init_meta(%args);
+    
+    $for_class->meta->app_commands({ 'self' => $for_class });
+    
+    return $meta;
 }
 
 no Moose;

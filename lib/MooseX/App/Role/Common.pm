@@ -30,9 +30,23 @@ sub _compute_getopt_attrs {
     return @attrrs;
 }
 
+
+
 sub initialize_command {
-    my ($self,$command_class,%args) = @_;
+    my ($self,$command,%args) = @_;
     
+    my $meta         = $self->meta;
+    my $command_class= $meta->app_commands->{$command};
+    # TODO return some kind of null class object
+    return
+        unless defined $command_class;
+
+    $self->initialize_command_class($command_class,%args)
+}
+
+sub initialize_command_class {
+    my ($self,$command_class,%args) = @_;
+
     my $meta         = $self->meta;
     my $command_meta = $command_class->meta || $meta;
     my $proto_result = $meta->proto_command($command_class);
