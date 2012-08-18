@@ -48,6 +48,20 @@ sub initialize_command_class {
     my ($self,$command_class,%args) = @_;
 
     my $meta         = $self->meta;
+
+    eval {
+        Class::MOP::load_class($command_class);
+    };
+    if (my $error = $@) {
+        return MooseX::App::Message::Envelope->new(
+            $meta->command_message(
+                header          => $error,
+                type            => "error",
+            ),
+            $meta->command_usage_global(),
+        );
+    }
+
     my $command_meta = $command_class->meta || $meta;
     my $proto_result = $meta->proto_command($command_class);
     

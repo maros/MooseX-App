@@ -91,32 +91,53 @@ sub proto_options {
     );
 }
 
-sub command_matching {
+sub command_candidates {
     my ($self,$command) = @_;
     
+    my $lc_command = lc($command);
     my $commands = $self->app_commands;
     
     # Exact match
-    if (defined $commands->{$command}) {
+    if (defined $commands->{$lc_command}) {
         return $command;
     # Fuzzy match
     } else {
         my @candidates;
         my $candidate_length = length($command);
-        my $lc_command = lc($command);
         
         # Compare all commands to find matching candidates
         foreach my $command_name (keys %$commands) {
-            my $lc_command_name = lc($command_name);
-            if ($lc_command eq $lc_command_name) {
-                return $command_name;
-            }
-            if ($lc_command eq substr($lc_command_name,0,$candidate_length)) {
+            if ($lc_command eq substr($command_name,0,$candidate_length)) {
                 push(@candidates,$command_name);
             }
-            
         }
-        return (sort @candidates);
+        return @candidates;
+    }
+    
+}
+
+sub command_get {
+    my ($self,$command) = @_;
+    
+    my @candidates = $self->command_candidates($command);
+        
+    given (scalar @candidates) {
+        when (0) {
+            return $self->command_message(
+                header          => "Unknown command '$command'",
+                type            => "error",
+            );
+        }
+        when (1) {
+            return $candidates[0];
+        }
+        default {
+            return $self->command_message(
+                header          => "Ambiguous command '$command'\nWhich command did you mean?",
+                type            => "error",
+                body            => MooseX::App::Utils::format_list(map { [ $_ ] } sort @candidates),
+            );
+        }
     }
 }
 
@@ -497,9 +518,9 @@ Returns a message containing the basic usage documentation
 
 Returns a hashref of command name and command class.
 
-=head2 command_matching
+=head2 command_get
 
- my @commands = $meta->command_matching($user_command_input);
+ my @commands = $meta->command_get($user_command_input);
 
 Returns a list of command names matching the user input
 
