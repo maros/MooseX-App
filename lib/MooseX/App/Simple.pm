@@ -39,7 +39,7 @@ sub init_meta {
     my $for_class       = $args{for_class};
     $args{roles}        = ['MooseX::App::Role::Simple' ];
     $args{metaroles}    = {
-        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Command'],
+        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Simple','MooseX::App::Meta::Role::Class::Command'],
     };
     my $meta = MooseX::App::Exporter->process_init_meta(%args);
     
