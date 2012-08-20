@@ -30,6 +30,12 @@ has 'app_base' => (
     default     => sub { Path::Class::File->new($0)->basename },
 );
 
+has 'app_fuzzy' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 1,
+);
+
 has 'app_commands' => (
     is          => 'rw',
     isa         => 'HashRef[Str]',
@@ -106,7 +112,7 @@ sub command_candidates {
             push(@candidates,$command_name);
         }
     }
-    return @candidates;
+    return (sort @candidates);
 }
 
 sub command_get {
@@ -129,17 +135,21 @@ sub command_get {
                 );
             }
             when (1) {
-                return $self->command_message(
-                    header          => "Unknown command '$command'\nDid you mean?",
-                    type            => "error",
-                    body            => MooseX::App::Utils::format_list(map { [ $_ ] } sort @candidates),
-                );
+                if ($self->app_fuzzy) {
+                    return $candidates[0];
+                } else {
+                    return $self->command_message(
+                        header          => "Unknown command '$command'",
+                        type            => "error",
+                        body            => "Did you mean '".$candidates[0]."'?",
+                    );
+                }
             }
             default {
                 return $self->command_message(
-                    header          => "Ambiguous command '$command'\nWhich command did you mean?",
+                    header          => "Ambiguous command '$command'",
                     type            => "error",
-                    body            => MooseX::App::Utils::format_list(map { [ $_ ] } sort @candidates),
+                    body            => "Which command did you mean?\n".MooseX::App::Utils::format_list(map { [ $_ ] } sort @candidates),
                 );
             }
         }
