@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Plugin::Similar;
+package MooseX::App::Plugin::Fuzzy;
 # ============================================================================
 
 use 5.010;
@@ -12,7 +12,7 @@ sub plugin_metaroles {
     my ($self,$class) = @_;
     
     return {
-        class   => ['MooseX::App::Plugin::Similar::Meta::Class'],
+        class   => ['MooseX::App::Plugin::Fuzzy::Meta::Class'],
     }
 }
 
