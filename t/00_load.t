@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 32;
+use Test::Most tests => 34;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::Command' );
@@ -53,5 +53,16 @@ SKIP :{
     };
     unless ($ok) {
         skip "File::HomeDir is not installed",2;
+    }
+}
+
+SKIP :{
+    my $ok = eval {
+        Class::MOP::load_class('Text::WagnerFischer');
+        use_ok( 'MooseX::App::Plugin::Fuzzy' );
+        use_ok( 'MooseX::App::Plugin::Fuzzy::Meta::Class');
+    };
+    unless ($ok) {
+        skip "Text::WagnerFischer is not installed",2;
     }
 }
