@@ -9,12 +9,14 @@ option 'command_local1' => (
     is              => 'rw',
     documentation   => 'some docs about the long texts that seem to occur randomly',
     cmd_tags        => [qw(Important)],
+    cmd_env         => 'LOCAL1',
 );
 
 option 'command_local2' => (
     isa             => 'Str',
     is              => 'rw',
-    documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly]
+    documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly],
+    cmd_env         => 'LOCAL2',
 );
 
 has 'anotherprivate' => (

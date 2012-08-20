@@ -1,7 +1,7 @@
 package Test01;
 
 use Moose;
-use MooseX::App qw(Config);
+use MooseX::App qw(Config Env);
 
 option 'global' => (
     isa             => 'Int',

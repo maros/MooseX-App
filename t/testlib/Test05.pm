@@ -1,7 +1,7 @@
 package Test05;
 
 #use Moose;
-use MooseX::App::Simple qw(Color Config Env);
+use MooseX::App::Simple qw(Config Env);
 
 option 'some_option' => (
     is            => 'rw',

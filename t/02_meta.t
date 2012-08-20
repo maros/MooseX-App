@@ -26,8 +26,8 @@ ok(Test01->can('initialize_command'),'Role applied to base class');
 is(scalar keys %{$commands},3,'Found three commands');
 is($commands->{command_a},'Test01::CommandA','Command A found');
 is($meta->command_get('COMMAND_a'),'command_a','Command A matched');
-is(join(',',$meta->command_get('COMMAND')),'command_a,command_b,command_c1','Command A and B matched');
-is(join(',',$meta->command_get('command_c')),'command_c1','Command C1 matched');
+is(join(',',$meta->command_candidates('COMMAND')),'command_a,command_b,command_c1','Command A and B matched');
+is(join(',',$meta->command_candidates('command_c')),'command_c1','Command C1 matched');
 
 cmp_deeply([ $meta->command_usage_attributes_raw ],
 [
