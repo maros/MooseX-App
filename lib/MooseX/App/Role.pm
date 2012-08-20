@@ -6,6 +6,7 @@ use 5.010;
 use utf8;
 
 use Moose::Role ();
+use MooseX::App::Exporter qw(option);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
@@ -28,10 +29,6 @@ Moose::Exporter->setup_import_methods(
 #    
 #    return $meta;
 #}
-
-sub option {
-    goto &MooseX::App::option;
-}
 
 1;
 

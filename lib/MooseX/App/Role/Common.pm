@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Base;
+package MooseX::App::Role::Common;
 # ============================================================================
 
 use 5.010;
@@ -7,70 +7,48 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
+with 'MooseX::Getopt' => { 
+    -excludes => [ 'help_flag', '_compute_getopt_attrs','new_with_options'] 
+};
 
-use MooseX::App::Message::Envelope;
-use List::Util qw(max);
+has 'help_flag' => (
+    is              => 'ro', isa => 'Bool',
+    traits          => ['AppOption','Getopt'],
+    cmd_flag        => 'help',
+    cmd_aliases     => [ qw(usage ?) ],
+    documentation   => 'Prints this usage information.',
+);
 
-sub new_with_command {
-    my ($class,%args) = @_;
-    
-    my $meta = $class->meta;
-    
-    my $first_argv = shift(@ARGV);
-    
-    # No args
-    if (! defined $first_argv
-        || $first_argv =~ m/^\s*$/) {
-        return MooseX::App::Message::Envelope->new(
-            $meta->command_message(
-                header          => "Missing command",
-                type            => "error",
-            ),
-            $meta->command_usage_global(),
-        );
-    # Requested help
-    } elsif (lc($first_argv) =~ m/^-{0,2}(help|h|\?|usage)$/) {
-        return MooseX::App::Message::Envelope->new(
-            $meta->command_usage_global(),
-        );
-    # Looks like a command
-    } else {
-        my @candidates = $meta->command_matching($first_argv);
-        # No candidates
-        if (scalar @candidates == 0) {
-            return MooseX::App::Message::Envelope->new(
-                $meta->command_message(
-                    header          => "Unknown command '$first_argv'",
-                    type            => "error",
-                ),
-                $meta->command_usage_global(),
-            );
-        # One candidate
-        } elsif (scalar @candidates == 1) {
-            return $class->initialize_command($candidates[0],%args);
-        # Multiple candidates
-        } else {
-            my $message = "Ambiguous command '$first_argv'\nWhich command did you mean?";
-            return MooseX::App::Message::Envelope->new(
-                $meta->command_message(
-                    header          => $message,
-                    type            => "error",
-                    body            => MooseX::App::Utils::format_list(map { [ $_ ] } @candidates),
-                ),
-                $meta->command_usage_global(),
-            );
-        }
-    }
+# Dirty hack to hide private attributes from MooseX-Getopt
+sub _compute_getopt_attrs {
+    my ($class) = @_;
+
+    my @attrrs = sort { $a->insertion_order <=> $b->insertion_order }
+        grep { $_->does('AppOption') } 
+        $class->meta->get_all_attributes;
+
+    return @attrrs;
 }
 
+
+
 sub initialize_command {
-    my ($class,$command_name,%args) = @_;
+    my ($self,$command,%args) = @_;
     
-    my $meta = $class->meta;
-    
-    my $commands = $meta->app_commands;
-    my $command_class = $commands->{$command_name};
-    
+    my $meta         = $self->meta;
+    my $command_class= $meta->app_commands->{$command};
+    # TODO return some kind of null class object
+    return
+        unless defined $command_class;
+
+    $self->initialize_command_class($command_class,%args)
+}
+
+sub initialize_command_class {
+    my ($self,$command_class,%args) = @_;
+
+    my $meta         = $self->meta;
+
     eval {
         Class::MOP::load_class($command_class);
     };
@@ -83,8 +61,8 @@ sub initialize_command {
             $meta->command_usage_global(),
         );
     }
-    
-    my $command_meta = $command_class->meta;
+
+    my $command_meta = $command_class->meta || $meta;
     my $proto_result = $meta->proto_command($command_class);
     
     # TODO return some kind of null class object
@@ -128,7 +106,7 @@ sub initialize_command {
         }
         # TODO exitval 0 ..  ok , 1 .. error, 2..fatal error
         return $command_object;
-    }
+    }   
 }
 
 1;

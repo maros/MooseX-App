@@ -22,7 +22,7 @@ sub class_to_command {
     
     $class =~ s/^\Q$namespace\E:://;
     $class =~ s/^.+::([^:]+)$/$1/;
-    return decamelize($class);
+    return lc(decamelize($class));
 }
 
 sub format_text {

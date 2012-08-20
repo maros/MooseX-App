@@ -31,6 +31,10 @@ feature 'Config files in users home directory',
     -default   => 0,
     'File::HomeDir'                             => 0;
 
+feature 'Handle typos in command names',
+    -default   => 0,
+    'Text::WagnerFischer'                       => 0;
+
 build_requires  'Test::Most'                    => 0;
 build_requires  'Test::NoWarnings'              => 0;
 

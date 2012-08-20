@@ -1,4 +1,4 @@
-package MooseX::App;
+package MooseX::App::Simple;
 # ============================================================================«
 
 use 5.010;
@@ -9,14 +9,13 @@ use warnings;
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.05';
 
-use List::Util qw(max);
-use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base option);
-use MooseX::App::Message::Envelope;
 use Moose::Exporter;
+use MooseX::App::Exporter qw(app_base option command_short_description command_long_description);
+use MooseX::App::Meta::Role::Attribute::Option;
+use MooseX::App::Message::Envelope;
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace', 'app_base', 'option' ],
+    with_meta           => [ 'app_base', 'option', 'command_short_description', 'command_long_description' ],
     also                => 'Moose',
     install             => [ 'unimport', 'init_meta' ],
 );
@@ -37,17 +36,16 @@ sub import {
 sub init_meta {
     my ($class,%args) = @_;
     
-    $args{roles}        = ['MooseX::App::Role::Base'];
+    my $for_class       = $args{for_class};
+    $args{roles}        = ['MooseX::App::Role::Simple' ];
     $args{metaroles}    = {
-        class               => ['MooseX::App::Meta::Role::Class::Base'],
+        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Simple','MooseX::App::Meta::Role::Class::Command'],
     };
+    my $meta = MooseX::App::Exporter->process_init_meta(%args);
     
-    return MooseX::App::Exporter->process_init_meta(%args);
-}
-
-sub app_namespace($) {
-    my ( $meta, $name ) = @_;
-    return $meta->app_namespace($name);
+    $for_class->meta->app_commands({ 'self' => $for_class });
+    
+    return $meta;
 }
 
 no Moose;
