@@ -1,5 +1,13 @@
 Changes for MooseX-App
 
+1.06 Mon, Aug 20, 2012
+    - Single command interface (MooseX::App::Simple)
+    - Fuzzy command matching plugin
+    - Only lowercase command names
+    - Environment plugin
+    - Version plugin
+    - Various cleanups
+
 1.05 Mon, Jun 4, 2012
     - Fix broken load tests
     - Join M::A::Meta::Attribute::Base and M::A::Meta::Attribute::Option
