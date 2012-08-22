@@ -1,5 +1,8 @@
 Changes for MooseX-App
 
+1.07 Wed, Aug 22, 2012
+    - Fix failing load tests
+    
 1.06 Mon, Aug 20, 2012
     - Single command interface (MooseX::App::Simple)
     - Fuzzy command matching plugin
