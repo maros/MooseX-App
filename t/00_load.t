@@ -2,12 +2,10 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 34;
+use Test::Most tests => 32;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::Command' );
-use_ok( 'MooseX::App::Base' );
-use_ok( 'MooseX::App::Common' );
 #use_ok( 'MooseX::App::Role' ); # cannot test since it can only be loaded into a Moose::Role
 use_ok( 'MooseX::App::Utils' );
 use_ok( 'MooseX::App::Message::Block' );
