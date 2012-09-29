@@ -78,7 +78,8 @@ In your base class:
       is              => 'rw',
   ); # not exposed
 
-Write multiple command classes:
+Write multiple command classes (If you have only a single command class
+you might use L<MooseX-App-Simple> instead)
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important

@@ -12,7 +12,7 @@ To create a simple command-line application with MooseX::App you need
 
 =item * A base class
 
-=item * Multiple command classes
+=item * Multiple command classes (unless you use L<MooseX::App::Simple>)
 
 =item * and an invocation script
 
@@ -73,8 +73,8 @@ All command classes must load MooseX::App::Command.
   package MyApp::SomeCommand;
   use MooseX::App::Command;
 
-If you want to use global options defined in the base class you have to 
-extend the base class with your command class.
+If you want to use global options defined in the base class you can extend the
+base class with your command class.
 
   package MyApp::SomeCommand;
   use MooseX::App::Command;
@@ -137,6 +137,27 @@ if the command is invoked by the user.
     # do something
  }
 
+If you need to implement only a single command you should use
+L<MooseX::App::Simple> instead of L<MooseX::App>, ans omit command classes.
+In this case of course you have to declare all options and implement
+the application logic in the base class:
+
+  package MyApp;
+  use MooseX::App::Simple qw(Config); # Loads the Config plugin
+  
+  option 'some_global_option' => (
+      is                => 'rw',
+      isa               => 'Str',
+      documentation     => q[Some important global option],
+  );
+  
+  sub run {
+     my ($self) = @_;
+     # do something
+  }
+  
+  1;
+
 =head1 INVOCATION SCRIPT
 
 Once you have the base and command classes ready, you need to write a small
@@ -151,4 +172,11 @@ fails it will return a L<MooseX::App::Message::Envelope> object possibly
 containing an error message and a user help message. Since 
 L<MooseX::App::Message::Envelope> follows the null object pattern you can 
 call any method on it without checking the object type.
+
+If using L<MooseX::App::Simple> your invocation script needs some 
+modification.
+
+ #!/usr/bin/env perl
+ use MyApp;
+ MyApp->new_with_options->run();
 
