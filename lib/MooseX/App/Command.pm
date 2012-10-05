@@ -6,6 +6,7 @@ use 5.010;
 use utf8;
 
 use Moose ();
+use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(option command_short_description command_long_description);
 use Moose::Exporter;
 
