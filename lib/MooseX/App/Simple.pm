@@ -13,10 +13,12 @@ use Moose::Exporter;
 use MooseX::App::Exporter qw(app_base option command_short_description command_long_description);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Message::Envelope;
+use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
     with_meta           => [ 'app_base', 'option', 'command_short_description', 'command_long_description' ],
-    also                => 'Moose',
+    also                => [ 'Moose' ],
+    as_is               => [ 'new_with_options' ],
     install             => [ 'unimport', 'init_meta' ],
 );
 
@@ -37,7 +39,7 @@ sub init_meta {
     my ($class,%args) = @_;
     
     my $for_class       = $args{for_class};
-    $args{roles}        = ['MooseX::App::Role::Simple' ];
+    $args{roles}        = ['MooseX::App::Role::Base' ];
     $args{metaroles}    = {
         class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Simple','MooseX::App::Meta::Role::Class::Command'],
     };
@@ -46,6 +48,15 @@ sub init_meta {
     $for_class->meta->app_commands({ 'self' => $for_class });
     
     return $meta;
+}
+
+sub new_with_options {
+    my ($class,%args) = @_;
+
+    Moose->throw_error('new_with_options is a class method')
+        if ! defined $class || blessed($class);
+
+    return $class->initialize_command_class($class,%args);
 }
 
 no Moose;
@@ -104,7 +115,7 @@ This method reads the command line arguments from the user and tries to create
 instantiate the current class with the ARGV-input. If it fails it retuns a 
 L<MooseX::App::Message::Envelope> object holding an error message.
 
-You can pass a hash of default params to new_with_command
+You can pass a hash of default params to new_with_options
 
  MyApp->new_with_options( %default );
 
