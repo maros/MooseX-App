@@ -21,7 +21,7 @@ is($meta->app_base,'02_meta.t','Command base ok');
 is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
 
 ok(Test01->can('new_with_command'),'Role applied to base class');
-ok(Test01->can('initialize_command'),'Role applied to base class');
+ok(Test01->can('initialize_command_class'),'Role applied to base class');
 
 is(scalar keys %{$commands},3,'Found three commands');
 is($commands->{command_a},'Test01::CommandA','Command A found');
