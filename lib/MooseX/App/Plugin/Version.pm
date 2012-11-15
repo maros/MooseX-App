@@ -39,7 +39,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Version - Bash completion for your MooseX::App applications
+MooseX::App::Plugin::Version - Adds a command to display version
 
 =head1 SYNOPSIS
 
@@ -50,15 +50,14 @@ In your base class:
 
 In your shell
 
- bash$ myapp bash_completion > myapp-complete.sh
- bash$ source myapp-complete.sh
-
+ bash$ myapp version
+ MyApp version 2.1
+ MooseX::App version 1.08
+ Perl version 5.16.2
+ 
 =head1 DESCRIPTION
 
-This plugin generates a bash completion definition for your application.
-
-=head1 SEE ALSO
-
-L<MooseX::App::Cmd::Command::BashComplete>
+This plugin adds a command to display the version of your application,
+MooseX::App and perl.
 
 =cut

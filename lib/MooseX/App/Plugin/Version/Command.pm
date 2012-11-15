@@ -20,7 +20,7 @@ sub version {
     $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
     $version .= "Perl version ".sprintf("%vd", $^V)."\n";
     
-    # TODO add copyright
+    # TODO add copyright/license
         
     return $version;
 }
