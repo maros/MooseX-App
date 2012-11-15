@@ -56,7 +56,7 @@ _${prefix}_macc_help() {
 EOT
  
     while (my ($c, $o) = each %command_map) {
-        $syntax .= "_${prefix}_macc_$c() {\n    _compreply \"";
+        $syntax .= "_${prefix}_macc_$c() {\n    _${prefix}_compreply \"";
         $syntax .= join(" ", @$o);
         $syntax .= "\"\n}\n\n";
     }
