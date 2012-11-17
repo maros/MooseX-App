@@ -1,3 +1,4 @@
+# ============================================================================«
 package MooseX::App;
 # ============================================================================«
 
@@ -7,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.07';
+our $VERSION = '1.08';
 
 use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;

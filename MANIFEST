@@ -31,22 +31,21 @@ lib/MooseX/App/Plugin/ConfigHome/Meta/Class.pm
 lib/MooseX/App/Plugin/Env.pm
 lib/MooseX/App/Plugin/Env/Meta/Attribute.pm
 lib/MooseX/App/Plugin/Env/Meta/Class.pm
-lib/MooseX/App/Plugin/Fuzzy.pm
-lib/MooseX/App/Plugin/Fuzzy/Meta/Class.pm
+lib/MooseX/App/Plugin/Typo.pm
+lib/MooseX/App/Plugin/Typo/Meta/Class.pm
 lib/MooseX/App/Plugin/Version.pm
 lib/MooseX/App/Plugin/Version/Command.pm
 lib/MooseX/App/Plugin/Version/Meta/Class.pm
 lib/MooseX/App/Role.pm
 lib/MooseX/App/Role/Base.pm
 lib/MooseX/App/Role/Common.pm
-lib/MooseX/App/Role/Simple.pm
 lib/MooseX/App/Simple.pm
 lib/MooseX/App/Tutorial.pod
 lib/MooseX/App/Utils.pm
 lib/MooseX/App/WritingPlugins.pod
 LICENCE
 Makefile.PL
-MANIFEST			This list of files
+MANIFEST
 META.yml
 MYMETA.json
 MYMETA.yml

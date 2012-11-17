@@ -1,5 +1,12 @@
 Changes for MooseX-App
 
+1.08 Sat, Nov 17, 2012
+    - Refactor object initialization
+    - Fix missing bash-completion prefix (Steve Nolte)
+    - Require latest MooseX::Getopt (Steve Nolte)
+    - Fix Plugin::Version docs RT81186 (Michael G)
+    - Update documentation
+
 1.07 Wed, Aug 22, 2012
     - Fix failing load tests
     
