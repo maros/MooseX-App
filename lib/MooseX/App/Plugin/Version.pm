@@ -16,7 +16,7 @@ sub plugin_metaroles {
     }
 }
 
-around 'initialize_command' => sub {
+around 'initialize_command_class' => sub {
     my $orig = shift;
     my $self = shift;
     
