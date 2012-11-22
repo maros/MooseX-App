@@ -1,5 +1,8 @@
 Changes for MooseX-App
 
+1.09 Thu, Nov 22, 2012
+    - Fix failing load test
+
 1.08 Sat, Nov 17, 2012
     - Refactor object initialization
     - Fix missing bash-completion prefix (Steve Nolte)

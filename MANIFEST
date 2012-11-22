@@ -31,6 +31,8 @@ lib/MooseX/App/Plugin/ConfigHome/Meta/Class.pm
 lib/MooseX/App/Plugin/Env.pm
 lib/MooseX/App/Plugin/Env/Meta/Attribute.pm
 lib/MooseX/App/Plugin/Env/Meta/Class.pm
+lib/MooseX/App/Plugin/Fuzzy.pm
+lib/MooseX/App/Plugin/Fuzzy/Meta/Class.pm
 lib/MooseX/App/Plugin/Typo.pm
 lib/MooseX/App/Plugin/Typo/Meta/Class.pm
 lib/MooseX/App/Plugin/Version.pm
@@ -45,7 +47,7 @@ lib/MooseX/App/Utils.pm
 lib/MooseX/App/WritingPlugins.pod
 LICENCE
 Makefile.PL
-MANIFEST
+MANIFEST			This list of files
 META.yml
 MYMETA.json
 MYMETA.yml
@@ -70,6 +72,7 @@ t/testlib/Test03/SomeCommand.pm
 t/testlib/Test04.pm
 t/testlib/Test04Base.pm
 t/testlib/Test05.pm
+t/testlib/Test06.pm
 TODO
 xt/perlcritic.t
 xt/pod.t
