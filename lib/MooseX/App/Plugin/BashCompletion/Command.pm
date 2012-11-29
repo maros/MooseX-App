@@ -24,7 +24,7 @@ sub bash_completion {
     my ($sec,$min,$hour,$mday,$mon,$year) = localtime(time);
     $year               += 1900;
     $mday               = sprintf('%02i',$mday);
-    $mon                = sprintf('%02i',$mon);
+    $mon                = sprintf('%02i',$mon+1);
     
     $prefix             =~ tr/./_/;
     
