@@ -6,9 +6,6 @@ use utf8;
 use strict;
 use warnings;
 
-our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.05';
-
 use Moose::Exporter;
 use MooseX::App::Exporter qw(app_base option command_short_description command_long_description);
 use MooseX::App::Meta::Role::Attribute::Option;
