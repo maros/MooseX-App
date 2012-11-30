@@ -1,6 +1,6 @@
 package Test03;
 
-use MooseX::App;
+use MooseX::App qw(BashCompletion);
  
 option 'global_option' => (
     is            => 'rw',
