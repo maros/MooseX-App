@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 12+1;
+use Test::Most tests => 16+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -10,7 +10,25 @@ use lib 't/testlib';
 use Test03;
 
 {
-    explain('Test 1: Private option is not exposed');
+    explain('Test 1: Non-Fuzzy command matching');
+    local @ARGV = qw(some --private 1);
+    my $test01 = Test03->new_with_command;
+    isa_ok($test01,'MooseX::App::Message::Envelope');
+    is($test01->blocks->[0]->header,"Unknown command: some","Message ok");
+}
+
+{
+    explain('Test 2: Non-Fuzzy attribute matching');
+    local @ARGV = qw(some_command --private 1);
+    my $test01 = Test03->new_with_command;
+    isa_ok($test01,'MooseX::App::Message::Envelope');
+    is($test01->blocks->[0]->header,"Unknown option: private","Message ok");
+}
+
+Test03->meta->app_fuzzy(1);
+
+{
+    explain('Test 3: Private option is not exposed');
     local @ARGV = qw(some --private 1);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
@@ -19,7 +37,7 @@ use Test03;
 }
 
 {
-    explain('Test 2: Options from role');
+    explain('Test 4: Options from role');
     local @ARGV = qw(some --another 10 --role 15);
     my $test02 = Test03->new_with_command;
     isa_ok($test02,'Test03::SomeCommand');
@@ -28,7 +46,7 @@ use Test03;
 }
 
 {
-    explain('Test 3: Missing attribute value');
+    explain('Test 5: Missing attribute value');
     local @ARGV = qw(some --another);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
@@ -37,7 +55,7 @@ use Test03;
 }
 
 {
-    explain('Test 4: All options available & no description');
+    explain('Test 6: All options available & no description');
     local @ARGV = qw(some --help);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');

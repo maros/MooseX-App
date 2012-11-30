@@ -26,6 +26,6 @@ use Test03;
     my $test02 = Test03->new_with_command;
     isa_ok($test02,'MooseX::App::Message::Envelope');
     my $version = $test02->stringify;
-    like($version,qr/\s*08_plugin_various\.t\s+version\s+22\.02/s);
-    like($version,qr/\s*MooseX::App\sversion\s\d+\.\d+/s);
+    like($version,qr/\s*08_plugin_various\.t\s+version\s+22\.02/s,'Check for app version');
+    like($version,qr/\s*MooseX::App\sversion\s\d+\.\d+/s,'Check for MooseX::App version');
 }
