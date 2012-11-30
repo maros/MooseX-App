@@ -21,11 +21,10 @@ around 'initialize_command_class' => sub {
     my $self = shift;
     
     my $return = $self->$orig(@_);
-    
-    if (blessed $return && $return->isa('MooseX::App::Plugin::BashCompletion::Command')) {
-        my $bash_completion_syntax = $return->bash_completion($self);
-        print $bash_completion_syntax;
-        return MooseX::App::Null->new();
+
+    if (blessed $return 
+        && $return->isa('MooseX::App::Plugin::BashCompletion::Command')) {
+        return $return->bash_completion($self);
     }
     
     return $return;
