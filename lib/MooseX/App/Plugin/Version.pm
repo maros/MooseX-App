@@ -21,11 +21,9 @@ around 'initialize_command_class' => sub {
     my $self = shift;
     
     my $return = $self->$orig(@_);
-    
-    if (blessed $return && $return->isa('MooseX::App::Plugin::Version::Command')) {
-        my $version = $return->version($self);
-        print $version;
-        return MooseX::App::Null->new();
+    if (blessed $return 
+        && $return->isa('MooseX::App::Plugin::Version::Command')) {
+        return $return->version($self);
     }
     
     return $return;

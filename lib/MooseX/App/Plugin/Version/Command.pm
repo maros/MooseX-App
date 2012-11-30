@@ -21,8 +21,10 @@ sub version {
     $version .= "Perl version ".sprintf("%vd", $^V)."\n";
     
     # TODO add copyright/license
-        
-    return $version;
+    
+    return MooseX::App::Message::Envelope->new(
+        MooseX::App::Message::Block->new({ body => $version })
+    );
 }
 
 __PACKAGE__->meta->make_immutable;

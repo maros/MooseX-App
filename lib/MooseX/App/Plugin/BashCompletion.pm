@@ -21,7 +21,6 @@ around 'initialize_command_class' => sub {
     my $self = shift;
     
     my $return = $self->$orig(@_);
-
     if (blessed $return 
         && $return->isa('MooseX::App::Plugin::BashCompletion::Command')) {
         return $return->bash_completion($self);

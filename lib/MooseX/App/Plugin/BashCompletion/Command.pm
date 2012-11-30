@@ -87,9 +87,6 @@ EOT
     return MooseX::App::Message::Envelope->new(
         MooseX::App::Message::Block->new({ body => $syntax })
     );
-    
-    
-    #return $syntax;
 }
 
 __PACKAGE__->meta->make_immutable;
