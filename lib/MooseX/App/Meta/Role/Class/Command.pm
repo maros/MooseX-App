@@ -97,26 +97,30 @@ sub _build_command_pod {
     
     my %pod;
     foreach my $element (@{$document->children}) {
-        next
-            unless $element->isa('Pod::Elemental::Element::Nested')
-            && $element->command eq 'head1';
-        
-        given ($element->content) {
-            when('NAME') {
-                my $name = $self->name;
-                my $content = $self->_pod_node_to_text($element->children);
-                $content =~ s/^$name(\s-)?\s//;
-                chomp($content);
-                $pod{command_short_description} = $content;
+        if ($element->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
+            if ($element->content =~ m/^\s*#+\s*ABSTRACT:\s*(.+)$/m) {
+                $pod{command_short_description} ||= $1;
             }
-            when([qw(DESCRIPTION OVERVIEW)]) {
-                my $content = $self->_pod_node_to_text($element->children);
-                chomp($content);
-                $pod{command_long_description} = $content;
+        } elsif ($element->isa('Pod::Elemental::Element::Nested')
+            && $element->command eq 'head1') {
+        
+            given ($element->content) {
+                when('NAME') {
+                    my $name = $self->name;
+                    my $content = $self->_pod_node_to_text($element->children);
+                    $content =~ s/^$name(\s-)?\s//;
+                    chomp($content);
+                    $pod{command_short_description} = $content;
+                }
+                when([qw(DESCRIPTION OVERVIEW)]) {
+                    my $content = $self->_pod_node_to_text($element->children);
+                    chomp($content);
+                    $pod{command_long_description} = $content;
+                }
             }
         }
     }
-    
+        
     while (my ($key,$value) = each %pod) {
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next

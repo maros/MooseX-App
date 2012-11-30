@@ -43,7 +43,7 @@ use Test01;
     is($test03->blocks->[3]->header,"available commands:",'Available commands set');
     is($test03->blocks->[3]->body,"    command_a   Command A!
     command_b   Test class command B for test 01
-    command_c1  
+    command_c1  Test C1
     help        Prints this usage information",'Available commands body set');
 }
 
