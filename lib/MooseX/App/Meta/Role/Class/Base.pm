@@ -78,8 +78,14 @@ sub _build_app_commands {
 sub proto_command {
     my ($self) = @_;
     
+    local $Getopt::Long::Parser::autoabbrev = $self->app_fuzzy;
     my $opt_parser = Getopt::Long::Parser->new( 
-        config => [ qw( no_auto_help pass_through ) ] 
+        config => [
+            'no_auto_help',
+            'pass_through',
+            ($self->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
+        ],
+        
     );
     my $result = {};
     $opt_parser->getoptions(
@@ -108,11 +114,14 @@ sub command_candidates {
     
     # Compare all commands to find matching candidates
     foreach my $command_name (keys %$commands) {
-        if ($lc_command eq substr($command_name,0,$candidate_length)) {
+        if ($command_name eq $lc_command) {
+            return $command_name;
+        } elsif ($lc_command eq substr($command_name,0,$candidate_length)) {
             push(@candidates,$command_name);
         }
     }
-    return (sort @candidates);
+    
+    return [ sort @candidates ];
 }
 
 sub command_get {
@@ -125,32 +134,36 @@ sub command_get {
     if (defined $commands->{$lc_command}) {
         return $lc_command;
     } else {
-        my @candidates =  $self->command_candidates($command);
+        my $candidate =  $self->command_candidates($command);
         
-        given (scalar @candidates) {
-            when (0) {
-                return $self->command_message(
-                    header          => "Unknown command '$command'",
-                    type            => "error",
-                );
-            }
-            when (1) {
-                if ($self->app_fuzzy) {
-                    return $candidates[0];
-                } else {
+        if (ref $candidate eq '') {
+            return $candidate;
+        } else {
+            given (scalar @{$candidate}) {
+                when (0) {
                     return $self->command_message(
-                        header          => "Unknown command '$command'",
+                        header          => "Unknown command: $command",
                         type            => "error",
-                        body            => "Did you mean '".$candidates[0]."'?",
                     );
                 }
-            }
-            default {
-                return $self->command_message(
-                    header          => "Ambiguous command '$command'",
-                    type            => "error",
-                    body            => "Which command did you mean?\n".MooseX::App::Utils::format_list(map { [ $_ ] } sort @candidates),
-                );
+                when (1) {
+                    if ($self->app_fuzzy) {
+                        return $candidate->[0];
+                    } else {
+                        return $self->command_message(
+                            header          => "Unknown command: $command",
+                            type            => "error",
+                            body            => "Did you mean '".$candidate->[0]."'?",
+                        );
+                    }
+                }
+                default {
+                    return $self->command_message(
+                        header          => "Ambiguous command: $command",
+                        type            => "error",
+                        body            => "Which command did you mean?\n".MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                    );
+                }
             }
         }
     }
@@ -444,6 +457,11 @@ Usually MooseX::App will take the name of the calling wrapper script to
 construct the programm name in various help messages. This name can 
 be changed via the app_base accessor.
 
+=head2 app_fuzzy
+
+Boolean attribute that controlls if command names and attributes should be 
+matched exactly or fuzzy.
+
 =head1 METHODS
 
 =head2 command_class_to_command
@@ -538,6 +556,12 @@ Returns a hashref of command name and command class.
  my @commands = $meta->command_get($user_command_input);
 
 Returns a list of command names matching the user input
+
+=head2 command_candidates
+
+ my $commands = $meta->command_candidates($user_command_input);
+
+Returns either a single command or an arrayref of possibly matching commands.
 
 =head2 proto_command
 
