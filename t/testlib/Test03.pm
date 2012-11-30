@@ -1,6 +1,8 @@
 package Test03;
 
-use MooseX::App qw(BashCompletion);
+use MooseX::App qw(BashCompletion Version);
+
+our $VERSION = '22.02';
  
 option 'global_option' => (
     is            => 'rw',
