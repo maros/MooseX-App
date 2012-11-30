@@ -12,13 +12,13 @@ our $VERSION = '1.09';
 
 use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base option);
+use MooseX::App::Exporter qw(app_base app_fuzzy option);
 use MooseX::App::Message::Envelope;
 use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace', 'app_base', 'option' ],
+    with_meta           => [ 'app_namespace', 'app_base', 'app_fuzzy', 'option' ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -230,6 +230,16 @@ be changed via the app_base function.
 
 Usually MooseX::App will take the package name of the base class as the 
 namespace for commands. This namespace can be changed.
+
+=head2 app_fuzzy
+
+ app_fuzzy;
+ OR
+ app_fuzzy(1);
+ OR
+ app_fuzzy(0);
+
+Enables fuzzy matching of commands and attributes. Is turned off by default.
 
 =head1 PLUGINS
 

@@ -48,12 +48,16 @@ sub option {
     return;
 }
 
+sub app_fuzzy(;$) {
+    my ( $meta, $value ) = @_;
+    return $meta->app_fuzzy($value // 1);
+}
+
 sub app_base($) {
     my ( $meta, $name ) = @_;
     
     return $meta->app_base($name);
 }
-
 
 sub process_plugins {
     my ($self,$caller_class,@plugins) = @_;

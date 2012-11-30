@@ -7,13 +7,13 @@ use strict;
 use warnings;
 
 use Moose::Exporter;
-use MooseX::App::Exporter qw(app_base option command_short_description command_long_description);
+use MooseX::App::Exporter qw(app_base app_fuzzy option command_short_description command_long_description);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_base', 'option', 'command_short_description', 'command_long_description' ],
+    with_meta           => [ 'app_base', 'app_fuzzy', 'option', 'command_short_description', 'command_long_description' ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_options' ],
     install             => [ 'unimport', 'init_meta' ],
