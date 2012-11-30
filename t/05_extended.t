@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/01_basic.t - Basic tests
+# t/05_extended.t - Extended tests
 
 use Test::Most tests => 12+1;
 use Test::NoWarnings;

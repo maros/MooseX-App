@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/04_role_config.t - Test env plugin
+# t/07_single.t- Test MooseX::App::Single
 
 use Test::Most tests => 4+1;
 use Test::NoWarnings;

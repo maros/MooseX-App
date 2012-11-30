@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/04_role_config.t - Test env plugin
+# t/06_plugin_env.t - Test env plugin
 
 use Test::Most tests => 6+1;
 use Test::NoWarnings;
