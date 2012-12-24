@@ -19,6 +19,10 @@ sub run {
 
 Test01::CommandB - Test class command B for test 01
 
+=head1 SYNOPSIS
+
+    $ test01 command_b yadah
+
 =head1 DESCRIPTION
 
 Some description of B<command B>
