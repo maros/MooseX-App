@@ -311,11 +311,30 @@ sub command_usage_attributes {
 }
 
 sub command_usage_header {
-    my ($self,$command) = @_;
-    
-    $command ||= 'command';
-    
+    my ($self,$command_meta_class) = @_;
+   
     my $caller = $self->app_base;
+    my $command;
+
+    if ( $command_meta_class ) {
+        my $command_class = $command_meta_class->name;
+        $command = $self->command_class_to_command($command_class);
+
+        # for a proof of concept, let's go hard-core
+        $command_class =~ s#::#/#g;
+        $command_class .= ".pm";
+
+        if( open my $fh, '<', $INC{$command_class} ) {
+         my $content = do { local $/ = <$fh> };
+
+        return $self->command_message(
+            header  => 'usage:',
+            body    => $1 ) 
+            if $content =~ m#^=head1\s+SYNOPSIS.*?\n(.*?)(?:^=head1|\Z)#sm;
+        }
+    }
+
+    $command ||= 'command';
     
     return $self->command_message(
         header  => 'usage:',
@@ -367,7 +386,7 @@ sub command_usage_command {
     my $command_name = $self->command_class_to_command($command_class);
     
     my @usage;
-    push(@usage,$self->command_usage_header($command_name));
+    push(@usage,$self->command_usage_header($command_meta_class));
     push(@usage,$self->command_usage_description($command_meta_class));
     push(@usage,$self->command_usage_attributes($command_meta_class));
     

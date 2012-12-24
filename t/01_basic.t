@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 20+1;
+use Test::Most tests => 20+2;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -73,3 +73,15 @@ use Test01;
     --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
     #print $test04;
 }
+
+subtest "usage via SYNOPSIS for command" => sub {
+    plan tests => 5;
+
+    local @ARGV = qw(command_b --help);
+    my $test04 = Test01->new_with_command;
+    isa_ok($test04,'MooseX::App::Message::Envelope');
+    is($test04->blocks->[0]->header,"usage:",'Usage is set');
+    like $test04->blocks->[0]->body => qr/test01 command_b yadah/, "Usage body set";
+    is($test04->blocks->[1]->header,"description:",'Description is set');
+    is($test04->blocks->[2]->header,"options:",'Options header is set');
+};
