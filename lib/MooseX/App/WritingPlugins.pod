@@ -19,7 +19,7 @@ MooseX::App::WritingPlugins - Writing plugins for MooseX::App
      }
  }
  
- around 'initialize_command' => sub {
+ around 'initialize_command_class' => sub {
     ...
  };
 
