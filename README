@@ -88,8 +88,8 @@ METHODS
 
      MyApp->new_with_command( %default );
 
-  initialize_command
-     my $myapp_command = MyApp->initialize_command($command_name,%default);
+  initialize_command_class
+     my $myapp_command = MyApp->initialize_command_class($command_name,%default);
 
     Helper method to initialize the command class for the given command.
 

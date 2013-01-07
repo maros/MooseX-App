@@ -33,8 +33,6 @@ lib/MooseX/App/Plugin/Env/Meta/Attribute.pm
 lib/MooseX/App/Plugin/Env/Meta/Class.pm
 lib/MooseX/App/Plugin/Fuzzy.pm
 lib/MooseX/App/Plugin/Fuzzy/Meta/Class.pm
-lib/MooseX/App/Plugin/Typo.pm
-lib/MooseX/App/Plugin/Typo/Meta/Class.pm
 lib/MooseX/App/Plugin/Version.pm
 lib/MooseX/App/Plugin/Version/Command.pm
 lib/MooseX/App/Plugin/Version/Meta/Class.pm
