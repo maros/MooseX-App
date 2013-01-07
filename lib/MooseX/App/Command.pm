@@ -4,6 +4,8 @@ package MooseX::App::Command;
 
 use 5.010;
 use utf8;
+use strict;
+use warnings;
 
 use Moose ();
 use MooseX::App::Meta::Role::Attribute::Option;
