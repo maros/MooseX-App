@@ -7,9 +7,19 @@ use warnings;
 
 use String::CamelCase qw(camelize decamelize);
 use List::Util qw(max);
+use I18N::Langinfo qw(langinfo CODESET);
+use Encode qw(decode);
 
 our $SCREEN_WIDTH = 78;
 our $INDENT = 4;
+
+sub encoded_argv {
+    my @argv = @_ || @ARGV;
+    my $codeset = langinfo(CODESET);
+    binmode(STDOUT, ":utf8")
+        if $codeset eq 'UTF-8';
+    return map { decode($codeset,$_) } @argv;
+}
 
 sub class_to_command {
     my ($class,$namespace) = @_;

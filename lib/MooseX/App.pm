@@ -64,7 +64,7 @@ sub new_with_command {
     Moose->throw_error('new_with_command may only be called from the application base package')
         if $meta->meta->does_role('MooseX::App::Meta::Role::Class::Command');
     
-    local @ARGV = @ARGV;
+    local @ARGV = MooseX::App::Utils::encoded_argv();
     my $first_argv = shift(@ARGV);
     
     # No args

@@ -8,6 +8,7 @@ use strict;
 use warnings;
 
 use Moose::Exporter;
+use MooseX::App::Utils;
 
 our %PLUGIN_SPEC;
 
