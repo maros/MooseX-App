@@ -1,5 +1,14 @@
 Changes for MooseX-App
 
+1.11 Tue, Jan 8, 2012
+    - Parse DistZilla ABSTRACT for documentation
+    - Improve tutorial and fix typo (George Hartzell)
+    - Saner bash completion and version plugin
+    - Fix fuzzy command and attribute matching
+    - Deprecate fuzzy plugin, use typo plugin instead
+    - Handle shell character encodings
+    - More tests
+
 1.10 Mon, Jan 7, 2013
     - Fix bash completion plugin (Steve Nolte)
 
