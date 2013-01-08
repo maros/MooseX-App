@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 16+1;
+use Test::Most tests => 19+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -65,4 +65,17 @@ Test03->meta->app_fuzzy(1);
     --help --usage -?  Prints this usage information. [Flag]
     --roleattr         [Role]
     --some_option      Very important option!","Message ok");
+}
+
+{
+    explain('Test 7: Test wrapper script error');
+    my $output = `$^X t/test03.pl some`;
+    like($output,qr/Unknown command: some/,'Output is ok');
+    like($output,qr/Did you mean 'some_command'?/,'Output is ok');
+}
+
+{
+    explain('Test 8: Test wrapper script encoding');
+    my $output = `$^X t/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
+    is($output,'RUN:anöther täst:töst möre','Encoded output');
 }

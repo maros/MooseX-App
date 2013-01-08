@@ -33,7 +33,8 @@ Cras eget mi nisi. In hac habitasse platea dictumst.";
 command_short_description "Command A!";
 
 sub run { 
-    print "RUN COMMAND-A";
+    my ($self) = @_;
+    print "RUN COMMAND-A:".$self->command_local2;
 }
 
 1;
