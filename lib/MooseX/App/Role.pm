@@ -4,6 +4,8 @@ package MooseX::App::Role;
 
 use 5.010;
 use utf8;
+use strict;
+use warnings;
 
 use Moose::Role ();
 use MooseX::App::Exporter qw(option);

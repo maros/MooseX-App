@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.09';
+our $VERSION = '1.10';
 
 use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
