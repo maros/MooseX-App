@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 20+1;
+use Test::Most tests => 21+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -72,4 +72,10 @@ use Test01;
     --global           test [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
     #print $test04;
+}
+
+{
+    explain('Test 5: Test wrapper script');
+    my $output = `$^X t/test01.pl command_a --command_local2 test --global 10`;
+    is($output,'RUN COMMAND-A:test','Output is ok');
 }
