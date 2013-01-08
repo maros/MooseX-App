@@ -56,8 +56,8 @@ SKIP :{
 SKIP :{
     my $ok = eval {
         Class::MOP::load_class('Text::WagnerFischer');
-        use_ok( 'MooseX::App::Plugin::Fuzzy' );
-        use_ok( 'MooseX::App::Plugin::Fuzzy::Meta::Class');
+        use_ok( 'MooseX::App::Plugin::Typo' );
+        use_ok( 'MooseX::App::Plugin::Typo::Meta::Class');
     };
     unless ($ok) {
         skip "Text::WagnerFischer is not installed",2;
