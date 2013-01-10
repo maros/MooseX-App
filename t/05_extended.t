@@ -5,6 +5,7 @@
 use Test::Most tests => 19+1;
 use Test::NoWarnings;
 
+use FindBin qw();
 use lib 't/testlib';
 
 use Test03;
@@ -76,6 +77,6 @@ Test03->meta->app_fuzzy(1);
 
 {
     explain('Test 8: Test wrapper script encoding');
-    my $output = `$^X t/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
+    my $output = `$^X $FindBin::Bin/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
     is($output,'RUN:anöther täst:töst möre','Encoded output');
 }
