@@ -19,7 +19,7 @@ SYNOPSIS
       ); # not exposed
 
     Write multiple command classes (If you have only a single command class
-    you might use MooseX-App-Simple instead)
+    you might use MooseX::App::Simple instead)
 
       package MyApp::SomeCommand;
       use MooseX::App::Command; # important
