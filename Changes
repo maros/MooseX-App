@@ -1,5 +1,9 @@
 Changes for MooseX-App
 
+1.12 Thu, Jan 10, 2012
+    - Fix failing test
+    - Fix pod (Andrew Jones)
+
 1.11 Tue, Jan 8, 2012
     - Parse DistZilla ABSTRACT for documentation
     - Improve tutorial and fix typo (George Hartzell)
