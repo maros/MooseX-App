@@ -1,5 +1,9 @@
 Changes for MooseX-App
 
+1.13 Fri, Jan 11, 2012
+    - Fix failing test
+    - Update documentation
+
 1.12 Thu, Jan 10, 2012
     - Fix failing test
     - Fix pod (Andrew Jones)
