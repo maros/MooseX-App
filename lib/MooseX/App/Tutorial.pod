@@ -37,18 +37,21 @@ The base class can be customized by
 
 =item * and defining global attributes used by all command classes
 
+=item * setting MooseX-App flags/options
+
 =back
 
   package MyApp;
   use MooseX::App qw(Config); # Loads the Config plugin
   
+  # This attribute will be available at the command-line
   option 'some_global_option' => (
       is                => 'rw',
       isa               => 'Str',
       documentation     => q[Some important global option],
   );
   
-  # This will not be exposed
+  # This attribute  will not be exposed
   has 'private_option' => (
       is              => 'rw',
       isa             => 'Str',

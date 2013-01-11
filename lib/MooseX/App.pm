@@ -159,8 +159,8 @@ And then in some simple wrapper script:
 
 MooseX-App is a highly customizeable helper to write user-friendly 
 command-line applications without having to worry about most of the annoying 
-things usually involved. Just take any existing Moose class, add a single 
-line (C<use MooseX-App qw(PluginA PluginB ...)>) and create one class
+things usually involved. Just take any existing L<Moose> class, add a single 
+line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
 for each command in an underlying namespace.
 
 MooseX-App will then take care of
@@ -169,7 +169,7 @@ MooseX-App will then take care of
 
 =item * Finding, loading and initializing the command classes
 
-=item * Creating automated doucumentation from pod and attributes
+=item * Creating automated help and doucumentation from pod and attributes
 
 =item * Reading and validating the command line options entered by the user
 
@@ -273,6 +273,11 @@ your report as I make changes.
     maros [at] k-1.com
     
     http://www.k-1.com
+    
+=head1 CONTRIBUTORS
+
+In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
+Michael G, Thomas Klausner
 
 =head1 COPYRIGHT
 
