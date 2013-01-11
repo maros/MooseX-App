@@ -40,6 +40,3 @@
 \B\._
 
 ^MooseX-App-\d\.\d+\.tar\.gz
-^t/test\d{2}\.pl
-^t/testlib/Test02/
-^t/testlib/Test06/
