@@ -70,13 +70,13 @@ Test03->meta->app_fuzzy(1);
 
 {
     explain('Test 7: Test wrapper script error');
-    my $output = `$^X t/test03.pl some`;
+    my $output = `$^X $FindBin::Bin/example/test03.pl some`;
     like($output,qr/Unknown command: some/,'Output is ok');
     like($output,qr/Did you mean 'some_command'?/,'Output is ok');
 }
 
 {
     explain('Test 8: Test wrapper script encoding');
-    my $output = `$^X $FindBin::Bin/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
+    my $output = `$^X $FindBin::Bin/example/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
     is($output,'RUN:anöther täst:töst möre','Encoded output');
 }

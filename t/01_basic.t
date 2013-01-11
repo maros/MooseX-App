@@ -77,6 +77,6 @@ use Test01;
 
 {
     explain('Test 5: Test wrapper script');
-    my $output = `$^X $FindBin::Bin/test01.pl command_a --command_local2 test --global 10`;
+    my $output = `$^X $FindBin::Bin/example/test01.pl command_a --command_local2 test --global 10`;
     is($output,'RUN COMMAND-A:test','Output is ok');
 }
