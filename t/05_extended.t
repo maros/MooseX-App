@@ -77,6 +77,6 @@ Test03->meta->app_fuzzy(1);
 
 {
     explain('Test 8: Test wrapper script encoding');
-    my $output = `LANG=en_UK.utf-8 $^X $FindBin::Bin/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
+    my $output = `LANG=en_US.UTF-8 $^X $FindBin::Bin/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
     is($output,'RUN:anöther täst:töst möre','Encoded output');
 }
