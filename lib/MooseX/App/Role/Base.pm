@@ -48,7 +48,7 @@ sub initialize_command_class {
         my $command_object = eval {
             Getopt::Long::Configure(($meta->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev'));
             
-            my $pa = $command_class->process_argv($proto_result);
+            my $pa = $command_class->process_argv(%$proto_result,%args);
             
             #($meta->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
             my %params = (                
