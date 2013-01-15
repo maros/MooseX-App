@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 21+1;
+use Test::Most tests => 6+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -10,24 +10,22 @@ use lib 't/testlib';
 
 use Test01;
 
-{
-    explain('Test 1: excact command with option');
+subtest 'Excact command with option' => sub {
+    explain();
     local @ARGV = qw(command_a --global 10);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'10','Param is set');
-}
+};
 
-{
-    explain('Test 2: fuzzy command with option');
+subtest 'Fuzzy command with option' => sub {
     local @ARGV = qw(Command_A --global 10);
     my $test02 = Test01->new_with_command;
     isa_ok($test02,'Test01::CommandA');
     is($test02->global,'10','Param is set');
-}
+};
 
-{
-    explain('Test 3: wrong command');
+subtest 'Wrong command' => sub {
     local @ARGV = qw(xxxx --global 10);
     my $test03 = Test01->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
@@ -46,10 +44,9 @@ use Test01;
     command_b   Test class command B for test 01
     command_c1  Test C1
     help        Prints this usage information",'Available commands body set');
-}
+};
 
-{
-    explain('Test 4: help for command');
+subtest 'Help for command' => sub {
     local @ARGV = qw(command_a --help);
     my $test04 = Test01->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
@@ -73,10 +70,17 @@ use Test01;
     --global           test [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
     #print $test04;
-}
+};
 
-{
-    explain('Test 5: Test wrapper script');
+subtest 'With extra args' => sub {
+    local @ARGV = qw(Command_b --global 10);
+    my $test02 = Test01->new_with_command( 'param_b' => 'bbb', 'global' => 10  );
+    isa_ok($test02,'Test01::CommandB');
+    is($test02->global,'10','Param global is set');
+    is($test02->param_b,'bbb','Param param_b is set');
+};
+
+subtest 'Wrapper script' => sub {
     my $output = `$^X $FindBin::Bin/example/test01.pl command_a --command_local2 test --global 10`;
     is($output,'RUN COMMAND-A:test','Output is ok');
-}
+};

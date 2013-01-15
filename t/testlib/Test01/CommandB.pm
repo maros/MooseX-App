@@ -4,9 +4,15 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test01);
 
-has 'email' => (
+has 'param_a' => (
     isa         => 'Str',
     is          => 'rw',
+);
+
+option 'param_b' => (
+    isa         => 'Str',
+    is          => 'rw',
+    required    => 1,
 );
 
 sub run { 
