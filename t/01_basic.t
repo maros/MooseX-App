@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 6+1;
+use Test::Most tests => 7+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -69,7 +69,6 @@ subtest 'Help for command' => sub {
     --config           Path to command config file
     --global           test [Required; Integer; Important!]
     --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
-    #print $test04;
 };
 
 subtest 'With extra args' => sub {
@@ -84,3 +83,15 @@ subtest 'Wrapper script' => sub {
     my $output = `$^X $FindBin::Bin/example/test01.pl command_a --command_local2 test --global 10`;
     is($output,'RUN COMMAND-A:test','Output is ok');
 };
+
+subtest 'Custom help text' => sub {
+    local @ARGV = qw(command_b --help);
+    my $test06 = Test01->new_with_command;
+    isa_ok($test06,'MooseX::App::Message::Envelope');
+    is($test06->blocks->[0]->header,"usage:",'Usage is set');
+    is($test06->blocks->[0]->body,"    use with care",'Usage is ok');
+    is($test06->blocks->[1]->header,"description:",'description is set');
+    like($test06->blocks->[1]->body,qr/    Some description of \*command B\*/,'Description is ok');
+};
+
+

@@ -333,7 +333,7 @@ sub command_usage_header {
         $command_name = $self->command_class_to_command($command_meta_class->name);
         if ($command_meta_class->can('has_command_usage')
             && $command_meta_class->has_command_usage) {
-            $usage = $command_meta_class->command_usage;
+            $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
         }
     } else {
         $command_name = 'command';

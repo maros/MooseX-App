@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 21+1;
+use Test::Most tests => 22+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -75,3 +75,5 @@ some more desc
 hase ist so super and this is a very long sentence witch breaks after i have written some bla bla.
 
 another interesting paragraph.','Pod long description parsed ok');
+
+is(Test01::CommandB->meta->command_usage,'use with care','Command usage parsed ok');

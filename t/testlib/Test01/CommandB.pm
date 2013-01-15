@@ -25,6 +25,10 @@ sub run {
 
 Test01::CommandB - Test class command B for test 01
 
+=head1 SYNOPSIS
+
+use with care
+
 =head1 DESCRIPTION
 
 Some description of B<command B>
