@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.13';
+our $VERSION = '1.14';
 
 use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
@@ -64,6 +64,7 @@ sub new_with_command {
     Moose->throw_error('new_with_command may only be called from the application base package')
         if $meta->meta->does_role('MooseX::App::Meta::Role::Class::Command');
         
+    # Extra args
     my %args;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH' ) {

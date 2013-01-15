@@ -46,7 +46,7 @@ sub proto_config {
                 header          => "Could not find config file '".$config_file->stringify."'",
                 type            => "error",
             ),
-            $self->command_usage_command(),
+            $self->command_usage_command($command_class->meta),
         );
     }
     

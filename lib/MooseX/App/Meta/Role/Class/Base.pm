@@ -324,17 +324,29 @@ sub command_usage_attributes {
 }
 
 sub command_usage_header {
-    my ($self,$command) = @_;
-    
-    $command ||= 'command';
+    my ($self,$command_meta_class) = @_;
     
     my $caller = $self->app_base;
     
+    my ($command_name,$usage);
+    if ($command_meta_class) {
+        $command_name = $self->command_class_to_command($command_meta_class->name);
+        if ($command_meta_class->can('has_command_usage')
+            && $command_meta_class->has_command_usage) {
+            $usage = $command_meta_class->command_usage;
+        }
+    } else {
+        $command_name = 'command';
+    }
+    
+    $usage ||= MooseX::App::Utils::format_text("$caller $command_name [long options...]
+$caller help
+$caller $command_name --help");
+    
     return $self->command_message(
         header  => 'usage:',
-        body    => MooseX::App::Utils::format_text("$caller $command [long options...]
-$caller help
-$caller $command --help"));
+        body    => $usage,
+    );
 }
 
 sub command_usage_description {
@@ -380,7 +392,7 @@ sub command_usage_command {
     my $command_name = $self->command_class_to_command($command_class);
     
     my @usage;
-    push(@usage,$self->command_usage_header($command_name));
+    push(@usage,$self->command_usage_header($command_meta_class));
     push(@usage,$self->command_usage_description($command_meta_class));
     push(@usage,$self->command_usage_attributes($command_meta_class));
     
@@ -541,7 +553,7 @@ Returns a list of messages containing the documentation for the application.
 =head2 command_usage_header
 
  my $message = $meta->command_usage_header();
- my $message = $meta->command_usage_header($command_name);
+ my $message = $meta->command_usage_header($command_meta_class);
 
 Returns a message containing the basic usage documentation
 

@@ -25,6 +25,13 @@ has 'command_long_description' => (
     lazy_build  => 1,
 );
 
+has 'command_usage' => (
+    is          => 'rw',
+    isa         => 'Maybe[Str]',
+    lazy_build  => 1,
+    predicate   => 'has_command_usage',
+);
+
 sub command_short_description_predicate {
     my ($self) = @_;  
     return $self->_command_description_predicate('command_short_description');
@@ -48,6 +55,19 @@ sub _build_command_long_description {
     my %pod = $self->_build_command_pod();
     return $pod{'command_long_description'}
         if defined $pod{'command_long_description'};
+    return;
+}
+
+sub command_usage_predicate {
+    my ($self) = @_;
+    return $self->_command_description_predicate('command_long_description');
+}
+
+sub _build_command_usage {
+    my ($self) = @_;
+    my %pod = $self->_build_command_pod();
+    return $pod{'command_usage'}
+        if defined $pod{'command_usage'};
     return;
 }
 
@@ -116,6 +136,11 @@ sub _build_command_pod {
                     my $content = $self->_pod_node_to_text($element->children);
                     chomp($content);
                     $pod{command_long_description} = $content;
+                }
+                when([qw(SYNOPSIS USAGE)]) {
+                    my $content = $self->_pod_node_to_text($element->children);
+                    chomp($content);
+                    $pod{command_usage} = $content;
                 }
             }
         }
