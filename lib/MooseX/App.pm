@@ -54,8 +54,8 @@ sub app_namespace($) {
 }
 
 sub new_with_command {
-    my ($class,%args) = @_;
-
+    my ($class,@args) = @_;
+    
     Moose->throw_error('new_with_command is a class method')
         if ! defined $class || blessed($class);
     
@@ -63,6 +63,16 @@ sub new_with_command {
 
     Moose->throw_error('new_with_command may only be called from the application base package')
         if $meta->meta->does_role('MooseX::App::Meta::Role::Class::Command');
+        
+    my %args;
+    if (scalar @args == 1
+        && ref($args[0]) eq 'HASH' ) {
+        %args = %{$args[0]}; 
+    } elsif (scalar @args % 2 == 0) {
+        %args = @args;
+    } else {
+        Moose->throw_error('new_with_command got inavlid extra arguments');
+    }
     
     local @ARGV = MooseX::App::Utils::encoded_argv();
     my $first_argv = shift(@ARGV);

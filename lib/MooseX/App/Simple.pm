@@ -50,12 +50,22 @@ sub init_meta {
 }
 
 sub new_with_options {
-    my ($class,%args) = @_;
+    my ($class,@args) = @_;
 
     Moose->throw_error('new_with_options is a class method')
         if ! defined $class || blessed($class);
 
     local @ARGV = MooseX::App::Utils::encoded_argv();
+
+    my %args;
+    if (scalar @args == 1
+        && ref($args[0]) eq 'HASH' ) {
+        %args = %{$args[0]}; 
+    } elsif (scalar @args % 2 == 0) {
+        %args = @args;
+    } else {
+        Moose->throw_error('new_with_command got inavlid extra arguments');
+    }
 
     return $class->initialize_command_class($class,%args);
 }
