@@ -1,5 +1,12 @@
 Changes for MooseX-App
 
+1.14 Tue, Jan 15, 2012
+    - Fix failing test
+    - Update documentation
+    - Optional usage information from POD (Yanick Champoux)
+    - app_fuzzy now defaults to true
+    - Version plugin prints license and copyright
+
 1.13 Fri, Jan 11, 2012
     - Fix failing test
     - Update documentation

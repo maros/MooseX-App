@@ -4,4 +4,3 @@
 * More tests
 * Subcommand plugin
 * Check if option name clashes (also aliases)
-* Handle typos (just like git "git pusl" -> "Did you mean git pull, git push?")
