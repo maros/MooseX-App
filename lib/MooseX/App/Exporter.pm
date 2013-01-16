@@ -136,4 +136,9 @@ sub command_long_description($) {
     return $meta->command_long_description($description);
 }
 
+sub command_usage($) {
+    my ( $meta, $usage ) = @_;
+    return $meta->command_usage($usage);
+}
+
 1;

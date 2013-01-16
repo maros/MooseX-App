@@ -9,11 +9,11 @@ use warnings;
 
 use Moose ();
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(option command_short_description command_long_description);
+use MooseX::App::Exporter qw(option command_short_description command_long_description command_usage);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [ 'command_short_description', 'command_long_description', 'option'],
+    with_meta => [ 'command_short_description', 'command_long_description', 'command_usage', 'option'],
     also      => 'Moose',
 );
 
@@ -61,6 +61,7 @@ MooseX::App::Command - Load command class metaclasses
  
  command_short_description 'This is a short description';
  command_long_description 'This is a much longer description yadda yadda';
+ command_usage 'script some_command --testattr 123'; 
 
 =head1 DESCRIPTION
 
