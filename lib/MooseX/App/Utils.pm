@@ -112,4 +112,116 @@ sub split_string {
     return @lines;
 }
 
+sub parse_pod {
+    my ($package) = @_;
+    
+    my $package_filename = $package;
+    $package_filename =~ s/::/\//g;
+    $package_filename .= '.pm';
+    
+    my $package_filepath;
+    if (defined $INC{$package_filename}) {
+        $package_filepath = $INC{$package_filename};
+        $package_filepath =~ s/\/{2,}/\//g;
+    }
+    
+    return 
+        unless defined $package_filepath
+        && -e $package_filepath;
+    
+    my $document = Pod::Elemental->read_file($package_filepath);
+    
+    Pod::Elemental::Transformer::Pod5->new->transform_node($document);
+    
+    my $nester_head = Pod::Elemental::Transformer::Nester->new({
+        top_selector      => Pod::Elemental::Selectors::s_command('head1'),
+        content_selectors => [ 
+            Pod::Elemental::Selectors::s_command([ qw(head2 head3 head4 over back item) ]),
+            Pod::Elemental::Selectors::s_flat() 
+        ],
+    });
+    $document = $nester_head->transform_node($document);
+    
+    my %pod;
+    foreach my $element (@{$document->children}) {
+        if ($element->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
+            if ($element->content =~ m/^\s*#+\s*ABSTRACT:\s*(.+)$/m) {
+                $pod{ABSTRACT} ||= $1;
+            }
+        } elsif ($element->isa('Pod::Elemental::Element::Nested')
+            && $element->command eq 'head1') {
+        
+            if ($element->content eq 'NAME') {
+                my $content = _pod_node_to_text($element->children);
+                $content =~ s/^$package(\s-)?\s//;
+                chomp($content);
+                $pod{NAME} = $content;
+            } else {
+                my $content = _pod_node_to_text($element->children);
+                chomp($content);
+                $pod{uc($element->content)} = $content; 
+            }
+        }
+    }
+        
+    return %pod;
+}
+
+sub _pod_node_to_text {
+    my ($node,$indent) = @_;
+    
+    unless (defined $indent) {
+        my $indent_init = 0;
+        $indent = \$indent_init;
+    }
+    
+    my (@lines);
+    if (ref $node eq 'ARRAY') {
+        foreach my $element (@$node) {
+            push (@lines,_pod_node_to_text($element,$indent));
+        }
+        
+    } else {
+        given (ref($node)) {
+            when ('Pod::Elemental::Element::Pod5::Ordinary') {
+                my $content = $node->content;
+                return
+                    if $content =~ m/^=cut/;
+                $content =~ s/\n/ /g;
+                $content =~ s/\s+/ /g;
+                push (@lines,$content."\n");
+            }
+            when ('Pod::Elemental::Element::Pod5::Verbatim') {
+                push (@lines,$node->content."\n");
+            }
+            when ('Pod::Elemental::Element::Pod5::Command') {
+                given ($node->command) {
+                    when ('over') {
+                        ${$indent}++;
+                    }
+                    when ('item') {
+                        push (@lines,('  ' x ($$indent-1)) . $node->content);
+                    }
+                    when ('back') {
+                        push (@lines,"\n");
+                        ${$indent}--;
+                    }
+                }
+            }
+        }
+    }
+    
+    return
+        unless scalar @lines;
+    
+    my $return = join ("\n", grep { defined $_ } @lines);
+    $return =~ s/\n\n\n+/\n\n/g; # Max one empty line
+    $return =~ s/I<([^>]+)>/_$1_/g;
+    $return =~ s/B<([^>]+)>/*$1*/g;
+    $return =~ s/[LCBI]<([^>]+)>/$1/g;
+    $return =~ s/[LCBI]<([^>]+)>/$1/g;
+    return $return;
+}
+
+
 1;

@@ -85,68 +85,21 @@ sub _command_description_predicate {
     return (defined $value && $value ? 1:0);
 }
 
+
 sub _build_command_pod {
     my ($self) = @_;
     
-    my $package_filename = $self->name;
-    $package_filename =~ s/::/\//g;
-    $package_filename .= '.pm';
+    my %pod_raw = MooseX::App::Utils::parse_pod($self->name);
     
-    my $package_filepath;
-    if (defined $INC{$package_filename}) {
-        $package_filepath = $INC{$package_filename};
-        $package_filepath =~ s/\/{2,}/\//g;
-    }
+    my %pod = (
+        command_usage               => ($pod_raw{SYNOPSIS} || $pod_raw{USAGE}),
+        command_long_description    => ($pod_raw{DESCRIPTION} || $pod_raw{OVERVIEW}),
+        command_short_description   => ($pod_raw{NAME} || $pod_raw{ABSTRACT}),
+    );
     
-    return 
-        unless defined $package_filepath
-        && -e $package_filepath;
-    
-    my $document = Pod::Elemental->read_file($package_filepath);
-    
-    Pod::Elemental::Transformer::Pod5->new->transform_node($document);
-    
-    my $nester_head = Pod::Elemental::Transformer::Nester->new({
-        top_selector      => Pod::Elemental::Selectors::s_command('head1'),
-        content_selectors => [ 
-            Pod::Elemental::Selectors::s_command([ qw(head2 head3 head4 over back item) ]),
-            Pod::Elemental::Selectors::s_flat() 
-        ],
-    });
-    $document = $nester_head->transform_node($document);
-    
-    my %pod;
-    foreach my $element (@{$document->children}) {
-        if ($element->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
-            if ($element->content =~ m/^\s*#+\s*ABSTRACT:\s*(.+)$/m) {
-                $pod{command_short_description} ||= $1;
-            }
-        } elsif ($element->isa('Pod::Elemental::Element::Nested')
-            && $element->command eq 'head1') {
-        
-            given ($element->content) {
-                when('NAME') {
-                    my $name = $self->name;
-                    my $content = $self->_pod_node_to_text($element->children);
-                    $content =~ s/^$name(\s-)?\s//;
-                    chomp($content);
-                    $pod{command_short_description} = $content;
-                }
-                when([qw(DESCRIPTION OVERVIEW)]) {
-                    my $content = $self->_pod_node_to_text($element->children);
-                    chomp($content);
-                    $pod{command_long_description} = $content;
-                }
-                when([qw(SYNOPSIS USAGE)]) {
-                    my $content = $self->_pod_node_to_text($element->children);
-                    chomp($content);
-                    $pod{command_usage} = $content;
-                }
-            }
-        }
-    }
-        
     while (my ($key,$value) = each %pod) {
+        next
+            unless defined $value;
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next
             unless defined $meta_attribute;
@@ -154,62 +107,6 @@ sub _build_command_pod {
     }
     
     return %pod;
-}
-
-sub _pod_node_to_text {
-    my ($self,$node,$indent) = @_;
-    
-    unless (defined $indent) {
-        my $indent_init = 0;
-        $indent = \$indent_init;
-    }
-    
-    my (@lines);
-    if (ref $node eq 'ARRAY') {
-        foreach my $element (@$node) {
-            push (@lines, $self->_pod_node_to_text($element,$indent));
-        }
-        
-    } else {
-        given (ref($node)) {
-            when ('Pod::Elemental::Element::Pod5::Ordinary') {
-                my $content = $node->content;
-                return
-                    if $content =~ m/^=cut/;
-                $content =~ s/\n/ /g;
-                $content =~ s/\s+/ /g;
-                push (@lines,$content."\n");
-            }
-            when ('Pod::Elemental::Element::Pod5::Verbatim') {
-                push (@lines,$node->content."\n");
-            }
-            when ('Pod::Elemental::Element::Pod5::Command') {
-                given ($node->command) {
-                    when ('over') {
-                        ${$indent}++;
-                    }
-                    when ('item') {
-                        push (@lines,('  ' x ($$indent-1)) . $node->content);
-                    }
-                    when ('back') {
-                        push (@lines,"\n");
-                        ${$indent}--;
-                    }
-                }
-            }
-        }
-    }
-    
-    return
-        unless scalar @lines;
-    
-    my $return = join ("\n", grep { defined $_ } @lines);
-    $return =~ s/\n\n\n+/\n\n/g; # Max one empty line
-    $return =~ s/I<([^>]+)>/_$1_/g;
-    $return =~ s/B<([^>]+)>/*$1*/g;
-    $return =~ s/[LCBI]<([^>]+)>/$1/g;
-    $return =~ s/[LCBI]<([^>]+)>/$1/g;
-    return $return;
 }
 
 #{
@@ -247,16 +144,16 @@ section if not set.
 Read/set the long command description. Will be extracted from the Pod 
 DESCRIPTION or OVERVIEW section if not set.
 
+=head2 command_usage
+
+Read/set the long command usage. Will be extracted from the Pod 
+SYNOPSIS or USAGE section if not set. If these Pod sections are not defined
+the usage will be autogenerated.
+
 =head1 METHODS
 
 =head2 _build_command_pod
 
 Parses the Pod from the command class.
-
-=head2 _pod_node_to_text
-
- my $pod_text = $meta->_pod_node_to_text($pod_elemental,$indent);
-
-Converts a Pod::Elemental::Element object to plain text.
 
 =cut
