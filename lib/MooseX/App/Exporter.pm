@@ -51,9 +51,9 @@ sub option {
     return;
 }
 
-sub app_fuzzy(;$) {
+sub app_fuzzy($) {
     my ( $meta, $value ) = @_;
-    return $meta->app_fuzzy($value // 1);
+    return $meta->app_fuzzy($value);
 }
 
 sub app_base($) {

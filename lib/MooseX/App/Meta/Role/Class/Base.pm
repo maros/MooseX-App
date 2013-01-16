@@ -33,7 +33,7 @@ has 'app_base' => (
 has 'app_fuzzy' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 0,
+    default     => 1,
 );
 
 has 'app_commands' => (

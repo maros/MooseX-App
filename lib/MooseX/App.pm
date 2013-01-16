@@ -245,13 +245,11 @@ namespace for commands. This namespace can be changed.
 
 =head2 app_fuzzy
 
- app_fuzzy;
- OR
  app_fuzzy(1);
  OR
  app_fuzzy(0);
 
-Enables fuzzy matching of commands and attributes. Is turned off by default.
+Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 =head1 PLUGINS
 

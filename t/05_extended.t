@@ -10,6 +10,8 @@ use lib 't/testlib';
 
 use Test03;
 
+Test03->meta->app_fuzzy(0);
+
 subtest 'Non-Fuzzy command matching' => sub {
     local @ARGV = qw(some --private 1);
     my $test01 = Test03->new_with_command;
@@ -64,8 +66,7 @@ subtest 'All options available & no description' => sub {
 
 subtest 'Test wrapper script error' => sub {
     my $output = `$^X $FindBin::Bin/example/test03.pl some`;
-    like($output,qr/Unknown command: some/,'Output is ok');
-    like($output,qr/Did you mean 'some_command'?/,'Output is ok');
+    like($output,qr/Mandatory parameter 'another' missing/,'Output is ok');
 };
 
 subtest 'Test wrapper script encoding' => sub {
