@@ -19,7 +19,7 @@ sub encoded_argv {
         I18N::Langinfo->import(qw(langinfo CODESET));
         my $codeset = langinfo(CODESET());
         binmode(STDOUT, ":utf8")
-            if $codeset eq 'UTF-8';
+            if $codeset =~ m/^UTF-?8$/i;
         return map { decode($codeset,$_) } @local_argv;
     };
     return @local_argv;
