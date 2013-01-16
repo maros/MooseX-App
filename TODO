@@ -1,4 +1,3 @@
-* Version plugin should print license
 * Make messages translatable
 * Consistent messages when supplying variables via %ENV or @ARGV
 * Remove MooseX::Getopt and Getopt::Long dependency

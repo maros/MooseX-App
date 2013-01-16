@@ -15,16 +15,27 @@ sub version {
     my ($self,$app) = @_;
     
     my $version = '';
-    
     $version .= $app->meta->app_base. ' version '.$app->VERSION."\n";
     $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
-    $version .= "Perl version ".sprintf("%vd", $^V)."\n";
+    $version .= "Perl version ".sprintf("%vd", $^V);
     
-    # TODO add copyright/license
+    my @parts = (MooseX::App::Message::Block->new({
+        header  => 'VERSION',
+        body    => MooseX::App::Utils::format_text($version) 
+    }));
     
-    return MooseX::App::Message::Envelope->new(
-        MooseX::App::Message::Block->new({ body => $version })
-    );
+    my %pod_raw = MooseX::App::Utils::parse_pod($app->meta->name);
+    
+    foreach my $part (qw(COPYRIGHT LICENSE)) {
+        if (defined $pod_raw{$part}) {
+            push(@parts,MooseX::App::Message::Block->new({ 
+                header  => $part,
+                body    => MooseX::App::Utils::format_text($pod_raw{$part}),
+            }));
+        }
+    }
+    
+    return MooseX::App::Message::Envelope->new(@parts);
 }
 
 __PACKAGE__->meta->make_immutable;
