@@ -73,6 +73,8 @@ features such as:
 
 =item * Setting the command documentation manually via C<command_short_description> and C<command_long_description>
 
+=item * Overriding the automated usage header with custom usage from POD or via C<command_usage>
+
 =item * Adding the C<cmd_tags> option to options
 
 =item * Adding all attributes available in L<MooseX::Getopt::Meta::Attribute::Trait> such as C<cmd_flag> nad C<cmd_aliases>.
@@ -88,6 +90,10 @@ Set the short description
 =head2 command_long_description
 
 Set the long description
+
+=head2 command_usage
+
+Set custom usage
 
 =cut
 
