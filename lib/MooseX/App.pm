@@ -75,6 +75,7 @@ sub new_with_command {
         Moose->throw_error('new_with_command got inavlid extra arguments');
     }
     
+    # Localize and encode @ARGV
     local @ARGV = MooseX::App::Utils::encoded_argv();
     my $first_argv = shift(@ARGV);
     

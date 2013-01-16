@@ -69,6 +69,6 @@ subtest 'Test wrapper script error' => sub {
 };
 
 subtest 'Test wrapper script encoding' => sub {
-    my $output = `LANG=en_US.utf-8 $^X $FindBin::Bin/example/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
+    my $output = `LANG=en_US.UTF-8 $^X $FindBin::Bin/example/test03.pl some_command --another töst\\ möre --some_option "anöther täst"`;
     is($output,'RUN:anöther täst:töst möre','Encoded output');
 }
