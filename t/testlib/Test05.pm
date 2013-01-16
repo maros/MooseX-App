@@ -2,7 +2,7 @@ package Test05;
 
 #use Moose;
 use MooseX::App::Simple qw(Config Env);
-app_fuzzy;
+app_fuzzy 1;
 
 option 'some_option' => (
     is            => 'rw',
