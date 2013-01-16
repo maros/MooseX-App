@@ -26,4 +26,5 @@ subtest 'Version' => sub {
     my $version = $test02->stringify;
     like($version,qr/\s*08_plugin_various\.t\s+version\s+22\.02/s,'Check for app version');
     like($version,qr/\s*MooseX::App\sversion\s\d+\.\d+/s,'Check for MooseX::App version');
+    like($version,qr/This library is free software/s,'License included');
 };

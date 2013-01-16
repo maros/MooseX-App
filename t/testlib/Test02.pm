@@ -13,3 +13,19 @@ sub run {
 }
 
 1;
+
+=encoding utf8
+
+=head1 NAME
+
+Test02 - Test 02
+
+=head1 SYNOPSIS
+
+do something
+
+=head1 LICENSE
+
+This library is free software and may be distributed under the same terms as perl itself.
+
+=cut
