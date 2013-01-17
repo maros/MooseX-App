@@ -108,14 +108,22 @@ OPTIONS
     namespace for commands. This namespace can be changed.
 
   app_fuzzy
-     app_fuzzy;
-     OR
      app_fuzzy(1);
      OR
      app_fuzzy(0);
 
-    Enables fuzzy matching of commands and attributes. Is turned off by
+    Enables fuzzy matching of commands and attributes. Is turned on by
     default.
+
+  app_command_name
+     app_command_name {
+         my ($package) = shift;
+         # munge package name;
+         return $command_name
+     };
+
+    This sub can be used to control how package names should be translated
+    to command names.
 
 PLUGINS
     The behaviour of MooseX-App can be customized with plugins. To load a
