@@ -8,9 +8,11 @@ use Test::NoWarnings;
 use MooseX::App::Utils;
 
 subtest 'Class to command' => sub {
-    is(MooseX::App::Utils::class_to_command('MyApp::Commands::Command','MyApp::Commands'),'command','Command ok');
-    is(MooseX::App::Utils::class_to_command('MyApp::Commands::CommandSuper','MyApp::Commands'),'command_super','Command ok');
-    is(MooseX::App::Utils::class_to_command('MyApp::Commands::CommandBA','MyApp::Commands'),'command_ba','Command ok');
+    is(MooseX::App::Utils::class_to_command('Command'),'command','Command ok');
+    is(MooseX::App::Utils::class_to_command('CommandSuper'),'command_super','Command ok');
+    is(MooseX::App::Utils::class_to_command('CommandBA'),'command_ba','Command ok');
+    is(MooseX::App::Utils::class_to_command('CommandBA12'),'command_ba12','Command ok');
+    is(MooseX::App::Utils::class_to_command('CommandBALow'),'command_ba_low','Command ok');
 };
 
 subtest 'Format text' => sub {
