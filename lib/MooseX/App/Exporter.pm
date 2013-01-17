@@ -26,17 +26,19 @@ sub import {
             unless defined $symbol;
         $caller_stash->add_symbol('&'.$import, $symbol);
     }
+    
+    return;
 }
-
 
 sub option {
     my $meta = shift;
     my $name = shift;
+    my @rest = @_;
  
     Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
-        if @_ % 2 == 1;
+        if @rest % 2 == 1;
  
-    my %options = ( definition_context => Moose::Util::_caller_info(), @_ );
+    my %options = ( definition_context => Moose::Util::_caller_info(), @rest );
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
     $options{traits} ||= [];
     

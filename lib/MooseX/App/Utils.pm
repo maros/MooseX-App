@@ -14,11 +14,12 @@ our $INDENT = 4;
 
 sub encoded_argv {
     my @local_argv = @_ || @ARGV;
+    
     @local_argv = eval {
         require I18N::Langinfo;
         I18N::Langinfo->import(qw(langinfo CODESET));
         my $codeset = langinfo(CODESET());
-        binmode(STDOUT, ":utf8")
+        binmode(STDOUT, ":encoding(UTF-8)")
             if $codeset =~ m/^UTF-?8$/i;
         return map { decode($codeset,$_) } @local_argv;
     };
