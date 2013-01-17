@@ -472,7 +472,7 @@ plugins for MooseX-App.
 
 Message class for generating error messages. Defaults to
 MooseX::App::Message::Block. The default can be overwritten by altering
-the C<_build_app_messageclass> method.
+the C<_build_app_messageclass> method. Defaults to MooseX::App::Message::Block
 
 =head2 app_namespace
 
@@ -483,12 +483,17 @@ namespace for commands. This namespace can be changed.
 
 Usually MooseX::App will take the name of the calling wrapper script to 
 construct the programm name in various help messages. This name can 
-be changed via the app_base accessor.
+be changed via the app_base accessor. Defaults to the base name of $0
 
 =head2 app_fuzzy
 
 Boolean attribute that controlls if command names and attributes should be 
-matched exactly or fuzzy.
+matched exactly or fuzzy. Defaults to true.
+
+=head2 app_command_name
+
+Coderef attribute that controlls how package names are translated to command 
+names and attributes. Defaults to MooseX::App::Utils::class_to_command
 
 =head1 METHODS
 

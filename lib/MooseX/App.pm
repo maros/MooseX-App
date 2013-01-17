@@ -260,11 +260,11 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
 
  app_command_name {
      my ($package) = shift;
-     # do munging;
+     # munge package name;
      return $command_name
- }
+ };
 
-This setting can be used to control how package names should be translated
+This sub can be used to control how package names should be translated
 to command names.
 
 =head1 PLUGINS
