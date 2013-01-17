@@ -18,7 +18,7 @@ use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace', 'app_base', 'app_fuzzy', 'option' ],
+    with_meta           => [ 'app_namespace', 'app_base', 'app_fuzzy', 'app_command_name', 'option' ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -46,6 +46,11 @@ sub init_meta {
     };
     
     return MooseX::App::Exporter->process_init_meta(%args);
+}
+
+sub app_command_name(&) {
+    my ( $meta, $namesub ) = @_;
+    return $meta->app_command_name($namesub);
 }
 
 sub app_namespace($) {
@@ -250,6 +255,17 @@ namespace for commands. This namespace can be changed.
  app_fuzzy(0);
 
 Enables fuzzy matching of commands and attributes. Is turned on by default.
+
+=head2 app_command_name
+
+ app_command_name {
+     my ($package) = shift;
+     # do munging;
+     return $command_name
+ }
+
+This setting can be used to control how package names should be translated
+to command names.
 
 =head1 PLUGINS
 

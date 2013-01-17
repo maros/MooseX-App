@@ -26,17 +26,13 @@ sub encoded_argv {
 }
 
 sub class_to_command {
-    my ($class,$namespace) = @_;
+    my ($class) = @_;
     
     return 
         unless defined $class;
     
-    $class = ref($class)
-        if ref($class);
-    
-    $class =~ s/^\Q$namespace\E:://;
-    $class =~ s/^.+::([^:]+)$/$1/;
-    return lc(decamelize($class));
+    my @parts = split( /[_\s]+|\b|(?<![A-Z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/, $class );
+    return lc(join('_',@parts));
 }
 
 sub format_text {
