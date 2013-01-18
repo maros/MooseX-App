@@ -19,7 +19,9 @@ sub version {
     $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
     $version .= "Perl version ".sprintf("%vd", $^V);
     
-    my @parts = (MooseX::App::Message::Block->new({
+    my $message_class = $app->meta->app_messageclass;
+    
+    my @parts = ($message_class->new({
         header  => 'VERSION',
         body    => MooseX::App::Utils::format_text($version) 
     }));
@@ -28,7 +30,7 @@ sub version {
     
     foreach my $part (qw(COPYRIGHT LICENSE)) {
         if (defined $pod_raw{$part}) {
-            push(@parts,MooseX::App::Message::Block->new({ 
+            push(@parts,$message_class->new({ 
                 header  => $part,
                 body    => MooseX::App::Utils::format_text($pod_raw{$part}),
             }));
