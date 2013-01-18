@@ -493,7 +493,7 @@ matched exactly or fuzzy. Defaults to true.
 =head2 app_command_name
 
 Coderef attribute that controlls how package names are translated to command 
-names and attributes. Defaults to MooseX::App::Utils::class_to_command
+names and attributes. Defaults to &MooseX::App::Utils::class_to_command
 
 =head1 METHODS
 
