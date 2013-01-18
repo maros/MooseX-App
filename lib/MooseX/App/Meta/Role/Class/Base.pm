@@ -347,8 +347,8 @@ sub command_usage_header {
     my ($command_name,$usage);
     if ($command_meta_class) {
         $command_name = $self->command_class_to_command($command_meta_class->name);
-        if ($command_meta_class->can('has_command_usage')
-            && $command_meta_class->has_command_usage) {
+        if ($command_meta_class->can('command_usage')
+            && $command_meta_class->command_usage) {
             $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
         }
     } else {
