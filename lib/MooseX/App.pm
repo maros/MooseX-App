@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.14';
+our $VERSION = '1.15';
 
 use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
@@ -303,7 +303,7 @@ your report as I make changes.
 =head1 CONTRIBUTORS
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
-Michael G, Thomas Klausner
+Michael G, Thomas Klausner, Yanick Champoux
 
 =head1 COPYRIGHT
 

@@ -1,5 +1,8 @@
 Changes for MooseX-App
 
+1.15 Fri, Jan 18, 2012
+    - Fix wrong attribute initalization order
+
 1.14 Tue, Jan 15, 2012
     - Fix failing test
     - Update documentation
