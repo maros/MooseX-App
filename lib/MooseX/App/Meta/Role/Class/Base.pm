@@ -140,7 +140,7 @@ sub command_candidates {
     return [ sort @candidates ];
 }
 
-sub command_get {
+sub command_find {
     my ($self,$command) = @_;
     
     my $lc_command = lc($command);
@@ -584,9 +584,9 @@ Returns a message containing the basic usage documentation
 
 Returns a hashref of command name and command class.
 
-=head2 command_get
+=head2 command_find
 
- my @commands = $meta->command_get($user_command_input);
+ my @commands = $meta->command_find($user_command_input);
 
 Returns a list of command names matching the user input
 
