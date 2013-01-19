@@ -113,7 +113,7 @@ sub new_with_command {
             );
         # One command found
         } else {
-            my $command_class = $meta->app_commands->{$return};
+            my $command_class = $meta->command_get($return);
             return $class->initialize_command_class($command_class,%args);
         }
     }

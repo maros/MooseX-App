@@ -48,7 +48,8 @@ has 'app_commands' => (
     isa         => 'HashRef[Str]',
     traits      => ['Hash'],
     handles     => {
-        command_register    => 'set',   
+        command_register    => 'set', 
+        command_get         => 'get',  
     },
     lazy_build  => 1,
 );
