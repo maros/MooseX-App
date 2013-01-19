@@ -59,7 +59,7 @@ sub _build_command_long_description {
 
 sub command_usage_predicate {
     my ($self) = @_;
-    return $self->_command_description_predicate('command_long_description');
+    return $self->_command_description_predicate('command_usage');
 }
 
 sub _build_command_usage {

@@ -83,7 +83,7 @@ sub _build_app_commands {
         $command_class_name =~ s/^\Q$namespace\E:://;
         $command_class_name =~ s/^.+::([^:]+)$/$1/;
         
-        my $command = $commandsub->($command_class_name);
+        my $command = $commandsub->($command_class_name,$command_class);
         
         $return{$command} = $command_class;
     }
@@ -348,7 +348,7 @@ sub command_usage_header {
     if ($command_meta_class) {
         $command_name = $self->command_class_to_command($command_meta_class->name);
         if ($command_meta_class->can('command_usage')
-            && $command_meta_class->command_usage) {
+            && $command_meta_class->command_usage_predicate) {
             $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
         }
     } else {
