@@ -13,7 +13,7 @@ subtest 'Single command' => sub {
     local @ARGV = qw();
     my $test05 = Test05->new_with_options;
     isa_ok($test05,'MooseX::App::Message::Envelope');
-    is($test05->blocks->[0]->header,"Mandatory parameter 'another_option' missing ","Check for error message");
+    like($test05->blocks->[0]->header,qr/^(Required option missing: another_option|Mandatory parameter 'another_option' missing )$/,"Check for error message");
 };
 
 subtest 'Single command' => sub {
