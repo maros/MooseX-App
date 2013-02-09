@@ -66,7 +66,7 @@ subtest 'All options available & no description' => sub {
 
 subtest 'Test wrapper script error' => sub {
     my $output = `$^X $FindBin::Bin/example/test03.pl some`;
-    like($output,qr/Mandatory parameter 'another' missing/,'Output is ok');
+    like($output,qr/Required option missing: another|Mandatory parameter 'another' missing/,'Output is ok');
 };
 
 subtest 'Test wrapper script encoding' => sub {
