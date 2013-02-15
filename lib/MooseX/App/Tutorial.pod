@@ -83,9 +83,10 @@ extend the base class with your command class.
   use MooseX::App::Command;
   extends qw(MyApp);
 
-To provide a description for each command you need to add 
-C<command_short_description> and C<command_long_description>
-information. The command descriptions may contain linebreaks.
+To provide a description for each command you need to set the 
+C<command_short_description>, C<command_long_description> and
+optionally C<command_usage> information. The command descriptions may 
+contain linebreaks.
 
  command_short_description q[This command is awesome];
  command_long_description q[This command is awesome, yadda yadda yadda];
@@ -113,7 +114,7 @@ L<MooseX::Getopt::Meta::Attribute::Trait> are also honoured.
       isa               => 'Integer',
       required          => 1,
       documentation     => q[Some important option],
-      cmd_tags          => [qw(Important!)],
+      cmd_tags          => [qw(Important!)], # Extra tags. Displayed in square brackets
       cmd_aliases       => [qw(so)], # From MooseX::Getopt
   );
 
