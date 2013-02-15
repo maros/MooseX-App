@@ -189,7 +189,7 @@ sub command_find {
 sub command_message {
     my ($self,@args) = @_;
     my $messageclass = $self->app_messageclass;
-    Class::MOP::load_class($messageclass);
+    Class::Load::load_class($messageclass);
     return $messageclass->new(@args);
 }
 
@@ -425,7 +425,7 @@ sub command_usage_global {
     my $commands = $self->app_commands;
     
     while (my ($command,$class) = each %$commands) {
-        Class::MOP::load_class($class);
+        Class::Load::load_class($class);
         my $description;
         $description = $class->meta->command_short_description
             if $class->meta->can('command_short_description');

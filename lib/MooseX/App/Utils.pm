@@ -112,6 +112,7 @@ sub split_string {
 sub parse_pod {
     my ($package) = @_;
     
+    # Package to filename
     my $package_filename = $package;
     $package_filename =~ s/::/\//g;
     $package_filename .= '.pm';

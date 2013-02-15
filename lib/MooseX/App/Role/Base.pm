@@ -16,10 +16,8 @@ sub initialize_command_class {
     Moose->throw_error('initialize_command_class is a class method')
         if blessed($class);
     
-    eval {
-        Class::MOP::load_class($command_class);
-    };
-    if (my $error = $@) {
+    my ($ok,$error) = Class::Load::try_load_class($command_class);
+    unless ($ok) {
         Moose->throw_error($error);
 #        return MooseX::App::Message::Envelope->new(
 #            $meta->command_message(

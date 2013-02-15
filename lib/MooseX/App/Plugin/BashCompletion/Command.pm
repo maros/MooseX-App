@@ -29,7 +29,7 @@ sub bash_completion {
     $prefix             =~ tr/./_/;
     
     while (my ($command,$command_class) = each %$commands) {
-        Class::MOP::load_class($command_class);
+        Class::Load::load_class($command_class);
         my @attributes = $app_meta->command_usage_attributes_raw($command_class->meta);
         $command_map{$command} = [ 
             map { $_->[0] } @attributes

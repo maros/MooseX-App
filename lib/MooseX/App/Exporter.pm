@@ -73,7 +73,7 @@ sub process_plugins {
         my $plugin_class = 'MooseX::App::Plugin::'.$plugin;
         
         # TODO eval plugin class
-        Class::MOP::load_class($plugin_class);
+        Class::Load::load_class($plugin_class);
         
         push (@plugin_classes,$plugin_class);
     }
