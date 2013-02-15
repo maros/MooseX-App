@@ -149,7 +149,7 @@ In your base class:
   ); # not exposed
 
 Write multiple command classes (If you have only a single command class
-you might use L<MooseX::App::Simple> instead)
+you should use L<MooseX::App::Simple> instead)
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important
@@ -158,6 +158,7 @@ you might use L<MooseX::App::Simple> instead)
   option 'some_option' => (
       is            => 'rw',
       isa           => 'Str',
+      required      => 1,
       documentation => q[Very important option!],
   );
   
@@ -172,10 +173,28 @@ And then in some simple wrapper script:
  use MyApp;
  MyApp->new_with_command->run;
 
+On the command line:
+
+ bash$ myapp some_command --help
+ usage:
+     myapp some_command [long options...]
+     myapp help
+     myapp some_command --help
+ 
+ global options:
+     --global_option    Enable this to do fancy stuff [Flag]
+     --some_option      Very important option! [Required]
+     --help --usage -?  Prints this usage information. [Flag]
+ 
+ available commands:
+     some_command    Description of some command
+     another_command Description of another command
+     help            Prints this usage information
+
 =head1 DESCRIPTION
 
 MooseX-App is a highly customizeable helper to write user-friendly 
-command-line applications without having to worry about most of the annoying 
+command line applications without having to worry about most of the annoying 
 things usually involved. Just take any existing L<Moose> class, add a single 
 line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
 for each command in an underlying namespace.
@@ -188,7 +207,7 @@ MooseX-App will then take care of
 
 =item * Creating automated help and doucumentation from pod and attributes
 
-=item * Reading and validating the command line options entered by the user
+=item * Reading, encoding and validating the command line options entered by the user
 
 =back
 
@@ -223,7 +242,7 @@ object holding an error message.
 
 You can pass a hash of default params to new_with_command
 
- MyApp->new_with_command( %default );
+ MyApp->new_with_command(%default);
 
 =head2 initialize_command_class
 
@@ -303,7 +322,7 @@ your report as I make changes.
 =head1 CONTRIBUTORS
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
-Michael G, Thomas Klausner, Yanick Champoux
+Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
 
 =head1 COPYRIGHT
 

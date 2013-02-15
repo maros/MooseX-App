@@ -601,7 +601,7 @@ Returns either a single command or an arrayref of possibly matching commands.
 
  my $result = $meta->proto_command();
 
-Returns the proto command command-line options.
+Returns the proto command command line options.
 
 =head2 proto_options
 
