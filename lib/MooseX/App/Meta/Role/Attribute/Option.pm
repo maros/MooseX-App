@@ -7,7 +7,6 @@ use 5.010;
 
 use namespace::autoclean;
 use Moose::Role;
-with qw(MooseX::Getopt::Meta::Attribute::Trait);
 
 use Moose::Util::TypeConstraints;
 
@@ -23,6 +22,19 @@ has 'cmd_tags' => (
     is          => 'rw',
     isa         => 'ArrayRef[Str]',
     predicate   => 'has_cmd_tags',
+);
+
+has 'cmd_flag' => (
+    is          => 'rw',
+    isa         => 'Str',
+    predicate   => 'has_cmd_flag',
+);
+
+has 'cmd_aliases' => (
+    is          => 'rw',
+    isa         => 'MooseX::App::Types::CmdAliases',
+    predicate   => 'has_cmd_aliases',
+    coerce      => 1,
 );
 
 has 'cmd_proto' => (

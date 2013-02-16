@@ -8,6 +8,16 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
+has extra_argv => (
+    is => 'rw', 
+    isa => 'ArrayRef', 
+);
+
+#has ARGV => (
+#    is => 'rw', 
+#    isa => 'ArrayRef', 
+#);
+
 sub initialize_command_class {
     my ($class,$command_class,%args) = @_;
 
@@ -50,8 +60,8 @@ sub initialize_command_class {
             
             #($meta->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
             my %params = (                
-                ARGV        => $pa->argv_copy,
-                extra_argv  => $pa->extra_argv,
+                #ARGV        => $pa->argv_copy,
+                extra_argv  => $parsed_argv->{extra},
                 %args,                      # configs passed to new
                 %{ $proto_result },         # config params
                 %{ $pa->cli_params },       # params from CLI)
