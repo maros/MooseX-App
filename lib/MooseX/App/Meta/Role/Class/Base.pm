@@ -92,32 +92,115 @@ sub _build_app_commands {
     return \%return;
 }
 
-sub proto_command {
-    my ($self) = @_;
+sub command_proto {
+    my ($self,$metaclass,$parsed_argv) = @_;
     
-    local $Getopt::Long::Parser::autoabbrev = $self->app_fuzzy;
-    my $opt_parser = Getopt::Long::Parser->new( 
-        config => [
-            'no_auto_help',
-            'pass_through',
-            ($self->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
-        ],
+    $metaclass   ||= $self;
+    $parsed_argv ||= MooseX::App::Utils::parse_argv();
+    
+    my $attributes = {};
+    
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
+        next
+            unless $attribute->cmd_proto;
         
-    );
-    my $result = {};
-    $opt_parser->getoptions(
-        $self->proto_options($result)
-    );
-    return $result;
+        foreach my $name ($attribute->cmd_names_get()) {
+            if (defined $attributes->{$name}) {
+                Moose->throw_error('Command line option conflict: '.$name);    
+            }
+            
+            $attributes->{$name} = $attribute;
+        }
+    }
+    
+    
+    $self->command_parse_attr($attributes,$parsed_argv);
+
+#    
+#    local $Getopt::Long::Parser::autoabbrev = $self->app_fuzzy;
+#    my $opt_parser = Getopt::Long::Parser->new( 
+#        config => [
+#            'no_auto_help',
+#            'pass_through',
+#            ($self->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
+#        ],
+#        
+#    );
+#    my $result = {};
+#    $opt_parser->getoptions(
+#        $self->proto_options($result)
+#    );
+#    return $result;
 }
 
-sub proto_options {
-    my ($self,$result) = @_;
+sub command_parse_attr {
+    my ($self,$attributes,$parsed_argv) = @_;
     
-    $result->{help} = 0;
-    return (
-        "help|usage|?"      => \$result->{help},
-    );
+    my $return = {};
+    
+    # Loop all exact matches
+    foreach my $name (keys %{$attributes}) {
+        my $attribute = $attributes->{$name};
+        
+        if (defined $parsed_argv->{options}{$name}) {
+            $return->{$attribute->name} = delete $parsed_argv->{options}{$name};           
+        }
+    }
+    
+    # Loop all fuzzy matches
+    if ($self->app_fuzzy) {
+        foreach my $parsed (sort { length $b <=> length $a } keys %{$parsed_argv->{options}}) {
+            my ($match_attr,$match_values) = ([],[]);
+            
+            foreach my $name (keys %{$attributes}) {
+                my $name_short = substr($name,0,length($parsed));
+                if ($parsed eq $name_short) {
+                    my $attribute = $attributes->{$name};
+                    
+                    unless ($attribute ~~ $match_attr) {
+                        push(@{$match_attr},$attribute);   
+                    }
+                    
+                    push (@{$match_values},@{$parsed_argv->{options}{$parsed}});
+                    delete $parsed_argv->{options}{$parsed};
+                }
+            }
+            given (scalar @{$match_attr}) {
+                when(0) {}
+                when(1) {
+                    $return->{$match_attr->[0]->name} = $match_values; 
+                }
+                default {
+                    return $self->command_message(
+                        header          => "Ambiguous option: $parsed",
+                        type            => "error",
+                        body            => "Could be\n".MooseX::App::Utils::format_list(map { [ $_->name ] } sort @{$match_attr}),
+                    );
+                }
+            }
+        }
+    }     
+    
+    
+     
+#    
+#    
+#    
+#    my ($bool) = $attribute->cmd_bool;
+#    
+#    my (@values);
+#    foreach my $name (@names) {
+#        if (defined $bool 
+#            && length($name) == 1
+#            && $parsed_argv->{flags}{$name}) {
+#            return 1;
+#        } elsif ($parsed_argv->{options}{$name}) {
+#            push(@names,$parsed_argv->{options}{$name})    
+#        } elsif (1) {
+#        }
+#    } 
+        
+    return $return;
 }
 
 sub command_candidates {

@@ -37,9 +37,10 @@ sub initialize_command_class {
 #            $meta->command_usage_global(),
 #        );
     }
-
+    
+    my $parsed_argv  = MooseX::App::Utils::parse_argv();
     my $command_meta = $command_class->meta || $meta;
-    my $proto_result = $meta->proto_command($command_class);
+    my $proto_result = $meta->command_proto($command_meta,$parsed_argv);
     
     # TODO return some kind of null class object
     return

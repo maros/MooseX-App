@@ -8,29 +8,18 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
-around 'proto_options' => sub {
-    my ($orig,$self,$result) = @_;
+around 'command_proto' => sub {
+    my ($orig,$self,$metaclass,$processed_argv) = @_;
     
-    $result->{config} = undef;
-    my @return = $self->$orig($result);
-    return (
-        @return,
-        'config=s'    => \$result->{config},
-    )
-};
-
-around 'proto_command' => sub {
-    my ($orig,$self,$command_class) = @_;
-    
-    my $result = $self->$orig($command_class);
+    my $result = $self->$orig($metaclass,$processed_argv);
     delete $result->{config}
         unless defined $result->{config};
     
-    return $self->proto_config($command_class,$result);
+    return $self->proto_config($metaclass,$result);
 };
 
 sub proto_config {
-    my ($self,$command_class,$result) = @_;
+    my ($self,$metaclass,$result) = @_;
     
     
     # Check if we have a config
@@ -46,7 +35,7 @@ sub proto_config {
                 header          => "Could not find config file '".$config_file->stringify."'",
                 type            => "error",
             ),
-            $self->command_usage_command($command_class->meta),
+            $self->command_usage_command($metaclass),
         );
     }
     
@@ -56,7 +45,7 @@ sub proto_config {
         use_ext => 1,
     });
     
-    my $command_name = $self->command_class_to_command($command_class);
+    my $command_name = $self->command_class_to_command($metaclass->name);
     
     my ($config_data) = values %{$configs->[0]};
     
@@ -70,7 +59,7 @@ sub proto_config {
     
     # Lopp all attributes
     
-    foreach my $attribute ($self->command_usage_attributes_list($command_class->meta)) {
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
         my $attribute_name = $attribute->name;
         next
             if $attribute_name eq 'config' || $attribute_name eq 'help_flag';
