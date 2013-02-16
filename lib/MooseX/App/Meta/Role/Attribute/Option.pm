@@ -67,15 +67,20 @@ sub cmd_bool {
     return undef
 }
 
-sub cmd_names_get {
+sub cmd_name_primary {
     my ($self) = @_;
     
-    my @names;
     if ($self->has_cmd_flag) {
-        push(@names,$self->cmd_flag);
+        return $self->cmd_flag;
     } else {
-        push(@names,$self->name);
+        return $self->name;
     }
+}
+
+sub cmd_name_possible {
+    my ($self) = @_;
+    
+    my @names = ($self->cmd_name_primary);
     
     if ($self->has_cmd_aliases) {
         push(@names, @{$self->cmd_aliases});
