@@ -229,8 +229,8 @@ sub command_usage_attributes_raw {
 sub command_usage_attribute_detail {
     my ($self,$attribute) = @_;
     
-    my $name = $self->command_usage_attribute_name($attribute);
-    my @tags = $self->command_usage_attribute_tags($attribute);
+    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $attribute->cmd_names_get); ;
+    my @tags = $attribute->cmd_tags_get();
     my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
     
     if (scalar @tags) {
@@ -242,85 +242,6 @@ sub command_usage_attribute_detail {
     return ($name,$description);
 }
 
-sub command_usage_attribute_name {
-    my ($self,$attribute) = @_;
-    
-    my @names;
-    if ($attribute->can('cmd_flag')
-        && $attribute->has_cmd_flag) {
-        push(@names,$attribute->cmd_flag);
-    } else {
-        push(@names,$attribute->name);
-    }
-    
-    if ($attribute->can('cmd_aliases')
-        && $attribute->cmd_aliases) {
-        push(@names, @{$attribute->cmd_aliases});
-    }
-    
-    if ($attribute->has_type_constraint
-        && $attribute->type_constraint->equals('Bool')) {
-        if ($attribute->has_default 
-            && ! $attribute->is_default_a_coderef
-            && $attribute->default == 1) {
-            @names = map { 'no'.$_ } @names;    
-        } elsif (! $attribute->has_default
-            && $attribute->is_required) {
-            push(@names,map { 'no'.$_ } @names);        
-        }
-    }
-    
-    return join(' ', map { (length($_) == 1) ? "-$_":"--$_" } @names);
-}
-
-sub command_usage_attribute_tags {
-    my ($self,$attribute) = @_;
-    
-    my @tags;
-    
-    if ($attribute->is_required
-        && ! $attribute->is_lazy_build
-        && ! $attribute->has_default) {
-        push(@tags,'Required')
-    }
-    
-    if ($attribute->has_default && ! $attribute->is_default_a_coderef) {
-        if ($attribute->has_type_constraint
-            && $attribute->type_constraint->equals('Bool')) {
-#            if ($attribute->default) {
-#                push(@tags,'Default:Enabled');
-#            } else {
-#                push(@tags,'Default:Disabled');
-#            }
-        } else {
-            push(@tags,'Default:"'.$attribute->default.'"');
-        }
-    }
-    
-    if ($attribute->has_type_constraint) {
-        my $type_constraint = $attribute->type_constraint;
-        if ($type_constraint->is_subtype_of('ArrayRef')) {
-            push(@tags,'Multiple');
-        }
-        unless ($attribute->should_coerce) {
-            if ($type_constraint->equals('Int')) {
-                push(@tags,'Integer');
-            } elsif ($type_constraint->equals('Num')) {
-                push(@tags ,'Number');
-            } elsif ($type_constraint->equals('Bool')) {
-                push(@tags ,'Flag');
-            }
-        }
-    }
-    
-    if ($attribute->can('cmd_tags')
-        && $attribute->can('cmd_tags')
-        && $attribute->has_cmd_tags) {
-        push(@tags,@{$attribute->cmd_tags});
-    }
-    
-    return @tags;
-}
 
 
 sub command_usage_attributes {
@@ -535,21 +456,9 @@ Returns a list of attribute documentations for a given meta class.
 
 Returns a name and description for a given meta attribute class.
 
-=head2 command_usage_attribute_tags
-
- my (@tags) = $meta->command_usage_attribute_tags($metaattribute);
-
-Returns a list of tags for the given attribute.
-
-=head2 command_usage_attribute_name
-
- my ($name,$description) = $meta->command_usage_attribute_name($metaattribute);
-
-Returns a name for a given meta attribute class.
-
 =head2 command_usage_attribute_tag
 
- my @tags = $meta->command_usage_attribute_name($metaattribute);
+ my @tags = $meta->command_usage_attribute_tag($metaattribute);
 
 Returns a list of tags for a given meta attribute class.
 
@@ -597,16 +506,10 @@ Returns a list of command names matching the user input
 
 Returns either a single command or an arrayref of possibly matching commands.
 
-=head2 proto_command
+=head2 command_proto
 
- my $result = $meta->proto_command();
+ my $result = $meta->command_proto();
 
 Returns the proto command command line options.
-
-=head2 proto_options
-
- my @getopt_options = $meta->proto_command($result_hashref);
-
-Sets the GetOpt::Long options for the proto command
 
 =cut
