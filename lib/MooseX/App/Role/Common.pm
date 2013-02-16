@@ -16,6 +16,7 @@ has 'help_flag' => (
     traits          => ['AppOption','Getopt'],
     cmd_flag        => 'help',
     cmd_aliases     => [ qw(usage ?) ],
+    cmd_proto       => 1,
     documentation   => 'Prints this usage information.',
 );
 

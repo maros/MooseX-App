@@ -15,6 +15,11 @@ has 'cmd_tags' => (
     predicate   => 'has_cmd_tags',
 );
 
+has 'cmd_proto' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 0,
+);
 {
     package Moose::Meta::Attribute::Custom::Trait::AppOption;
     

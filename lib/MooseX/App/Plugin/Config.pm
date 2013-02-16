@@ -19,6 +19,7 @@ has 'config' => (
     predicate       => 'has_config',
     documentation   => q[Path to command config file],
     traits          => ['AppOption'],
+    cmd_proto       => 1,
 );
 
 has '_config_data' => (
