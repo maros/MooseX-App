@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 7+1;
+use Test::Most tests => 9+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -36,9 +36,9 @@ subtest 'Wrong command' => sub {
     01_basic.t help
     01_basic.t command --help",'Usage body set');
     is($test03->blocks->[2]->header,"global options:",'Global options set');
-    is($test03->blocks->[2]->body,"    --config           Path to command config file
-    --global           test [Required; Integer; Important!]
-    --help --usage -?  Prints this usage information. [Flag]",'Global options body set');
+    is($test03->blocks->[2]->body,"    --config              Path to command config file
+    --global              test [Required; Integer; Important!]
+    --help -h --usage -?  Prints this usage information. [Flag]",'Global options body set');
     is($test03->blocks->[3]->header,"available commands:",'Available commands set');
     is($test03->blocks->[3]->body,"    command_a   Command A!
     command_b   Test class command B for test 01
@@ -62,21 +62,22 @@ subtest 'Help for command' => sub {
     * bullet3
     Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
     is($test04->blocks->[2]->header,"options:",'Options header is set');
-    is($test04->blocks->[2]->body,"    --command_local1   some docs about the long texts that seem to occur
-                       randomly [Integer; Important; Env: LOCAL1]
-    --command_local2   Verylongwordwithoutwhitespacestotestiftextformatingwor
-                       ksproperly [Env: LOCAL2]
-    --config           Path to command config file
-    --global           test [Required; Integer; Important!]
-    --help --usage -?  Prints this usage information. [Flag]",'Options body is set');
+    is($test04->blocks->[2]->body,"    --command_local1      some docs about the long texts that seem to occur
+                          randomly [Integer; Important; Env: LOCAL1]
+    --command_local2      Verylongwordwithoutwhitespacestotestiftextformating
+                          worksproperly [Env: LOCAL2]
+    --config              Path to command config file
+    --global              test [Required; Integer; Important!]
+    --help -h --usage -?  Prints this usage information. [Flag]",'Options body is set');
 };
 
 subtest 'With extra args' => sub {
     local @ARGV = qw(Command_b --global 10);
-    my $test02 = Test01->new_with_command( 'param_b' => 'bbb', 'global' => 10  );
+    my $test02 = Test01->new_with_command( 'param_b' => 'bbb', 'global' => 20, 'private'=>5  );
     isa_ok($test02,'Test01::CommandB');
-    is($test02->global,'10','Param global is set');
+    is($test02->global,10,'Param global is set');
     is($test02->param_b,'bbb','Param param_b is set');
+    is($test02->private,5,'Param private is set');
 };
 
 subtest 'Wrapper script' => sub {
@@ -94,4 +95,18 @@ subtest 'Custom help text' => sub {
     like($test06->blocks->[1]->body,qr/    Some description of \*command B\*/,'Description is ok');
 };
 
+subtest 'Input errors missing' => sub {
+    local @ARGV = qw(command_a --command_local1);
+    my $test07 = Test01->new_with_command;
+    isa_ok($test07,'MooseX::App::Message::Envelope');
+    is($test07->blocks->[0]->header,"Missing value for 'command_local1'",'Error message ok');
+};
 
+subtest 'Input errors type' => sub {
+    local @ARGV = qw(command_a --command_local1 sss);
+    my $test08 = Test01->new_with_command;
+    isa_ok($test08,'MooseX::App::Message::Envelope');
+    is($test08->blocks->[0]->header,"Invalid value for 'command_local1'",'Error message ok');
+    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok');
+    
+};
