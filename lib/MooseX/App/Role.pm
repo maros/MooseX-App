@@ -65,6 +65,7 @@ Alternatively you can also just use attribute traits:
  has 'testattr' => (
     isa             => 'rw',
     traits          => ['AppOption'],
+    cmd_option      => 1,
     cmd_tags        => [qw(Important! Nice))],
  );
 

@@ -43,6 +43,7 @@ sub init_meta {
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
         class               => ['MooseX::App::Meta::Role::Class::Base'],
+        attribute           => ['MooseX::App::Meta::Role::Attribute::Option'],
     };
     
     return MooseX::App::Exporter->process_init_meta(%args);
@@ -225,6 +226,7 @@ This is equivalent to
       is            => 'rw',
       isa           => 'Str',
       traits        => ['AppOption'],
+      cmd_option    => 1,
   );
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 

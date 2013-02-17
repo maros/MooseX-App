@@ -18,6 +18,13 @@ coerce 'MooseX::App::Types::CmdAliases'
 
 no Moose::Util::TypeConstraints;
 
+
+has 'cmd_option' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 0,
+);
+
 has 'cmd_tags' => (
     is          => 'rw',
     isa         => 'ArrayRef[Str]',

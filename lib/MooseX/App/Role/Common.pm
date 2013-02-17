@@ -14,6 +14,7 @@ has 'help_flag' => (
     cmd_flag        => 'help',
     cmd_aliases     => [ qw(usage ?) ],
     cmd_proto       => 1,
+    cmd_option      => 1,
     documentation   => 'Prints this usage information.',
 );
 

@@ -40,13 +40,8 @@ sub option {
  
     my %options = ( definition_context => Moose::Util::_caller_info(), @rest );
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
-    $options{traits} ||= [];
     
-    push (@{$options{traits}},'MooseX::App::Meta::Role::Attribute::Option')
-        unless grep { 
-            $_ eq 'MooseX::App::Meta::Role::Attribute::Option' 
-            || $_ eq 'AppOption' 
-        } @{$options{traits}};
+    $options{cmd_option} = 1;
     
     $meta->add_attribute( $_, %options ) for @$attrs;
     
