@@ -4,8 +4,17 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test06);
 
+use Moose::Util::TypeConstraints;
+
+subtype 'Test06::local2' 
+    => as 'Str'
+    => where { $_  =~ /^[aA]/ };
+    #=> message { "Must start with an 'A'" };  
+
+no Moose::Util::TypeConstraints;
+
 option 'command_local2' => (
-    isa             => 'Str',
+    isa             => 'Test06::local2',
     is              => 'rw',
     documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly],
     cmd_env         => 'LOCAL2',
