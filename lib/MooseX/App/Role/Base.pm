@@ -21,7 +21,7 @@ has extra_argv => (
 sub initialize_command_class {
     my ($class,$command_class,%args) = @_;
 
-    my $meta         = $class->meta;
+    my $meta = $class->meta;
     
     Moose->throw_error('initialize_command_class is a class method')
         if blessed($class);
@@ -38,7 +38,6 @@ sub initialize_command_class {
 #        );
     }
     
-    my $parsed_argv  = MooseX::App::Utils::parse_argv();
     my $command_meta = $command_class->meta || $meta;
     my $proto_result = $meta->command_proto($command_meta,$parsed_argv);
     

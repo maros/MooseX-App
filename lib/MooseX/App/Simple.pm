@@ -62,8 +62,6 @@ sub new_with_options {
     Moose->throw_error('new_with_options is a class method')
         if ! defined $class || blessed($class);
 
-    local @ARGV = MooseX::App::Utils::encoded_argv();
-
     my %args;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH' ) {

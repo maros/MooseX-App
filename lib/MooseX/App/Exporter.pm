@@ -9,6 +9,7 @@ use warnings;
 
 use Moose::Exporter;
 use MooseX::App::Utils;
+use MooseX::App::ParsedArgv;
 
 our %PLUGIN_SPEC;
 
