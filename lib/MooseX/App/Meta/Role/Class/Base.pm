@@ -143,6 +143,7 @@ sub command_parse_options {
         }
     }
     
+    my $match = {};
     my $return = {};
     my @errors;
     
@@ -152,7 +153,7 @@ sub command_parse_options {
     # Loop all exact matches
     foreach my $option ($parsed_argv->options_available()) {
         if (my $attribute = $option_to_attribute{$option->key}) {
-            $return->{$attribute->name} = $option->value;
+            $match->{$attribute->name} = $option->value;
             $option->consume($attribute);
         }
     }
@@ -193,8 +194,8 @@ sub command_parse_options {
                 when(1) {
                     my $attribute = $match_attributes->[0];
                     $option->consume($attribute);
-                    $return->{$attribute->name} ||= [];
-                    push(@{$return->{$attribute->name}},@{$option->value}); 
+                    $match->{$attribute->name} ||= [];
+                    push(@{$match->{$attribute->name}},@{$option->value}); 
                 }
                 # Multiple matches
                 default {
@@ -219,7 +220,7 @@ sub command_parse_options {
         my $value;
         
         next
-            unless exists $return->{$attribute->name};
+            unless exists $match->{$attribute->name};
         
         # Attribute with type constraint
         if ($attribute->has_type_constraint) {
@@ -232,10 +233,10 @@ sub command_parse_options {
             #}
             
             if ($type_constraint->is_a_type_of('ArrayRef')) {
-                $value = $return->{$attribute->name};
+                $value = $match->{$attribute->name};
             } elsif ($type_constraint->is_a_type_of('HashRef')) {
                 $value = {};
-                foreach my $element (@{$return->{$attribute->name}}) {
+                foreach my $element (@{$match->{$attribute->name}}) {
                     if ($element =~ m/^([^=]+)=(.+?)$/) {
                         $value->{$1} ||= $2;
                     } else {
@@ -251,18 +252,24 @@ sub command_parse_options {
             } elsif ($type_constraint->is_a_type_of('Bool')) {
                 $value = 1; # TODO or 0 if no!
             } elsif ($type_constraint->is_a_type_of('Int')) {
-                $value = $return->{$attribute->name}[-1];
+                $value = $match->{$attribute->name}[-1];
             } else {
-                # TODO really last?
-                $value = $return->{$attribute->name}[-1];
+                $value = $match->{$attribute->name}[-1];
             }
             
-            if (my $error = $self->command_check_attribute($attribute,$value)) {
+            unless(defined $value) {
+                push(@errors,
+                    $self->command_message(
+                        header          => "Missing value for '".$attribute->cmd_name_primary."'",
+                        type            => "error",
+                    )
+                );
+            } elsif (my $error = $self->command_check_attribute($attribute,$value)) {
                 push(@errors,$error);
             }
             
         } else {
-             $value = $return->{$attribute->name}[-1];
+             $value = $match->{$attribute->name}[-1];
         }
         
         $return->{$attribute->name} = $value;
