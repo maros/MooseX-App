@@ -92,84 +92,251 @@ sub _build_app_commands {
     return \%return;
 }
 
+sub command_args {
+    my ($self,$metaclass) = @_;
+    
+    $metaclass      ||= $self;
+    my @attributes  = $self->command_usage_attributes_list($metaclass);
+    
+    my ($return,$errors) = $self->command_parse_options(\@attributes);
+    my $parsed_argv = MooseX::App::ParsedArgv->instance;
+    
+    foreach my $option ($parsed_argv->options_available) {
+        push(@{$errors},
+            $self->command_message(
+                header          => "Unknown option '".$option->key."'",
+                type            => "error",
+            )
+        );
+    }
+    
+    return ($return,$errors);
+}
+
 sub command_proto {
-    my ($self,$metaclass,$parsed_argv) = @_;
+    my ($self,$metaclass) = @_;
     
     $metaclass   ||= $self;
-    $parsed_argv ||= MooseX::App::Utils::parse_argv();
     
-    my $attributes = {};
-    
+    my @attributes;
     foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
         next
             unless $attribute->cmd_proto;
-        
-        foreach my $name ($attribute->cmd_names_get()) {
-            if (defined $attributes->{$name}) {
-                Moose->throw_error('Command line option conflict: '.$name);    
-            }
-            
-            $attributes->{$name} = $attribute;
-        }
+        push(@attributes,$attribute);
     }
     
-    
-    $self->command_parse_attr($attributes,$parsed_argv);
-
+    return $self->command_parse_options(\@attributes);
 }
 
-sub command_parse_attr {
-    my ($self,$attributes,$parsed_argv) = @_;
+sub command_parse_options {
+    my ($self,$attributes) = @_;
     
-    my $return = {};
-    
-    # Loop all exact matches
-    foreach my $name (keys %{$attributes}) {
-        my $attribute = $attributes->{$name};
-        
-        if (defined $parsed_argv->{options}{$name}) {
-            $return->{$attribute->name} = delete $parsed_argv->{options}{$name};           
+    # Build attribute lookup hash
+    my %option_to_attribute;
+    foreach my $attribute (@{$attributes}) {
+        foreach my $name ($attribute->cmd_name_possible) {
+            if (defined $option_to_attribute{$name}
+                && $option_to_attribute{$name} ne $attribute->name) {
+                Moose->throw_error('Command line option conflict: '.$name);    
+            }
+            $option_to_attribute{$name} = $attribute;
         }
     }
     
-    # Loop all fuzzy matches
+    my $return = {};
+    my @errors;
+    
+    # Get ARGV
+    my $parsed_argv = MooseX::App::ParsedArgv->instance;
+    
+    # Loop all exact matches
+    foreach my $option ($parsed_argv->options_available()) {
+        if (my $attribute = $option_to_attribute{$option->key}) {
+            $return->{$attribute->name} = $option->value;
+            $option->consume($attribute);
+        }
+    }
+    
+    # Process fuzzy matches
     if ($self->app_fuzzy) {
-        foreach my $parsed (sort { length $b <=> length $a } keys %{$parsed_argv->{options}}) {
-            my ($match_attr,$match_values) = ([],[]);
+        
+        # Loop all options (sorted by length)
+        foreach my $option ($parsed_argv->options_available()) {
+
+            # No fuzzy matching for one-letter flags
+            my $option_length = length($option->key);
+            next
+                if $option_length == 1;
             
-            foreach my $name (keys %{$attributes}) {
-                my $name_short = substr($name,0,length($parsed));
-                if ($parsed eq $name_short) {
-                    my $attribute = $attributes->{$name};
-                    
-                    unless ($attribute ~~ $match_attr) {
-                        push(@{$match_attr},$attribute);   
+            my ($match_attributes) = [];
+            
+            # Try to match attributes
+            foreach my $name (keys %option_to_attribute) {
+                next
+                    if ($option_length <= length($name));
+                
+                my $name_short = substr($name,0,$option_length);
+                
+                # Partial match
+                if ($option->key eq $name_short) {
+                    my $attribute = $option_to_attribute{$name};
+                    unless (grep { $attribute == $_ } @{$match_attributes}) {
+                        push(@{$match_attributes},$attribute);   
                     }
-                    
-                    push (@{$match_values},@{$parsed_argv->{options}{$parsed}});
-                    delete $parsed_argv->{options}{$parsed};
                 }
             }
-            given (scalar @{$match_attr}) {
+            
+            given (scalar @{$match_attributes}) {
+                # No match
                 when(0) {}
+                # One match
                 when(1) {
-                    $return->{$match_attr->[0]->name} = $match_values; 
+                    my $attribute = $match_attributes->[0];
+                    $option->consume($attribute);
+                    $return->{$attribute->name} ||= [];
+                    push(@{$return->{$attribute->name}},@{$option->value}); 
                 }
+                # Multiple matches
                 default {
-                    return $self->command_message(
-                        header          => "Ambiguous option: $parsed",
-                        type            => "error",
-                        body            => "Could be\n".MooseX::App::Utils::format_list(map { [ $_->name ] } sort @{$match_attr}),
+                    push(@errors,
+                        $self->command_message(
+                            header          => "Ambiguous option '".$option->key."'",
+                            type            => "error",
+                            body            => "Could be\n".MooseX::App::Utils::format_list(
+                                map { [ $_->cmd_name_primary ] } 
+                                sort 
+                                @{$match_attributes}
+                            ),
+                        )
                     );
                 }
             }
         }
-    }     
+    }
     
-    
-     
+    # Check all attributes
+    foreach my $attribute (@{$attributes}) {
+        my $value;
         
-    return $return;
+        next
+            unless exists $return->{$attribute->name};
+        
+        # Attribute with type constraint
+        if ($attribute->has_type_constraint) {
+            my $type_constraint = $attribute->type_constraint;
+            
+            #my $coercion;
+            #if ($attribute->should_coerce
+            #    && $type_constraint->has_coercion) {
+            #    $coercion = $type_constraint->coercion;
+            #}
+            
+            if ($type_constraint->is_a_type_of('ArrayRef')) {
+                $value = $return->{$attribute->name};
+            } elsif ($type_constraint->is_a_type_of('HashRef')) {
+                $value = {};
+                foreach my $element (@{$return->{$attribute->name}}) {
+                    if ($element =~ m/^([^=]+)=(.+?)$/) {
+                        $value->{$1} ||= $2;
+                    } else {
+                        push(@errors,
+                            $self->command_message(
+                                header          => "Invalid value for '".$attribute->cmd_name_primary."'",
+                                type            => "error",
+                                body            => "Value must be supplied as 'key=value' (not '$element')",
+                            )
+                        );
+                    }
+                }
+            } elsif ($type_constraint->is_a_type_of('Bool')) {
+                $value = 1; # TODO or 0 if no!
+            } elsif ($type_constraint->is_a_type_of('Int')) {
+                $value = $return->{$attribute->name}[-1];
+            } else {
+                # TODO really last?
+                $value = $return->{$attribute->name}[-1];
+            }
+            
+            if (my $error = $self->command_check_attribute($attribute,$value)) {
+                push(@errors,$error);
+            }
+            
+        } else {
+             $value = $return->{$attribute->name}[-1];
+        }
+        
+        $return->{$attribute->name} = $value;
+    }
+    
+    return ($return,\@errors);
+}
+
+sub command_check_attribute {
+    my ($self,$attribute,$value) = @_;
+    
+    return 
+        unless ($attribute->has_type_constraint);
+    my $type_constraint = $attribute->type_constraint;
+    
+    # Check type constraints
+    unless ($type_constraint->check($value)) {
+        my $message;
+        
+        # We have a custom message
+        if ($type_constraint->has_message) {
+            $message = $type_constraint->get_message($value);
+        # No message
+        } else {
+            my $type_human = $self->command_type_constraint_description($type_constraint->name);
+            if (defined $type_human) {
+                $message = "Value must be ";
+                if ($type_human =~ /^[aeiouy]/) {
+                    $message .= "an $type_human";
+                } else {
+                    $message .= "a $type_human";
+                }
+                $message .= " (not '$value')";
+            } else {
+                $message = $type_constraint->get_message($value);
+            }
+        }
+        
+        return $self->command_message(
+            header          => "Invalid value for '".$attribute->cmd_name_primary."'",
+            type            => "error",
+            body            => $message,
+        );
+    }
+    
+    return;
+}
+
+
+sub command_type_constraint_description {
+    my ($self,$type_constraint_name) = @_;
+    
+    given ($type_constraint_name) {
+        when ('Int') {
+            return 'integer';
+        }
+        when ('Num') {
+            return 'number';
+        }
+        when (/^ArrayRef\[(.*)\]$/) {
+            return $self->command_type_constraint_description($1);
+        }
+        when ('HashRef') {
+            return 'key-value pairs';
+        }
+        when (/^HashRef\[(.+)\]$/) {
+            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values';
+        }
+        when ('Str') {
+            return 'string';
+        }
+    }
+    
+    return;
 }
 
 sub command_candidates {
@@ -254,7 +421,9 @@ sub command_usage_attributes_list {
     # TODO order by insertion order
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
-            unless $attribute->does('AppOption');
+            unless $attribute->does('AppOption')
+            && $attribute->cmd_option;
+        
         push(@return,$attribute);
     }
     
@@ -281,7 +450,7 @@ sub command_usage_attributes_raw {
 sub command_usage_attribute_detail {
     my ($self,$attribute) = @_;
     
-    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $attribute->cmd_names_get); ;
+    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $attribute->cmd_name_possible); ;
     my @tags = $attribute->cmd_tags_get();
     my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
     
@@ -560,7 +729,7 @@ Returns either a single command or an arrayref of possibly matching commands.
 
 =head2 command_proto
 
- my $result = $meta->command_proto();
+ my ($result,$errors) = $meta->command_proto();
 
 Returns the proto command command line options.
 

@@ -131,6 +131,8 @@ sub cmd_tags_get {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_subtype_of('ArrayRef')) {
             push(@tags,'Multiple');
+        } elsif ($type_constraint->is_a_type_of('HashRef')) {
+            push(@tags,'Key-Value');
         }
         unless ($self->should_coerce) {
             if ($type_constraint->is_a_type_of('Int')) {

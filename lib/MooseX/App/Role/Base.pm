@@ -39,54 +39,77 @@ sub initialize_command_class {
     }
     
     my $command_meta = $command_class->meta || $meta;
-    my $proto_result = $meta->command_proto($command_meta,$parsed_argv);
+    my ($proto_result,$proto_errors) = $meta->command_proto($command_meta);
     
     # TODO return some kind of null class object
     return
         unless defined $proto_result;
     
-    return $proto_result
-        if (blessed($proto_result) && $proto_result->isa('MooseX::App::Message::Envelope'));
-    
-    if ($proto_result->{help}) {
+    my @errors = @{$proto_errors};
+
+    # Return user-requested help
+    if ($proto_result->{help_flag}) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_command($command_class->meta),
         );
-    } else {
-        my $command_object = eval {
-            Getopt::Long::Configure(($meta->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev'));
-            
-            my $pa = $command_class->process_argv(%$proto_result,%args);
-            
-            #($meta->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
-            my %params = (                
-                #ARGV        => $pa->argv_copy,
-                extra_argv  => $parsed_argv->{extra},
-                %args,                      # configs passed to new
-                %{ $proto_result },         # config params
-                %{ $pa->cli_params },       # params from CLI)
-            );
-            
-            my $object = $command_class->new(%params);
-            
-            return $object;
-        };
-        if (my $error = $@) {
-            chomp $error;
-            $error =~ s/\n.+//s;
-            $error =~ s/in call to \(eval\)$//;
-            
-            return MooseX::App::Message::Envelope->new(
-                $meta->command_message(
-                    header          => $error,
-                    type            => "error",
-                ),
-                $meta->command_usage_command($command_meta),
-            );
+    }
+    
+    my $command_object = eval {
+        my ($result,$errors) = $meta->command_args($command_meta);
+        push(@errors,@{$errors});
+        
+        my %params = (            
+            %args,              # configs passed to new
+            %{ $proto_result }, # config params
+            %{ $result },       # params from CLI)
+        );
+        
+        # Check required values
+        foreach my $attribute ($meta->command_usage_attributes_list($command_meta)) {
+            if ($attribute->is_required
+                && ! exists $params{$attribute->name}) {
+                push(@errors,
+                    $meta->command_message(
+                        header          => "Required option '".$attribute->cmd_name_primary."' missing",
+                        type            => "error",
+                    )
+                );
+            }
         }
-        # TODO exitval 0 ..  ok , 1 .. error, 2..fatal error
-        return $command_object;
-    }   
+        
+        return
+            if scalar @errors;
+        
+        my $object = $command_class->new(
+            %params,
+            extra_argv          => MooseX::App::ParsedArgv->instance->extra,
+        );
+        
+        return $object;
+    };
+    
+    if (my $error = $@) {
+        chomp $error;
+        $error =~ s/\n.+//s;
+        $error =~ s/in call to \(eval\)$//;
+        
+        return MooseX::App::Message::Envelope->new(
+            $meta->command_message(
+                header          => $error,
+                type            => "error",
+            ),
+            #$meta->command_usage_command($command_meta),
+        );
+    }
+      
+    if (scalar @errors) {
+        return MooseX::App::Message::Envelope->new(
+            @errors,
+            $meta->command_usage_command($command_meta),
+        );
+    }
+            
+    return $command_object;
 }
 
 
