@@ -7,81 +7,9 @@ use warnings;
 
 use String::CamelCase qw(camelize decamelize);
 use List::Util qw(max);
-use Encode qw(decode);
 
 our $SCREEN_WIDTH = 78;
 our $INDENT = 4;
-
-sub parse_argv {
-    my @local_argv = @_ || encoded_argv();
-        
-    #my %flags;
-    my %options;
-    my $lastkey;
-    my $stopprocessing;
-    my @extra;
-    
-    foreach my $element (@local_argv) {
-        if ($stopprocessing) {
-            push(@extra,$element);
-        } else {
-            given ($element) {
-                ## Flags
-                #when (m/^-([^-][[:alnum:]]*)$/) {
-                #    undef $lastkey;
-                #    foreach my $flag (split(//,$1)) {
-                #        $flags{lc($flag)} = 1;   
-                #    }
-                #}
-                # Key-value combined
-                when (m/^-{1,2}([^-].*)=(.+)$/) {
-                    undef $lastkey;
-                    my ($key,$value) = (lc($1),lc($2));
-                    $options{$key} ||= [];
-                    push(@{$options{$key}},$value);
-                }
-                # Key
-                when (m/^-{1,2}([^-].*)/) {
-                    my $key = lc($1);
-                    $options{$key} ||= [];
-                    $lastkey = $key;
-                }
-                # Extra values
-                when ('--') {
-                    $stopprocessing = 1;
-                }
-                # Value
-                default {
-                    if (defined $lastkey) {
-                        push(@{$options{$lastkey}},$_);
-                    } else {
-                        die('ERROR');   
-                    }
-                }
-            } 
-        }
-    }
-    
-    return {
-        #flags   => [ keys %flags ],
-        options => \%options,
-        extra   => \@extra,
-    }
-}
-
-sub encoded_argv {
-    my @local_argv = @_ || @ARGV;
-    
-    @local_argv = eval {
-        require I18N::Langinfo;
-        I18N::Langinfo->import(qw(langinfo CODESET));
-        my $codeset = langinfo(CODESET());
-        binmode(STDOUT, ":encoding(UTF-8)")
-            if $codeset =~ m/^UTF-?8$/i;
-        return map { decode($codeset,$_) } @local_argv;
-    };
-    return @local_argv;
-}
 
 sub class_to_command {
     my ($class) = @_;
