@@ -50,7 +50,7 @@ has 'cmd_proto' => (
     default     => 0,
 );
 
-sub cmd_bool {
+sub cmd_is_bool {
     my ($self) = @_; 
    
     if ($self->has_type_constraint
@@ -93,7 +93,7 @@ sub cmd_name_possible {
         push(@names, @{$self->cmd_aliases});
     }
     
-    my $bool = $self->cmd_bool();
+    my $bool = $self->cmd_is_bool();
     
     if (defined $bool
         && $bool == 0) {
