@@ -12,7 +12,7 @@ use File::HomeDir qw();
 
 around 'proto_config' => sub {
     my $orig = shift;
-    my ($self,$command_class,$result) = @_;
+    my ($self,$command_class,$result,$errors) = @_;
     
     unless (defined $result->{config}) {
         my $home_dir = Path::Class::Dir->new(File::HomeDir->my_home);
@@ -26,6 +26,6 @@ around 'proto_config' => sub {
         }
     }
     
-    return $self->$orig($command_class,$result);
+    return $self->$orig($command_class,$result,$errors);
 };
 1;

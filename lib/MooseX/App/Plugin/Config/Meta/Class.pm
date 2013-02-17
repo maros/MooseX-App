@@ -11,32 +11,31 @@ use Moose::Role;
 around 'command_proto' => sub {
     my ($orig,$self,$metaclass,$processed_argv) = @_;
     
-    my $result = $self->$orig($metaclass,$processed_argv);
+    my ($result,$errors) = $self->$orig($metaclass,$processed_argv);
     delete $result->{config}
         unless defined $result->{config};
     
-    return $self->proto_config($metaclass,$result);
+    return $self->proto_config($metaclass,$result,$errors);
 };
 
 sub proto_config {
-    my ($self,$metaclass,$result) = @_;
-    
-    
+    my ($self,$metaclass,$result,$errors) = @_;
+        
     # Check if we have a config
-    return $result
+    return ($result,$errors)
         unless defined $result->{config};
     
     # Read config 
     my $config_file = Path::Class::File->new($result->{config});
     
     unless (-e $config_file->stringify) {
-        return MooseX::App::Message::Envelope->new(
+        push(@{$errors},
             $self->command_message(
                 header          => "Could not find config file '".$config_file->stringify."'",
                 type            => "error",
             ),
-            $self->command_usage_command($metaclass),
         );
+        return ($result,$errors);
     }
     
     my $config_file_name = $config_file->stringify;
@@ -69,7 +68,7 @@ sub proto_config {
             if defined $config_data->{$command_name}{$attribute_name};
     }
     
-    return $result;
+    return ($result,$errors);
 };
 
 1;
