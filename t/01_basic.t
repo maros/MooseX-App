@@ -29,7 +29,7 @@ subtest 'Wrong command' => sub {
     local @ARGV = qw(xxxx --global 10);
     my $test03 = Test01->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
-    is($test03->blocks->[0]->header,"Unknown command: xxxx",'Message is set');
+    is($test03->blocks->[0]->header,"Unknown command 'xxxx'",'Message is set');
     is($test03->blocks->[0]->type,"error",'Message is of type error');
     is($test03->blocks->[1]->header,"usage:",'Usage set');
     is($test03->blocks->[1]->body,"    01_basic.t command [long options...]

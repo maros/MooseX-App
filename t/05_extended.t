@@ -16,14 +16,14 @@ subtest 'Non-Fuzzy command matching' => sub {
     local @ARGV = qw(some --private 1);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown command: some","Message ok");
+    is($test01->blocks->[0]->header,"Unknown command 'some'","Message ok");
 };
 
 subtest 'Non-Fuzzy attribute matching' => sub {
     local @ARGV = qw(some_command --private 1);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown option: private","Message ok");
+    is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
 };
 
 Test03->meta->app_fuzzy(1);
@@ -32,7 +32,7 @@ subtest 'Private option is not exposed' => sub {
     local @ARGV = qw(some --private 1);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown option: private","Message ok");
+    is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
     is($test01->blocks->[0]->type,"error",'Message is of type error');
 };
 

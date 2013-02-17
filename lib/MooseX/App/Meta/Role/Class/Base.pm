@@ -389,7 +389,7 @@ sub command_find {
             given (scalar @{$candidate}) {
                 when (0) {
                     return $self->command_message(
-                        header          => "Unknown command: $command",
+                        header          => "Unknown command '$command'",
                         type            => "error",
                     );
                 }
@@ -398,7 +398,7 @@ sub command_find {
                         return $candidate->[0];
                     } else {
                         return $self->command_message(
-                            header          => "Unknown command: $command",
+                            header          => "Unknown command '$command'",
                             type            => "error",
                             body            => "Did you mean '".$candidate->[0]."'?",
                         );
@@ -406,7 +406,7 @@ sub command_find {
                 }
                 default {
                     return $self->command_message(
-                        header          => "Ambiguous command: $command",
+                        header          => "Ambiguous command '$command'",
                         type            => "error",
                         body            => "Which command did you mean?\n".MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
                     );
