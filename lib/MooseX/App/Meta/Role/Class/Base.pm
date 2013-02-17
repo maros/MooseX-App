@@ -176,10 +176,10 @@ sub command_parse_options {
                 next
                     if ($option_length <= length($name));
                 
-                my $name_short = substr($name,0,$option_length);
+                my $name_short = lc(substr($name,0,$option_length));
                 
                 # Partial match
-                if ($option->key eq $name_short) {
+                if (lc($option->key) eq $name_short) {
                     my $attribute = $option_to_attribute{$name};
                     unless (grep { $attribute == $_ } @{$match_attributes}) {
                         push(@{$match_attributes},$attribute);   
