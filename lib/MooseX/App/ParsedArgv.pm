@@ -46,7 +46,7 @@ sub instance {
 sub shift_argv {
     my ($self) = @_;
     
-    my $argv = $self->_argv;
+    my $argv = $self->argv;
     my $first_argv = shift @{$argv};
     
     my $meta = $self->meta;
@@ -124,13 +124,6 @@ sub _parse {
     
     # Sort by length    
     my @options = sort { length($b->key) <=> length($a->key) } values %options;
-    
-    # Fill empty slots
-    foreach my $option (@options) {
-        unless ($option->has_values()) {
-            $option->add_value(1);
-        }   
-    }
     
     my $meta = $self->meta;
     $meta->get_attribute('options')->set_raw_value($self,\@options);
