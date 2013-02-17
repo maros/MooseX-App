@@ -22,6 +22,10 @@ requires        'Config::Any'                   => 0;
 requires        'String::CamelCase'             => 0;
 requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
+# Although MooseX::App doesn't depend on Getopt::Long::Descriptive directly,
+# some tests rely on the particular error message "Mandatory parameter '...'
+# missing". This sentence was changed in v0.091.
+requires        'Getopt::Long::Descriptive'     => '0.091';
 
 recommends      'Term::ANSIColor'               => 0;
 recommends      'File::HomeDir'                 => 0;
