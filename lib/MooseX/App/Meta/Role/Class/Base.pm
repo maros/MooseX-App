@@ -226,12 +226,6 @@ sub command_parse_options {
         if ($attribute->has_type_constraint) {
             my $type_constraint = $attribute->type_constraint;
             
-            #my $coercion;
-            #if ($attribute->should_coerce
-            #    && $type_constraint->has_coercion) {
-            #    $coercion = $type_constraint->coercion;
-            #}
-            
             if ($type_constraint->is_a_type_of('ArrayRef')) {
                 $value = $match->{$attribute->name};
             } elsif ($type_constraint->is_a_type_of('HashRef')) {
@@ -264,8 +258,18 @@ sub command_parse_options {
                         type            => "error",
                     )
                 );
-            } elsif (my $error = $self->command_check_attribute($attribute,$value)) {
-                push(@errors,$error);
+            } else {
+                            
+                my $coercion;
+                if ($attribute->should_coerce
+                    && $type_constraint->has_coercion) {
+                    $coercion = $type_constraint->coercion;
+                    $value = $coercion->coerce($value) // $value;
+                }
+                
+                my $error = $self->command_check_attribute($attribute,$value);
+                push(@errors,$error)
+                    if $error;
             }
             
         } else {
