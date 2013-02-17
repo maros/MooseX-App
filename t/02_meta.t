@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 22+1;
+use Test::Most tests => 23+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -76,4 +76,6 @@ hase ist so super and this is a very long sentence witch breaks after i have wri
 
 another interesting paragraph.','Pod long description parsed ok');
 
+require Test01::CommandC1;
 is(Test01::CommandB->meta->command_usage,'use with care','Command usage parsed ok');
+is(Test01::CommandC1->meta->find_attribute_by_name('param_internal_name')->cmd_name_primary,'external_name','Attribute name ok');
