@@ -458,7 +458,7 @@ sub command_usage_attribute_detail {
     my ($self,$attribute) = @_;
     
     my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $attribute->cmd_name_possible); ;
-    my @tags = $attribute->cmd_tags_get();
+    my @tags = $attribute->cmd_tags_list();
     my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
     
     if (scalar @tags) {

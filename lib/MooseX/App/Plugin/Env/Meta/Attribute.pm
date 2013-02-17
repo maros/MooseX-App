@@ -21,7 +21,7 @@ has 'cmd_env' => (
     predicate   => 'has_cmd_env',
 );
 
-around 'cmd_tags_get' => sub {
+around 'cmd_tags_list' => sub {
     my $orig = shift;
     my ($self) = @_;
     

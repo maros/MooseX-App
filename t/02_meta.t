@@ -41,16 +41,16 @@ cmp_deeply([ $meta->command_usage_attributes_raw ],
     'test [Required; Integer; Important!]'
   ],
   [
-    '--help --usage -?',
+    '--help -h --usage -?',
     'Prints this usage information. [Flag]'
   ]
 ]
 ,'Command A and B matched');
 
 my $meta_attribute = $meta->find_attribute_by_name('global');
-is(join(',',$meta->command_usage_attribute_tags($meta_attribute)),'Required,Integer,Important!','Tags ok');
+is(join(',',$meta_attribute->cmd_tags_list($meta_attribute)),'Required,Integer,Important!','Tags ok');
 $meta_attribute->cmd_tags(['Use with care']);
-is(join(',',$meta->command_usage_attribute_tags($meta_attribute)),'Required,Integer,Use with care','Changed tags ok');
+is(join(',',$meta_attribute->cmd_tags_list()),'Required,Integer,Use with care','Changed tags ok');
 
 require Test01::CommandA;
 my $description = $meta->command_usage_description(Test01::CommandA->meta);

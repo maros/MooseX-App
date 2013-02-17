@@ -103,7 +103,7 @@ sub cmd_name_possible {
     return @names;
 }
 
-sub cmd_tags_get {
+sub cmd_tags_list {
     my ($self) = @_;
     
     my @tags;
