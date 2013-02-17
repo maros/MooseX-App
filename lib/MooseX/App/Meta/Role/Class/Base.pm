@@ -116,21 +116,6 @@ sub command_proto {
     
     $self->command_parse_attr($attributes,$parsed_argv);
 
-#    
-#    local $Getopt::Long::Parser::autoabbrev = $self->app_fuzzy;
-#    my $opt_parser = Getopt::Long::Parser->new( 
-#        config => [
-#            'no_auto_help',
-#            'pass_through',
-#            ($self->app_fuzzy ? 'auto_abbrev' : 'no_auto_abbrev')
-#        ],
-#        
-#    );
-#    my $result = {};
-#    $opt_parser->getoptions(
-#        $self->proto_options($result)
-#    );
-#    return $result;
 }
 
 sub command_parse_attr {
@@ -183,22 +168,6 @@ sub command_parse_attr {
     
     
      
-#    
-#    
-#    
-#    my ($bool) = $attribute->cmd_bool;
-#    
-#    my (@values);
-#    foreach my $name (@names) {
-#        if (defined $bool 
-#            && length($name) == 1
-#            && $parsed_argv->{flags}{$name}) {
-#            return 1;
-#        } elsif ($parsed_argv->{options}{$name}) {
-#            push(@names,$parsed_argv->{options}{$name})    
-#        } elsif (1) {
-#        }
-#    } 
         
     return $return;
 }
