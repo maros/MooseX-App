@@ -72,6 +72,8 @@ sub new_with_options {
         Moose->throw_error('new_with_command got inavlid extra arguments');
     }
 
+    MooseX::App::ParsedArgv->instance->argv(\@ARGV);
+
     return $class->initialize_command_class($class,%args);
 }
 

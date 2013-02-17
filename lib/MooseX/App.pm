@@ -83,6 +83,7 @@ sub new_with_command {
     
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
+    $parsed_argv->argv(\@ARGV);
     my $first_argv = $parsed_argv->shift_argv;
     
     # No args
