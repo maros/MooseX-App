@@ -160,7 +160,6 @@ sub command_parse_options {
     
     # Process fuzzy matches
     if ($self->app_fuzzy) {
-        
         # Loop all options (sorted by length)
         foreach my $option ($parsed_argv->options_available()) {
 
@@ -171,10 +170,11 @@ sub command_parse_options {
             
             my ($match_attributes) = [];
             
+            
             # Try to match attributes
             foreach my $name (keys %option_to_attribute) {
                 next
-                    if ($option_length <= length($name));
+                    if ($option_length >= length($name));
                 
                 my $name_short = lc(substr($name,0,$option_length));
                 
