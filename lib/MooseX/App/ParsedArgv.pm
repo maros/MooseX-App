@@ -202,3 +202,28 @@ sub _build_argv {
 
 __PACKAGE__->meta->make_immutable;
 1;
+
+__END__
+
+=pod
+
+=head1 NAME
+
+MooseX::App::ParsedArgv - Parses @ARGV
+
+=head1 SYNOPSIS
+
+ use MooseX::App::ParsedArgv;
+ my $argv = MooseX::App::ParsedArgv->instance; 
+ 
+ foreach my $option (@{$argv->options}) {
+     say "Parsed ".$option->key;
+ }
+
+=head1 DESCRIPTION
+
+This is a helper class that holds all options parsed from @ARGV
+
+TODO
+
+=cut

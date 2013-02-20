@@ -10,7 +10,6 @@ use warnings;
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.15';
 
-use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_base app_fuzzy option);
 use MooseX::App::Message::Envelope;
@@ -211,6 +210,8 @@ MooseX-App will then take care of
 
 =item * Reading, encoding and validating the command line options entered by the user
 
+=item * Providing helpful error messages if user input cannot be validated
+
 =back
 
 Commandline options are defined using the 'option' keyword which accepts
@@ -304,7 +305,9 @@ documentation on how to create your own plugins.
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
 MooseX::App command line application.
 
-L<MooseX::App::Cmd>, L<MooseX::Getopt> and L<App::Cmd>
+For alternatives you can check out
+
+L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options> and L<App::Cmd>
 
 =head1 SUPPORT
 
