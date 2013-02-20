@@ -23,7 +23,9 @@ around 'command_proto' => sub {
         if (exists $ENV{$cmd_env}
             && ! defined $result->{$attribute->name}) {
             $result->{$attribute->name} = $ENV{$cmd_env};
-            $self->command_check_attribute($attribute,$ENV{$cmd_env});
+            my $error = $self->command_check_attribute($attribute,$ENV{$cmd_env});
+            push(@{$errors},$error)
+                if $error;
         }
     }
     
