@@ -10,6 +10,7 @@ use Moose;
 extends qw(MooseX::App::Message::Block);
 
 use Term::ANSIColor qw();
+use IO::Interactive qw(is_interactive);
 
 sub stringify {
     my ($self) = @_;
@@ -31,26 +32,26 @@ sub stringify {
     
     my $message = '';
     if ($self->has_header) {
-        if ($header_color) {
-            $message .= Term::ANSIColor::color($header_color).
-                $self->header.
-                Term::ANSIColor::color('reset')."\n"
-        } else {
-            $message .= $self->header."\n"
-        }
+        $message .= $self->_wrap_color($header_color,$self->header)."\n";
     }
     
     if ($self->has_body) {
-        if ($body_color) {
-            $message .= Term::ANSIColor::color($body_color).
-                $self->body.
-                Term::ANSIColor::color('reset')."\n\n"
-        } else {
-            $message .= $self->body."\n\n"
-        }
+        $message .= $self->_wrap_color($body_color,$self->body)."\n\n";
     }
     
     return $message;
+}
+
+sub _wrap_color {
+    my ($self,$color,$string) = @_;
+    
+    return $string
+        unless is_interactive()
+        && defined $color;
+    
+    return Term::ANSIColor::color($color)
+        .$string
+        .Term::ANSIColor::color('reset');
 }
 
 __PACKAGE__->meta->make_immutable;

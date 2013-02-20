@@ -21,6 +21,7 @@ requires        'Config::Any'                   => 0;
 requires        'String::CamelCase'             => 0;
 requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
+requires        'IO::Interactive'               => 0;
 
 recommends      'Term::ANSIColor'               => 0;
 recommends      'File::HomeDir'                 => 0;
