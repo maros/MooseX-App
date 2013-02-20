@@ -5,7 +5,6 @@ use utf8;
 use strict;
 use warnings;
 
-use String::CamelCase qw(camelize decamelize);
 use List::Util qw(max);
 
 our $SCREEN_WIDTH = 78;
