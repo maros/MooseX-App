@@ -16,21 +16,21 @@ Moose::Exporter->setup_import_methods(
     with_meta => [ 'option' ],
 );
 
-#sub init_meta {
-#    shift;
-#    my (%args) = @_;
-#    
-#    my $meta = Moose::Role->init_meta( %args );
-#    
-#    Moose::Util::MetaRole::apply_metaroles(
-#        for             => $meta,
-#        role_metaroles  => {
-#            #applied_attribute=> ['MooseX::Getopt::Meta::Attribute::Trait'],
-#        },
-#    );
-#    
-#    return $meta;
-#}
+sub init_meta {
+    shift;
+    my (%args) = @_;
+    
+    my $meta = Moose::Role->init_meta( %args );
+    
+    Moose::Util::MetaRole::apply_metaroles(
+        for             => $meta,
+        role_metaroles  => {
+            applied_attribute   => ['MooseX::App::Meta::Role::Attribute::Option'],
+        },
+    );
+    
+    return $meta;
+}
 
 1;
 
