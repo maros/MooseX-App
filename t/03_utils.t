@@ -2,10 +2,11 @@
 
 # t/03_utils.t
 
-use Test::Most tests => 3+1;
+use Test::Most tests => 4+1;
 use Test::NoWarnings;
 
 use MooseX::App::Utils;
+use MooseX::App::ParsedArgv;
 
 subtest 'Class to command' => sub {
     is(MooseX::App::Utils::class_to_command('Command'),'command','Command ok');
@@ -50,4 +51,27 @@ subtest 'Formater' => sub {
     part3            ',
         'Format list ok'
     );
+};
+
+subtest 'Parser' => sub {
+    my $parser = MooseX::App::ParsedArgv->instance();
+    $parser->argv(['-hui','--help','--help','--test','1','--test','2','--key=value1','--key=value2','-u']);
+    
+    is($parser->options->[0]->key,'h','Parsed -h flag');
+    is($parser->options->[0]->has_values,0,'-h is flag');
+    is($parser->options->[1]->key,'u','Parsed -u flag');
+    is($parser->options->[1]->has_values,0,'-u is flag');
+    is($parser->options->[2]->key,'i','Parsed -i flag');
+    is($parser->options->[2]->has_values,0,'-i is flag');
+    is($parser->options->[3]->key,'help','Parsed --help flag');
+    is($parser->options->[3]->has_values,0,'--help is flag');
+    is($parser->options->[4]->key,'test','Parsed --test option');
+    is($parser->options->[4]->has_values,'2','--test has two values');
+    is($parser->options->[4]->get_value(0),'1','--test first value ok');
+    is($parser->options->[4]->get_value(1),'2','--test second value ok');
+    is($parser->options->[5]->key,'key','Parsed --key option');
+    is($parser->options->[5]->has_values,'2','--key has two values');
+    is($parser->options->[5]->get_value(0),'value1','--key first value ok');
+    is($parser->options->[5]->get_value(1),'value2','--key second value ok');
+    is(scalar @{$parser->options},6,'Has 6 options/flags');
 };
