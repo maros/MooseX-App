@@ -44,6 +44,9 @@ option 'custom2' => (
     coerce        => 1,
 );
 
+option ['extra1','extra2'] => (
+    is            => 'rw',
+);
 
 sub run {
     my ($self) = @_;

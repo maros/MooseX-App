@@ -3,7 +3,13 @@ package Test03;
 use MooseX::App qw(BashCompletion Version);
 
 our $VERSION = '22.02';
- 
+
+app_base 'test03';
+app_command_name { 
+    my ($package) = @_;
+    return lc($package);
+}; 
+
 option 'global_option' => (
     is            => 'rw',
     isa           => 'Bool',

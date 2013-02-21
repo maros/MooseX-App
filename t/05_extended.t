@@ -20,7 +20,7 @@ subtest 'Non-Fuzzy command matching' => sub {
 };
 
 subtest 'Non-Fuzzy attribute matching' => sub {
-    local @ARGV = qw(some_command --private 1);
+    local @ARGV = qw(somecommand --private 1);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
@@ -104,7 +104,7 @@ subtest 'Test type constraints custom1' => sub {
 };
 
 subtest 'Test pass type constraints' => sub {
-    local @ARGV = qw(another --hash key1=value1 --hash key2=value2 --integer 10 --number 10.10 --custom1 11 --custom2 test);
+    local @ARGV = qw(another --hash key1=value1 --hash key2=value2 --integer 10 --number 10.10 --custom1 11 --custom2 test --extra1 wurtsch);
     my $test09 = Test03->new_with_command;
     isa_ok($test09,'Test03::AnotherCommand');
     is($test09->hash->{key1},"value1","Hash ok");
@@ -113,6 +113,7 @@ subtest 'Test pass type constraints' => sub {
     is($test09->custom1,11,"Custom type 1 ok");
     is(ref($test09->custom2),'SCALAR',"Custom type 2 ok");
     is(${$test09->custom2},'test',"Custom type 2 ok");
+    is($test09->extra1,'wurtsch',"Attr set ok");
 };
 
 

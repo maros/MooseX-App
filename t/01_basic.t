@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 9+1;
+use Test::Most tests => 11+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -13,14 +13,14 @@ use Test01;
 subtest 'Excact command with option' => sub {
     explain();
     local @ARGV = qw(command_a --global 10);
-    my $test01 = Test01->new_with_command;
+    my $test01 = Test01->new_with_command({ global => 5 });
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'10','Param is set');
 };
 
 subtest 'Fuzzy command with option' => sub {
     local @ARGV = qw(Command_A --global 10);
-    my $test02 = Test01->new_with_command;
+    my $test02 = Test01->new_with_command( global => 5 );
     isa_ok($test02,'Test01::CommandA');
     is($test02->global,'10','Param is set');
 };
@@ -107,6 +107,20 @@ subtest 'Input errors type' => sub {
     my $test08 = Test01->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
     is($test08->blocks->[0]->header,"Invalid value for 'command_local1'",'Error message ok');
-    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok');
-    
+    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok'); 
 };
+
+subtest 'Global help requested' => sub {
+    local @ARGV = qw(help);
+    my $test09 = Test01->new_with_command;
+    isa_ok($test09,'MooseX::App::Message::Envelope');
+    like($test09->blocks->[0]->body,qr/    01_basic\.t command \[long options\.\.\.\]/,'Help message ok'); 
+};
+
+subtest 'Missing command' => sub {
+    local @ARGV = qw();
+    my $test10 = Test01->new_with_command;
+    isa_ok($test10,'MooseX::App::Message::Envelope');
+    is($test10->blocks->[0]->header,'Missing command','Error message ok'); 
+};
+
