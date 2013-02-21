@@ -73,6 +73,7 @@ sub _build_extra {
 sub _parse {
     my ($self) = @_;
     
+    my @options;
     my %options;
     my $lastkey;
     my $stopprocessing;
@@ -87,21 +88,30 @@ sub _parse {
                 when (m/^-([^-][[:alnum:]]*)$/) {
                     undef $lastkey;
                     foreach my $flag (split(//,$1)) {
-                        $options{$flag} ||= MooseX::App::ParsedArgv::Option->new( key => $flag );
-                        $lastkey = $options{$flag};  
+                        unless (defined $options{$flag}) {
+                            $options{$flag} = MooseX::App::ParsedArgv::Option->new( key => $flag );
+                            push(@options,$options{$flag});
+                        }
+                        $lastkey = $options{$flag};
                     }
                 }
                 # Key-value combined
                 when (m/^--([^-=][^=]*)=(.+)$/) {
                     undef $lastkey;
                     my ($key,$value) = ($1,$2);
-                    $options{$key} ||= MooseX::App::ParsedArgv::Option->new( key => $key );
+                    unless (defined $options{$key}) {
+                        $options{$key} = MooseX::App::ParsedArgv::Option->new( key => $key );
+                        push(@options,$options{$key});
+                    }
                     $options{$key}->add_value($value);
                 }
                 # Key
                 when (m/^--([^-].*)/) {
                     my $key = $1;
-                    $options{$key} ||= MooseX::App::ParsedArgv::Option->new( key => $key );
+                    unless (defined $options{$key}) {
+                        $options{$key} = MooseX::App::ParsedArgv::Option->new( key => $key );
+                        push(@options,$options{$key});
+                    }
                     $lastkey = $options{$key};
                 }
                 # Extra values
@@ -121,9 +131,6 @@ sub _parse {
             } 
         }
     }
-    
-    # Sort by length    
-    my @options = sort { length($b->key) <=> length($a->key) } values %options;
     
     my $meta = $self->meta;
     $meta->get_attribute('options')->set_raw_value($self,\@options);
@@ -179,6 +186,7 @@ sub _build_argv {
         handles => {
             add_value       => 'push',
             has_values      => 'count',
+            get_value       => 'get',
         }
     );
     

@@ -161,7 +161,7 @@ sub command_parse_options {
     # Process fuzzy matches
     if ($self->app_fuzzy) {
         # Loop all options (sorted by length)
-        foreach my $option ($parsed_argv->options_available()) {
+        foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->options_available()) {
 
             # No fuzzy matching for one-letter flags
             my $option_length = length($option->key);
