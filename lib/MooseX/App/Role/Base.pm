@@ -67,7 +67,8 @@ sub initialize_command_class {
         # Check required values
         foreach my $attribute ($meta->command_usage_attributes_list($command_meta)) {
             if ($attribute->is_required
-                && ! exists $params{$attribute->name}) {
+                && ! exists $params{$attribute->name}
+                && ! $attribute->has_default) {
                 push(@errors,
                     $meta->command_message(
                         header          => "Required option '".$attribute->cmd_name_primary."' missing",
