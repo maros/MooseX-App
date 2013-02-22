@@ -243,7 +243,7 @@ sub command_parse_options {
                     }
                 }
             } elsif ($type_constraint->is_a_type_of('Bool')) {
-                $value = 1; # TODO or 0 if no!
+                $value = $attribute->cmd_is_bool; # TODO or 0 if no!
             } elsif ($type_constraint->is_a_type_of('Int')) {
                 $value = $match->{$attribute->name}[-1];
             } else {

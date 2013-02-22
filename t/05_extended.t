@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 13+1;
+use Test::Most tests => 15+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -116,7 +116,6 @@ subtest 'Test pass type constraints' => sub {
     is($test09->extra1,'wurtsch',"Attr set ok");
 };
 
-
 subtest 'Test ambiguous options' => sub {
     local @ARGV = qw(another --custom 1 --custom 2);
     my $test10 = Test03->new_with_command;
@@ -125,7 +124,24 @@ subtest 'Test ambiguous options' => sub {
     like($test10->blocks->[0]->body,qr/Could be
     custom1  
     custom2/,"Message ok");
-    
 };
 
+subtest 'Test flags & defaults' => sub {
+    local @ARGV = qw(yet --bool3);
+    my $test11 = Test03->new_with_command;
+    isa_ok($test11,'Test03::YetAnotherCommand');
+    is($test11->bool1,undef,'Bool1 flag is undef');
+    is($test11->bool2,1,'Bool2 flag is set');
+    is($test11->bool3,1,'Bool3 flag is set');
+    is($test11->value,'hase','Value is default');
+};
 
+subtest 'Test more flags & defaults' => sub {
+    local @ARGV = qw(yet --bool3 -ab --value baer);
+    my $test11 = Test03->new_with_command;
+    isa_ok($test11,'Test03::YetAnotherCommand');
+    is($test11->bool1,1,'Bool1 flag is undef');
+    is($test11->bool2,0,'Bool2 flag is unset');
+    is($test11->bool3,1,'Bool3 flag is set');
+    is($test11->value,'baer','Value is set');
+};

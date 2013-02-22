@@ -111,11 +111,6 @@ sub cmd_name_possible {
     
     my $bool = $self->cmd_is_bool();
     
-    if (defined $bool
-        && $bool == 0) {
-        @names = map { 'no'.$_ } @names;
-    }
-    
     return @names;
 }
 
