@@ -55,8 +55,11 @@ subtest 'Formater' => sub {
 
 subtest 'Parser' => sub {
     my $parser = MooseX::App::ParsedArgv->instance();
-    $parser->argv(['-hui','--help','--help','--test','1','--test','2','--key=value1','--key=value2','-u']);
+    $parser->argv(['-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase']);
     
+    is($parser->extra->[0],'baer','Extra parsed ok');
+    is($parser->extra->[1],'hase','Extra parsed ok');
+    is(scalar @{$parser->extra},'2','Two extra values');
     is($parser->options->[0]->key,'h','Parsed -h flag');
     is($parser->options->[0]->has_values,0,'-h is flag');
     is($parser->options->[1]->key,'u','Parsed -u flag');

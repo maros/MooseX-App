@@ -18,8 +18,9 @@ subtest 'Single command' => sub {
 
 subtest 'Single command' => sub {
     local @ARGV = qw(--another_option 123);
-    my $test05 = Test05->new_with_options;
+    my $test05 = Test05->new_with_options({ some_option => 1 });
     isa_ok($test05,'Test05');
     is($test05->another_option,'123','Arg from command ARGV');
+    is($test05->some_option,1,'Arg from new_with_options');
 };
 

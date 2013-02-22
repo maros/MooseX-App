@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 12+1;
+use Test::Most tests => 13+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -114,6 +114,18 @@ subtest 'Test pass type constraints' => sub {
     is(ref($test09->custom2),'SCALAR',"Custom type 2 ok");
     is(${$test09->custom2},'test',"Custom type 2 ok");
     is($test09->extra1,'wurtsch',"Attr set ok");
+};
+
+
+subtest 'Test ambiguous options' => sub {
+    local @ARGV = qw(another --custom 1 --custom 2);
+    my $test10 = Test03->new_with_command;
+    isa_ok($test10,'MooseX::App::Message::Envelope');
+    is($test10->blocks->[0]->header,"Ambiguous option 'custom'","Message ok");
+    like($test10->blocks->[0]->body,qr/Could be
+    custom1  
+    custom2/,"Message ok");
+    
 };
 
 
