@@ -74,6 +74,22 @@ sub cmd_is_bool {
     return undef
 }
 
+sub cmd_usage {
+    my ($self) = @_;
+    
+    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $self->cmd_name_possible); ;
+    my @tags = $self->cmd_tags_list();
+    my $description = ($self->has_documentation) ? $self->documentation : '';
+    
+    if (scalar @tags) {
+        $description .= ' '
+            if $description;
+        $description .= '['.join('; ',@tags).']';
+    }
+    
+    return ($name,$description);
+}
+
 sub cmd_name_primary {
     my ($self) = @_;
     

@@ -42,7 +42,6 @@ has 'app_command_name' => (
     default     => sub { \&MooseX::App::Utils::class_to_command },
 );
 
-
 has 'app_commands' => (
     is          => 'rw',
     isa         => 'HashRef[Str]',
@@ -449,7 +448,7 @@ sub command_usage_attributes_raw {
     my @attributes;
     foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
         
-        my ($attribute_name,$attribute_description) = $self->command_usage_attribute_detail($attribute);
+        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
         
         push(@attributes,[$attribute_name,$attribute_description]);
     }
@@ -457,24 +456,6 @@ sub command_usage_attributes_raw {
     @attributes = sort { $a->[0] cmp $b->[0] } @attributes;
     return @attributes;
 }
-
-sub command_usage_attribute_detail {
-    my ($self,$attribute) = @_;
-    
-    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $attribute->cmd_name_possible); ;
-    my @tags = $attribute->cmd_tags_list();
-    my $description = ($attribute->has_documentation) ? $attribute->documentation : '';
-    
-    if (scalar @tags) {
-        $description .= ' '
-            if $description;
-        $description .= '['.join('; ',@tags).']';
-    }
-    
-    return ($name,$description);
-}
-
-
 
 sub command_usage_attributes {
     my ($self,$metaclass,$headline) = @_;
