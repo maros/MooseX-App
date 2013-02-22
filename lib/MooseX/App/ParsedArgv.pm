@@ -58,15 +58,13 @@ sub shift_argv {
 
 sub _build_options {
     my ($self) = @_;
-    $self->_parse();
-    my ($options,$extra) = $self->options;
+    my ($options,$extra) = $self->_parse();
     return $options;
 }
 
 sub _build_extra {
     my ($self) = @_;
-    $self->_parse();
-    my ($options,$extra) = $self->extra;
+    my ($options,$extra) = $self->_parse();
     return $extra;
 }
 
@@ -136,7 +134,7 @@ sub _parse {
     $meta->get_attribute('options')->set_raw_value($self,\@options);
     $meta->get_attribute('extra')->set_raw_value($self,\@extra);
     
-    return (\%options,\@extra);
+    return (\@options,\@extra);
 }
 
 sub options_available {

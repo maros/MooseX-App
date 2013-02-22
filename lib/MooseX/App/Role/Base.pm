@@ -61,7 +61,7 @@ sub initialize_command_class {
         my %params = (            
             %args,              # configs passed to new
             %{ $proto_result }, # config params
-            %{ $result },       # params from CLI)
+            %{ $result },       # params from CLI
         );
         
         # Check required values
