@@ -43,7 +43,19 @@ sub option {
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
     
     $options{cmd_option} = 1;
-    $meta->add_attribute( $_, %options ) for @$attrs;
+    foreach my $attr (@$attrs) {
+        my %local_options = %options;
+        if ($attr =~ m/^\+(.+)/) {
+            my $meta_attribute = $meta->find_attribute_by_name($1);
+            unless ($meta_attribute->does('MooseX::App::Meta::Role::Attribute::Option')) {
+                $local_options{traits} ||= [];
+                push @{$local_options{traits}},'MooseX::App::Meta::Role::Attribute::Option'
+                    unless 'AppOption' ~~ $local_options{traits}
+                    || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_options{traits};
+            }
+        }
+        $meta->add_attribute( $attr, %local_options );
+    }
     
     return;
 }
