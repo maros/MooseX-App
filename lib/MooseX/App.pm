@@ -91,7 +91,7 @@ sub new_with_command {
         || $first_argv =~ m/^-/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_message(
-                header          => "Missing command",
+                header          => "Missing command", # LOCALIZE
                 type            => "error",
             ),
             $meta->command_usage_global(),

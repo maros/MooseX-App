@@ -71,7 +71,7 @@ sub initialize_command_class {
                 && ! $attribute->has_default) {
                 push(@errors,
                     $meta->command_message(
-                        header          => "Required option '".$attribute->cmd_name_primary."' missing",
+                        header          => "Required option '".$attribute->cmd_name_primary."' missing", # LOCALIZE
                         type            => "error",
                     )
                 );

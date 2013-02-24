@@ -16,7 +16,7 @@ around 'command_usage_header' => sub {
     return $self->command_message(
         header  => 'usage:',
         body    => MooseX::App::Utils::format_text("$caller [long options...]
-$caller --help"));
+$caller --help")); # LOCALIZE
 };
 
 1;

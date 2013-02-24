@@ -103,7 +103,7 @@ sub command_args {
     foreach my $option ($parsed_argv->options_available) {
         push(@{$errors},
             $self->command_message(
-                header          => "Unknown option '".$option->key."'",
+                header          => "Unknown option '".$option->key."'", # LOCALIZE
                 type            => "error",
             )
         );
@@ -200,12 +200,12 @@ sub command_parse_options {
                 default {
                     push(@errors,
                         $self->command_message(
-                            header          => "Ambiguous option '".$option->key."'",
+                            header          => "Ambiguous option '".$option->key."'", # LOCALIZE
                             type            => "error",
-                            body            => "Could be\n".MooseX::App::Utils::format_list(
+                            body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
                                 map { [ $_->cmd_name_primary ] } 
                                 sort 
-                                @{$match_attributes}
+                                @{$match_attributes} 
                             ),
                         )
                     );
@@ -235,9 +235,9 @@ sub command_parse_options {
                     } else {
                         push(@errors,
                             $self->command_message(
-                                header          => "Invalid value for '".$attribute->cmd_name_primary."'",
+                                header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
                                 type            => "error",
-                                body            => "Value must be supplied as 'key=value' (not '$element')",
+                                body            => "Value must be supplied as 'key=value' (not '$element')", # LOCALIZE
                             )
                         );
                     }
@@ -253,7 +253,7 @@ sub command_parse_options {
             unless(defined $value) {
                 push(@errors,
                     $self->command_message(
-                        header          => "Missing value for '".$attribute->cmd_name_primary."'",
+                        header          => "Missing value for '".$attribute->cmd_name_primary."'", # LOCALIZE
                         type            => "error",
                     )
                 );
@@ -298,8 +298,8 @@ sub command_check_attribute {
         # No message
         } else {
             my $type_human = $self->command_type_constraint_description($type_constraint->name);
-            if (defined $type_human) {
-                $message = "Value must be ";
+            if (defined $type_human) { 
+                $message = "Value must be "; # LOCALIZE
                 if ($type_human =~ /^[aeiouy]/) {
                     $message .= "an $type_human";
                 } else {
@@ -312,7 +312,7 @@ sub command_check_attribute {
         }
         
         return $self->command_message(
-            header          => "Invalid value for '".$attribute->cmd_name_primary."'",
+            header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
             type            => "error",
             body            => $message,
         );
@@ -327,22 +327,22 @@ sub command_type_constraint_description {
     
     given ($type_constraint_name) {
         when ('Int') {
-            return 'integer';
+            return 'integer'; # LOCALIZE
         }
         when ('Num') {
-            return 'number';
+            return 'number'; # LOCALIZE
         }
         when (/^ArrayRef\[(.*)\]$/) {
             return $self->command_type_constraint_description($1);
         }
         when ('HashRef') {
-            return 'key-value pairs';
-        }
+            return 'key-value pairs'; # LOCALIZE
+        } 
         when (/^HashRef\[(.+)\]$/) {
-            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values';
+            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values'; # LOCALIZE
         }
         when ('Str') {
-            return 'string';
+            return 'string'; # LOCALIZE
         }
     }
     
@@ -388,7 +388,7 @@ sub command_find {
             given (scalar @{$candidate}) {
                 when (0) {
                     return $self->command_message(
-                        header          => "Unknown command '$command'",
+                        header          => "Unknown command '$command'", # LOCALIZE
                         type            => "error",
                     );
                 }
@@ -397,17 +397,18 @@ sub command_find {
                         return $candidate->[0];
                     } else {
                         return $self->command_message(
-                            header          => "Unknown command '$command'",
+                            header          => "Unknown command '$command'", # LOCALIZE
                             type            => "error",
-                            body            => "Did you mean '".$candidate->[0]."'?",
+                            body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
                         );
                     }
                 }
                 default {
                     return $self->command_message(
-                        header          => "Ambiguous command '$command'",
+                        header          => "Ambiguous command '$command'", # LOCALIZE
                         type            => "error",
-                        body            => "Which command did you mean?\n".MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                        body            => "Which command did you mean?\n". # LOCALIZE
+                            MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
                     );
                 }
             }
@@ -460,7 +461,7 @@ sub command_usage_attributes_raw {
 sub command_usage_attributes {
     my ($self,$metaclass,$headline) = @_;
     
-    $headline ||= 'options:';
+    $headline ||= 'options:'; # LOCALIZE
     $metaclass ||= $self;
     
     my @attributes = $self->command_usage_attributes_raw($metaclass);
@@ -492,10 +493,10 @@ sub command_usage_header {
     
     $usage ||= MooseX::App::Utils::format_text("$caller $command_name [long options...]
 $caller help
-$caller $command_name --help");
+$caller $command_name --help"); # LOCALIZE
     
     return $self->command_message(
-        header  => 'usage:',
+        header  => 'usage:', # LOCALIZE
         body    => $usage,
     );
 }
@@ -508,13 +509,13 @@ sub command_usage_description {
     if ($command_meta_class->can('command_long_description')
         && $command_meta_class->command_long_description_predicate) {
         return $self->command_message(
-            header  => 'description:',
+            header  => 'description:', # LOCALIZE
             body    => MooseX::App::Utils::format_text($command_meta_class->command_long_description),
         );
     } elsif ($command_meta_class->can('command_short_description')
         && $command_meta_class->command_short_description_predicate) {
         return $self->command_message(
-            header  => 'short description:',
+            header  => 'short description:', # LOCALIZE
             body    => MooseX::App::Utils::format_text($command_meta_class->command_short_description),
         );
     }
@@ -554,7 +555,7 @@ sub command_usage_global {
     my ($self) = @_;
     
     my @commands;
-    push(@commands,['help','Prints this usage information']);
+    push(@commands,['help','Prints this usage information']); # LOCALIZE
     
     my $commands = $self->app_commands;
     
@@ -572,10 +573,10 @@ sub command_usage_global {
     
     my @usage;
     push (@usage,$self->command_usage_header());
-    push (@usage,$self->command_usage_attributes($self,'global options:'));
+    push (@usage,$self->command_usage_attributes($self,'global options:')); # LOCALIZE
     push (@usage,
         $self->command_message(
-            header  => 'available commands:',
+            header  => 'available commands:', # LOCALIZE
             body    => MooseX::App::Utils::format_list(@commands),
         )
     );
