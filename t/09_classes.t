@@ -2,7 +2,7 @@
 
 # t/09_classes.t - Test classes
 
-use Test::Most tests => 2+1;
+use Test::Most tests => 3+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -19,12 +19,17 @@ subtest 'Extend base class' => sub {
     unlike($test01->blocks->[2]->body,qr/--test3/,'--test3 not included');
 };
 
-subtest 'Class methods' => sub {
-    local @ARGV = qw(broken);
+subtest 'Wrong usage' => sub {
     throws_ok { Test03->new->new_with_command } qr/new_with_command is a class method/, 'Only callable as class method';
+    use Test03::SomeCommand;
+    throws_ok { Test03::SomeCommand->new_with_command } qr/new_with_command may only be called from the application base package/, 'new_with_command may only be called from the application base package';
+    throws_ok { Test03->new_with_command(1,2,3) } qr/new_with_command got inavlid extra arguments/, 'Wrong default args';
+
 };
 
 subtest 'Conflicts' => sub {
-    local @ARGV = qw(broken);
-    throws_ok { Test03->new_with_command } qr/Command line option conflict/, 'Conflict detected';
+    local @ARGV = qw(broken --conflict a);
+    throws_ok { 
+        Test03->new_with_command;
+    } qr/Command line option conflict/, 'Conflict detected';
 };
