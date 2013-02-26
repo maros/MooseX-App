@@ -54,54 +54,41 @@ sub initialize_command_class {
         );
     }
     
-    my $command_object = eval {
-        my ($result,$errors) = $meta->command_args($command_meta);
-        push(@errors,@{$errors});
-        
-        my %params = (            
-            %args,              # configs passed to new
-            %{ $proto_result }, # config params
-            %{ $result },       # params from CLI
-        );
-        
-        # Check required values
-        foreach my $attribute ($meta->command_usage_attributes_list($command_meta)) {
-            if ($attribute->is_required
-                && ! exists $params{$attribute->name}
-                && ! $attribute->has_default) {
-                push(@errors,
-                    $meta->command_message(
-                        header          => "Required option '".$attribute->cmd_name_primary."' missing", # LOCALIZE
-                        type            => "error",
-                    )
-                );
-            }
-        }
-        
-        return
-            if scalar @errors;
-        
-        my $object = $command_class->new(
-            %params,
-            extra_argv          => MooseX::App::ParsedArgv->instance->extra,
-        );
-        
-        return $object;
-    };
     
-    if (my $error = $@) {
-        chomp $error;
-        $error =~ s/\n.+//s;
-        $error =~ s/in call to \(eval\)$//;
-        
+    my ($result,$errors) = $meta->command_args($command_meta);
+    push(@errors,@{$errors});
+    
+    my %params = (            
+        %args,              # configs passed to new
+        %{ $proto_result }, # config params
+        %{ $result },       # params from CLI
+    );
+    
+    # Check required values
+    foreach my $attribute ($meta->command_usage_attributes_list($command_meta)) {
+        if ($attribute->is_required
+            && ! exists $params{$attribute->name}
+            && ! $attribute->has_default) {
+            push(@errors,
+                $meta->command_message(
+                    header          => "Required option '".$attribute->cmd_name_primary."' missing", # LOCALIZE
+                    type            => "error",
+                )
+            );
+        }
+    }
+    
+    if (scalar @errors) {
         return MooseX::App::Message::Envelope->new(
-            $meta->command_message(
-                header          => $error,
-                type            => "error",
-            ),
-            #$meta->command_usage_command($command_meta),
+            @errors,
+            $meta->command_usage_command($command_meta),
         );
     }
+    
+    my $command_object = $command_class->new(
+        %params,
+        extra_argv          => MooseX::App::ParsedArgv->instance->extra,
+    );
       
     if (scalar @errors) {
         return MooseX::App::Message::Envelope->new(

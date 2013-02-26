@@ -135,7 +135,7 @@ sub command_parse_options {
     foreach my $attribute (@{$attributes}) {
         foreach my $name ($attribute->cmd_name_possible) {
             if (defined $option_to_attribute{$name}
-                && $option_to_attribute{$name} ne $attribute->name) {
+                && $option_to_attribute{$name} != $attribute) {
                 Moose->throw_error('Command line option conflict: '.$name);    
             }
             $option_to_attribute{$name} = $attribute;
