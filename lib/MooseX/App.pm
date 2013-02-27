@@ -10,7 +10,6 @@ use warnings;
 our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.15';
 
-use List::Util qw(max);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_base app_fuzzy option);
 use MooseX::App::Message::Envelope;
@@ -43,6 +42,7 @@ sub init_meta {
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
         class               => ['MooseX::App::Meta::Role::Class::Base'],
+        attribute           => ['MooseX::App::Meta::Role::Attribute::Option'],
     };
     
     return MooseX::App::Exporter->process_init_meta(%args);
@@ -80,9 +80,10 @@ sub new_with_command {
         Moose->throw_error('new_with_command got inavlid extra arguments');
     }
     
-    # Localize and encode @ARGV
-    local @ARGV = MooseX::App::Utils::encoded_argv();
-    my $first_argv = shift(@ARGV);
+    # Get ARGV
+    my $parsed_argv = MooseX::App::ParsedArgv->new;
+    $parsed_argv->argv(\@ARGV);
+    my $first_argv = $parsed_argv->shift_argv;
     
     # No args
     if (! defined $first_argv
@@ -90,7 +91,7 @@ sub new_with_command {
         || $first_argv =~ m/^-/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_message(
-                header          => "Missing command",
+                header          => "Missing command", # LOCALIZE
                 type            => "error",
             ),
             $meta->command_usage_global(),
@@ -209,6 +210,8 @@ MooseX-App will then take care of
 
 =item * Reading, encoding and validating the command line options entered by the user
 
+=item * Providing helpful error messages if user input cannot be validated
+
 =back
 
 Commandline options are defined using the 'option' keyword which accepts
@@ -225,6 +228,7 @@ This is equivalent to
       is            => 'rw',
       isa           => 'Str',
       traits        => ['AppOption'],
+      cmd_option    => 1,
   );
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
@@ -301,7 +305,9 @@ documentation on how to create your own plugins.
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
 MooseX::App command line application.
 
-L<MooseX::App::Cmd>, L<MooseX::Getopt> and L<App::Cmd>
+For alternatives you can check out
+
+L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options> and L<App::Cmd>
 
 =head1 SUPPORT
 

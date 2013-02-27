@@ -9,6 +9,7 @@ use warnings;
 
 use Moose::Exporter;
 use MooseX::App::Utils;
+use MooseX::App::ParsedArgv;
 
 our %PLUGIN_SPEC;
 
@@ -40,15 +41,21 @@ sub option {
  
     my %options = ( definition_context => Moose::Util::_caller_info(), @rest );
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
-    $options{traits} ||= [];
     
-    push (@{$options{traits}},'MooseX::App::Meta::Role::Attribute::Option')
-        unless grep { 
-            $_ eq 'MooseX::App::Meta::Role::Attribute::Option' 
-            || $_ eq 'AppOption' 
-        } @{$options{traits}};
-    
-    $meta->add_attribute( $_, %options ) for @$attrs;
+    $options{cmd_option} = 1;
+    foreach my $attr (@$attrs) {
+        my %local_options = %options;
+        if ($attr =~ m/^\+(.+)/) {
+            my $meta_attribute = $meta->find_attribute_by_name($1);
+            unless ($meta_attribute->does('MooseX::App::Meta::Role::Attribute::Option')) {
+                $local_options{traits} ||= [];
+                push @{$local_options{traits}},'MooseX::App::Meta::Role::Attribute::Option'
+                    unless 'AppOption' ~~ $local_options{traits}
+                    || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_options{traits};
+            }
+        }
+        $meta->add_attribute( $attr, %local_options );
+    }
     
     return;
 }

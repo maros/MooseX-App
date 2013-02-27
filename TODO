@@ -1,6 +1,2 @@
 * Make messages translatable
-* Consistent messages when supplying variables via %ENV or @ARGV
-* Remove MooseX::Getopt and Getopt::Long dependency
-* More tests
 * Subcommand plugin
-* Check if option name clashes (also aliases)

@@ -5,26 +5,10 @@ use utf8;
 use strict;
 use warnings;
 
-use String::CamelCase qw(camelize decamelize);
 use List::Util qw(max);
-use Encode qw(decode);
 
 our $SCREEN_WIDTH = 78;
 our $INDENT = 4;
-
-sub encoded_argv {
-    my @local_argv = @_ || @ARGV;
-    
-    @local_argv = eval {
-        require I18N::Langinfo;
-        I18N::Langinfo->import(qw(langinfo CODESET));
-        my $codeset = langinfo(CODESET());
-        binmode(STDOUT, ":encoding(UTF-8)")
-            if $codeset =~ m/^UTF-?8$/i;
-        return map { decode($codeset,$_) } @local_argv;
-    };
-    return @local_argv;
-}
 
 sub class_to_command {
     my ($class) = @_;
@@ -123,10 +107,12 @@ sub parse_pod {
         $package_filepath =~ s/\/{2,}/\//g;
     }
     
+    # No filename available
     return 
         unless defined $package_filepath
         && -e $package_filepath;
     
+    # Parse pod
     my $document = Pod::Elemental->read_file($package_filepath);
     
     Pod::Elemental::Transformer::Pod5->new->transform_node($document);
@@ -140,12 +126,15 @@ sub parse_pod {
     });
     $document = $nester_head->transform_node($document);
     
+    # Process pod
     my %pod;
     foreach my $element (@{$document->children}) {
+        # Distzilla ABSTRACT tag
         if ($element->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
             if ($element->content =~ m/^\s*#+\s*ABSTRACT:\s*(.+)$/m) {
                 $pod{ABSTRACT} ||= $1;
             }
+        # Pod head1 sections
         } elsif ($element->isa('Pod::Elemental::Element::Nested')
             && $element->command eq 'head1') {
         

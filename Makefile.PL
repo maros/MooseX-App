@@ -13,15 +13,14 @@ perl_version    '5.010';
 
 # Specific dependencies
 requires        'Moose'                         => '2.00';
-requires        'MooseX::Getopt'                => '0.43';
 requires        'namespace::autoclean'          => 0;
 requires        'Module::Pluggable'             => 0;
 requires        'Path::Class'                   => 0;
 requires        'MooseX::Types::Path::Class'    => 0;
 requires        'Config::Any'                   => 0;
-requires        'String::CamelCase'             => 0;
 requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
+requires        'IO::Interactive'               => 0;
 
 recommends      'Term::ANSIColor'               => 0;
 recommends      'File::HomeDir'                 => 0;

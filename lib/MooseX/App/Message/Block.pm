@@ -10,12 +10,23 @@ use Moose;
 
 use MooseX::App::Utils;
 
+use Moose::Util::TypeConstraints;
+
+subtype 'MooseX::App::Types::MessageString' 
+    => as 'Str';
+
+coerce 'MooseX::App::Types::MessageString'
+    => from 'ArrayRef'
+    => via { sprintf(@{$_}) };
+
+no Moose::Util::TypeConstraints;
+
 use overload
     '""' => "stringify";
 
 has 'header' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => 'MooseX::App::Types::MessageString',
     predicate   => 'has_header',
 );
 
@@ -27,7 +38,7 @@ has 'type' => (
 
 has 'body' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => 'MooseX::App::Types::MessageString',
     predicate   => 'has_body',
 );
 

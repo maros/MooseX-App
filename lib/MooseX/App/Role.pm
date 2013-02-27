@@ -16,6 +16,22 @@ Moose::Exporter->setup_import_methods(
     with_meta => [ 'option' ],
 );
 
+sub init_meta {
+    shift;
+    my (%args) = @_;
+    
+    my $meta = Moose::Role->init_meta( %args );
+    
+    Moose::Util::MetaRole::apply_metaroles(
+        for             => $meta,
+        role_metaroles  => {
+            applied_attribute   => ['MooseX::App::Meta::Role::Attribute::Option'],
+        },
+    );
+    
+    return $meta;
+}
+
 1;
 
 __END__
@@ -49,9 +65,8 @@ Alternatively you can also just use attribute traits:
  has 'testattr' => (
     isa             => 'rw',
     traits          => ['AppOption'],
+    cmd_option      => 1,
     cmd_tags        => [qw(Important! Nice))],
  );
-
-All attibutes available in L<MooseX::Getopt::Meta::Attribute::Trait> are also applied
 
 =cut

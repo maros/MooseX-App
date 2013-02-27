@@ -40,7 +40,14 @@ sub init_meta {
     my $for_class       = $args{for_class};
     $args{roles}        = ['MooseX::App::Role::Base' ];
     $args{metaroles}    = {
-        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Simple','MooseX::App::Meta::Role::Class::Command'],
+        class               => [
+            'MooseX::App::Meta::Role::Class::Base',
+            'MooseX::App::Meta::Role::Class::Simple',
+            'MooseX::App::Meta::Role::Class::Command'
+        ],
+        attribute           => [
+            'MooseX::App::Meta::Role::Attribute::Option'
+        ],
     };
     my $meta = MooseX::App::Exporter->process_init_meta(%args);
     
@@ -55,8 +62,6 @@ sub new_with_options {
     Moose->throw_error('new_with_options is a class method')
         if ! defined $class || blessed($class);
 
-    local @ARGV = MooseX::App::Utils::encoded_argv();
-
     my %args;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH' ) {
@@ -66,6 +71,10 @@ sub new_with_options {
     } else {
         Moose->throw_error('new_with_command got inavlid extra arguments');
     }
+    
+    # Get ARGV
+    my $parsed_argv = MooseX::App::ParsedArgv->new();
+    $parsed_argv->argv(\@ARGV);
 
     return $class->initialize_command_class($class,%args);
 }
@@ -126,7 +135,7 @@ This method reads the command line arguments from the user and tries to create
 instantiate the current class with the ARGV-input. If it fails it retuns a 
 L<MooseX::App::Message::Envelope> object holding an error message.
 
-You can pass a hash of default params to new_with_options
+You can pass a hash or hashref of default params to new_with_options
 
  MyApp->new_with_options( %default );
 
@@ -144,6 +153,6 @@ will not work with MooseX::App::Simple.
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
 MooseX::App command line application.
 
-L<MooseX::Getopt>
+See L<MooseX::Getopt> and L<MooX::Options> for alternatives
 
 =cut

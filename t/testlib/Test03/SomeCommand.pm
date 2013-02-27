@@ -25,7 +25,7 @@ has 'private' => (
  
 sub run {
     my ($self) = @_;
-    print "RUN:".$self->some_option.":".$self->another_option;
+    print "RUN:".($self->some_option||'').":".($self->another_option||'');
 }
 
 1;
