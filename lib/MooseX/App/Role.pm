@@ -69,6 +69,4 @@ Alternatively you can also just use attribute traits:
     cmd_tags        => [qw(Important! Nice))],
  );
 
-All attibutes available in L<MooseX::Getopt::Meta::Attribute::Trait> are also applied
-
 =cut

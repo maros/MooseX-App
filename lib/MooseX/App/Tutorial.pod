@@ -140,7 +140,7 @@ keyword you can use the 'AppOption' trait and 'cmd_option' attribute.
 
   has 'myoption' => (
       is                => 'rw',
-      traits            => ['AppOption'], # optional
+      traits            => ['AppOption'], # only required if not definded in base or command class 
       cmd_option        => 1,
   );
 
@@ -187,6 +187,12 @@ fails it will return a L<MooseX::App::Message::Envelope> object possibly
 containing an error message and a user help message. Since 
 L<MooseX::App::Message::Envelope> follows the null object pattern you can 
 call any method on it without checking the object type.
+
+You can also pass default/fallback values to the constructor
+
+ #!/usr/bin/env perl
+ use MyApp;
+ MyApp->new_with_command( some_global_option => 'something' )->run();
 
 If using L<MooseX::App::Simple> your invocation script needs some 
 modification.

@@ -64,11 +64,12 @@ roles. Implementation details can be found in the respective packages.
 
 =over
 
-=item * L<MooseX::App::Meta::Role::Class::Base>
+=item * L<MooseX::App::Meta::Role::Class::Base> is applied to the base metaclass
 
-=item * L<MooseX::App::Meta::Role::Class::Command>
+=item * L<MooseX::App::Meta::Role::Class::Command> is applied to the command metaclass
 
-=item * L<MooseX::App::Meta::Role::Attribute::Option>
+=item * L<MooseX::App::Meta::Role::Attribute::Option> is applied to all attributes
+in the base and command meta classes
 
 =back
 

@@ -107,10 +107,12 @@ sub parse_pod {
         $package_filepath =~ s/\/{2,}/\//g;
     }
     
+    # No filename available
     return 
         unless defined $package_filepath
         && -e $package_filepath;
     
+    # Parse pod
     my $document = Pod::Elemental->read_file($package_filepath);
     
     Pod::Elemental::Transformer::Pod5->new->transform_node($document);
@@ -124,12 +126,15 @@ sub parse_pod {
     });
     $document = $nester_head->transform_node($document);
     
+    # Process pod
     my %pod;
     foreach my $element (@{$document->children}) {
+        # Distzilla ABSTRACT tag
         if ($element->isa('Pod::Elemental::Element::Pod5::Nonpod')) {
             if ($element->content =~ m/^\s*#+\s*ABSTRACT:\s*(.+)$/m) {
                 $pod{ABSTRACT} ||= $1;
             }
+        # Pod head1 sections
         } elsif ($element->isa('Pod::Elemental::Element::Nested')
             && $element->command eq 'head1') {
         

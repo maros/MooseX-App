@@ -228,8 +228,34 @@ MooseX::App::ParsedArgv - Parses @ARGV
 
 =head1 DESCRIPTION
 
-This is a helper class that holds all options parsed from @ARGV
+This is a helper class that holds all options parsed from @ARGV. It is 
+implemented as a singleton.
 
-TODO
+=head1 METHODS
+
+=head2 new
+
+Create a new MooseX::App::ParsedArgv instance 
+
+=head2 instance 
+
+Get the current MooseX::App::ParsedArgv instance. If there is no instance
+a new one will be created.
+
+=head2 options_available
+
+Returns an array of all parsed options that have not yet been consumed.
+
+=head2 shift_argv
+
+Shifts the first argument of the local @ARGV
+
+=head2 extra
+
+Returns all extra arguments
+
+=head2 options
+
+Returns all options as MooseX::App::ParsedArgv::Option objects
 
 =cut

@@ -631,19 +631,39 @@ matched exactly or fuzzy. Defaults to true.
 Coderef attribute that controlls how package names are translated to command 
 names and attributes. Defaults to &MooseX::App::Utils::class_to_command
 
+=head2 app_commands
+
+Hashref with command to command class map.
+
 =head1 METHODS
+
+=head2 command_register
+
+ $self->command_register($command_moniker,$command_class);
+
+Registers an additional command
+
+=head2 command_get
+
+ my $command_class = $self->command_register($command_moniker);
+
+Returns a command class for the given command moniker
 
 =head2 command_class_to_command
 
  my $command_moniker = $meta->command_class_to_command($command_class);
 
-Returns the command moniker for the given command class name.
+Returns the command moniker for the given command class.
 
 =head2 command_message
 
- my $message = $meta->command_message( header => $header, type => 'error', body => $message );
+ my $message = $meta->command_message( 
+    header  => $header, 
+    type    => 'error', 
+    body    => $message
+ );
 
-Generates a message object (based on L<app_messageclass>)
+Generates a message object (using the class from L<app_messageclass>)
 
 =head2 command_usage_attributes
 
@@ -656,25 +676,13 @@ meta class.
 
  my @attributes = $meta->command_usage_attributes($metaclass);
 
-Returns a list of attributes/command options.
+Returns a list of attributes/command options for the given meta class.
 
 =head2 command_usage_attributes_raw
 
  my @attributes = $meta->command_usage_attributes_raw($metaclass);
 
 Returns a list of attribute documentations for a given meta class.
-
-=head2 command_usage_attribute_detail
-
- my ($name,$description) = $meta->command_usage_attribute_detail($metaattribute);
-
-Returns a name and description for a given meta attribute class.
-
-=head2 command_usage_attribute_tag
-
- my @tags = $meta->command_usage_attribute_tag($metaattribute);
-
-Returns a list of tags for a given meta attribute class.
 
 =head2 command_usage_command
 
@@ -722,8 +730,35 @@ Returns either a single command or an arrayref of possibly matching commands.
 
 =head2 command_proto
 
- my ($result,$errors) = $meta->command_proto();
+ my ($result,$errors) = $meta->command_proto($command_meta_class);
 
-Returns the proto command command line options.
+Returns all parsed options (as hashref) and erros (as arrayref) for the proto
+command. Is a wrapper around L<command_parse_options>.
+
+=head2 command_args
+
+ my ($options,$errors) = $self->command_args($command_meta_class);
+
+Returns all parsed options (as hashref) and erros (as arrayref) for the main
+command. Is a wrapper around L<command_parse_options>.
+
+=head2 command_parse_options
+
+ my ($options,$errors) = $self->command_parse_options(\@attribute_metaclasses);
+
+Tries to parse the selected attributes from @ARGV.
+
+=head2 command_check_attribute
+
+ my ($error) = $self->command_check_attribute($attribute_meta_class,$value);
+
+Checks if a value is valid for the given attribute. Returns a message object
+if a validation error occurs.
+
+=head2 command_type_constraint_description
+
+ my ($description) = $self->command_type_constraint_description($type_constraint);
+
+Returns a human-readable type constraint description.
 
 =cut
