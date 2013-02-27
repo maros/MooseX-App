@@ -19,6 +19,7 @@ lib/MooseX/App/Meta/Role/Attribute/Option.pm
 lib/MooseX/App/Meta/Role/Class/Base.pm
 lib/MooseX/App/Meta/Role/Class/Command.pm
 lib/MooseX/App/Meta/Role/Class/Simple.pm
+lib/MooseX/App/ParsedArgv.pm
 lib/MooseX/App/Plugin/BashCompletion.pm
 lib/MooseX/App/Plugin/BashCompletion/Command.pm
 lib/MooseX/App/Plugin/BashCompletion/Meta/Class.pm
@@ -60,6 +61,7 @@ t/05_extended.t
 t/06_plugin_env.t
 t/07_single.t
 t/08_plugin_various.t
+t/09_classes.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl
@@ -76,8 +78,11 @@ t/testlib/Test02/Command/Error.pm
 t/testlib/Test02/Command/Record.pm
 t/testlib/Test02/Command/Required.pm
 t/testlib/Test03.pm
+t/testlib/Test03/AnotherCommand.pm
+t/testlib/Test03/BrokenCommand.pm
 t/testlib/Test03/Role/TestRole.pm
 t/testlib/Test03/SomeCommand.pm
+t/testlib/Test03/YetAnotherCommand.pm
 t/testlib/Test04.pm
 t/testlib/Test04Base.pm
 t/testlib/Test05.pm

@@ -13,3 +13,5 @@ MooseX-App-*.tar.gz
 cover_db/
 .DS_Store/
 /MYMETA.*
+nytprof/
+nytprof.out

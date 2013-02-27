@@ -40,3 +40,6 @@
 \B\._
 
 ^MooseX-App-\d\.\d+\.tar\.gz
+nytprof/
+meta/
+nytprof.out

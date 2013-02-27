@@ -19,7 +19,7 @@ SYNOPSIS
       ); # not exposed
 
     Write multiple command classes (If you have only a single command class
-    you might use MooseX::App::Simple instead)
+    you should use MooseX::App::Simple instead)
 
       package MyApp::SomeCommand;
       use MooseX::App::Command; # important
@@ -28,6 +28,7 @@ SYNOPSIS
       option 'some_option' => (
           is            => 'rw',
           isa           => 'Str',
+          required      => 1,
           documentation => q[Very important option!],
       );
   
@@ -42,9 +43,27 @@ SYNOPSIS
      use MyApp;
      MyApp->new_with_command->run;
 
+    On the command line:
+
+     bash$ myapp some_command --help
+     usage:
+         myapp some_command [long options...]
+         myapp help
+         myapp some_command --help
+ 
+     global options:
+         --global_option    Enable this to do fancy stuff [Flag]
+         --some_option      Very important option! [Required]
+         --help --usage -?  Prints this usage information. [Flag]
+ 
+     available commands:
+         some_command    Description of some command
+         another_command Description of another command
+         help            Prints this usage information
+
 DESCRIPTION
     MooseX-App is a highly customizeable helper to write user-friendly
-    command-line applications without having to worry about most of the
+    command line applications without having to worry about most of the
     annoying things usually involved. Just take any existing Moose class,
     add a single line ("use MooseX-App qw(PluginA PluginB ...);") and create
     one class for each command in an underlying namespace.
@@ -55,7 +74,10 @@ DESCRIPTION
 
     *   Creating automated help and doucumentation from pod and attributes
 
-    *   Reading and validating the command line options entered by the user
+    *   Reading, encoding and validating the command line options entered by
+        the user
+
+    *   Providing helpful error messages if user input cannot be validated
 
     Commandline options are defined using the 'option' keyword which accepts
     the same attributes as Moose' 'has' keyword.
@@ -71,6 +93,7 @@ DESCRIPTION
           is            => 'rw',
           isa           => 'Str',
           traits        => ['AppOption'],
+          cmd_option    => 1,
       );
 
     Read the Tutorial for getting started with a simple MooseX::App command
@@ -86,7 +109,7 @@ METHODS
 
     You can pass a hash of default params to new_with_command
 
-     MyApp->new_with_command( %default );
+     MyApp->new_with_command(%default);
 
   initialize_command_class
      my $myapp_command = MyApp->initialize_command_class($command_name,%default);
@@ -139,7 +162,9 @@ SEE ALSO
     Read the Tutorial for getting started with a simple MooseX::App command
     line application.
 
-    MooseX::App::Cmd, MooseX::Getopt and App::Cmd
+    For alternatives you can check out
+
+    MooseX::App::Cmd, MooseX::Getopt, MooX::Options and App::Cmd
 
 SUPPORT
     Please report any bugs or feature requests to
@@ -157,7 +182,7 @@ AUTHOR
 
 CONTRIBUTORS
     In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
-    Michael G, Thomas Klausner, Yanick Champoux
+    Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
 
 COPYRIGHT
     MooseX::App is Copyright (c) 2012 Maroš Kollár.
