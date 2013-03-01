@@ -203,8 +203,9 @@ sub command_parse_options {
                             header          => "Ambiguous option '".$option->key."'", # LOCALIZE
                             type            => "error",
                             body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
-                                map { [ $_->cmd_name_primary ] } 
+                                map { [ $_ ] } 
                                 sort 
+                                map { $_->cmd_name_primary } 
                                 @{$match_attributes} 
                             ),
                         )
