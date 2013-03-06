@@ -1,5 +1,18 @@
 Changes for MooseX-App
 
+1.17 Wed, Mar 6, 2013
+    - Fix failing tests
+
+1.16 Wed, Feb 27, 2012
+    - Better license parsing
+    - Fix failing tests
+    - Use Class::Load instead of Class::MOP to load classes
+    - Remove MooseX::Getopt depedency. Parse @ARGV ourself
+    - Renamed meta class methods to use single prefix
+    - Moved meta class methods to attribute meta class
+    - Much more tests (95% statement and 90% total coverage)
+    - Better error handling for Environment plugin
+
 1.15 Fri, Jan 18, 2012
     - Fix wrong attribute initalization order
 
