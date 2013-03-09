@@ -19,10 +19,10 @@ coerce 'MooseX::App::Types::CmdAliases'
 no Moose::Util::TypeConstraints;
 
 
-has 'cmd_option' => (
+has 'cmd_type' => (
     is          => 'rw',
-    isa         => 'Bool',
-    default     => 0,
+    isa         => 'MooseX::App::Types::CmdTypes',
+    predicate   => 'has_cmd_type',
 );
 
 has 'cmd_tags' => (
@@ -42,12 +42,6 @@ has 'cmd_aliases' => (
     isa         => 'MooseX::App::Types::CmdAliases',
     predicate   => 'has_cmd_aliases',
     coerce      => 1,
-);
-
-has 'cmd_proto' => (
-    is          => 'rw',
-    isa         => 'Bool',
-    default     => 0,
 );
 
 sub cmd_is_bool {

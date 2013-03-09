@@ -8,12 +8,12 @@ use strict;
 use warnings;
 
 use Moose::Role ();
-use MooseX::App::Exporter qw(option);
+use MooseX::App::Exporter qw(option parameter);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
     also      => 'Moose::Role',
-    with_meta => [ 'option' ],
+    with_meta => [qw(option parameter)],
 );
 
 sub init_meta {
@@ -65,7 +65,7 @@ Alternatively you can also just use attribute traits:
  has 'testattr' => (
     isa             => 'rw',
     traits          => ['AppOption'],
-    cmd_option      => 1,
+    cmd_type        => 'option',
     cmd_tags        => [qw(Important! Nice))],
  );
 

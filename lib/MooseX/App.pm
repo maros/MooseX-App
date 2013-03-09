@@ -11,13 +11,13 @@ our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.17';
 
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base app_fuzzy option);
+use MooseX::App::Exporter qw(app_base app_fuzzy option parameter);
 use MooseX::App::Message::Envelope;
 use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace', 'app_base', 'app_fuzzy', 'app_command_name', 'option' ],
+    with_meta           => [ qw(app_namespace app_base app_fuzzy app_command_name option parameter) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],

@@ -9,11 +9,11 @@ use warnings;
 
 use Moose ();
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(option command_short_description command_long_description command_usage);
+use MooseX::App::Exporter qw(option parameter command_short_description command_long_description command_usage);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [ 'command_short_description', 'command_long_description', 'command_usage', 'option'],
+    with_meta => [qw(command_short_description command_long_description command_usage option parameter)],
     also      => 'Moose',
 );
 
