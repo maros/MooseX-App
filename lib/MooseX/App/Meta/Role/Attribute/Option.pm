@@ -190,19 +190,25 @@ intent to write plugins for MooseX-App.
 
 Use this name instead of the attribute name as the option name
 
-=head2 cmd_option
+=head2 cmd_type
 
-Boolean flag to mark if this attribute should be used as an option
+Option to mark if this attribute should be used as an option or parameter value.
+
+Allowed values are
+
+=over
+
+=item * option - Command line option
+
+=item * proto - Command line option that should be processed first  (eg. a config-file option that sets other attribues)
+
+=item * parameter - Positional parameter command line value
+
+=back
 
 =head2 cmd_aliases
 
 Arrayref of alternative option names
-
-=head2 cmd_proto
-
-Boolean flag to mark this attribute as proto option. Proto attributes will be 
-parsed before all other options (eg. a config-file option that sets
-other attribues)
 
 =head2 cmd_tags
 

@@ -77,7 +77,7 @@ features such as:
 
 =item * Overriding the automated usage header with custom usage from Pod or via C<command_usage>
 
-=item * Adding the C<cmd_tags>, C<cmd_flag>, C<cmd_aliases> and C<cmd_proto> attributes to options
+=item * Adding the C<cmd_tags>, C<cmd_flag>, C<cmd_aliases> and C<cmd_type> attributes to options
 
 =back
 

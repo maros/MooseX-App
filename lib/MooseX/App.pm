@@ -156,6 +156,12 @@ you should use L<MooseX::App::Simple> instead)
   use MooseX::App::Command; # important
   extends qw(MyApp); # purely optional
   
+  parameter 'some_parameter' => (
+      is            => 'rw',
+      isa           => 'Str',
+      required      => 1,
+  );
+  
   option 'some_option' => (
       is            => 'rw',
       isa           => 'Str',
@@ -178,7 +184,7 @@ On the command line:
 
  bash$ myapp some_command --help
  usage:
-     myapp some_command [long options...]
+     myapp some_command <SOME_PARAMETER> [long options...]
      myapp help
      myapp some_command --help
  
@@ -208,7 +214,7 @@ MooseX-App will then take care of
 
 =item * Creating automated help and doucumentation from pod and attributes
 
-=item * Reading, encoding and validating the command line options entered by the user
+=item * Reading, encoding and validating the command line options and positional parameters entered by the user
 
 =item * Providing helpful error messages if user input cannot be validated
 
@@ -228,7 +234,23 @@ This is equivalent to
       is            => 'rw',
       isa           => 'Str',
       traits        => ['AppOption'],
-      cmd_option    => 1,
+      cmd_type      => 'option',
+  );
+
+Positional parameters are defined with the 'parameter' keyword
+
+  parameter 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+  );
+
+This is equivalent to
+
+  has 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+      traits        => ['AppOption'],
+      cmd_type      => 'parameter',
   );
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 

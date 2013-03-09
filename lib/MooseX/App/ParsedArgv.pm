@@ -242,17 +242,23 @@ Create a new MooseX::App::ParsedArgv instance
 Get the current MooseX::App::ParsedArgv instance. If there is no instance
 a new one will be created.
 
-=head2 options_available
+=head2 available
 
-Returns an array of all parsed options that have not yet been consumed.
+ my @options = $self->available('options');
 
-=head2 shift_argv
+Returns an array of all parsed options or parameters that have not yet been consumed.
 
-Shifts the first argument of the local @ARGV
+=head2 consume
+
+Returns the first option/parameter of the local @ARGV that has not yet been consumed.
+
+=head2 parameter
+
+Returns all positional parameters
 
 =head2 extra
 
-Returns all extra arguments
+Returns all extra values
 
 =head2 options
 
