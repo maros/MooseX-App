@@ -83,12 +83,11 @@ sub new_with_command {
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->new;
     $parsed_argv->argv(\@ARGV);
-    my $first_argv = $parsed_argv->shift_argv;
+    my $first_argv = $parsed_argv->consume('parameters');
     
     # No args
     if (! defined $first_argv
-        || $first_argv =~ m/^\s*$/
-        || $first_argv =~ m/^-/) {
+        || $first_argv =~ m/^\s*$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_message(
                 header          => "Missing command", # LOCALIZE
@@ -97,13 +96,13 @@ sub new_with_command {
             $meta->command_usage_global(),
         );
     # Requested help
-    } elsif (lc($first_argv) =~ m/^-{0,2}?(help|h|\?|usage)$/) {
+    } elsif (lc($first_argv->key) =~ m/^(help|h|\?|usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
     # Looks like a command
     } else {
-        my $return = $meta->command_find($first_argv);
+        my $return = $meta->command_find($first_argv->key);
         
         # Nothing found
         if (blessed $return
