@@ -94,16 +94,40 @@ sub _build_app_commands {
 sub command_args {
     my ($self,$metaclass) = @_;
     
-    $metaclass      ||= $self;
-    my @attributes  = $self->command_usage_attributes_list($metaclass);
-    
-    my ($return,$errors) = $self->command_parse_options(\@attributes);
+    $metaclass ||= $self;
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
-    foreach my $option ($parsed_argv->options_available) {
-        push(@{$errors},
+    # Process options
+    my @attributes_option  = $self->command_usage_attributes_list($metaclass,'option');
+    
+    my ($return,$errors) = $self->command_parse_options(\@attributes_option);
+    
+    while (my $option =$parsed_argv->consume('options') ) {
+        unshift(@{$errors},
             $self->command_message(
                 header          => "Unknown option '".$option->key."'", # LOCALIZE
+                type            => "error",
+            )
+        );
+    }
+    
+    # Process params
+    my @attributes_parameter  = $self->command_usage_attributes_list($metaclass,'parameter');
+        
+    foreach my $attribute (@attributes_parameter) {
+        my $value = $parsed_argv->consume('parameters');
+        last
+            unless defined $value;
+
+        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute,$value->key);
+        push(@{$errors},@{$parameter_errors});
+        $return->{$attribute->name} = $parameter_value;
+    }
+    
+    while (my $parameter =$parsed_argv->consume('parameters') ) {
+        unshift(@{$errors},
+            $self->command_message(
+                header          => "Unknown parameter '".$parameter->key."'", # LOCALIZE
                 type            => "error",
             )
         );
@@ -120,7 +144,9 @@ sub command_proto {
     my @attributes;
     foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
         next
-            unless $attribute->cmd_proto;
+            unless $attribute->does('AppOption')
+            && $attribute->has_cmd_type
+            && $attribute->cmd_type eq 'proto';
         push(@attributes,$attribute);
     }
     
@@ -150,7 +176,7 @@ sub command_parse_options {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Loop all exact matches
-    foreach my $option ($parsed_argv->options_available()) {
+    foreach my $option ($parsed_argv->available('options')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
             $match->{$attribute->name} = $option->value;
             $option->consume($attribute);
@@ -160,7 +186,7 @@ sub command_parse_options {
     # Process fuzzy matches
     if ($self->app_fuzzy) {
         # Loop all options (sorted by length)
-        foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->options_available()) {
+        foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->available('options')) {
 
             # No fuzzy matching for one-letter flags
             my $option_length = length($option->key);
@@ -192,12 +218,13 @@ sub command_parse_options {
                 # One match
                 when(1) {
                     my $attribute = $match_attributes->[0];
-                    $option->consume($attribute);
+                    $option->consume();
                     $match->{$attribute->name} ||= [];
                     push(@{$match->{$attribute->name}},@{$option->value}); 
                 }
                 # Multiple matches
                 default {
+                    $option->consume();
                     push(@errors,
                         $self->command_message(
                             header          => "Ambiguous option '".$option->key."'", # LOCALIZE
@@ -217,69 +244,80 @@ sub command_parse_options {
     
     # Check all attributes
     foreach my $attribute (@{$attributes}) {
-        my $value;
         
         next
             unless exists $match->{$attribute->name};
         
-        # Attribute with type constraint
-        if ($attribute->has_type_constraint) {
-            my $type_constraint = $attribute->type_constraint;
-            
-            if ($type_constraint->is_a_type_of('ArrayRef')) {
-                $value = $match->{$attribute->name};
-            } elsif ($type_constraint->is_a_type_of('HashRef')) {
-                $value = {};
-                foreach my $element (@{$match->{$attribute->name}}) {
-                    if ($element =~ m/^([^=]+)=(.+?)$/) {
-                        $value->{$1} ||= $2;
-                    } else {
-                        push(@errors,
-                            $self->command_message(
-                                header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
-                                type            => "error",
-                                body            => "Value must be supplied as 'key=value' (not '$element')", # LOCALIZE
-                            )
-                        );
-                    }
-                }
-            } elsif ($type_constraint->is_a_type_of('Bool')) {
-                $value = $attribute->cmd_is_bool; # TODO or 0 if no!
-            } elsif ($type_constraint->is_a_type_of('Int')) {
-                $value = $match->{$attribute->name}[-1];
-            } else {
-                $value = $match->{$attribute->name}[-1];
-            }
-            
-            unless(defined $value) {
-                push(@errors,
-                    $self->command_message(
-                        header          => "Missing value for '".$attribute->cmd_name_primary."'", # LOCALIZE
-                        type            => "error",
-                    )
-                );
-            } else {
-                            
-                my $coercion;
-                if ($attribute->should_coerce
-                    && $type_constraint->has_coercion) {
-                    $coercion = $type_constraint->coercion;
-                    $value = $coercion->coerce($value) // $value;
-                }
-                
-                my $error = $self->command_check_attribute($attribute,$value);
-                push(@errors,$error)
-                    if $error;
-            }
-            
-        } else {
-             $value = $match->{$attribute->name}[-1];
-        }
+        my ($value,$errors) = $self->command_process_attribute($attribute,$match->{$attribute->name});
+        push(@errors,@{$errors});
         
         $return->{$attribute->name} = $value;
     }
     
     return ($return,\@errors);
+}
+
+sub command_process_attribute {
+    my ($self,$attribute,$raw) = @_;
+    
+    $raw = [$raw]
+        unless ref($raw) eq 'ARRAY';
+    
+    my @errors;
+    my $value;
+    # Attribute with type constraint
+    if ($attribute->has_type_constraint) {
+        my $type_constraint = $attribute->type_constraint;
+        
+        if ($type_constraint->is_a_type_of('ArrayRef')) {
+            $value = $raw;
+        } elsif ($type_constraint->is_a_type_of('HashRef')) {
+            $value = {};
+            foreach my $element (@{$raw}) {
+                if ($element =~ m/^([^=]+)=(.+?)$/) {
+                    $value->{$1} ||= $2;
+                } else {
+                    push(@errors,
+                        $self->command_message(
+                            header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
+                            type            => "error",
+                            body            => "Value must be supplied as 'key=value' (not '$element')", # LOCALIZE
+                        )
+                    );
+                }
+            }
+        } elsif ($type_constraint->is_a_type_of('Bool')) {
+            $value = $attribute->cmd_is_bool; # TODO or 0 if no!
+        } elsif ($type_constraint->is_a_type_of('Int')) {
+            $value = $raw->[-1];
+        } else {
+            $value = $raw->[-1];
+        }
+        
+        unless(defined $value) {
+            push(@errors,
+                $self->command_message(
+                    header          => "Missing value for '".$attribute->cmd_name_primary."'", # LOCALIZE
+                    type            => "error",
+                )
+            );
+        } else {
+                        
+            if ($attribute->should_coerce
+                && $type_constraint->has_coercion) {
+                my $coercion = $type_constraint->coercion;
+                $value = $coercion->coerce($value) // $value;
+            }
+            my $error = $self->command_check_attribute($attribute,$value);
+            push(@errors,$error)
+                if $error;
+        }
+        
+    } else {
+         $value = $raw->[-1];
+    }
+    
+    return ($value,\@errors);
 }
 
 sub command_check_attribute {
@@ -425,16 +463,18 @@ sub command_message {
 }
 
 sub command_usage_attributes_list {
-    my ($self,$metaclass) = @_;
+    my ($self,$metaclass,$types) = @_;
     
     $metaclass ||= $self;
+    $types ||= [qw(option proto)];
     
     my @return;
     # TODO order by insertion order
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('AppOption')
-            && $attribute->cmd_option;
+            && $attribute->has_cmd_type
+            && $attribute->cmd_type ~~ $types;
         
         push(@return,$attribute);
     }
@@ -492,10 +532,23 @@ sub command_usage_header {
         $command_name = 'command';
     }
     
-    $usage ||= MooseX::App::Utils::format_text("$caller $command_name [long options...]
+    unless (defined $usage) {
+        # LOCALIZE
+        $usage = "$caller $command_name ";
+        my @parameter= $self->command_usage_attributes_list($command_meta_class||$self,'parameter');
+        foreach my $attribute (@parameter) {
+            if ($attribute->is_required) {
+                $usage .= "<".uc($attribute->cmd_name_primary).'> ';
+            } else {
+                $usage .= '['.uc($attribute->cmd_name_primary).'] ';
+            }
+        }
+        $usage .= "[long options...]
 $caller help
-$caller $command_name --help"); # LOCALIZE
-    
+$caller $command_name --help";
+        $usage = MooseX::App::Utils::format_text($usage);
+    }
+        
     return $self->command_message(
         header  => 'usage:', # LOCALIZE
         body    => $usage,
