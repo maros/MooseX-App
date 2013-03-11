@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 15+1;
+use Test::Most tests => 19+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -144,4 +144,35 @@ subtest 'Test more flags & defaults' => sub {
     is($test11->bool2,0,'Bool2 flag is unset');
     is($test11->bool3,1,'Bool3 flag is set');
     is($test11->value,'baer','Value is set');
+};
+
+subtest 'Test positional params' => sub {
+    local @ARGV = qw(extra hui --value baer);
+    my $test12 = Test03->new_with_command;
+    isa_ok($test12,'Test03::ExtraCommand');
+    is($test12->extra1,'hui','Extra1 value is undef');
+    is($test12->value,'baer','Value is set');
+};
+
+subtest 'Test optional positional params' => sub {
+    local @ARGV = qw(extra hui 11 --value baer);
+    my $test12 = Test03->new_with_command;
+    isa_ok($test12,'Test03::ExtraCommand');
+    is($test12->extra1,'hui','Extra1 value is undef');
+    is($test12->extra2,11,'Extra2 value is undef');
+    is($test12->value,'baer','Value is set');
+};
+
+subtest 'Test wrong positional params' => sub {
+    local @ARGV = qw(extra hui aa --value baer);
+    my $test13 = Test03->new_with_command;
+    isa_ok($test13,'MooseX::App::Message::Envelope');
+    is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Message ok");
+};
+
+subtest 'Test missing positional params' => sub {
+    local @ARGV = qw(extra  --value baer);
+    my $test13 = Test03->new_with_command;
+    isa_ok($test13,'MooseX::App::Message::Envelope');
+    is($test13->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
 };
