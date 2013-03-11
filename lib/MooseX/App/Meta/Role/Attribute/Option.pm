@@ -10,11 +10,15 @@ use Moose::Role;
 
 use Moose::Util::TypeConstraints;
 
-subtype 'MooseX::App::Types::CmdAliases' => as 'ArrayRef';
+subtype 'MooseX::App::Types::CmdAliases' 
+    => as 'ArrayRef';
 
 coerce 'MooseX::App::Types::CmdAliases'
     => from 'Str'
-        => via { [$_] };
+    => via { [$_] };
+
+subtype 'MooseX::App::Types::CmdTypes' 
+    => as enum([qw(proto option parameter)]);
 
 no Moose::Util::TypeConstraints;
 
