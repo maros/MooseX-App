@@ -75,14 +75,19 @@ sub cmd_is_bool {
 sub cmd_usage {
     my ($self) = @_;
     
-    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $self->cmd_name_possible); ;
-    my @tags = $self->cmd_tags_list();
+    my $name;   
     my $description = ($self->has_documentation) ? $self->documentation : '';
-    
+    my @tags = $self->cmd_tags_list();
     if (scalar @tags) {
         $description .= ' '
             if $description;
         $description .= '['.join('; ',@tags).']';
+    }
+
+    if ($self->cmd_type eq 'parameter') {
+        $name = uc($self->cmd_name_primary);
+    } else {
+        $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $self->cmd_name_possible); ;
     }
     
     return ($name,$description);
