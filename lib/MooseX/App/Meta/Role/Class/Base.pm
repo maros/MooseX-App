@@ -483,13 +483,12 @@ sub command_usage_attributes_list {
 }
 
 sub command_usage_attributes_raw {
-    my ($self,$metaclass) = @_;
+    my ($self,$metaclass,$types) = @_;
     
     $metaclass ||= $self;
     
     my @attributes;
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
-        
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass,$types)) {
         my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
         
         push(@attributes,[$attribute_name,$attribute_description]);
@@ -499,23 +498,49 @@ sub command_usage_attributes_raw {
     return @attributes;
 }
 
-sub command_usage_attributes {
+sub command_usage_options {
     my ($self,$metaclass,$headline) = @_;
     
     $headline ||= 'options:'; # LOCALIZE
     $metaclass ||= $self;
     
-    my @attributes = $self->command_usage_attributes_raw($metaclass);
+    my @options;
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass,[qw(option proto)])) {
+        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
+        push(@options,[$attribute_name,$attribute_description]);
+    }
+    
+    @options = sort { $a->[0] cmp $b->[0] } @options;
     
     return
-        unless scalar @attributes > 1;
+        unless scalar @options > 0;
     
     return $self->command_message(
         header  => $headline,
-        body    => MooseX::App::Utils::format_list(@attributes),
+        body    => MooseX::App::Utils::format_list(@options),
     );
 }
 
+sub command_usage_parameters {
+    my ($self,$metaclass,$headline) = @_;
+    
+    $headline ||= 'parameter:'; # LOCALIZE
+    $metaclass ||= $self;
+    
+    my @parameters;
+    foreach my $attribute ($self->command_usage_attributes_list($metaclass,'parameter')) {
+        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
+        push(@parameters,[$attribute_name,$attribute_description]);
+    }
+    
+    return
+        unless scalar @parameters > 0;
+    
+    return $self->command_message(
+        header  => $headline,
+        body    => MooseX::App::Utils::format_list(@parameters),
+    );
+}
 sub command_usage_header {
     my ($self,$command_meta_class) = @_;
     
@@ -599,8 +624,9 @@ sub command_usage_command {
     
     my @usage;
     push(@usage,$self->command_usage_header($command_meta_class));
-    push(@usage,$self->command_usage_description($command_meta_class));
-    push(@usage,$self->command_usage_attributes($command_meta_class));
+    push(@usage,$self->command_usage_description($command_meta_class,)); 
+    push(@usage,$self->command_usage_parameters($command_meta_class,'parameters:')); # LOCALIZE
+    push(@usage,$self->command_usage_options($command_meta_class,'options:')); # LOCALIZE
     
     return @usage;
 }
@@ -627,7 +653,8 @@ sub command_usage_global {
     
     my @usage;
     push (@usage,$self->command_usage_header());
-    push (@usage,$self->command_usage_attributes($self,'global options:')); # LOCALIZE
+    push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
+    push (@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
     push (@usage,
         $self->command_message(
             header  => 'available commands:', # LOCALIZE
