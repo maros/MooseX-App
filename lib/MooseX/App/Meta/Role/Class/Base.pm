@@ -482,22 +482,6 @@ sub command_usage_attributes_list {
     return @return;
 }
 
-sub command_usage_attributes_raw {
-    my ($self,$metaclass,$types) = @_;
-    
-    $metaclass ||= $self;
-    
-    my @attributes;
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass,$types)) {
-        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
-        
-        push(@attributes,[$attribute_name,$attribute_description]);
-    }
-    
-    @attributes = sort { $a->[0] cmp $b->[0] } @attributes;
-    return @attributes;
-}
-
 sub command_usage_options {
     my ($self,$metaclass,$headline) = @_;
     
@@ -506,8 +490,10 @@ sub command_usage_options {
     
     my @options;
     foreach my $attribute ($self->command_usage_attributes_list($metaclass,[qw(option proto)])) {
-        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
-        push(@options,[$attribute_name,$attribute_description]);
+        push(@options,[
+            $attribute->cmd_usage_name(),
+            $attribute->cmd_usage_description()
+        ]);
     }
     
     @options = sort { $a->[0] cmp $b->[0] } @options;
@@ -529,8 +515,10 @@ sub command_usage_parameters {
     
     my @parameters;
     foreach my $attribute ($self->command_usage_attributes_list($metaclass,'parameter')) {
-        my ($attribute_name,$attribute_description) = $attribute->cmd_usage();
-        push(@parameters,[$attribute_name,$attribute_description]);
+        push(@parameters,[
+            $attribute->cmd_usage_name(),
+            $attribute->cmd_usage_description()
+        ]);
     }
     
     return
@@ -758,12 +746,6 @@ meta class.
  my @attributes = $meta->command_usage_attributes($metaclass);
 
 Returns a list of attributes/command options for the given meta class.
-
-=head2 command_usage_attributes_raw
-
- my @attributes = $meta->command_usage_attributes_raw($metaclass);
-
-Returns a list of attribute documentations for a given meta class.
 
 =head2 command_usage_command
 

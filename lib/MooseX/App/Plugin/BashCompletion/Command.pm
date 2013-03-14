@@ -30,10 +30,12 @@ sub bash_completion {
     
     while (my ($command,$command_class) = each %$commands) {
         Class::Load::load_class($command_class);
-        my @attributes = $app_meta->command_usage_attributes_raw($command_class->meta);
-        $command_map{$command} = [ 
-            map { $_->[0] } @attributes
-        ];
+        #my @parameters = $app_meta->command_usage_attributes_list($command_class->meta,'parameter');
+        my @options = $app_meta->command_usage_attributes_list($command_class->meta,[qw(option proto)]);
+        $command_map{$command} = {
+            #parameters  => [ map { $_->is_required } @parameters ],
+            options     => [ map { $_->cmd_usage_name } @options ],
+        };
     }
     
     my $syntax = '';;
@@ -55,12 +57,12 @@ _${prefix}_macc_help() {
 
 EOT
  
-    while (my ($c, $o) = each %command_map) {
-        $syntax .= "_${prefix}_macc_$c() {\n    _${prefix}_compreply \"";
-        $syntax .= join(" ", @$o);
+    while (my ($command, $data) = each %command_map) {
+        $syntax .= "_${prefix}_macc_${command}() {\n    _${prefix}_compreply \"";
+        #$syntax .= join(" ", @{$data->{parameters}});
+        $syntax .= join(" ", @{$data->{options}});
         $syntax .= "\"\n}\n\n";
     }
- 
  
     $syntax .= <<"EOT";
 _${prefix}_compreply() {

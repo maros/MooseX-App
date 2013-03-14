@@ -72,10 +72,9 @@ sub cmd_is_bool {
     return undef
 }
 
-sub cmd_usage {
+sub cmd_usage_description {
     my ($self) = @_;
     
-    my $name;   
     my $description = ($self->has_documentation) ? $self->documentation : '';
     my @tags = $self->cmd_tags_list();
     if (scalar @tags) {
@@ -83,14 +82,19 @@ sub cmd_usage {
             if $description;
         $description .= '['.join('; ',@tags).']';
     }
-
-    if ($self->cmd_type eq 'parameter') {
-        $name = uc($self->cmd_name_primary);
-    } else {
-        $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $self->cmd_name_possible); ;
-    }
+    return $description
+}   
     
-    return ($name,$description);
+sub cmd_usage_name {
+    my ($self) = @_;
+    
+    if ($self->cmd_type eq 'parameter') {
+        return uc($self->cmd_name_primary);
+    } else {
+        return join(' ', 
+            map { (length($_) == 1) ? "-$_":"--$_" } 
+            $self->cmd_name_possible);
+    }
 }
 
 sub cmd_name_primary {
