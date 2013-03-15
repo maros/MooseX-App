@@ -167,7 +167,10 @@ subtest 'Test wrong positional params' => sub {
     local @ARGV = qw(extra hui aa --value baer);
     my $test13 = Test03->new_with_command;
     isa_ok($test13,'MooseX::App::Message::Envelope');
-    is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Message ok");
+    is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Error message ok");
+    is($test13->blocks->[2]->header,"parameters:","Usage header ok");
+    is($test13->blocks->[2]->body,"    EXTRA1  Important extra parameter [Required]
+    EXTRA2  [Integer]","Usage body ok");
 };
 
 subtest 'Test missing positional params' => sub {
