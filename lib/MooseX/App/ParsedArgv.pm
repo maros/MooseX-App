@@ -37,6 +37,7 @@ sub BUILD {
     my ($self) = @_;
     $SINGLETON = $self;
     $self->_parse();
+    return $self;
 }
 
 sub instance {
