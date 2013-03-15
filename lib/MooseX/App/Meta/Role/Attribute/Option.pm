@@ -241,17 +241,23 @@ Returns a list of all possible option names.
 
 Returns the primary option name
 
-=head2 cmd_usage
+=head2 cmd_usage_name
 
- my ($name,$description) = $attribute->command_usage_attribute_detail();
+ my $name = $attribute->cmd_usage_name();
 
-Returns a name and description for a given meta attribute class.
+Returns the name as used by the usage text
+
+=head2 cmd_usage_description
+
+ my $name = $attribute->cmd_usage_description();
+
+Returns the description as used by the usage text
 
 =head2 cmd_tags_list
 
  my @tags = $attribute->cmd_tags_list();
 
-Returns a list of tags for a given meta attribute class.
+Returns a list of tags
 
 =head2 cmd_is_bool
 

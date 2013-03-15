@@ -736,13 +736,6 @@ Generates a message object (using the class from L<app_messageclass>)
 
 =head2 command_usage_attributes
 
- my $message = $meta->command_usage_attributes($metaclass,$headline);
-
-Returns a message object containing the attribute documentation for a given
-meta class.
-
-=head2 command_usage_attributes_list
-
  my @attributes = $meta->command_usage_attributes($metaclass);
 
 Returns a list of attributes/command options for the given meta class.
@@ -772,12 +765,6 @@ Returns a list of messages containing the documentation for the application.
  my $message = $meta->command_usage_header($command_meta_class);
 
 Returns a message containing the basic usage documentation
-
-=head2 app_commands
-
- my $commands = $meta->app_commands;
-
-Returns a hashref of command name and command class.
 
 =head2 command_find
 
@@ -824,4 +811,22 @@ if a validation error occurs.
 
 Returns a human-readable type constraint description.
 
+=head2 command_process_attributes
+
+ my @attributes = $self->command_process_attributes($metaclass,[qw(option proto)]);
+ my @attributes = $self->command_process_attributes($metaclass,'parameter');
+
+Returns a list of all attributes with the given type
+
+=head2 command_usage_options
+
+ my $usage = $self->command_usage_options($metaclass,$headline);
+
+Returns the options usage as a message object
+
+=head2 command_usage_parameters
+
+ my $usage = $self->command_usage_parameters($metaclass,$headline);
+
+Returns the positional parameters usage as a message object
 =cut
