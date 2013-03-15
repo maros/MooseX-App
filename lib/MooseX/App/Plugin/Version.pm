@@ -37,7 +37,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Version - Adds a command to display version
+MooseX::App::Plugin::Version - Adds a command to display the version and license of your application
 
 =head1 SYNOPSIS
 

@@ -321,6 +321,40 @@ plugin just pass a list of plugin names after the C<use MooseX-App> statement.
 Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
 documentation on how to create your own plugins.
 
+Currently the following plugins are shipped with MooseX::App
+
+=over
+
+=item * L<MooseX::App::Plugin::BashCompletion>
+
+Adds a command that genereates a bash completion script for your application
+
+=item * L<MooseX::App::Plugin::Color>
+
+Colorful output for your MooseX::App applications
+
+=item * L<MooseX::App::Plugin::Config>
+
+Config files your MooseX::App applications
+
+=item * L<MooseX::App::Plugin::ConfigHome>
+
+Config files in users home directory
+
+=item * L<MooseX::App::Plugin::Env>
+
+Read options from environment
+
+=item * L<MooseX::App::Plugin::Typo>
+
+Handle typos in command names
+
+=item * L<MooseX::App::Plugin::Version>
+
+Adds a command to display the version and license of your application
+
+=back
+
 =head1 SEE ALSO
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
