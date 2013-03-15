@@ -30,8 +30,8 @@ sub bash_completion {
     
     while (my ($command,$command_class) = each %$commands) {
         Class::Load::load_class($command_class);
-        #my @parameters = $app_meta->command_usage_attributes_list($command_class->meta,'parameter');
-        my @options = $app_meta->command_usage_attributes_list($command_class->meta,[qw(option proto)]);
+        #my @parameters = $app_meta->command_usage_attributes($command_class->meta,'parameter');
+        my @options = $app_meta->command_usage_attributes($command_class->meta,[qw(option proto)]);
         $command_map{$command} = {
             #parameters  => [ map { $_->is_required } @parameters ],
             options     => [ map { $_->cmd_usage_name } @options ],

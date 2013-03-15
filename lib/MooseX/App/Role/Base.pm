@@ -64,7 +64,7 @@ sub initialize_command_class {
     );
     
     # Check required values
-    foreach my $attribute ($meta->command_usage_attributes_list($command_meta,[qw(option proto parameter)])) {
+    foreach my $attribute ($meta->command_usage_attributes($command_meta,[qw(option proto parameter)])) {
         if ($attribute->is_required
             && ! exists $params{$attribute->name}
             && ! $attribute->has_default) {

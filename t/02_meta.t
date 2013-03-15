@@ -30,7 +30,7 @@ cmp_deeply($meta->command_candidates('COmmand'),['command_a','command_b','comman
 cmp_deeply($meta->command_candidates('command_C'),['command_c1'],'Command C1 matched fuzzy');
 is($meta->command_candidates('command_c1'),'command_c1','Command C1 matched exactly');
 
-my @attributes = $meta->command_usage_attributes_list;
+my @attributes = $meta->command_usage_attributes;
 is(scalar(@attributes),3,'Has three attributes');
 is($attributes[0]->cmd_usage_name,'--help -h --usage -?','Usage name ok');
 is($attributes[0]->cmd_usage_description,'Prints this usage information. [Flag]','Usage description ok');

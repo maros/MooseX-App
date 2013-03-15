@@ -98,7 +98,7 @@ sub command_args {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Process options
-    my @attributes_option  = $self->command_usage_attributes_list($metaclass,'option');
+    my @attributes_option  = $self->command_usage_attributes($metaclass,'option');
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
     
@@ -112,7 +112,7 @@ sub command_args {
     }
     
     # Process params
-    my @attributes_parameter  = $self->command_usage_attributes_list($metaclass,'parameter');
+    my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
         
     foreach my $attribute (@attributes_parameter) {
         my $value = $parsed_argv->consume('parameters');
@@ -142,7 +142,7 @@ sub command_proto {
     $metaclass   ||= $self;
     
     my @attributes;
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass)) {
         next
             unless $attribute->does('AppOption')
             && $attribute->has_cmd_type
@@ -462,7 +462,7 @@ sub command_message {
     return $messageclass->new(@args);
 }
 
-sub command_usage_attributes_list {
+sub command_usage_attributes {
     my ($self,$metaclass,$types) = @_;
     
     $metaclass ||= $self;
@@ -489,7 +489,7 @@ sub command_usage_options {
     $metaclass ||= $self;
     
     my @options;
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass,[qw(option proto)])) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         push(@options,[
             $attribute->cmd_usage_name(),
             $attribute->cmd_usage_description()
@@ -514,7 +514,7 @@ sub command_usage_parameters {
     $metaclass ||= $self;
     
     my @parameters;
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass,'parameter')) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass,'parameter')) {
         push(@parameters,[
             $attribute->cmd_usage_name(),
             $attribute->cmd_usage_description()
@@ -548,7 +548,7 @@ sub command_usage_header {
     unless (defined $usage) {
         # LOCALIZE
         $usage = "$caller $command_name ";
-        my @parameter= $self->command_usage_attributes_list($command_meta_class||$self,'parameter');
+        my @parameter= $self->command_usage_attributes($command_meta_class||$self,'parameter');
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
                 $usage .= "<".uc($attribute->cmd_name_primary).'> ';

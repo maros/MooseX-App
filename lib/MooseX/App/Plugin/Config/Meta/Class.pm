@@ -58,7 +58,7 @@ sub proto_config {
     
     # Lopp all attributes
     
-    foreach my $attribute ($self->command_usage_attributes_list($metaclass)) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass)) {
         my $attribute_name = $attribute->name;
         next
             if $attribute_name eq 'config' || $attribute_name eq 'help_flag';
