@@ -17,8 +17,7 @@ Moose::Exporter->setup_import_methods(
 );
 
 sub init_meta {
-    shift;
-    my (%args) = @_;
+    my (undef,%args) = @_;
     
     my $meta = Moose::Role->init_meta( %args );
     

@@ -32,22 +32,17 @@ sub import {
 }
 
 sub parameter {
-    my $meta = shift;
-    my $name = shift;
-    _handle_attribute($meta,$name,'parameter',@_);
+    my ($meta,$name,@rest) = @_;
+    return _handle_attribute($meta,$name,'parameter',@rest);
 }
 
 sub option {
-    my $meta = shift;
-    my $name = shift;
-    _handle_attribute($meta,$name,'option',@_);
+    my ($meta,$name,@rest) = @_;
+    return _handle_attribute($meta,$name,'option',@rest);
 }
 
 sub _handle_attribute {
-    my $meta = shift;
-    my $name = shift;
-    my $type = shift;
-    my @rest = @_;
+    my ($meta,$name,$type,@rest) = @_;
  
     Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
         if @rest % 2 == 1;
@@ -80,7 +75,6 @@ sub app_fuzzy($) {
 
 sub app_base($) {
     my ( $meta, $name ) = @_;
-    
     return $meta->app_base($name);
 }
 
@@ -99,7 +93,8 @@ sub process_plugins {
     }
     
     # Store plugin spec
-    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;   
+    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;  
+    return; 
 }
 
 sub process_init_meta {
