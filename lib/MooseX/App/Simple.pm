@@ -94,12 +94,19 @@ MooseX::App::Simple - Single command applications
 
   package MyApp;
   use MooseX::App::Simple qw(Config Color);
- 
+  
+  parameter 'param' => (
+      is            => 'rw',
+      isa           => 'Str',
+      documentation => q[First parameter],
+      required      => 1,
+  ); # Positional parameter
+  
   option 'my_option' => (
       is            => 'rw',
       isa           => 'Bool',
       documentation => q[Enable this to do fancy stuff],
-  );
+  ); # Option (--my_option)
   
   has 'private' => ( 
       is              => 'rw',
@@ -145,7 +152,7 @@ Same as in L<MooseX::App>
 
 =head1 PLUGINS
 
-Same as in L<MooseX::App>. However plugings adding commands
+Same as in L<MooseX::App>. However plugings adding commands (eg. version)
 will not work with MooseX::App::Simple.
 
 =head1 SEE ALSO
