@@ -1,5 +1,10 @@
 Changes for MooseX-App
 
+1.18 Sun, Mar 24, 2013
+    - Added positional parameters with 'parameter' keyword
+    - Parameters are handled in the meta class
+    - Usage meta class methods refactored
+
 1.17 Wed, Mar 6, 2013
     - Fix failing tests
 

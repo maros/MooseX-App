@@ -12,7 +12,7 @@ SYNOPSIS
           is            => 'rw',
           isa           => 'Bool',
           documentation => q[Enable this to do fancy stuff],
-      );
+      ); # Global option
   
       has 'private' => ( 
           is              => 'rw',
@@ -23,14 +23,21 @@ SYNOPSIS
 
       package MyApp::SomeCommand;
       use MooseX::App::Command; # important
-      extends qw(MyApp); # purely optional
+      extends qw(MyApp); # purely optional, only if you want to use global options from base class
   
-      option 'some_option' => (
+      parameter 'some_parameter' => (
           is            => 'rw',
           isa           => 'Str',
           required      => 1,
+          documentation => q[Some parameter that you need to supply],
+      ); # Positional parameter
+  
+      option 'some_option' => (
+          is            => 'rw',
+          isa           => 'Int',
+          required      => 1,
           documentation => q[Very important option!],
-      );
+      ); # Option
   
       sub run {
           my ($self) = @_;
@@ -45,21 +52,35 @@ SYNOPSIS
 
     On the command line:
 
-     bash$ myapp some_command --help
+     bash$ myapp help
      usage:
-         myapp some_command [long options...]
+         myapp <command> [long options...]
          myapp help
-         myapp some_command --help
  
      global options:
          --global_option    Enable this to do fancy stuff [Flag]
-         --some_option      Very important option! [Required]
          --help --usage -?  Prints this usage information. [Flag]
  
      available commands:
          some_command    Description of some command
          another_command Description of another command
          help            Prints this usage information
+
+    or
+
+     bash$ myapp some_command --help
+     usage:
+         myapp some_command <SOME_PARAMETER> [long options...]
+         myapp help
+         myapp some_command --help
+ 
+     parameters:
+         some_parameter     Some parameter that you need to supply [Required]
+ 
+     options:
+         --global_option    Enable this to do fancy stuff [Flag]
+         --some_option      Very important option! [Int,Required]
+         --help --usage -?  Prints this usage information. [Flag]
 
 DESCRIPTION
     MooseX-App is a highly customizeable helper to write user-friendly
@@ -72,10 +93,10 @@ DESCRIPTION
 
     *   Finding, loading and initializing the command classes
 
-    *   Creating automated help and doucumentation from pod and attributes
+    *   Creating automated help and documentation from pod and attributes
 
-    *   Reading, encoding and validating the command line options entered by
-        the user
+    *   Reading, encoding and validating the command line options and
+        positional parameters entered by the user
 
     *   Providing helpful error messages if user input cannot be validated
 
@@ -93,7 +114,23 @@ DESCRIPTION
           is            => 'rw',
           isa           => 'Str',
           traits        => ['AppOption'],
-          cmd_option    => 1,
+          cmd_type      => 'option',
+      );
+
+    Positional parameters are defined with the 'parameter' keyword
+
+      parameter 'some_option' => (
+          is            => 'rw',
+          isa           => 'Str',
+      );
+
+    This is equivalent to
+
+      has 'some_option' => (
+          is            => 'rw',
+          isa           => 'Str',
+          traits        => ['AppOption'],
+          cmd_type      => 'parameter',
       );
 
     Read the Tutorial for getting started with a simple MooseX::App command
@@ -157,6 +194,38 @@ PLUGINS
 
     Read the Writing MooseX-App Plugins documentation on how to create your
     own plugins.
+
+    Currently the following plugins are shipped with MooseX::App
+
+    *   MooseX::App::Plugin::BashCompletion
+
+        Adds a command that genereates a bash completion script for your
+        application
+
+    *   MooseX::App::Plugin::Color
+
+        Colorful output for your MooseX::App applications
+
+    *   MooseX::App::Plugin::Config
+
+        Config files your MooseX::App applications
+
+    *   MooseX::App::Plugin::ConfigHome
+
+        Config files in users home directory
+
+    *   MooseX::App::Plugin::Env
+
+        Read options from environment
+
+    *   MooseX::App::Plugin::Typo
+
+        Handle typos in command names
+
+    *   MooseX::App::Plugin::Version
+
+        Adds a command to display the version and license of your
+        application
 
 SEE ALSO
     Read the Tutorial for getting started with a simple MooseX::App command

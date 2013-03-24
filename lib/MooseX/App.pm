@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.17';
+our $VERSION = '1.18';
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_base app_fuzzy option parameter);
@@ -226,7 +226,7 @@ MooseX-App will then take care of
 
 =item * Finding, loading and initializing the command classes
 
-=item * Creating automated help and doucumentation from pod and attributes
+=item * Creating automated help and documentation from pod and attributes
 
 =item * Reading, encoding and validating the command line options and positional parameters entered by the user
 

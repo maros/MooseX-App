@@ -80,6 +80,7 @@ t/testlib/Test02/Command/Required.pm
 t/testlib/Test03.pm
 t/testlib/Test03/AnotherCommand.pm
 t/testlib/Test03/BrokenCommand.pm
+t/testlib/Test03/ExtraCommand.pm
 t/testlib/Test03/Role/TestRole.pm
 t/testlib/Test03/SomeCommand.pm
 t/testlib/Test03/YetAnotherCommand.pm
