@@ -142,7 +142,7 @@ In your base class:
       is            => 'rw',
       isa           => 'Bool',
       documentation => q[Enable this to do fancy stuff],
-  );
+  ); # Global option
   
   has 'private' => ( 
       is              => 'rw',
@@ -153,20 +153,21 @@ you should use L<MooseX::App::Simple> instead)
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important
-  extends qw(MyApp); # purely optional
+  extends qw(MyApp); # purely optional, only if you want to use global options from base class
   
   parameter 'some_parameter' => (
       is            => 'rw',
       isa           => 'Str',
       required      => 1,
-  );
+      documentation => q[Some parameter that you need to supply],
+  ); # Positional parameter
   
   option 'some_option' => (
       is            => 'rw',
-      isa           => 'Str',
+      isa           => 'Int',
       required      => 1,
       documentation => q[Very important option!],
-  );
+  ); # Option
   
   sub run {
       my ($self) = @_;
@@ -181,21 +182,35 @@ And then in some simple wrapper script:
 
 On the command line:
 
- bash$ myapp some_command --help
+ bash$ myapp help
  usage:
-     myapp some_command <SOME_PARAMETER> [long options...]
+     myapp <command> [long options...]
      myapp help
-     myapp some_command --help
  
  global options:
      --global_option    Enable this to do fancy stuff [Flag]
-     --some_option      Very important option! [Required]
      --help --usage -?  Prints this usage information. [Flag]
  
  available commands:
      some_command    Description of some command
      another_command Description of another command
      help            Prints this usage information
+
+or
+
+ bash$ myapp some_command --help
+ usage:
+     myapp some_command <SOME_PARAMETER> [long options...]
+     myapp help
+     myapp some_command --help
+ 
+ parameters:
+     some_parameter     Some parameter that you need to supply [Required]
+ 
+ options:
+     --global_option    Enable this to do fancy stuff [Flag]
+     --some_option      Very important option! [Int,Required]
+     --help --usage -?  Prints this usage information. [Flag]
 
 =head1 DESCRIPTION
 
