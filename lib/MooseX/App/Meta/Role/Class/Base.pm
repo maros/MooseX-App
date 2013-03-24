@@ -542,7 +542,7 @@ sub command_usage_header {
             $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
         }
     } else {
-        $command_name = 'command';
+        $command_name = '<command>';
     }
     
     unless (defined $usage) {
@@ -551,9 +551,9 @@ sub command_usage_header {
         my @parameter= $self->command_usage_attributes($command_meta_class||$self,'parameter');
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                $usage .= "<".uc($attribute->cmd_name_primary).'> ';
+                $usage .= "<".$attribute->cmd_usage_name.'> ';
             } else {
-                $usage .= '['.uc($attribute->cmd_name_primary).'] ';
+                $usage .= '['.$attribute->cmd_usage_name.'] ';
             }
         }
         $usage .= "[long options...]

@@ -89,7 +89,7 @@ sub cmd_usage_name {
     my ($self) = @_;
     
     if ($self->cmd_type eq 'parameter') {
-        return uc($self->cmd_name_primary);
+        return $self->cmd_name_primary;
     } else {
         return join(' ', 
             map { (length($_) == 1) ? "-$_":"--$_" } 
