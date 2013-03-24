@@ -8,17 +8,16 @@ use strict;
 use warnings;
 
 use Moose::Role ();
-use MooseX::App::Exporter qw(option);
+use MooseX::App::Exporter qw(option parameter);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
     also      => 'Moose::Role',
-    with_meta => [ 'option' ],
+    with_meta => [qw(option parameter)],
 );
 
 sub init_meta {
-    shift;
-    my (%args) = @_;
+    my (undef,%args) = @_;
     
     my $meta = Moose::Role->init_meta( %args );
     
@@ -56,16 +55,14 @@ MooseX::App::Role - Define attributes in a role
 
 =head1 DESCRIPTION
 
-When loading this package in a role you can use the C<cmd_tags>
-attribute to document an attribute and declare attributes with the
-'option' keyword.
+Enables the 'option' and 'parameter' keywords in your roles.
 
 Alternatively you can also just use attribute traits:
 
  has 'testattr' => (
     isa             => 'rw',
     traits          => ['AppOption'],
-    cmd_option      => 1,
+    cmd_type        => 'option',
     cmd_tags        => [qw(Important! Nice))],
  );
 

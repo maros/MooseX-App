@@ -28,7 +28,7 @@ sub version {
     
     my %pod_raw = MooseX::App::Utils::parse_pod($app->meta->name);
     
-    foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE') {
+    foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE','AUTHOR','AUTHORS') {
         if (defined $pod_raw{$part}) {
             push(@parts,$message_class->new({ 
                 header  => $part,

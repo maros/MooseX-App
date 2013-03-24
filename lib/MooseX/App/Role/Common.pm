@@ -14,8 +14,7 @@ has 'help_flag' => (
     traits          => ['AppOption'],
     cmd_flag        => 'help',
     cmd_aliases     => [ qw(h usage ?) ],
-    cmd_proto       => 1,
-    cmd_option      => 1,
+    cmd_type        => 'proto',
     documentation   => 'Prints this usage information.', # LOCALIZE
 );
 

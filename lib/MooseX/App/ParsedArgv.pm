@@ -19,20 +19,25 @@ has 'argv' => (
 
 has 'options' => (
     is              => 'rw',
-    isa             => 'ArrayRef[MooseX::App::ParsedArgv::Option]',
-    lazy_build      => 1,
+    isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
+);
+
+has 'parameters' => (
+    is              => 'rw',
+    isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
 );
 
 has 'extra' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
-    lazy_build      => 1,
 );
 
 
 sub BUILD {
     my ($self) = @_;
     $SINGLETON = $self;
+    $self->_parse();
+    return $self;
 }
 
 sub instance {
@@ -43,39 +48,14 @@ sub instance {
     return $SINGLETON;
 }
 
-sub shift_argv {
-    my ($self) = @_;
-    
-    my $argv = $self->argv;
-    my $first_argv = shift @{$argv};
-    
-    my $meta = $self->meta;
-    $meta->get_attribute('options')->clear_value($self);
-    $meta->get_attribute('extra')->clear_value($self);
-    
-    return $first_argv;
-}
-
-sub _build_options {
-    my ($self) = @_;
-    my ($options,$extra) = $self->_parse();
-    return $options;
-}
-
-sub _build_extra {
-    my ($self) = @_;
-    my ($options,$extra) = $self->_parse();
-    return $extra;
-}
-
 sub _parse {
     my ($self) = @_;
     
-    my @options;
+    my (@options,@parameters,@extra);
+
     my %options;
     my $lastkey;
     my $stopprocessing;
-    my @extra;
     
     foreach my $element (@{$self->argv}) {
         if ($stopprocessing) {
@@ -87,7 +67,7 @@ sub _parse {
                     undef $lastkey;
                     foreach my $flag (split(//,$1)) {
                         unless (defined $options{$flag}) {
-                            $options{$flag} = MooseX::App::ParsedArgv::Option->new( key => $flag );
+                            $options{$flag} = MooseX::App::ParsedArgv::Element->new( key => $flag );
                             push(@options,$options{$flag});
                         }
                         $lastkey = $options{$flag};
@@ -98,7 +78,7 @@ sub _parse {
                     undef $lastkey;
                     my ($key,$value) = ($1,$2);
                     unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Option->new( key => $key );
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new( key => $key );
                         push(@options,$options{$key});
                     }
                     $options{$key}->add_value($value);
@@ -107,7 +87,7 @@ sub _parse {
                 when (m/^--([^-].*)/) {
                     my $key = $1;
                     unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Option->new( key => $key );
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new( key => $key );
                         push(@options,$options{$key});
                     }
                     $lastkey = $options{$key};
@@ -122,31 +102,49 @@ sub _parse {
                     if (defined $lastkey) {
                         $lastkey->add_value($element);
                         undef $lastkey;
-                    } else {
+                    } elsif (scalar @options) {
                         push(@extra,$element);
+                    } else {
+                        push(@parameters,MooseX::App::ParsedArgv::Element->new( key => $element ));
                     }
                 }
             } 
         }
     }
     
-    my $meta = $self->meta;
-    $meta->get_attribute('options')->set_raw_value($self,\@options);
-    $meta->get_attribute('extra')->set_raw_value($self,\@extra);
-    
-    return (\@options,\@extra);
+    $self->options(\@options);
+    $self->parameters(\@parameters);
+    $self->extra(\@extra);
+        
+    return;
 }
 
-sub options_available {
-    my ($self) = @_;
+sub available {
+    my ($self,$type) = @_;
     
-    my @options;
-    foreach my $option (@{$self->options}) {
+    $type //= 'options';
+    
+    my @elements;
+    foreach my $element (@{$self->$type}) {
         next
-            if $option->is_consumed;
-        push(@options,$option);
+            if $element->consumed;
+        push(@elements,$element);
     }  
-    return @options; 
+    return @elements; 
+}
+
+sub consume {
+    my ($self,$type) = @_;
+    
+    $type //= 'options';
+    
+    foreach my $element (@{$self->$type}) {
+        next
+            if $element->consumed;
+        $element->consume;
+        return $element;
+    }  
+    return; 
 }
 
 sub _build_argv {
@@ -164,10 +162,8 @@ sub _build_argv {
     return \@argv;
 }
 
-
 {
-    package MooseX::App::ParsedArgv::Option;
-    
+    package MooseX::App::ParsedArgv::Element;
     use Moose;
     
     has 'key' => (
@@ -190,15 +186,15 @@ sub _build_argv {
     
     has 'consumed' => (
         is              => 'rw',
-        isa             => 'Class::MOP::Attribute',
-        predicate       => 'is_consumed',
+        isa             => 'Bool',
+        default         => 0,
     );
     
     sub consume {
         my ($self,$attribute) = @_;
         Moose->throw_error('Option '.$self->key.' is already consumed')
             if $self->consumed;
-        $self->consumed($attribute);  
+        $self->consumed(1);  
         
         return $self; 
     }
@@ -242,17 +238,23 @@ Create a new MooseX::App::ParsedArgv instance
 Get the current MooseX::App::ParsedArgv instance. If there is no instance
 a new one will be created.
 
-=head2 options_available
+=head2 available
 
-Returns an array of all parsed options that have not yet been consumed.
+ my @options = $self->available('options');
 
-=head2 shift_argv
+Returns an array of all parsed options or parameters that have not yet been consumed.
 
-Shifts the first argument of the local @ARGV
+=head2 consume
+
+Returns the first option/parameter of the local @ARGV that has not yet been consumed.
+
+=head2 parameter
+
+Returns all positional parameters
 
 =head2 extra
 
-Returns all extra arguments
+Returns all extra values
 
 =head2 options
 

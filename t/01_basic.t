@@ -32,9 +32,9 @@ subtest 'Wrong command' => sub {
     is($test03->blocks->[0]->header,"Unknown command 'xxxx'",'Message is set');
     is($test03->blocks->[0]->type,"error",'Message is of type error');
     is($test03->blocks->[1]->header,"usage:",'Usage set');
-    is($test03->blocks->[1]->body,"    01_basic.t command [long options...]
+    is($test03->blocks->[1]->body,"    01_basic.t <command> [long options...]
     01_basic.t help
-    01_basic.t command --help",'Usage body set');
+    01_basic.t <command> --help",'Usage body set');
     is($test03->blocks->[2]->header,"global options:",'Global options set');
     is($test03->blocks->[2]->body,"    --config              Path to command config file
     --global              test [Required; Integer; Important!]
@@ -114,7 +114,7 @@ subtest 'Global help requested' => sub {
     local @ARGV = qw(help);
     my $test09 = Test01->new_with_command;
     isa_ok($test09,'MooseX::App::Message::Envelope');
-    like($test09->blocks->[0]->body,qr/    01_basic\.t command \[long options\.\.\.\]/,'Help message ok'); 
+    like($test09->blocks->[0]->body,qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok'); 
 };
 
 subtest 'Missing command' => sub {

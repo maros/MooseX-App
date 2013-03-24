@@ -13,7 +13,7 @@ around 'command_proto' => sub {
     
     my ($result,$errors) = $self->$orig($command_meta,$processed_argv);
     
-    foreach my $attribute ($self->command_usage_attributes_list($command_meta)) {
+    foreach my $attribute ($self->command_usage_attributes($command_meta)) {
         next
             unless $attribute->can('has_cmd_env')
             && $attribute->has_cmd_env;

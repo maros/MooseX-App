@@ -31,30 +31,38 @@ sub import {
     return;
 }
 
+sub parameter {
+    my ($meta,$name,@rest) = @_;
+    return _handle_attribute($meta,$name,'parameter',@rest);
+}
+
 sub option {
-    my $meta = shift;
-    my $name = shift;
-    my @rest = @_;
+    my ($meta,$name,@rest) = @_;
+    return _handle_attribute($meta,$name,'option',@rest);
+}
+
+sub _handle_attribute {
+    my ($meta,$name,$type,@rest) = @_;
  
     Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
         if @rest % 2 == 1;
  
-    my %options = ( definition_context => Moose::Util::_caller_info(), @rest );
+    my %attributes = ( definition_context => Moose::Util::_caller_info(), @rest );
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
     
-    $options{cmd_option} = 1;
+    $attributes{'cmd_type'} = $type;
     foreach my $attr (@$attrs) {
-        my %local_options = %options;
+        my %local_attributes = %attributes;
         if ($attr =~ m/^\+(.+)/) {
             my $meta_attribute = $meta->find_attribute_by_name($1);
             unless ($meta_attribute->does('MooseX::App::Meta::Role::Attribute::Option')) {
-                $local_options{traits} ||= [];
-                push @{$local_options{traits}},'MooseX::App::Meta::Role::Attribute::Option'
-                    unless 'AppOption' ~~ $local_options{traits}
-                    || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_options{traits};
+                $local_attributes{traits} ||= [];
+                push @{$local_attributes{traits}},'MooseX::App::Meta::Role::Attribute::Option'
+                    unless 'AppOption' ~~ $local_attributes{traits}
+                    || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_attributes{traits};
             }
         }
-        $meta->add_attribute( $attr, %local_options );
+        $meta->add_attribute( $attr, %local_attributes );
     }
     
     return;
@@ -67,7 +75,6 @@ sub app_fuzzy($) {
 
 sub app_base($) {
     my ( $meta, $name ) = @_;
-    
     return $meta->app_base($name);
 }
 
@@ -86,7 +93,8 @@ sub process_plugins {
     }
     
     # Store plugin spec
-    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;   
+    $PLUGIN_SPEC{$caller_class} = \@plugin_classes;  
+    return; 
 }
 
 sub process_init_meta {

@@ -10,19 +10,23 @@ use Moose::Role;
 
 use Moose::Util::TypeConstraints;
 
-subtype 'MooseX::App::Types::CmdAliases' => as 'ArrayRef';
+subtype 'MooseX::App::Types::CmdAliases' 
+    => as 'ArrayRef';
 
 coerce 'MooseX::App::Types::CmdAliases'
     => from 'Str'
-        => via { [$_] };
+    => via { [$_] };
+
+subtype 'MooseX::App::Types::CmdTypes' 
+    => as enum([qw(proto option parameter)]);
 
 no Moose::Util::TypeConstraints;
 
 
-has 'cmd_option' => (
+has 'cmd_type' => (
     is          => 'rw',
-    isa         => 'Bool',
-    default     => 0,
+    isa         => 'MooseX::App::Types::CmdTypes',
+    predicate   => 'has_cmd_type',
 );
 
 has 'cmd_tags' => (
@@ -42,12 +46,6 @@ has 'cmd_aliases' => (
     isa         => 'MooseX::App::Types::CmdAliases',
     predicate   => 'has_cmd_aliases',
     coerce      => 1,
-);
-
-has 'cmd_proto' => (
-    is          => 'rw',
-    isa         => 'Bool',
-    default     => 0,
 );
 
 sub cmd_is_bool {
@@ -74,20 +72,29 @@ sub cmd_is_bool {
     return undef
 }
 
-sub cmd_usage {
+sub cmd_usage_description {
     my ($self) = @_;
     
-    my $name = join(' ', map { (length($_) == 1) ? "-$_":"--$_" } $self->cmd_name_possible); ;
-    my @tags = $self->cmd_tags_list();
     my $description = ($self->has_documentation) ? $self->documentation : '';
-    
+    my @tags = $self->cmd_tags_list();
     if (scalar @tags) {
         $description .= ' '
             if $description;
         $description .= '['.join('; ',@tags).']';
     }
+    return $description
+}   
     
-    return ($name,$description);
+sub cmd_usage_name {
+    my ($self) = @_;
+    
+    if ($self->cmd_type eq 'parameter') {
+        return $self->cmd_name_primary;
+    } else {
+        return join(' ', 
+            map { (length($_) == 1) ? "-$_":"--$_" } 
+            $self->cmd_name_possible);
+    }
 }
 
 sub cmd_name_primary {
@@ -196,19 +203,25 @@ intent to write plugins for MooseX-App.
 
 Use this name instead of the attribute name as the option name
 
-=head2 cmd_option
+=head2 cmd_type
 
-Boolean flag to mark if this attribute should be used as an option
+Option to mark if this attribute should be used as an option or parameter value.
+
+Allowed values are
+
+=over
+
+=item * option - Command line option
+
+=item * proto - Command line option that should be processed first  (eg. a config-file option that sets other attribues)
+
+=item * parameter - Positional parameter command line value
+
+=back
 
 =head2 cmd_aliases
 
 Arrayref of alternative option names
-
-=head2 cmd_proto
-
-Boolean flag to mark this attribute as proto option. Proto attributes will be 
-parsed before all other options (eg. a config-file option that sets
-other attribues)
 
 =head2 cmd_tags
 
@@ -228,17 +241,23 @@ Returns a list of all possible option names.
 
 Returns the primary option name
 
-=head2 cmd_usage
+=head2 cmd_usage_name
 
- my ($name,$description) = $attribute->command_usage_attribute_detail();
+ my $name = $attribute->cmd_usage_name();
 
-Returns a name and description for a given meta attribute class.
+Returns the name as used by the usage text
+
+=head2 cmd_usage_description
+
+ my $name = $attribute->cmd_usage_description();
+
+Returns the description as used by the usage text
 
 =head2 cmd_tags_list
 
  my @tags = $attribute->cmd_tags_list();
 
-Returns a list of tags for a given meta attribute class.
+Returns a list of tags
 
 =head2 cmd_is_bool
 

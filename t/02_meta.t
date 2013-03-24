@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 23+1;
+use Test::Most tests => 28+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -30,22 +30,13 @@ cmp_deeply($meta->command_candidates('COmmand'),['command_a','command_b','comman
 cmp_deeply($meta->command_candidates('command_C'),['command_c1'],'Command C1 matched fuzzy');
 is($meta->command_candidates('command_c1'),'command_c1','Command C1 matched exactly');
 
-cmp_deeply([ $meta->command_usage_attributes_raw ],
-[
-  [
-    '--config',
-    'Path to command config file'
-  ],
-  [
-    '--global',
-    'test [Required; Integer; Important!]'
-  ],
-  [
-    '--help -h --usage -?',
-    'Prints this usage information. [Flag]'
-  ]
-]
-,'Command A and B matched');
+my @attributes = $meta->command_usage_attributes;
+is(scalar(@attributes),3,'Has three attributes');
+is($attributes[0]->cmd_usage_name,'--help -h --usage -?','Usage name ok');
+is($attributes[0]->cmd_usage_description,'Prints this usage information. [Flag]','Usage description ok');
+is($attributes[1]->cmd_usage_name,'--global','Usage name ok');
+is($attributes[1]->cmd_usage_description,'test [Required; Integer; Important!]','Usage description ok');
+is($attributes[2]->cmd_usage_name,'--config','Usage name ok');
 
 my $meta_attribute = $meta->find_attribute_by_name('global');
 is(join(',',$meta_attribute->cmd_tags_list($meta_attribute)),'Required,Integer,Important!','Tags ok');

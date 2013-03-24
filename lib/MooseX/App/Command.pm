@@ -9,11 +9,11 @@ use warnings;
 
 use Moose ();
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(option command_short_description command_long_description command_usage);
+use MooseX::App::Exporter qw(option parameter command_short_description command_long_description command_usage);
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [ 'command_short_description', 'command_long_description', 'command_usage', 'option'],
+    with_meta => [qw(command_short_description command_long_description command_usage option parameter)],
     also      => 'Moose',
 );
 
@@ -77,7 +77,7 @@ features such as:
 
 =item * Overriding the automated usage header with custom usage from Pod or via C<command_usage>
 
-=item * Adding the C<cmd_tags>, C<cmd_flag>, C<cmd_aliases> and C<cmd_proto> attributes to options
+=item * Adding the C<cmd_tags>, C<cmd_flag>, C<cmd_aliases> and C<cmd_type> attributes to options
 
 =back
 

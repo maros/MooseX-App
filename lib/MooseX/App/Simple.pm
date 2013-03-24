@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Moose::Exporter;
-use MooseX::App::Exporter qw(app_base app_fuzzy option command_short_description command_long_description command_usage);
+use MooseX::App::Exporter qw(app_base app_fuzzy option parameter command_short_description command_long_description command_usage);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);
@@ -15,7 +15,7 @@ use Scalar::Util qw(blessed);
 our $VERSION = '1.15';
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_base', 'app_fuzzy', 'option', 'command_short_description', 'command_long_description', 'command_usage' ],
+    with_meta           => [ qw(app_base app_fuzzy option parameter command_short_description command_long_description command_usage) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_options' ],
     install             => [ 'unimport', 'init_meta' ],
@@ -94,12 +94,19 @@ MooseX::App::Simple - Single command applications
 
   package MyApp;
   use MooseX::App::Simple qw(Config Color);
- 
+  
+  parameter 'param' => (
+      is            => 'rw',
+      isa           => 'Str',
+      documentation => q[First parameter],
+      required      => 1,
+  ); # Positional parameter
+  
   option 'my_option' => (
       is            => 'rw',
       isa           => 'Bool',
       documentation => q[Enable this to do fancy stuff],
-  );
+  ); # Option (--my_option)
   
   has 'private' => ( 
       is              => 'rw',
@@ -145,7 +152,7 @@ Same as in L<MooseX::App>
 
 =head1 PLUGINS
 
-Same as in L<MooseX::App>. However plugings adding commands
+Same as in L<MooseX::App>. However plugings adding commands (eg. version)
 will not work with MooseX::App::Simple.
 
 =head1 SEE ALSO

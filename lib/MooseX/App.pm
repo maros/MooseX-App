@@ -11,13 +11,13 @@ our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.17';
 
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base app_fuzzy option);
+use MooseX::App::Exporter qw(app_base app_fuzzy option parameter);
 use MooseX::App::Message::Envelope;
 use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ 'app_namespace', 'app_base', 'app_fuzzy', 'app_command_name', 'option' ],
+    with_meta           => [ qw(app_namespace app_base app_fuzzy app_command_name option parameter) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -83,12 +83,11 @@ sub new_with_command {
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->new;
     $parsed_argv->argv(\@ARGV);
-    my $first_argv = $parsed_argv->shift_argv;
+    my $first_argv = $parsed_argv->consume('parameters');
     
     # No args
     if (! defined $first_argv
-        || $first_argv =~ m/^\s*$/
-        || $first_argv =~ m/^-/) {
+        || $first_argv =~ m/^\s*$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_message(
                 header          => "Missing command", # LOCALIZE
@@ -97,13 +96,13 @@ sub new_with_command {
             $meta->command_usage_global(),
         );
     # Requested help
-    } elsif (lc($first_argv) =~ m/^-{0,2}?(help|h|\?|usage)$/) {
+    } elsif (lc($first_argv->key) =~ m/^(help|h|\?|usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
     # Looks like a command
     } else {
-        my $return = $meta->command_find($first_argv);
+        my $return = $meta->command_find($first_argv->key);
         
         # Nothing found
         if (blessed $return
@@ -143,7 +142,7 @@ In your base class:
       is            => 'rw',
       isa           => 'Bool',
       documentation => q[Enable this to do fancy stuff],
-  );
+  ); # Global option
   
   has 'private' => ( 
       is              => 'rw',
@@ -154,14 +153,21 @@ you should use L<MooseX::App::Simple> instead)
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important
-  extends qw(MyApp); # purely optional
+  extends qw(MyApp); # purely optional, only if you want to use global options from base class
   
-  option 'some_option' => (
+  parameter 'some_parameter' => (
       is            => 'rw',
       isa           => 'Str',
       required      => 1,
+      documentation => q[Some parameter that you need to supply],
+  ); # Positional parameter
+  
+  option 'some_option' => (
+      is            => 'rw',
+      isa           => 'Int',
+      required      => 1,
       documentation => q[Very important option!],
-  );
+  ); # Option
   
   sub run {
       my ($self) = @_;
@@ -176,21 +182,35 @@ And then in some simple wrapper script:
 
 On the command line:
 
- bash$ myapp some_command --help
+ bash$ myapp help
  usage:
-     myapp some_command [long options...]
+     myapp <command> [long options...]
      myapp help
-     myapp some_command --help
  
  global options:
      --global_option    Enable this to do fancy stuff [Flag]
-     --some_option      Very important option! [Required]
      --help --usage -?  Prints this usage information. [Flag]
  
  available commands:
      some_command    Description of some command
      another_command Description of another command
      help            Prints this usage information
+
+or
+
+ bash$ myapp some_command --help
+ usage:
+     myapp some_command <SOME_PARAMETER> [long options...]
+     myapp help
+     myapp some_command --help
+ 
+ parameters:
+     some_parameter     Some parameter that you need to supply [Required]
+ 
+ options:
+     --global_option    Enable this to do fancy stuff [Flag]
+     --some_option      Very important option! [Int,Required]
+     --help --usage -?  Prints this usage information. [Flag]
 
 =head1 DESCRIPTION
 
@@ -208,7 +228,7 @@ MooseX-App will then take care of
 
 =item * Creating automated help and doucumentation from pod and attributes
 
-=item * Reading, encoding and validating the command line options entered by the user
+=item * Reading, encoding and validating the command line options and positional parameters entered by the user
 
 =item * Providing helpful error messages if user input cannot be validated
 
@@ -228,7 +248,23 @@ This is equivalent to
       is            => 'rw',
       isa           => 'Str',
       traits        => ['AppOption'],
-      cmd_option    => 1,
+      cmd_type      => 'option',
+  );
+
+Positional parameters are defined with the 'parameter' keyword
+
+  parameter 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+  );
+
+This is equivalent to
+
+  has 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+      traits        => ['AppOption'],
+      cmd_type      => 'parameter',
   );
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
@@ -299,6 +335,40 @@ plugin just pass a list of plugin names after the C<use MooseX-App> statement.
 
 Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
 documentation on how to create your own plugins.
+
+Currently the following plugins are shipped with MooseX::App
+
+=over
+
+=item * L<MooseX::App::Plugin::BashCompletion>
+
+Adds a command that genereates a bash completion script for your application
+
+=item * L<MooseX::App::Plugin::Color>
+
+Colorful output for your MooseX::App applications
+
+=item * L<MooseX::App::Plugin::Config>
+
+Config files your MooseX::App applications
+
+=item * L<MooseX::App::Plugin::ConfigHome>
+
+Config files in users home directory
+
+=item * L<MooseX::App::Plugin::Env>
+
+Read options from environment
+
+=item * L<MooseX::App::Plugin::Typo>
+
+Handle typos in command names
+
+=item * L<MooseX::App::Plugin::Version>
+
+Adds a command to display the version and license of your application
+
+=back
 
 =head1 SEE ALSO
 
