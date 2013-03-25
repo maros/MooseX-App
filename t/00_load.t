@@ -2,8 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 33+1;
-use Test::NoWarnings;
+use Test::Most tests => 33;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::ParsedArgv' );
