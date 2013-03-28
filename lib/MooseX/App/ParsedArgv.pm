@@ -148,7 +148,9 @@ sub consume {
 }
 
 sub _build_argv {
-    my @argv = eval {
+    my @argv;
+    
+    @argv = eval {
         require I18N::Langinfo;
         I18N::Langinfo->import(qw(langinfo CODESET));
         my $codeset = langinfo(CODESET());
@@ -157,8 +159,10 @@ sub _build_argv {
             if $codeset =~ m/^UTF-?8$/i;
         return map { decode($codeset,$_) } @ARGV;
     };
-    
-    # TODO handle errors
+    # Fallback to standard
+    if ($@) {
+        @argv = @ARGV;
+    }
     return \@argv;
 }
 
