@@ -46,8 +46,11 @@ sub _handle_attribute {
  
     Moose->throw_error('Usage: option \'name\' => ( key => value, ... )')
         if @rest % 2 == 1;
- 
-    my %attributes = ( definition_context => Moose::Util::_caller_info(), @rest );
+
+    my %info;
+    @info{qw(package file line)} = caller(2);
+     
+    my %attributes = ( definition_context => \%info, @rest );
     my $attrs = ( ref($name) eq 'ARRAY' ) ? $name : [ ($name) ];
     
     $attributes{'cmd_type'} = $type;
