@@ -150,7 +150,9 @@ subtest 'Test positional params' => sub {
     local @ARGV = qw(extra hui --value baer);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
-    is($test12->extra1,'hui','Extra1 value is undef');
+    is($test12->extra1,'hui','Extra1 value is "hui"');
+    is($test12->extra2, undef,'Extra2 value is undef');
+    is($test12->alpha, undef,'alpha value is undef');
     is($test12->value,'baer','Value is set');
 };
 
@@ -158,8 +160,9 @@ subtest 'Test optional positional params' => sub {
     local @ARGV = qw(extra hui 11 --value baer);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
-    is($test12->extra1,'hui','Extra1 value is undef');
-    is($test12->extra2,11,'Extra2 value is undef');
+    is($test12->extra1,'hui','Extra1 value is "hui"');
+    is($test12->extra2,11,'Extra2 value is "11"');
+    is($test12->alpha, undef,'alpha value is undef');
     is($test12->value,'baer','Value is set');
 };
 
