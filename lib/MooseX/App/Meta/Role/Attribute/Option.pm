@@ -54,6 +54,11 @@ has 'cmd_split' => (
     predicate   => 'has_cmd_split',
 );
 
+has cmd_position => (
+    is => 'rw',
+    isa => 'Int',
+    default => 0,
+);
 
 sub cmd_is_bool {
     my ($self) = @_; 
