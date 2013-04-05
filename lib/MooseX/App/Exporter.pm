@@ -11,6 +11,8 @@ use Moose::Exporter;
 use MooseX::App::Utils;
 use MooseX::App::ParsedArgv;
 
+use List::Util qw/ max /;
+
 our %PLUGIN_SPEC;
 
 sub import {
@@ -65,7 +67,21 @@ sub _handle_attribute {
                     || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_attributes{traits};
             }
         }
+
+        if ( $type eq 'parameter' ) {
+            no warnings 'uninitialized';
+            # if a 'position' is given, take it
+            # if not, get the next one in line
+            $local_attributes{cmd_position} ||=  
+                1 + max
+                    map  { $_->cmd_position }
+                    grep { $_->cmd_type eq 'parameter' }
+                    grep { $_->does('MooseX::App::Meta::Role::Attribute::Option') }
+                    $meta->get_all_attributes;
+        }
+
         $meta->add_attribute( $attr, %local_attributes );
+
     }
     
     return;

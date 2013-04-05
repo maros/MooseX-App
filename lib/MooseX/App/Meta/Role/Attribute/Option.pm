@@ -48,6 +48,12 @@ has 'cmd_aliases' => (
     coerce      => 1,
 );
 
+has cmd_position => (
+    is => 'rw',
+    isa => 'Int',
+    default => 0,
+);
+
 sub cmd_is_bool {
     my ($self) = @_; 
    

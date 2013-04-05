@@ -173,7 +173,8 @@ subtest 'Test wrong positional params' => sub {
     is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Error message ok");
     is($test13->blocks->[2]->header,"parameters:","Usage header ok");
     is($test13->blocks->[2]->body,"    extra1  Important extra parameter [Required]
-    extra2  [Integer]","Usage body ok");
+    extra2  [Integer]
+    alpha   [Integer]","Usage body ok");
 };
 
 subtest 'Test missing positional params' => sub {
