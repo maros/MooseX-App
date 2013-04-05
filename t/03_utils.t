@@ -60,10 +60,9 @@ subtest 'Parser' => sub {
     
     is($parser->parameters->[0]->key,'hello','Parameter parsed ok');
     is($parser->parameters->[1]->key,'mellow','Parameter parsed ok');
-    is(scalar @{$parser->parameters},4,'Four parameters');
+    is(scalar @{$parser->parameters},3,'Three parameters');
     is($parser->parameters->[2]->key,'baer','Extra parsed ok');
-    is($parser->parameters->[3]->key,'hase','Extra parsed ok');
-    is(scalar @{$parser->extra},0,'Two extra values');
+    is(scalar @{$parser->extra},1,'One extra value');
     is($parser->options->[0]->key,'h','Parsed -h flag');
     is($parser->options->[0]->has_values,0,'-h is flag');
     is($parser->options->[1]->key,'u','Parsed -u flag');

@@ -59,8 +59,7 @@ sub _parse {
     
     foreach my $element (@{$self->argv}) {
         if ($stopprocessing) {
-            push @parameters, MooseX::App::ParsedArgv::Element->new( key =>
-                $element );
+            push (@extra,$element);
         } else {
             given ($element) {
                 # Flags
