@@ -265,6 +265,16 @@ sub command_process_attribute {
     
     my @errors;
     my $value;
+    
+    # Attribute with split
+    if ($attribute->has_cmd_split) {
+        my @raw_unfolded;
+        foreach (@{$raw}) {
+            push(@raw_unfolded,split($attribute->cmd_split,$_));
+        }
+        $raw = \@raw_unfolded;
+    }
+    
     # Attribute with type constraint
     if ($attribute->has_type_constraint) {
         my $type_constraint = $attribute->type_constraint;

@@ -48,6 +48,13 @@ has 'cmd_aliases' => (
     coerce      => 1,
 );
 
+has 'cmd_split' => (
+    is          => 'rw',
+    isa         => 'Str',
+    predicate   => 'has_cmd_split',
+);
+
+
 sub cmd_is_bool {
     my ($self) = @_; 
    
@@ -148,7 +155,11 @@ sub cmd_tags_list {
     if ($self->has_type_constraint) {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_subtype_of('ArrayRef')) {
-            push(@tags,'Multiple');
+            if ($self->has_cmd_split) {
+                push(@tags,'Multiple (Split by "'.$self->cmd_split.'")');
+            } else {
+                push(@tags,'Multiple');
+            }
         } elsif ($type_constraint->is_a_type_of('HashRef')) {
             push(@tags,'Key-Value');
         }
