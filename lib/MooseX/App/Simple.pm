@@ -69,7 +69,7 @@ sub new_with_options {
     } elsif (scalar @args % 2 == 0) {
         %args = @args;
     } else {
-        Moose->throw_error('new_with_command got inavlid extra arguments');
+        Moose->throw_error('new_with_command got invalid extra arguments');
     }
     
     # Get ARGV

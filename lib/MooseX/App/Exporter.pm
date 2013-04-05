@@ -65,7 +65,9 @@ sub _handle_attribute {
                     || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_attributes{traits};
             }
         }
+
         $meta->add_attribute( $attr, %local_attributes );
+
     }
     
     return;

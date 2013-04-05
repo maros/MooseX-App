@@ -112,8 +112,10 @@ sub command_args {
     }
     
     # Process params
-    my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
-        
+    my @attributes_parameter  = sort { 
+        $a->cmd_position <=> $b->cmd_position
+    } $self->command_usage_attributes($metaclass,'parameter');
+
     foreach my $attribute (@attributes_parameter) {
         my $value = $parsed_argv->consume('parameters');
         last
@@ -479,7 +481,6 @@ sub command_usage_attributes {
     $types ||= [qw(option proto)];
     
     my @return;
-    # TODO order by insertion order
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('AppOption')
@@ -524,7 +525,10 @@ sub command_usage_parameters {
     $metaclass ||= $self;
     
     my @parameters;
-    foreach my $attribute ($self->command_usage_attributes($metaclass,'parameter')) {
+    foreach my $attribute (     
+        sort { $a->cmd_position <=> $b->cmd_position } 
+             $self->command_usage_attributes($metaclass,'parameter')
+    ) {
         push(@parameters,[
             $attribute->cmd_usage_name(),
             $attribute->cmd_usage_description()

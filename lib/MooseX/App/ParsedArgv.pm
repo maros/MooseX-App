@@ -59,7 +59,7 @@ sub _parse {
     
     foreach my $element (@{$self->argv}) {
         if ($stopprocessing) {
-            push(@extra,$element);
+            push (@extra,$element);
         } else {
             given ($element) {
                 # Flags
@@ -102,8 +102,6 @@ sub _parse {
                     if (defined $lastkey) {
                         $lastkey->add_value($element);
                         undef $lastkey;
-                    } elsif (scalar @options) {
-                        push(@extra,$element);
                     } else {
                         push(@parameters,MooseX::App::ParsedArgv::Element->new( key => $element ));
                     }

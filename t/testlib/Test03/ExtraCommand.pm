@@ -14,6 +14,11 @@ parameter 'extra2' => (
     isa           => 'Int',
 );
 
+parameter 'alpha' => (
+    is            => 'rw',
+    isa           => 'Int',
+);
+
 option 'value' => (
     is            => 'rw',
     isa           => 'Str',
