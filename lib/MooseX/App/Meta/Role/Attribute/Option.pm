@@ -54,11 +54,30 @@ has 'cmd_split' => (
     predicate   => 'has_cmd_split',
 );
 
-has cmd_position => (
+has 'cmd_position' => (
     is => 'rw',
     isa => 'Int',
     default => 0,
 );
+
+my $GLOBAL_COUNTER = 1;
+
+around 'new' => sub {
+    my $orig = shift;
+    my $class = shift;
+    
+    my $self = $class->$orig(@_);
+    
+    if ($self->has_cmd_type) {
+        if ($self->cmd_position == 0) {
+            $GLOBAL_COUNTER++;
+            $self->cmd_position($GLOBAL_COUNTER);
+        }
+    }
+    
+    return $self;
+};
+
 
 sub cmd_is_bool {
     my ($self) = @_; 

@@ -481,7 +481,6 @@ sub command_usage_attributes {
     $types ||= [qw(option proto)];
     
     my @return;
-    # TODO order by insertion order
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('AppOption')
