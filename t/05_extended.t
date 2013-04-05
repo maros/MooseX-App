@@ -56,8 +56,8 @@ subtest 'All options available & no description' => sub {
     local @ARGV = qw(some --help);
     my $test04 = Test03->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
-    is($test04->blocks->[1]->header,'options:','No description');
-    is($test04->blocks->[1]->body,"    --another             [Required; Not important]
+    is($test04->blocks->[2]->header,'options:','No description');
+    is($test04->blocks->[2]->body,"    --another             [Required; Not important]
     --global_option       Enable this to do fancy stuff [Flag]
     --help -h --usage -?  Prints this usage information. [Flag]
     --roleattr            [Role]
@@ -158,7 +158,6 @@ subtest 'Test positional params' => sub {
 
 subtest 'Test positional params' => sub {
     local @ARGV = qw(extra --value baer hui);
-    $MooseX::App::ParsedArgv::StopIt = 1;
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
     is($test12->extra1,'hui','Extra1 value is "hui"');

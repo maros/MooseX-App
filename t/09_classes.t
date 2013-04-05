@@ -2,7 +2,7 @@
 
 # t/09_classes.t - Test classes
 
-use Test::Most tests => 3+1;
+use Test::Most tests => 5+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -32,4 +32,21 @@ subtest 'Conflicts' => sub {
     throws_ok { 
         Test03->new_with_command;
     } qr/Command line option conflict/, 'Conflict detected';
+};
+
+subtest 'Attributes from role ' => sub {
+    local @ARGV = qw(somecommand --roleattr a --another b);
+    my $test03 = Test03->new_with_command;
+    isa_ok($test03,'Test03::SomeCommand');
+    is($test03->roleattr,'a','Attribute from role ok');
+};
+
+subtest 'Correct order from role ' => sub {
+    local @ARGV = qw(somecommand a1 b2 c3 --another b);
+    my $test03 = Test03->new_with_command;
+    isa_ok($test03,'Test03::SomeCommand');
+    is($test03->param_c,'a1','First from role');
+    is($test03->param_a,'b2','Second from role');
+    is($test03->param_b,'c3','Third from role');
+    
 };

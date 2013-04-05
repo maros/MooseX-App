@@ -3,7 +3,18 @@ package Test03::SomeCommand;
 use MooseX::App::Command;
 extends qw(Test03);
 with qw(Test03::Role::TestRole);
- 
+
+parameter 'param_a' => (
+    is            => 'rw',
+    isa           => 'Str',
+);
+
+parameter 'param_b' => (
+    is            => 'rw',
+    isa           => 'Str',
+);
+
+
 option 'some_option' => (
     is            => 'rw',
     isa           => 'Str',

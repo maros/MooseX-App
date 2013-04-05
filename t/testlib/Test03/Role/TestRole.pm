@@ -12,4 +12,9 @@ option 'roleattr' => (
     cmd_tags        => ['Role'],
 );
 
+parameter 'param_c' => (
+    is            => 'rw',
+    isa           => 'Str',
+);
+
 1;
