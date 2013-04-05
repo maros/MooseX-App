@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 19+1;
+use Test::Most tests => 21;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -150,7 +150,20 @@ subtest 'Test positional params' => sub {
     local @ARGV = qw(extra hui --value baer);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
-    is($test12->extra1,'hui','Extra1 value is undef');
+    is($test12->extra1,'hui','Extra1 value is "hui"');
+    is($test12->extra2, undef,'Extra2 value is undef');
+    is($test12->alpha, undef,'alpha value is undef');
+    is($test12->value,'baer','Value is set');
+};
+
+subtest 'Test positional params' => sub {
+    local @ARGV = qw(extra --value baer hui);
+    $MooseX::App::ParsedArgv::StopIt = 1;
+    my $test12 = Test03->new_with_command;
+    isa_ok($test12,'Test03::ExtraCommand');
+    is($test12->extra1,'hui','Extra1 value is "hui"');
+    is($test12->extra2, undef,'Extra2 value is undef');
+    is($test12->alpha, undef,'alpha value is undef');
     is($test12->value,'baer','Value is set');
 };
 
@@ -158,8 +171,9 @@ subtest 'Test optional positional params' => sub {
     local @ARGV = qw(extra hui 11 --value baer);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
-    is($test12->extra1,'hui','Extra1 value is undef');
-    is($test12->extra2,11,'Extra2 value is undef');
+    is($test12->extra1,'hui','Extra1 value is "hui"');
+    is($test12->extra2,11,'Extra2 value is "11"');
+    is($test12->alpha, undef,'alpha value is undef');
     is($test12->value,'baer','Value is set');
 };
 
@@ -170,7 +184,8 @@ subtest 'Test wrong positional params' => sub {
     is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Error message ok");
     is($test13->blocks->[2]->header,"parameters:","Usage header ok");
     is($test13->blocks->[2]->body,"    extra1  Important extra parameter [Required]
-    extra2  [Integer]","Usage body ok");
+    extra2  [Integer]
+    alpha   [Integer]","Usage body ok");
 };
 
 subtest 'Test missing positional params' => sub {

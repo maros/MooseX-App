@@ -23,7 +23,7 @@ subtest 'Wrong usage' => sub {
     throws_ok { Test03->new->new_with_command } qr/new_with_command is a class method/, 'Only callable as class method';
     use Test03::SomeCommand;
     throws_ok { Test03::SomeCommand->new_with_command } qr/new_with_command may only be called from the application base package/, 'new_with_command may only be called from the application base package';
-    throws_ok { Test03->new_with_command(1,2,3) } qr/new_with_command got inavlid extra arguments/, 'Wrong default args';
+    throws_ok { Test03->new_with_command(1,2,3) } qr/new_with_command got invalid extra arguments/, 'Wrong default args';
 
 };
 
