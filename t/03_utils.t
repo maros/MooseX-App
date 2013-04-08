@@ -55,14 +55,16 @@ subtest 'Formater' => sub {
 
 subtest 'Parser' => sub {
     my $parser = MooseX::App::ParsedArgv->new({
-        argv    => ['hello','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase']
+        argv    => ['hello','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase','--luchs']
     });
     
     is($parser->parameters->[0]->key,'hello','Parameter parsed ok');
     is($parser->parameters->[1]->key,'mellow','Parameter parsed ok');
-    is(scalar @{$parser->parameters},3,'Three parameters');
     is($parser->parameters->[2]->key,'baer','Extra parsed ok');
-    is(scalar @{$parser->extra},1,'One extra value');
+    is(scalar @{$parser->parameters},3,'Three parameters');
+    is($parser->extra->[0],'hase','Extra value parsed ok');
+    is($parser->extra->[1],'--luchs','Extra value parsed ok');
+    is(scalar @{$parser->extra},2,'Two extra values');
     is($parser->options->[0]->key,'h','Parsed -h flag');
     is($parser->options->[0]->has_values,0,'-h is flag');
     is($parser->options->[1]->key,'u','Parsed -u flag');
