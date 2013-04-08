@@ -44,6 +44,12 @@ option 'custom2' => (
     coerce        => 1,
 );
 
+option 'split' => (
+    is            => 'rw',
+    isa           => 'ArrayRef[Str]',
+    cmd_split     => qr/;/i,
+);
+
 option ['extra1','extra2'] => (
     is            => 'rw',
 );
