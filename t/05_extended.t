@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 21;
+use Test::Most tests => 21+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -194,3 +194,17 @@ subtest 'Test missing positional params' => sub {
     isa_ok($test13,'MooseX::App::Message::Envelope');
     is($test13->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
 };
+
+Test03->meta->app_strict(0);
+
+subtest 'Test extra positional params' => sub {
+    local @ARGV = qw(extra p1 22 33 p4 --value baer --luchs fuchs);
+    my $test14 = Test03->new_with_command;
+    isa_ok($test14,'Test03::ExtraCommand');
+    is($test14->extra1,'p1','Param 1 ok');
+    is($test14->extra2,'22','Param 2 ok');
+    is($test14->alpha,'33','Param 3 ok');
+    is(MooseX::App::ParsedArgv->instance->consume('parameters')->key,'p4','Uncomsumed parameter ok');
+    is(MooseX::App::ParsedArgv->instance->consume('options')->key,'luchs','Uncomsumed option ok');
+};
+
