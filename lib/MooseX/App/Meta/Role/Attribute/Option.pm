@@ -20,9 +20,6 @@ coerce 'MooseX::App::Types::CmdAliases'
 subtype 'MooseX::App::Types::CmdTypes' 
     => as enum([qw(proto option parameter)]);
 
-no Moose::Util::TypeConstraints;
-
-
 has 'cmd_type' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::CmdTypes',
@@ -50,7 +47,7 @@ has 'cmd_aliases' => (
 
 has 'cmd_split' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => union([qw(Str RegexpRef)]),
     predicate   => 'has_cmd_split',
 );
 
@@ -59,6 +56,8 @@ has 'cmd_position' => (
     isa => 'Int',
     default => 0,
 );
+
+no Moose::Util::TypeConstraints;
 
 my $GLOBAL_COUNTER = 1;
 
@@ -180,7 +179,12 @@ sub cmd_tags_list {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_subtype_of('ArrayRef')) {
             if ($self->has_cmd_split) {
-                push(@tags,'Multiple (Split by "'.$self->cmd_split.'")');
+                my $split = $self->cmd_split;
+                if (ref($split) eq 'Regexp') {
+                    $split = "$split";
+                    $split =~ s/^\(\?\^\w*:(.+)\)$/$1/x;
+                }
+                push(@tags,'Multiple','Split by "'.$split.'"');
             } else {
                 push(@tags,'Multiple');
             }
