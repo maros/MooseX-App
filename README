@@ -153,7 +153,7 @@ METHODS
 
     Helper method to initialize the command class for the given command.
 
-OPTIONS
+GLOBAL OPTIONS
   app_base
      app_base 'my_script';
 
@@ -168,12 +168,20 @@ OPTIONS
     namespace for commands. This namespace can be changed.
 
   app_fuzzy
-     app_fuzzy(1);
+     app_fuzzy(1); # default
      OR
      app_fuzzy(0);
 
     Enables fuzzy matching of commands and attributes. Is turned on by
     default.
+
+  app_strict
+     app_strict(1); # default 
+     OR
+     app_strict(0);
+
+    If strict is enabled the programm will terminate with an error message
+    if superfluous/unknown parameters and options are supplied.
 
   app_command_name
      app_command_name {
@@ -184,6 +192,20 @@ OPTIONS
 
     This sub can be used to control how package names should be translated
     to command names.
+
+ATTRIBUTE OPTIONS
+    *   cmd_tags - Extra tags
+
+    *   cmd_flag - Override option name
+
+    *   cmd_aliases - Alternative option names
+
+    *   cmd_split - Split values
+
+    *   cmd_position - Option/Parameter order
+
+    Refer to MooseX::App::Meta::Role::Attribute::Option for detailed
+    documentation.
 
 PLUGINS
     The behaviour of MooseX-App can be customized with plugins. To load a

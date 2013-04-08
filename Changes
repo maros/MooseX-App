@@ -1,12 +1,19 @@
 Changes for MooseX-App
 
+1.20 Mon, Apr 8, 2013
+    - Add cmd_split and cmd_position option
+    - Fixed parameter position (Yanick Champoux)
+    - app_strict option to set if app should termiate when unknown parameters
+      or options are supplied
+
 1.19 Thu, Mar 28, 2013
     - Fixed failing tests
     - Fixed bug that was triggered by Moose 2.0800
     - Fixed on MSWin
 
 1.18 Sun, Mar 24, 2013
-    - Added positional parameters with 'parameter' keyword
+    - Added positional parameters with 'parameter' keyword 
+      (Attention: this change might break things if you used to work with @extra)
     - Parameters are handled in the meta class
     - Usage meta class methods refactored
 
