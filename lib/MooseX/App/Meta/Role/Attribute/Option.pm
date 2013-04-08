@@ -266,6 +266,14 @@ Arrayref of alternative option names
 
 Extra option tags displayed in the usage information (in brackets)
 
+=head2 cmd_position
+
+Indicates the order of the parameters
+
+=head2 cmd_split
+
+Splits the value using the given separator or expression.
+
 =head1 METHODS
 
 =head2 cmd_name_possible

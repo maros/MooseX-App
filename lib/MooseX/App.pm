@@ -290,7 +290,7 @@ You can pass a hash of default params to new_with_command
 
 Helper method to initialize the command class for the given command.
 
-=head1 OPTIONS
+=head1 GLOBAL OPTIONS
 
 =head2 app_base
 
@@ -325,6 +325,25 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 This sub can be used to control how package names should be translated
 to command names.
+
+=head1 ATTRIBUTE OPTIONS
+
+=over
+
+=item * cmd_tags - Extra tags
+
+=item * cmd_flag - Override option name
+
+=item * cmd_aliases - Alternative option names
+
+=item * cmd_split - Split values
+
+=item * cmd_position - Option/Parameter order
+
+=back
+
+Refer to L<MooseX::App::Meta::Role::Attribute::Option> for detailed 
+documentation.
 
 =head1 PLUGINS
 
