@@ -73,6 +73,11 @@ sub _handle_attribute {
     return;
 }
 
+sub app_strict($) {
+    my ( $meta, $value ) = @_;
+    return $meta->app_strict($value);
+}
+
 sub app_fuzzy($) {
     my ( $meta, $value ) = @_;
     return $meta->app_fuzzy($value);

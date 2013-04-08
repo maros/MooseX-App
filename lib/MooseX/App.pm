@@ -11,13 +11,13 @@ our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = '1.19';
 
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base app_fuzzy option parameter);
+use MooseX::App::Exporter qw(app_base app_fuzzy app_strict option parameter);
 use MooseX::App::Message::Envelope;
 use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_namespace app_base app_fuzzy app_command_name option parameter) ],
+    with_meta           => [ qw(app_namespace app_base app_fuzzy app_command_name app_strict option parameter) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -309,11 +309,20 @@ namespace for commands. This namespace can be changed.
 
 =head2 app_fuzzy
 
- app_fuzzy(1);
+ app_fuzzy(1); # default
  OR
  app_fuzzy(0);
 
 Enables fuzzy matching of commands and attributes. Is turned on by default.
+
+=head2 app_strict
+
+ app_strict(1); # default 
+ OR
+ app_strict(0);
+
+If strict is enabled the programm will terminate with an error message if
+superfluous/unknown parameters and options are supplied.
 
 =head2 app_command_name
 

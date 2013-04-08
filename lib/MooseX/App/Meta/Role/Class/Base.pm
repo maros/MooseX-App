@@ -30,6 +30,12 @@ has 'app_base' => (
     default     => sub { Path::Class::File->new($0)->basename },
 );
 
+has 'app_strict' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 1,
+);
+
 has 'app_fuzzy' => (
     is          => 'rw',
     isa         => 'Bool',
@@ -102,13 +108,15 @@ sub command_args {
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
     
-    while (my $option =$parsed_argv->consume('options') ) {
-        unshift(@{$errors},
-            $self->command_message(
-                header          => "Unknown option '".$option->key."'", # LOCALIZE
-                type            => "error",
-            )
-        );
+    if ($self->app_strict) {
+        while (my $option = $parsed_argv->consume('options') ) {
+            unshift(@{$errors},
+                $self->command_message(
+                    header          => "Unknown option '".$option->key."'", # LOCALIZE
+                    type            => "error",
+                )
+            );
+        }
     }
     
     # Process params
@@ -126,15 +134,16 @@ sub command_args {
         $return->{$attribute->name} = $parameter_value;
     }
     
-    while (my $parameter =$parsed_argv->consume('parameters') ) {
-        unshift(@{$errors},
-            $self->command_message(
-                header          => "Unknown parameter '".$parameter->key."'", # LOCALIZE
-                type            => "error",
-            )
-        );
-    }
-    
+    if ($self->app_strict) {
+        while (my $parameter = $parsed_argv->consume('parameters') ) {
+            unshift(@{$errors},
+                $self->command_message(
+                    header          => "Unknown parameter '".$parameter->key."'", # LOCALIZE
+                    type            => "error",
+                )
+            );
+        }
+    } 
     return ($return,$errors);
 }
 
