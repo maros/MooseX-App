@@ -121,6 +121,8 @@ sub available {
     my ($self,$type) = @_;
     
     $type //= 'options';
+    Moose->throw_error('No available '.$type)
+        unless $type ~~ [qw(options parameters)];
     
     my @elements;
     foreach my $element (@{$self->$type}) {
@@ -135,6 +137,8 @@ sub consume {
     my ($self,$type) = @_;
     
     $type //= 'options';
+    Moose->throw_error('Cannot consume '.$type)
+        unless $type ~~ [qw(options parameters)];
     
     foreach my $element (@{$self->$type}) {
         next
