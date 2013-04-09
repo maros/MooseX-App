@@ -335,6 +335,16 @@ superfluous/unknown parameters and options are supplied.
 This sub can be used to control how package names should be translated
 to command names.
 
+=head1 GLOBAL ATTRIBUTES
+
+All MooseX::App classes will have two extra attributes/accessors
+
+=head2 extra_argv
+
+Carries all extra values from @ARGV (see L<MooseX::App::ParsedArgv>)
+
+=head2
+
 =head1 ATTRIBUTE OPTIONS
 
 =over

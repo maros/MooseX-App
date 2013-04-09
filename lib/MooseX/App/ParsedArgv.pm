@@ -246,13 +246,16 @@ a new one will be created.
 
 =head2 available
 
- my @options = $self->available('options');
+ my @options = $self->available('options' OR 'parameters');
 
 Returns an array of all parsed options or parameters that have not yet been consumed.
 
 =head2 consume
 
-Returns the first option/parameter of the local @ARGV that has not yet been consumed.
+ my $option = $self->consume('options' OR 'parameters');
+
+Returns the first option/parameter of the local @ARGV that has not yet been 
+consumed.
 
 =head2 parameter
 
