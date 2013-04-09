@@ -8,11 +8,6 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
-has extra_argv => (
-    is => 'rw', 
-    isa => 'ArrayRef', 
-);
-
 #has ARGV => (
 #    is => 'rw', 
 #    isa => 'ArrayRef', 
