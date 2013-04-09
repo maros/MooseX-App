@@ -120,9 +120,7 @@ sub command_args {
     }
     
     # Process params
-    my @attributes_parameter  = sort { 
-        $a->cmd_position <=> $b->cmd_position
-    } $self->command_usage_attributes($metaclass,'parameter');
+    my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
 
     foreach my $attribute (@attributes_parameter) {
         my $value = $parsed_argv->consume('parameters');
@@ -499,7 +497,9 @@ sub command_usage_attributes {
         push(@return,$attribute);
     }
     
-    return @return;
+    return (sort { 
+        $a->cmd_position <=> $b->cmd_position
+    } @return);
 }
 
 sub command_usage_options {
