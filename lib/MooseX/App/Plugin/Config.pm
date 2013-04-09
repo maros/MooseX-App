@@ -20,6 +20,7 @@ has 'config' => (
     documentation   => q[Path to command config file],
     traits          => ['AppOption'],
     cmd_type        => 'proto',
+    cmd_position    => 99990,
 );
 
 has '_config_data' => (

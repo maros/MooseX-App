@@ -20,6 +20,7 @@ has 'help_flag' => (
     cmd_flag        => 'help',
     cmd_aliases     => [ qw(h usage ?) ],
     cmd_type        => 'proto',
+    cmd_position    => 99999,
     documentation   => 'Prints this usage information.', # LOCALIZE
 );
 
