@@ -55,8 +55,11 @@ subtest 'Formater' => sub {
 
 subtest 'Parser' => sub {
     my $parser = MooseX::App::ParsedArgv->new({
-        argv    => ['hello','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase','--luchs']
+        argv    => ['hello','--bool','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase','--luchs'],
+        hints   => { 'bool' => 1 },
     });
+    
+    $parser->parse();
     
     is($parser->parameters->[0]->key,'hello','Parameter parsed ok');
     is($parser->parameters->[1]->key,'mellow','Parameter parsed ok');
@@ -65,21 +68,23 @@ subtest 'Parser' => sub {
     is($parser->extra->[0],'hase','Extra value parsed ok');
     is($parser->extra->[1],'--luchs','Extra value parsed ok');
     is(scalar @{$parser->extra},2,'Two extra values');
-    is($parser->options->[0]->key,'h','Parsed -h flag');
-    is($parser->options->[0]->has_values,0,'-h is flag');
-    is($parser->options->[1]->key,'u','Parsed -u flag');
-    is($parser->options->[1]->has_values,0,'-u is flag');
-    is($parser->options->[2]->key,'i','Parsed -i flag');
-    is($parser->options->[2]->has_values,0,'-i is flag');
-    is($parser->options->[3]->key,'help','Parsed --help flag');
-    is($parser->options->[3]->has_values,0,'--help is flag');
-    is($parser->options->[4]->key,'test','Parsed --test option');
-    is($parser->options->[4]->has_values,'2','--test has two values');
-    is($parser->options->[4]->get_value(0),'1','--test first value ok');
-    is($parser->options->[4]->get_value(1),'2','--test second value ok');
-    is($parser->options->[5]->key,'key','Parsed --key option');
-    is($parser->options->[5]->has_values,'2','--key has two values');
-    is($parser->options->[5]->get_value(0),'value1','--key first value ok');
-    is($parser->options->[5]->get_value(1),'value2','--key second value ok');
-    is(scalar @{$parser->options},6,'Has 6 options/flags');
+    is($parser->options->[0]->key,'bool','Parsed --bool flag');
+    is($parser->options->[0]->has_values,0,'--bool is flag');
+    is($parser->options->[1]->key,'h','Parsed -h flag');
+    is($parser->options->[1]->has_values,0,'-h is flag');
+    is($parser->options->[2]->key,'u','Parsed -u flag');
+    is($parser->options->[2]->has_values,0,'-u is flag');
+    is($parser->options->[3]->key,'i','Parsed -i flag');
+    is($parser->options->[3]->has_values,0,'-i is flag');
+    is($parser->options->[4]->key,'help','Parsed --help flag');
+    is($parser->options->[4]->has_values,0,'--help is flag');
+    is($parser->options->[5]->key,'test','Parsed --test option');
+    is($parser->options->[5]->has_values,'2','--test has two values');
+    is($parser->options->[5]->get_value(0),'1','--test first value ok');
+    is($parser->options->[5]->get_value(1),'2','--test second value ok');
+    is($parser->options->[6]->key,'key','Parsed --key option');
+    is($parser->options->[6]->has_values,'2','--key has two values');
+    is($parser->options->[6]->get_value(0),'value1','--key first value ok');
+    is($parser->options->[6]->get_value(1),'value2','--key second value ok');
+    is(scalar @{$parser->options},7,'Has 6 options/flags');
 };
