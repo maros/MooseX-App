@@ -81,9 +81,11 @@ sub new_with_command {
     }
     
     # Get ARGV
-    my $parsed_argv = MooseX::App::ParsedArgv->new;
-    $parsed_argv->argv(\@ARGV);
-    my $first_argv = $parsed_argv->consume('parameters');
+    my $parsed_argv = MooseX::App::ParsedArgv->new(
+        argv        => \@ARGV,
+        fuzzy       => $meta->app_fuzzy,
+    );
+    my $first_argv = $parsed_argv->first_argv;
     
     # No args
     if (! defined $first_argv
@@ -96,13 +98,13 @@ sub new_with_command {
             $meta->command_usage_global(),
         );
     # Requested help
-    } elsif (lc($first_argv->key) =~ m/^(help|h|\?|usage)$/) {
+    } elsif (lc($first_argv) =~ m/^(help|h|\?|usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
     # Looks like a command
     } else {
-        my $return = $meta->command_find($first_argv->key);
+        my $return = $meta->command_find($first_argv);
         
         # Nothing found
         if (blessed $return

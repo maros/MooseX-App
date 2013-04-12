@@ -73,8 +73,10 @@ sub new_with_options {
     }
     
     # Get ARGV
-    my $parsed_argv = MooseX::App::ParsedArgv->new();
-    $parsed_argv->argv(\@ARGV);
+    my $parsed_argv = MooseX::App::ParsedArgv->new(
+        argv        => \@ARGV,
+        fuzzy       => $class->meta->app_fuzzy,
+    );
 
     return $class->initialize_command_class($class,%args);
 }

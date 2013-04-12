@@ -474,6 +474,21 @@ sub command_find {
     }
 }
 
+sub command_parser_hints {
+    my ($self,$metaclass) = @_;
+    
+    $metaclass ||= $self;
+    
+    my $hints = {};
+    foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
+        foreach my $name ($attribute->cmd_name_possible) {
+            $hints->{$name} = (defined $attribute->cmd_is_bool) ? 1:0;
+        }
+    }
+    
+    return $hints;
+}
+
 sub command_message {
     my ($self,@args) = @_;
     my $messageclass = $self->app_messageclass;

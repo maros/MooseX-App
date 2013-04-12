@@ -15,6 +15,21 @@ has 'argv' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     lazy_build      => 1,
+    traits          => ['Array'],
+    handles => {
+        first_argv      => 'shift',
+    },
+);
+
+has 'fuzzy' => (
+    is              => 'rw',
+    isa             => 'Bool',
+);
+
+has 'hints' => (
+    is              => 'rw',
+    isa             => 'HashRef[Str]',
+    default         => sub { {} },
 );
 
 has 'options' => (
@@ -36,7 +51,7 @@ has 'extra' => (
 sub BUILD {
     my ($self) = @_;
     $SINGLETON = $self;
-    $self->_parse();
+    #$self->_parse();
     return $self;
 }
 
@@ -48,7 +63,7 @@ sub instance {
     return $SINGLETON;
 }
 
-sub _parse {
+sub parse {
     my ($self) = @_;
     
     my (@options,@parameters,@extra);
@@ -100,7 +115,13 @@ sub _parse {
                 # Value
                 default {
                     if (defined $lastkey) {
-                        $lastkey->add_value($element);
+                        # Is boolean # TODO handle fuzzy
+                        if ($self->hints->{$lastkey->key}) {
+                            push(@parameters,MooseX::App::ParsedArgv::Element->new( key => $element ));
+                        # Not a boolean field
+                        } else {
+                            $lastkey->add_value($element);
+                        }
                         undef $lastkey;
                     } else {
                         push(@parameters,MooseX::App::ParsedArgv::Element->new( key => $element ));
@@ -113,7 +134,7 @@ sub _parse {
     $self->options(\@options);
     $self->parameters(\@parameters);
     $self->extra(\@extra);
-        
+      
     return;
 }
 

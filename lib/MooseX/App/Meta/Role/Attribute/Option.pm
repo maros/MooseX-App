@@ -146,8 +146,6 @@ sub cmd_name_possible {
         push(@names, @{$self->cmd_aliases});
     }
     
-    my $bool = $self->cmd_is_bool();
-    
     return @names;
 }
 
