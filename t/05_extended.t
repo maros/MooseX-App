@@ -11,6 +11,7 @@ use lib 't/testlib';
 use Test03;
 
 Test03->meta->app_fuzzy(0);
+Test03->meta->app_strict(1);
 
 subtest 'Non-Fuzzy command matching' => sub {
     local @ARGV = qw(some --private 1);

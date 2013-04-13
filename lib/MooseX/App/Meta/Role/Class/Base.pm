@@ -34,7 +34,7 @@ has 'app_base' => (
 has 'app_strict' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 1,
+    default     => 0,
 );
 
 has 'app_fuzzy' => (
