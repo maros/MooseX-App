@@ -176,12 +176,13 @@ GLOBAL OPTIONS
     default.
 
   app_strict
-     app_strict(1); # default 
+     app_strict(0); # default 
      OR
-     app_strict(0);
+     app_strict(1);
 
     If strict is enabled the programm will terminate with an error message
-    if superfluous/unknown parameters and options are supplied.
+    if superfluous/unknown positional parameters are supplied. If disabled
+    all extra parameters will be copied to the extra_argv attribute.
 
   app_command_name
      app_command_name {
@@ -192,6 +193,15 @@ GLOBAL OPTIONS
 
     This sub can be used to control how package names should be translated
     to command names.
+
+GLOBAL ATTRIBUTES
+    All MooseX::App classes will have two extra attributes/accessors
+
+  extra_argv
+    Carries all parameters from @ARGV that were not consumed.
+
+  help_flag
+    Help flag option
 
 ATTRIBUTE OPTIONS
     *   cmd_tags - Extra tags

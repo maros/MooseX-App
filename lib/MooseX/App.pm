@@ -316,12 +316,13 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 =head2 app_strict
 
- app_strict(1); # default 
+ app_strict(0); # default 
  OR
- app_strict(0);
+ app_strict(1); 
 
 If strict is enabled the programm will terminate with an error message if
-superfluous/unknown parameters and options are supplied.
+superfluous/unknown positional parameters are supplied. If disabled all 
+extra parameters will be copied to the L<extra_argv> attribute.
 
 =head2 app_command_name
 
@@ -340,9 +341,11 @@ All MooseX::App classes will have two extra attributes/accessors
 
 =head2 extra_argv
 
-Carries all extra values from @ARGV (see L<MooseX::App::ParsedArgv>)
+Carries all parameters from @ARGV that were not consumed.
 
-=head2
+=head2 help_flag
+
+Help flag option
 
 =head1 ATTRIBUTE OPTIONS
 
