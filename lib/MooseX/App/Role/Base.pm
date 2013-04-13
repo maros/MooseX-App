@@ -24,20 +24,12 @@ sub initialize_command_class {
     my ($ok,$error) = Class::Load::try_load_class($command_class);
     unless ($ok) {
         Moose->throw_error($error);
-#        return MooseX::App::Message::Envelope->new(
-#            $meta->command_message(
-#                header          => $error,
-#                type            => "error",
-#            ),
-#            $meta->command_usage_global(),
-#        );
     }
     
     my $command_meta = $command_class->meta || $meta;
     
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
     $parsed_argv->hints($meta->command_parser_hints($command_meta));
-    $parsed_argv->parse();
     
     my ($proto_result,$proto_errors) = $meta->command_proto($command_meta);
     
@@ -86,7 +78,7 @@ sub initialize_command_class {
     
     my $command_object = $command_class->new(
         %params,
-        extra_argv          => MooseX::App::ParsedArgv->instance->extra,
+        extra_argv          => $parsed_argv->extra,
     );
       
     if (scalar @errors) {

@@ -108,22 +108,20 @@ sub command_args {
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
     
-    if ($self->app_strict) {
-        while (my $option = $parsed_argv->consume('options') ) {
-            unshift(@{$errors},
-                $self->command_message(
-                    header          => "Unknown option '".$option->key."'", # LOCALIZE
-                    type            => "error",
-                )
-            );
-        }
+    foreach my $option ($parsed_argv->available('option')) {
+        unshift(@{$errors},
+            $self->command_message(
+                header          => "Unknown option '".$option->key."'", # LOCALIZE
+                type            => "error",
+            )
+        );
     }
     
     # Process params
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
 
     foreach my $attribute (@attributes_parameter) {
-        my $value = $parsed_argv->consume('parameters');
+        my $value = $parsed_argv->consume('parameter');
         last
             unless defined $value;
 
@@ -132,8 +130,9 @@ sub command_args {
         $return->{$attribute->name} = $parameter_value;
     }
     
+    # Handle all unconsumed parameters and options
     if ($self->app_strict) {
-        while (my $parameter = $parsed_argv->consume('parameters') ) {
+        foreach my $parameter ($parsed_argv->available('parameter')) {
             unshift(@{$errors},
                 $self->command_message(
                     header          => "Unknown parameter '".$parameter->key."'", # LOCALIZE
@@ -141,7 +140,8 @@ sub command_args {
                 )
             );
         }
-    } 
+    }
+    
     return ($return,$errors);
 }
 
@@ -185,7 +185,7 @@ sub command_parse_options {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Loop all exact matches
-    foreach my $option ($parsed_argv->available('options')) {
+    foreach my $option ($parsed_argv->available('option')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
             $match->{$attribute->name} = $option->value;
             $option->consume($attribute);
@@ -195,7 +195,7 @@ sub command_parse_options {
     # Process fuzzy matches
     if ($self->app_fuzzy) {
         # Loop all options (sorted by length)
-        foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->available('options')) {
+        foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->available('option')) {
 
             # No fuzzy matching for one-letter flags
             my $option_length = length($option->key);
