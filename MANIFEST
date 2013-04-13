@@ -20,6 +20,7 @@ lib/MooseX/App/Meta/Role/Class/Base.pm
 lib/MooseX/App/Meta/Role/Class/Command.pm
 lib/MooseX/App/Meta/Role/Class/Simple.pm
 lib/MooseX/App/ParsedArgv.pm
+lib/MooseX/App/ParsedArgv/Element.pm
 lib/MooseX/App/Plugin/BashCompletion.pm
 lib/MooseX/App/Plugin/BashCompletion/Command.pm
 lib/MooseX/App/Plugin/BashCompletion/Meta/Class.pm
