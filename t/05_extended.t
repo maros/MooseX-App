@@ -198,13 +198,14 @@ subtest 'Test missing positional params' => sub {
 Test03->meta->app_strict(0);
 
 subtest 'Test extra positional params' => sub {
-    local @ARGV = qw(extra p1 22 33 p4 --value baer --luchs fuchs);
+    local @ARGV = qw(extra p1 22 33 marder dachs --value 44 -- baer);
     my $test14 = Test03->new_with_command;
     isa_ok($test14,'Test03::ExtraCommand');
     is($test14->extra1,'p1','Param 1 ok');
     is($test14->extra2,'22','Param 2 ok');
     is($test14->alpha,'33','Param 3 ok');
-    is(MooseX::App::ParsedArgv->instance->consume('parameters')->key,'p4','Uncomsumed parameter ok');
-    is(MooseX::App::ParsedArgv->instance->consume('options')->key,'luchs','Uncomsumed option ok');
+    is($test14->extra_argv->[0],'marder','Uncomsumed parameter ok');
+    is($test14->extra_argv->[1],'dachs','Uncomsumed parameter ok');
+    is($test14->extra_argv->[2],'baer','Uncomsumed option ok');
 };
 
