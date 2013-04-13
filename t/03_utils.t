@@ -56,7 +56,7 @@ subtest 'Formater' => sub {
 subtest 'Parser' => sub {
     my $parser = MooseX::App::ParsedArgv->new({
         argv    => ['hello','--bool','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase','--luchs'],
-        hints   => { 'bool' => 1 },
+        hints   => ['bool'],
     });
     
     

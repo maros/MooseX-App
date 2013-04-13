@@ -195,10 +195,11 @@ subtest 'Test missing positional params' => sub {
     is($test13->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
 };
 
+Test03->meta->app_fuzzy(1);
 Test03->meta->app_strict(0);
 
 subtest 'Test extra positional params' => sub {
-    local @ARGV = qw(extra p1 22 33 marder dachs --value 44 -- baer);
+    local @ARGV = qw(extra p1 22 33 marder dachs --value 44 --flag luchs --flagg fuchs -- baer --hase);
     my $test14 = Test03->new_with_command;
     isa_ok($test14,'Test03::ExtraCommand');
     is($test14->extra1,'p1','Param 1 ok');
@@ -206,6 +207,9 @@ subtest 'Test extra positional params' => sub {
     is($test14->alpha,'33','Param 3 ok');
     is($test14->extra_argv->[0],'marder','Uncomsumed parameter ok');
     is($test14->extra_argv->[1],'dachs','Uncomsumed parameter ok');
-    is($test14->extra_argv->[2],'baer','Uncomsumed option ok');
+    is($test14->extra_argv->[2],'luchs','Uncomsumed option ok');
+    is($test14->extra_argv->[3],'fuchs','Uncomsumed option ok');
+    is($test14->extra_argv->[4],'baer','Uncomsumed option ok');
+    is($test14->extra_argv->[5],'--hase','Uncomsumed option ok');
 };
 

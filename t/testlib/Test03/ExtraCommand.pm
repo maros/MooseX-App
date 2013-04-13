@@ -26,6 +26,17 @@ option 'value' => (
     default       => sub { return "hase" },
 );
 
+option 'flag' => (
+    is            => 'rw',
+    isa           => 'Bool',
+);
+
+option 'flaggo' => (
+    is            => 'rw',
+    isa           => 'Bool',
+);
+
+
 sub run {
     my ($self) = @_;
     use Data::Dumper;
