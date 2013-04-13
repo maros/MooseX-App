@@ -11,6 +11,7 @@ use Moose::Role;
 use MooseX::App::Utils;
 use Path::Class;
 use Module::Pluggable::Object;
+use List::Util qw(max);
 
 has 'app_messageclass' => (
     is          => 'rw',
@@ -479,14 +480,47 @@ sub command_parser_hints {
     
     $metaclass ||= $self;
     
-    my $hints = {};
+    my %hints;
+    my %names;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         foreach my $name ($attribute->cmd_name_possible) {
-            $hints->{$name} = (defined $attribute->cmd_is_bool) ? 1:0;
+            $names{$name} = { name => $attribute->name, bool => $attribute->cmd_is_bool };
+            $hints{$name} = $names{$name};
         }
     }
     
-    return $hints;
+    if ($self->app_fuzzy) {
+        my $length = max(map { length($_) } keys %names);
+        foreach my $l (reverse(1..$length)) {
+            my %tmp;
+            foreach my $name (keys %names) {
+                next
+                    if length($name) < $l;
+                my $short_name = substr($name,0,$l);
+                next
+                    if defined $hints{$short_name};
+                $tmp{$short_name} ||= [];
+                next
+                    if defined $tmp{$short_name}->[0]
+                    && $tmp{$short_name}->[0]->{name} eq $names{$name}->{name};
+                push(@{$tmp{$short_name}},$names{$name})
+            }
+            foreach my $short_name (keys %tmp) {
+                next
+                    if scalar @{$tmp{$short_name}} > 1;
+                $hints{$short_name} = $tmp{$short_name}->[0];
+            }
+        }
+    }
+    
+    my @return;
+    foreach my $name (keys %hints) {
+        next
+            unless defined $hints{$name}->{bool};
+        push(@return,$name);
+    }
+    
+    return \@return;
 }
 
 sub command_message {

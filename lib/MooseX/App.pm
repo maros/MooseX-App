@@ -81,9 +81,7 @@ sub new_with_command {
     }
     
     # Get ARGV
-    my $parsed_argv = MooseX::App::ParsedArgv->new(
-        fuzzy       => $meta->app_fuzzy,
-    );
+    my $parsed_argv = MooseX::App::ParsedArgv->new();
     my $first_argv = $parsed_argv->first_argv;
     
     # No args

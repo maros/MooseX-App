@@ -8,6 +8,7 @@ use utf8;
 use Moose;
 
 use Encode qw(decode);
+use MooseX::App::ParsedArgv::Element;
 
 my $SINGLETON;
 
@@ -24,8 +25,8 @@ has 'fuzzy' => (
 
 has 'hints' => (
     is              => 'rw',
-    isa             => 'HashRef[Str]',
-    default         => sub { {} },
+    isa             => 'ArrayRef[Str]',
+    default         => sub { [] },
 );
 
 has 'elements' => (
@@ -109,7 +110,7 @@ sub _build_elements {
                 default {
                     if (defined $lastkey) {
                         # Is boolean # TODO handle fuzzy
-                        if ($self->hints->{$lastkey->key}) {
+                        if ($lastkey->key ~~ $self->hints) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                         # Not a boolean field
                         } else {
@@ -189,70 +190,7 @@ sub extra {
         push(@extra,$element->key);
     }  
     
-    return \@extra;
-}
-
-{
-    package MooseX::App::ParsedArgv::Element;
-    use Moose;
-    
-    has 'key' => (
-        is              => 'ro',
-        isa             => 'Str',
-        required        => 1,
-    );
-    
-    has 'value' => (
-        is              => 'rw',
-        isa             => 'ArrayRef[Str]',
-        traits          => ['Array'],
-        default         => sub { [] },
-        handles => {
-            add_value       => 'push',
-            has_values      => 'count',
-            get_value       => 'get',
-        }
-    );
-    
-    has 'consumed' => (
-        is              => 'rw',
-        isa             => 'Bool',
-        default         => 0,
-    );
-    
-    has 'type' => (
-        is              => 'rw',
-        isa             => 'Str',
-        required        => 1,
-    );
-    
-    sub consume {
-        my ($self,$attribute) = @_;
-        
-        Moose->throw_error('Element '.$self->type.' '.$self->key.' is already consumed')
-            if $self->consumed;
-        $self->consumed(1);  
-        
-        return $self; 
-    }
-    
-    sub serialize {
-        my ($self) = @_;
-        given ($self->type) {
-            when ('extra') { 
-                return $self->key
-            }
-            when ('parameter') { 
-                return $self->key
-            }
-            when ('option') { 
-                my $key = (length $self->key == 1 ? '-':'--').$self->key;
-                join(' ',map { $key.' '.$_ } @{$self->value});
-            }
-        }   
-    }
-    
-    __PACKAGE__->meta->make_immutable();
+    return @extra;
 }
 
 __PACKAGE__->meta->make_immutable;
@@ -271,53 +209,68 @@ MooseX::App::ParsedArgv - Parses @ARGV
  use MooseX::App::ParsedArgv;
  my $argv = MooseX::App::ParsedArgv->instance; 
  
- foreach my $option (@{$argv->options}) {
+ foreach my $option ($argv->available('option')) {
      say "Parsed ".$option->key;
  }
 
 =head1 DESCRIPTION
 
 This is a helper class that holds all options parsed from @ARGV. It is 
-implemented as a singleton.
+implemented as a singleton. Unless you are developing a MooseX::App plugin
+you should not need to interact with this class.
 
 =head1 METHODS
 
 =head2 new
 
-Create a new MooseX::App::ParsedArgv instance 
+Create a new MooseX::App::ParsedArgv instance. 
 
 =head2 instance 
 
 Get the current MooseX::App::ParsedArgv instance. If there is no instance
 a new one will be created.
 
-=head2 parse
+=head2 argv
 
-Parses the current arguments list 
+Get/set the original @ARGV. 
+
+Also available via C<new>
+
+=head2 hints
+
+Sets fuzzy hin 
+
+Also available via C<new>
+
+=head2 first_argv
+
+Shifts the first element from ARGV.
 
 =head2 available
 
- my @options = $self->available('options' OR 'parameters');
+ my @options = $self->available($type);
+ OR
+ my @options = $self->available();
 
 Returns an array of all parsed options or parameters that have not yet been consumed.
+The array elements will be L<MooseX::App::ParsedArgv::Element> objects.
 
 =head2 consume
 
- my $option = $self->consume('options' OR 'parameters');
+ my $option = $self->consume($type);
+ OR
+ my $option = $self->consume();
 
 Returns the first option/parameter of the local @ARGV that has not yet been 
-consumed.
+consumed as a L<MooseX::App::ParsedArgv::Element> object.
 
-=head2 parameter
+=head2 elements
 
-Returns all positional parameters
+Returns all parsed options and parameters.
 
 =head2 extra
 
-Returns all extra values
-
-=head2 options
-
-Returns all options as MooseX::App::ParsedArgv::Option objects
+Returns an array reference of unconsumed positional parameters and
+extra values.
 
 =cut
