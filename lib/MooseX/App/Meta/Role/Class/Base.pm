@@ -12,6 +12,7 @@ use MooseX::App::Utils;
 use Path::Class;
 use Module::Pluggable::Object;
 use List::Util qw(max);
+no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'app_messageclass' => (
     is          => 'rw',

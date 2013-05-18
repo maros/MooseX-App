@@ -9,6 +9,7 @@ use Moose;
 
 use Encode qw(decode);
 use MooseX::App::ParsedArgv::Element;
+no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 my $SINGLETON;
 

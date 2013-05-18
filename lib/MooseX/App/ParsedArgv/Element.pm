@@ -6,6 +6,7 @@ use 5.010;
 use utf8;
 
 use Moose;
+no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'key' => (
     is              => 'ro',
