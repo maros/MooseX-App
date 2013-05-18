@@ -4,6 +4,7 @@ use 5.010;
 use utf8;
 use strict;
 use warnings;
+no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;
 
 use List::Util qw(max);
 

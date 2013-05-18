@@ -8,6 +8,7 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 extends qw(MooseX::App::Message::Block);
+no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 use Term::ANSIColor qw();
 use IO::Interactive qw(is_interactive);
