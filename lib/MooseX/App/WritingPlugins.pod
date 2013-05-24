@@ -46,12 +46,19 @@ It accepts the following keys:
 =over
 
 =item * class
+
 =item * attribute
+
 =item * method
+
 =item * wrapped_method
+
 =item * instance
+
 =item * constructor
+
 =item * destructor
+
 =item * error 
 
 =back
