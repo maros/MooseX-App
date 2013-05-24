@@ -1,5 +1,8 @@
 Changes for MooseX-App
 
+1.22 Fri, May 24, 2013
+    - Silence experimental::smartmatch warnings on 5.18 (Mike Doherty)
+
 1.21 Sat, Apr 13, 2013
     - Fix option sorting
     - Fix parsing of positional parameters
