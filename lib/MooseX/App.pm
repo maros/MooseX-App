@@ -135,7 +135,7 @@ MooseX::App - Write user-friendly command line apps with even less suffering
 In your base class:
 
   package MyApp;
-  use MooseX::App qw(Config Color);
+  use MooseX::App qw(Color);
  
   option 'global_option' => (
       is            => 'rw',
@@ -217,7 +217,8 @@ MooseX-App is a highly customizeable helper to write user-friendly
 command line applications without having to worry about most of the annoying 
 things usually involved. Just take any existing L<Moose> class, add a single 
 line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
-for each command in an underlying namespace.
+for each command in an underlying namespace. Options and positional parameters
+can be defined as simple L<Moose> accessors.
 
 MooseX-App will then take care of
 
@@ -225,7 +226,7 @@ MooseX-App will then take care of
 
 =item * Finding, loading and initializing the command classes
 
-=item * Creating automated help and documentation from pod and attributes
+=item * Creating automated help and documentation from modules POD and attributes
 
 =item * Reading, encoding and validating the command line options and positional parameters entered by the user
 
@@ -408,6 +409,10 @@ Handle typos in command names
 
 Adds a command to display the version and license of your application
 
+=item * L<MooseX::App::Plugin::Man>
+
+Display full manpage
+
 =back
 
 =head1 SEE ALSO
@@ -442,7 +447,7 @@ Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-13 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as 
 perl itself. The full text of the licence can be found in the LICENCE file 
