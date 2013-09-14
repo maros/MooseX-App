@@ -86,7 +86,7 @@ features such as:
 =head2 command_short_description
 
 Set the short description. If not set this information will be taken from the
-Pod NAME section. Alternative this will be taken from the DistZilla
+Pod NAME or ABSTRACT section. Alternative this will be taken from the DistZilla
 ABSTRACT tag.
 
 =head2 command_long_description

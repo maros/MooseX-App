@@ -129,7 +129,7 @@ MooseX::App::Meta::Role::Class::Command - Meta class role for command classes
 =head1 DESCRIPTION
 
 This meta class role will automatically be applied to all command classes.
-This documentation is only of interest if you intent to write plugins for 
+This documentation is only of interest if you intend to write plugins for 
 MooseX-App.
 
 =head1 ACCESSORS
@@ -137,8 +137,8 @@ MooseX-App.
 =head2 command_short_description
 
 Read/set the short command description. Will be extracted from the Pod NAME
-section if not set. Alternative this will be taken from the DistZilla
-ABSTRACT tag.
+or ABSTRACT section if not set. Alternative this will be taken from the 
+DistZilla ABSTRACT tag.
 
 =head2 command_long_description
 

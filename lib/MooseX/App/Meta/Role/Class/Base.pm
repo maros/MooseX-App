@@ -742,7 +742,7 @@ MooseX::App::Meta::Role::Class::Base - Meta class role for application base clas
 =head1 DESCRIPTION
 
 This meta class role will automatically be applied to the application base
-class. This documentation is only of interest if you intent to write
+class. This documentation is only of interest if you intend to write
 plugins for MooseX-App.
 
 =head1 ACCESSORS

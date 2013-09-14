@@ -6,7 +6,7 @@ SYNOPSIS
     In your base class:
 
       package MyApp;
-      use MooseX::App qw(Config Color);
+      use MooseX::App qw(Color);
  
       option 'global_option' => (
           is            => 'rw',
@@ -87,13 +87,15 @@ DESCRIPTION
     command line applications without having to worry about most of the
     annoying things usually involved. Just take any existing Moose class,
     add a single line ("use MooseX-App qw(PluginA PluginB ...);") and create
-    one class for each command in an underlying namespace.
+    one class for each command in an underlying namespace. Options and
+    positional parameters can be defined as simple Moose accessors.
 
     MooseX-App will then take care of
 
     *   Finding, loading and initializing the command classes
 
-    *   Creating automated help and documentation from pod and attributes
+    *   Creating automated help and documentation from modules POD and
+        attributes
 
     *   Reading, encoding and validating the command line options and
         positional parameters entered by the user
@@ -259,6 +261,10 @@ PLUGINS
         Adds a command to display the version and license of your
         application
 
+    *   MooseX::App::Plugin::Man
+
+        Display full manpage
+
 SEE ALSO
     Read the Tutorial for getting started with a simple MooseX::App command
     line application.
@@ -286,7 +292,7 @@ CONTRIBUTORS
     Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
 
 COPYRIGHT
-    MooseX::App is Copyright (c) 2012 Maroš Kollár.
+    MooseX::App is Copyright (c) 2012-13 Maroš Kollár.
 
     This library is free software and may be distributed under the same
     terms as perl itself. The full text of the licence can be found in the

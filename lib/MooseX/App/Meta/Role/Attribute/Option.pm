@@ -231,8 +231,7 @@ MooseX::App::Meta::Role::Attribute::Option - Meta attribute role for options
 =head1 DESCRIPTION
 
 This meta attribute role will automatically be applied to all attributes
-that should be used as options. This documentation is only of interest if you 
-intent to write plugins for MooseX-App.
+that should be used as options.
 
 =head1 ACCESSORS
 
@@ -270,9 +269,12 @@ Indicates the order of the parameters
 
 =head2 cmd_split
 
-Splits the value using the given separator or expression.
+Splits multiple values at the given separator string or regular expression. 
+Only works in conjunction with an 'ArrayRef[*]' type constraint.
 
 =head1 METHODS
+
+These methods are only of interest to plugin authors.
 
 =head2 cmd_name_possible
 
