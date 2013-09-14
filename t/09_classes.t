@@ -2,7 +2,7 @@
 
 # t/09_classes.t - Test classes
 
-use Test::Most tests => 5+1;
+use Test::Most tests => 6+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -32,6 +32,15 @@ subtest 'Conflicts' => sub {
     throws_ok { 
         Test03->new_with_command;
     } qr/Command line option conflict/, 'Conflict detected';
+};
+
+subtest 'Default args available without inheritance' => sub {
+    local @ARGV = qw(anothercommand --help);
+    my $another = Test03->new_with_command;
+    isa_ok($another,'MooseX::App::Message::Envelope');
+    like($another->blocks->[0]->body,qr/test03\sanothercommand/,'Help ok');
+    is($another->blocks->[0]->header,'usage:','Help ok');
+    
 };
 
 subtest 'Attributes from role ' => sub {
