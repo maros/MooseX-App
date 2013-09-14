@@ -94,13 +94,14 @@ sub split_string {
     return @lines;
 }
 
-sub parse_pod {
+sub package_to_filename {
     my ($package) = @_;
     
     # Package to filename
     my $package_filename = $package;
     $package_filename =~ s/::/\//g;
     $package_filename .= '.pm';
+    
     
     my $package_filepath;
     if (defined $INC{$package_filename}) {
@@ -112,6 +113,16 @@ sub parse_pod {
     return 
         unless defined $package_filepath
         && -e $package_filepath;
+    
+    return $package_filepath;
+}
+
+sub parse_pod {
+    my ($package) = @_;
+    
+    my $package_filepath = package_to_filename($package);
+    return
+        unless $package_filepath;
     
     # Parse pod
     my $document = Pod::Elemental->read_file($package_filepath);
