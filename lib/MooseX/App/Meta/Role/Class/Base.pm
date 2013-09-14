@@ -491,7 +491,7 @@ sub command_parser_hints {
     }
     
     if ($self->app_fuzzy) {
-        my $length = max(map { length($_) } keys %names);
+        my $length = max(map { length($_) } keys %names) // 0;
         foreach my $l (reverse(1..$length)) {
             my %tmp;
             foreach my $name (keys %names) {
@@ -602,6 +602,7 @@ sub command_usage_parameters {
         body    => MooseX::App::Utils::format_list(@parameters),
     );
 }
+
 sub command_usage_header {
     my ($self,$command_meta_class) = @_;
     
