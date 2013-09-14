@@ -1,7 +1,7 @@
 package Test02;
 
 use Moose;
-use MooseX::App qw(BashCompletion ConfigHome Color Version Env Typo);
+use MooseX::App qw(BashCompletion ConfigHome Color Version Env Typo Man);
 
 our $VERSION = 1.01;
 
