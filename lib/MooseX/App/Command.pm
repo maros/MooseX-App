@@ -13,7 +13,7 @@ use MooseX::App::Exporter qw(option parameter command_short_description command_
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [qw(command_short_description command_long_description command_usage option parameter)],
+    with_meta => [qw(command_short_description command_long_description command_usage option parameter extends)],
     also      => 'Moose',
 );
 
@@ -36,6 +36,21 @@ sub init_meta {
     );
     
     return $meta;
+}
+
+sub extends {
+    my $meta = shift;
+    
+    Moose->throw_error("Must derive at least one class") unless @_;
+ 
+    foreach my $superclass (@_) {
+        Class::Load::load_class($superclass);
+        if ($superclass->meta->has_attribute('help_flag')) {
+            say STDERR "HASE!!!";
+        } 
+    }
+    
+    #$meta->superclasses(@_);
 }
 
 1;
