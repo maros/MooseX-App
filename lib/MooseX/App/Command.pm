@@ -8,6 +8,7 @@ use strict;
 use warnings;
 
 use Moose ();
+use MooseX::App::Role::Common;
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(option parameter command_short_description command_long_description command_usage);
 use Moose::Exporter;
@@ -30,10 +31,8 @@ sub init_meta {
         },
     );
     
-    Moose::Util::MetaRole::apply_base_class_roles(
-        for             => $args{for_class},
-        roles           => ['MooseX::App::Role::Common'],
-    );
+    # Do not apply role common role - since it is can conflict with inherited roles
+    MooseX::App::Role::Common->meta->apply( $args{for_class}->meta );
     
     return $meta;
 }

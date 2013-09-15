@@ -9,6 +9,7 @@ use warnings;
 use Moose::Exporter;
 use MooseX::App::Exporter qw(app_base app_fuzzy app_strict option parameter command_short_description command_long_description command_usage);
 use MooseX::App::Meta::Role::Attribute::Option;
+use MooseX::App::Role::Common;
 use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);
 
@@ -38,7 +39,7 @@ sub init_meta {
     my ($class,%args) = @_;
     
     my $for_class       = $args{for_class};
-    $args{roles}        = ['MooseX::App::Role::Base' ];
+    $args{roles}        = ['MooseX::App::Role::Base','MooseX::App::Role::Common'];
     $args{metaroles}    = {
         class               => [
             'MooseX::App::Meta::Role::Class::Base',

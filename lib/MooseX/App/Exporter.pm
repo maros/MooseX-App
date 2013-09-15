@@ -120,8 +120,8 @@ sub process_init_meta {
         push(@{$apply_roles},$plugin,{ -excludes => [ 'plugin_metaroles' ] } )
     }
     
-    push(@{$apply_roles},'MooseX::App::Role::Common')
-        unless $apply_roles ~~ 'MooseX::App::Role::Common';
+#    push(@{$apply_roles},'MooseX::App::Role::Common')
+#        unless $apply_roles ~~ 'MooseX::App::Role::Common';
     
     # Process all plugins in the given order
     foreach my $plugin_class (@{$plugins}) {
