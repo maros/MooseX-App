@@ -16,7 +16,6 @@ around '_build_app_commands' => sub {
     
     my $return = $self->$orig(@_);
     $return->{version} ||= 'MooseX::App::Plugin::Version::Command';
-    #$self->command_register('bash_completion','MooseX::App::Plugin::Version::Command');
     
     return $return;
 };
