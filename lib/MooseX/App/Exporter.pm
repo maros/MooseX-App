@@ -12,7 +12,7 @@ use MooseX::App::Utils;
 use MooseX::App::ParsedArgv;
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
-our %PLUGIN_SPEC;
+my %PLUGIN_SPEC;
 
 sub import {
     my ( $class, @imports ) = @_;
