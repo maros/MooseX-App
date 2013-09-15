@@ -29,7 +29,7 @@ sub initialize_command_class {
     my $command_meta = $command_class->meta || $meta;
     
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
-    $parsed_argv->fuzzy($meta->app_fuzzy);
+    #$parsed_argv->fuzzy($meta->app_fuzzy);
     $parsed_argv->hints($meta->command_parser_hints($command_meta));
     
     my ($proto_result,$proto_errors) = $meta->command_proto($command_meta);

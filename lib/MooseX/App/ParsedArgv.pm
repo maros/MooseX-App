@@ -19,16 +19,17 @@ has 'argv' => (
     lazy_build      => 1,
 );
 
-has 'fuzzy' => (
-    is              => 'rw',
-    isa             => 'Bool',
-);
+#has 'fuzzy' => (
+#    is              => 'rw',
+#    isa             => 'Bool',
+#    required        => 1,
+#);
 
 has 'hints' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
-);
+); # Hints for boolean flags
 
 has 'elements' => (
     is              => 'rw',
@@ -110,7 +111,8 @@ sub _build_elements {
                 # Value
                 default {
                     if (defined $lastkey) {
-                        # Is boolean # TODO handle fuzzy
+                        # Is boolean 
+                        # TODO handle fuzzy
                         if ($lastkey->key ~~ $self->hints) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                         # Not a boolean field
