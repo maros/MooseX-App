@@ -220,7 +220,7 @@ MooseX::App::ParsedArgv - Parses @ARGV
 
 This is a helper class that holds all options parsed from @ARGV. It is 
 implemented as a singleton. Unless you are developing a MooseX::App plugin
-you should not need to interact with this class.
+you usually do not need to interact with this class.
 
 =head1 METHODS
 
@@ -235,19 +235,16 @@ a new one will be created.
 
 =head2 argv
 
-Get/set the original @ARGV. 
-
-Also available via C<new>
+Accessor for the original @ARGV. 
 
 =head2 hints
 
-Sets fuzzy hin 
-
-Also available via C<new>
+Accessor for an array of attributes that tells the parser which attributes
+should be regarded as flags without value.
 
 =head2 first_argv
 
-Shifts the first element from ARGV.
+Shifts the current first element from ARGV.
 
 =head2 available
 
