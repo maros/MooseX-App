@@ -1,6 +1,7 @@
 package Test03::AnotherCommand;
 
 use MooseX::App::Command;
+extends qw(Test03CommandBase);
 
 use Moose::Util::TypeConstraints;
 

@@ -1,6 +1,7 @@
 package Test03::YetAnotherCommand;
 
 use MooseX::App::Command;
+extends qw(Test03CommandBase);
 
 option 'bool1' => (
     is            => 'rw',

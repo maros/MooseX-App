@@ -34,18 +34,23 @@ subtest 'Conflicts' => sub {
     } qr/Command line option conflict/, 'Conflict detected';
 };
 
-subtest 'Default args available without inheritance' => sub {
-    local @ARGV = qw(anothercommand --help);
+subtest 'Default args available with extra inheritance' => sub {
+    local @ARGV = qw(yetanothercommand --help);
     my $another = Test03->new_with_command;
-    isa_ok($another,'MooseX::App::Message::Envelope');
-    like($another->blocks->[0]->body,qr/test03\sanothercommand/,'Help ok');
-    is($another->blocks->[0]->header,'usage:','Help ok');
     
+    isa_ok($another,'MooseX::App::Message::Envelope');
+    like($another->blocks->[0]->body,qr/test03\syetanothercommand/,'Help ok');
+    is($another->blocks->[0]->header,'usage:','Help ok');
+   
+    local @ARGV = qw(yetanothercommand -ab --bool3);
+    my $yetanother = Test03->new_with_command(private => 'test');
+    isa_ok($yetanother,'Test03::YetAnotherCommand');
+    is($yetanother->private,'test','Option has been passed on');
 };
 
-subtest 'Attributes from role ' => sub {
+subtest 'Attributes from role' => sub {
     local @ARGV = qw(somecommand --roleattr a --another b);
-    my $test03 = Test03->new_with_command;
+    my $test03 = Test03->new_with_command();
     isa_ok($test03,'Test03::SomeCommand');
     is($test03->roleattr,'a','Attribute from role ok');
 };
