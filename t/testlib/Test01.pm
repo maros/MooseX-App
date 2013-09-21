@@ -3,6 +3,8 @@ package Test01;
 use Moose;
 use MooseX::App qw(Config Env);
 
+app_strict 1;
+
 option 'global' => (
     isa             => 'Int',
     is              => 'rw',

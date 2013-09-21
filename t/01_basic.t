@@ -2,7 +2,7 @@
 
 # t/01_basic.t - Basic tests
 
-use Test::Most tests => 11+1;
+use Test::Most tests => 12+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -122,5 +122,12 @@ subtest 'Missing command' => sub {
     my $test10 = Test01->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
     is($test10->blocks->[0]->header,'Missing command','Error message ok'); 
+};
+
+subtest 'Extra params' => sub {
+    local @ARGV = qw(command_a something else);
+    my $test11 = Test01->new_with_command;
+    isa_ok($test11,'MooseX::App::Message::Envelope');
+    is($test11->blocks->[0]->header,"Unknown parameter 'else'",'Error message ok'); 
 };
 
