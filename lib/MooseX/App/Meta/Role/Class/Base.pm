@@ -133,7 +133,7 @@ sub command_args {
     }
     
     # Handle all unconsumed parameters and options
-    if ($self->app_strict) {
+    if ($self->app_strict || $metaclass->command_strict) {
         foreach my $parameter ($parsed_argv->available('parameter')) {
             unshift(@{$errors},
                 $self->command_message(

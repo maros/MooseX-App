@@ -169,4 +169,10 @@ sub command_usage($) {
     return $meta->command_usage($usage);
 }
 
+sub command_strict($) {
+    my ( $meta, $value ) = @_;
+    return $meta->command_strict($value);
+}
+
+
 1;

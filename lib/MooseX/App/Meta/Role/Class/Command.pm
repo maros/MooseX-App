@@ -31,6 +31,12 @@ has 'command_usage' => (
     lazy_build  => 1,
 );
 
+has 'command_strict' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 0,
+);
+
 sub command_short_description_predicate {
     my ($self) = @_;  
     return $self->_command_description_predicate('command_short_description');
