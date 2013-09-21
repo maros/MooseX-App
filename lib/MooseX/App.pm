@@ -152,7 +152,7 @@ you should use L<MooseX::App::Simple> instead)
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important
-  extends qw(MyApp); # purely optional, only if you want to use global options from base class
+  extends qw(MyApp); # optional, only if you want to use global options from base class
   
   parameter 'some_parameter' => (
       is            => 'rw',
@@ -415,6 +415,18 @@ Display full manpage
 
 =back
 
+=head1 CAVEATS & KNOWN BUGS
+
+Startup time may be an issue. If you do not require plugins and ability for
+fine grained customisation then you should probably use L<MooX::Options> 
+or L<MooX::Cmd>.
+
+In some cases - especially when using non-standard class inheritance - you may
+end up with command classes lacking the help attribute. In this case you need
+to include the following line in your base class
+
+ with qw(MooseX::App::Role::Common);
+
 =head1 SEE ALSO
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
@@ -422,7 +434,8 @@ MooseX::App command line application.
 
 For alternatives you can check out
 
-L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options> and L<App::Cmd>
+L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options>, 
+L<MooX::Cmd>  and L<App::Cmd>
 
 =head1 SUPPORT
 
