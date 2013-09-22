@@ -43,8 +43,8 @@ sub man {
         $class = $meta->name;
     }
     
+    Class::Load::load_class($class);
     my $filename = MooseX::App::Utils::package_to_filename($class);
-    say "CLASS $class -> $app -> ".($self->command//'none') ." -> $filename";
     
     exec('perldoc',$filename);
     #return $MooseX::App::Null::NULL;
