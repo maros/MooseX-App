@@ -766,7 +766,7 @@ be changed via the app_base accessor. Defaults to the base name of $0
 
 =head2 app_fuzzy
 
-Boolean attribute that controlls if command names and attributes should be 
+Boolean flag that controlls if command names and attributes should be 
 matched exactly or fuzzy. Defaults to true.
 
 =head2 app_command_name
@@ -777,6 +777,13 @@ names and attributes. Defaults to &MooseX::App::Utils::class_to_command
 =head2 app_commands
 
 Hashref with command to command class map.
+
+=head2 app_strict
+
+Boolean flag that controls if an application with superfluous/unknown 
+positional parameters should terminate with an error message or not. 
+If disabled all extra parameters will be copied to the L<extra_argv> 
+command class attribute.
 
 =head1 METHODS
 

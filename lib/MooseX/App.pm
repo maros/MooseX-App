@@ -323,7 +323,10 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 If strict is enabled the programm will terminate with an error message if
 superfluous/unknown positional parameters are supplied. If disabled all 
-extra parameters will be copied to the L<extra_argv> attribute.
+extra parameters will be copied to the L<extra_argv> attribute. 
+
+The command_strict config in the command classes allows to set this option
+individually for each command.
 
 =head2 app_command_name
 
