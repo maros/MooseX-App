@@ -43,3 +43,5 @@
 nytprof/
 meta/
 nytprof.out
+t/cover.css
+t/coverage.html

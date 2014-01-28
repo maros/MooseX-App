@@ -1,5 +1,11 @@
 Changes for MooseX-App
 
+1.23 Mon, Jan 27, 2014
+    - Documentation
+    - Manual plugin
+    - More inheritance tests
+    - Cleanup deprecated code
+
 1.22 Fri, May 24, 2013
     - Silence experimental::smartmatch warnings on 5.18 (Mike Doherty)
 

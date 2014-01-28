@@ -34,6 +34,9 @@ lib/MooseX/App/Plugin/Env.pm
 lib/MooseX/App/Plugin/Env/Meta/Attribute.pm
 lib/MooseX/App/Plugin/Env/Meta/Class.pm
 lib/MooseX/App/Plugin/Fuzzy.pm
+lib/MooseX/App/Plugin/Man.pm
+lib/MooseX/App/Plugin/Man/Command.pm
+lib/MooseX/App/Plugin/Man/Meta/Class.pm
 lib/MooseX/App/Plugin/Typo.pm
 lib/MooseX/App/Plugin/Typo/Meta/Class.pm
 lib/MooseX/App/Plugin/Version.pm
@@ -85,6 +88,7 @@ t/testlib/Test03/ExtraCommand.pm
 t/testlib/Test03/Role/TestRole.pm
 t/testlib/Test03/SomeCommand.pm
 t/testlib/Test03/YetAnotherCommand.pm
+t/testlib/Test03CommandBase.pm
 t/testlib/Test04.pm
 t/testlib/Test04Base.pm
 t/testlib/Test05.pm
