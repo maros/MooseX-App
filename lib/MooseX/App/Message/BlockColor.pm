@@ -13,6 +13,12 @@ no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 use Term::ANSIColor qw();
 use IO::Interactive qw(is_interactive);
 
+BEGIN {
+    if ($^O eq 'MSWin32') {
+        Class::Load::try_load_class('Win32::Console::ANSI');
+    }
+};
+
 sub stringify {
     my ($self) = @_;
     
