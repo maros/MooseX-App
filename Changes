@@ -1,5 +1,11 @@
 Changes for MooseX-App
 
+1.24 ?
+    - Fix POD warnings (David Golden)
+    - Always reuse existing MooseX::App::ParsedArgv instances
+    - Parse @ARGV as soon as possible
+    - Fix Win32 colorisation issues (J.R. Mash)
+
 1.23 Mon, Jan 27, 2014
     - Documentation
     - Manual plugin
