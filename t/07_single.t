@@ -24,3 +24,9 @@ subtest 'Single command' => sub {
     is($test05->some_option,1,'Arg from new_with_options');
 };
 
+subtest 'Single command help' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(--help)]);
+    my $test05 = Test05->new_with_options();
+    isa_ok($test05,'MooseX::App::Message::Envelope');
+    is($test05->blocks->[0]->header,"usage:","Usage header is first");
+};
