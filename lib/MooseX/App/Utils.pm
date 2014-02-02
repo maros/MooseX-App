@@ -157,6 +157,7 @@ sub parse_pod {
                 $pod{NAME} = $content;
             } else {
                 my $content = _pod_node_to_text($element->children);
+                next unless defined $content;
                 chomp($content);
                 $pod{uc($element->content)} = $content; 
             }
