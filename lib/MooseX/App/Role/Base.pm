@@ -8,11 +8,6 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
-#has ARGV => (
-#    is => 'rw', 
-#    isa => 'ArrayRef', 
-#);
-
 sub initialize_command_class {
     my ($class,$command_class,%args) = @_;
 
