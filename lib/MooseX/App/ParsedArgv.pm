@@ -35,12 +35,6 @@ has 'argv' => (
     },
 );
 
-#has 'fuzzy' => (
-#    is              => 'rw',
-#    isa             => 'Bool',
-#    required        => 1,
-#);
-
 has 'hints' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
