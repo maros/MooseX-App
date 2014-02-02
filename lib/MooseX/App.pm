@@ -394,7 +394,7 @@ Colorful output for your MooseX::App applications
 
 =item * L<MooseX::App::Plugin::Config>
 
-Config files your MooseX::App applications
+Config files for MooseX::App applications
 
 =item * L<MooseX::App::Plugin::ConfigHome>
 
@@ -463,7 +463,7 @@ Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012-13 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-14 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as 
 perl itself. The full text of the licence can be found in the LICENCE file 
