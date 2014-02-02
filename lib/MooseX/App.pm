@@ -81,7 +81,7 @@ sub new_with_command {
     }
     
     # Get ARGV
-    my $parsed_argv = MooseX::App::ParsedArgv->new();
+    my $parsed_argv = MooseX::App::ParsedArgv->instance();
     my $first_argv = $parsed_argv->first_argv;
     
     # No args
