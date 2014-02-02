@@ -10,7 +10,7 @@ use lib 't/testlib';
 use Test03;
 
 subtest 'Bash completion' => sub {
-    local @ARGV = qw(bash_completion);
+    MooseX::App::ParsedArgv->new(argv => [qw(bash_completion)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     my $bash_completion = $test01->stringify;
@@ -20,7 +20,7 @@ subtest 'Bash completion' => sub {
 };
 
 subtest 'Version' => sub {
-    local @ARGV = qw(version);
+    MooseX::App::ParsedArgv->new(argv => [qw(version)]);
     my $test02 = Test03->new_with_command;
     isa_ok($test02,'MooseX::App::Message::Envelope');
     my $version = $test02->stringify;

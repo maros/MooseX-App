@@ -11,22 +11,21 @@ use lib 't/testlib';
 use Test01;
 
 subtest 'Excact command with option' => sub {
-    explain();
-    local @ARGV = qw(command_a --global 10);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --global 10)]);
     my $test01 = Test01->new_with_command({ global => 5 });
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'10','Param is set');
 };
 
 subtest 'Fuzzy command with option' => sub {
-    local @ARGV = qw(Command_A --global 10);
+    MooseX::App::ParsedArgv->new(argv => [qw(Command_A --global 10)]);
     my $test02 = Test01->new_with_command( global => 5 );
     isa_ok($test02,'Test01::CommandA');
     is($test02->global,'10','Param is set');
 };
 
 subtest 'Wrong command' => sub {
-    local @ARGV = qw(xxxx --global 10);
+    MooseX::App::ParsedArgv->new(argv => [qw(xxxx --global 10)]);
     my $test03 = Test01->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
     is($test03->blocks->[0]->header,"Unknown command 'xxxx'",'Message is set');
@@ -47,7 +46,7 @@ subtest 'Wrong command' => sub {
 };
 
 subtest 'Help for command' => sub {
-    local @ARGV = qw(command_a --help);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --help)]);
     my $test04 = Test01->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
     is($test04->blocks->[0]->header,"usage:",'Usage is set');
@@ -72,7 +71,7 @@ subtest 'Help for command' => sub {
 };
 
 subtest 'With extra args' => sub {
-    local @ARGV = qw(Command_b --global 10);
+    MooseX::App::ParsedArgv->new(argv => [qw(Command_b --global 10)]);
     my $test02 = Test01->new_with_command( 'param_b' => 'bbb', 'global' => 20, 'private'=>5  );
     isa_ok($test02,'Test01::CommandB');
     is($test02->global,10,'Param global is set');
@@ -86,7 +85,7 @@ subtest 'Wrapper script' => sub {
 };
 
 subtest 'Custom help text' => sub {
-    local @ARGV = qw(command_b --help);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_b --help)]);
     my $test06 = Test01->new_with_command;
     isa_ok($test06,'MooseX::App::Message::Envelope');
     is($test06->blocks->[0]->header,"usage:",'Usage is set');
@@ -96,14 +95,14 @@ subtest 'Custom help text' => sub {
 };
 
 subtest 'Input errors missing' => sub {
-    local @ARGV = qw(command_a --command_local1);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1)]);
     my $test07 = Test01->new_with_command;
     isa_ok($test07,'MooseX::App::Message::Envelope');
     is($test07->blocks->[0]->header,"Missing value for 'command_local1'",'Error message ok');
 };
 
 subtest 'Input errors type' => sub {
-    local @ARGV = qw(command_a --command_local1 sss);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1 sss)]);
     my $test08 = Test01->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
     is($test08->blocks->[0]->header,"Invalid value for 'command_local1'",'Error message ok');
@@ -111,21 +110,21 @@ subtest 'Input errors type' => sub {
 };
 
 subtest 'Global help requested' => sub {
-    local @ARGV = qw(help);
+    MooseX::App::ParsedArgv->new(argv => [qw(help)]);
     my $test09 = Test01->new_with_command;
     isa_ok($test09,'MooseX::App::Message::Envelope');
     like($test09->blocks->[0]->body,qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok'); 
 };
 
 subtest 'Missing command' => sub {
-    local @ARGV = qw();
+    MooseX::App::ParsedArgv->new(argv => []);
     my $test10 = Test01->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
     is($test10->blocks->[0]->header,'Missing command','Error message ok'); 
 };
 
 subtest 'Extra params' => sub {
-    local @ARGV = qw(command_a something else);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a something else)]);
     my $test11 = Test01->new_with_command;
     isa_ok($test11,'MooseX::App::Message::Envelope');
     is($test11->blocks->[0]->header,"Unknown parameter 'else'",'Error message ok'); 

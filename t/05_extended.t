@@ -14,14 +14,14 @@ Test03->meta->app_fuzzy(0);
 Test03->meta->app_strict(1);
 
 subtest 'Non-Fuzzy command matching' => sub {
-    local @ARGV = qw(some --private 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(some --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     is($test01->blocks->[0]->header,"Unknown command 'some'","Message ok");
 };
 
 subtest 'Non-Fuzzy attribute matching' => sub {
-    local @ARGV = qw(somecommand --private 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
@@ -30,7 +30,7 @@ subtest 'Non-Fuzzy attribute matching' => sub {
 Test03->meta->app_fuzzy(1);
 
 subtest 'Private option is not exposed' => sub {
-    local @ARGV = qw(some --private 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(some --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
@@ -38,7 +38,7 @@ subtest 'Private option is not exposed' => sub {
 };
 
 subtest 'Options from role' => sub {
-    local @ARGV = qw(some --another 10 --role 15);
+    MooseX::App::ParsedArgv->new(argv => [qw(some --another 10 --role 15)]);
     my $test02 = Test03->new_with_command;
     isa_ok($test02,'Test03::SomeCommand');
     is($test02->another_option,'10','Param is set');
@@ -46,7 +46,7 @@ subtest 'Options from role' => sub {
 };
 
 subtest 'Missing attribute value' => sub {
-    local @ARGV = qw(some --another);
+    MooseX::App::ParsedArgv->new(argv => [qw(some --another)]);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
     is($test03->blocks->[0]->header,"Missing value for 'another'","Message ok");
@@ -54,7 +54,7 @@ subtest 'Missing attribute value' => sub {
 };
 
 subtest 'All options available & no description' => sub {
-    local @ARGV = qw(some --help);
+    MooseX::App::ParsedArgv->new(argv => [qw(some --help)]);
     my $test04 = Test03->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
     is($test04->blocks->[2]->header,'options:','No description');
@@ -77,35 +77,35 @@ subtest 'Test wrapper script error' => sub {
 #}
 
 subtest 'Test type constraints integer' => sub {
-    local @ARGV = qw(another --int 1a);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --int 1a)]);
     my $test05 = Test03->new_with_command;
     isa_ok($test05,'MooseX::App::Message::Envelope');
     is($test05->blocks->[0]->header,"Invalid value for 'integer'","Message ok");
 };
 
 subtest 'Test type constraints hash' => sub {
-    local @ARGV = qw(another --hash xx);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --hash xx)]);
     my $test06 = Test03->new_with_command;
     isa_ok($test06,'MooseX::App::Message::Envelope');
     is($test06->blocks->[0]->header,"Invalid value for 'hash'","Message ok");
 };
 
 subtest 'Test type constraints number' => sub {
-    local @ARGV = qw(another --number 2a);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --number 2a)]);
     my $test07 = Test03->new_with_command;
     isa_ok($test07,'MooseX::App::Message::Envelope');
     is($test07->blocks->[0]->header,"Invalid value for 'number'","Message ok");
 };
 
 subtest 'Test type constraints custom1' => sub {
-    local @ARGV = qw(another --custom1 9);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --custom1 9)]);
     my $test08 = Test03->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
     is($test08->blocks->[0]->header,"Invalid value for 'custom1'","Message ok");
 };
 
 subtest 'Test pass type constraints' => sub {
-    local @ARGV = qw(another --hash key1=value1 --split a;b --split c --hash key2=value2 --integer 10 --number 10.10 --custom1 11 --custom2 test --extra1 wurtsch);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --hash key1=value1 --split a;b --split c --hash key2=value2 --integer 10 --number 10.10 --custom1 11 --custom2 test --extra1 wurtsch)]);
     my $test09 = Test03->new_with_command;
     isa_ok($test09,'Test03::AnotherCommand');
     is($test09->hash->{key1},"value1","Hash ok");
@@ -119,7 +119,7 @@ subtest 'Test pass type constraints' => sub {
 };
 
 subtest 'Test ambiguous options' => sub {
-    local @ARGV = qw(another --custom 1 --custom 2);
+    MooseX::App::ParsedArgv->new(argv => [qw(another --custom 1 --custom 2)]);
     my $test10 = Test03->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
     is($test10->blocks->[0]->header,"Ambiguous option 'custom'","Message ok");
@@ -129,7 +129,7 @@ subtest 'Test ambiguous options' => sub {
 };
 
 subtest 'Test flags & defaults' => sub {
-    local @ARGV = qw(yet --bool3);
+    MooseX::App::ParsedArgv->new(argv => [qw(yet --bool3)]);
     my $test11 = Test03->new_with_command;
     isa_ok($test11,'Test03::YetAnotherCommand');
     is($test11->bool1,undef,'Bool1 flag is undef');
@@ -139,7 +139,7 @@ subtest 'Test flags & defaults' => sub {
 };
 
 subtest 'Test more flags & defaults' => sub {
-    local @ARGV = qw(yet --bool3 -ab --value baer);
+    MooseX::App::ParsedArgv->new(argv => [qw(yet --bool3 -ab --value baer)]);
     my $test11 = Test03->new_with_command;
     isa_ok($test11,'Test03::YetAnotherCommand');
     is($test11->bool1,1,'Bool1 flag is undef');
@@ -149,7 +149,7 @@ subtest 'Test more flags & defaults' => sub {
 };
 
 subtest 'Test positional params' => sub {
-    local @ARGV = qw(extra hui --value baer);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra hui --value baer)]);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
     is($test12->extra1,'hui','Extra1 value is "hui"');
@@ -159,7 +159,7 @@ subtest 'Test positional params' => sub {
 };
 
 subtest 'Test positional params' => sub {
-    local @ARGV = qw(extra --value baer hui);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra --value baer hui)]);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
     is($test12->extra1,'hui','Extra1 value is "hui"');
@@ -169,7 +169,7 @@ subtest 'Test positional params' => sub {
 };
 
 subtest 'Test optional positional params' => sub {
-    local @ARGV = qw(extra hui 11 --value baer);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra hui 11 --value baer)]);
     my $test12 = Test03->new_with_command;
     isa_ok($test12,'Test03::ExtraCommand');
     is($test12->extra1,'hui','Extra1 value is "hui"');
@@ -179,7 +179,7 @@ subtest 'Test optional positional params' => sub {
 };
 
 subtest 'Test wrong positional params' => sub {
-    local @ARGV = qw(extra hui aa --value baer);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra hui aa --value baer)]);
     my $test13 = Test03->new_with_command;
     isa_ok($test13,'MooseX::App::Message::Envelope');
     is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Error message ok");
@@ -190,7 +190,7 @@ subtest 'Test wrong positional params' => sub {
 };
 
 subtest 'Test missing positional params' => sub {
-    local @ARGV = qw(extra  --value baer);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra  --value baer)]);
     my $test13 = Test03->new_with_command;
     isa_ok($test13,'MooseX::App::Message::Envelope');
     is($test13->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
@@ -200,7 +200,7 @@ Test03->meta->app_fuzzy(1);
 Test03->meta->app_strict(0);
 
 subtest 'Test extra positional params' => sub {
-    local @ARGV = qw(extra p1 22 33 marder dachs --value 44 --flag luchs --flagg fuchs -- baer --hase);
+    MooseX::App::ParsedArgv->new(argv => [qw(extra p1 22 33 marder dachs --value 44 --flag luchs --flagg fuchs -- baer --hase)]);
     my $test14 = Test03->new_with_command;
     isa_ok($test14,'Test03::ExtraCommand');
     is($test14->extra1,'p1','Param 1 ok');

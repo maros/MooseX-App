@@ -11,7 +11,7 @@ use Test04;
 use Test03;
 
 subtest 'Extend base class' => sub {
-    local @ARGV = qw();
+    MooseX::App::ParsedArgv->new(argv => [qw()]);
     my $test01 = Test04->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     like($test01->blocks->[2]->body,qr/--test1\s+\[Integer\]/,'--test1 included');
@@ -28,35 +28,35 @@ subtest 'Wrong usage' => sub {
 };
 
 subtest 'Conflicts' => sub {
-    local @ARGV = qw(broken --conflict a);
+    MooseX::App::ParsedArgv->new(argv => [qw(broken --conflict a)]);
     throws_ok { 
         Test03->new_with_command;
     } qr/Command line option conflict/, 'Conflict detected';
 };
 
 subtest 'Default args available with extra inheritance' => sub {
-    local @ARGV = qw(yetanothercommand --help);
+    MooseX::App::ParsedArgv->new(argv => [qw(yetanothercommand --help)]);
     my $another = Test03->new_with_command;
     
     isa_ok($another,'MooseX::App::Message::Envelope');
     like($another->blocks->[0]->body,qr/test03\syetanothercommand/,'Help ok');
     is($another->blocks->[0]->header,'usage:','Help ok');
    
-    local @ARGV = qw(yetanothercommand -ab --bool3);
+    MooseX::App::ParsedArgv->new(argv => [qw(yetanothercommand -ab --bool3)]);
     my $yetanother = Test03->new_with_command(private => 'test');
     isa_ok($yetanother,'Test03::YetAnotherCommand');
     is($yetanother->private,'test','Option has been passed on');
 };
 
 subtest 'Attributes from role' => sub {
-    local @ARGV = qw(somecommand --roleattr a --another b);
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand --roleattr a --another b)]);
     my $test03 = Test03->new_with_command();
     isa_ok($test03,'Test03::SomeCommand');
     is($test03->roleattr,'a','Attribute from role ok');
 };
 
 subtest 'Correct order from role ' => sub {
-    local @ARGV = qw(somecommand a1 b2 c3 --another b);
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand a1 b2 c3 --another b)]);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'Test03::SomeCommand');
     is($test03->param_c,'a1','First from role');

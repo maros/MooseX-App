@@ -10,14 +10,14 @@ use lib 't/testlib';
 use Test01;
 
 subtest 'Command with argv' => sub {
-    local @ARGV = qw(command_a --command_local1 11 --global 1);
+   MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1 11 --global 1)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     is($test01->command_local1,'11','Arg from command config');
 };
 
 subtest 'Command only with env' => sub {
-    local @ARGV = qw(command_a  --global 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a  --global 1)]);
     local $ENV{LOCAL1} = 12;
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
@@ -25,7 +25,7 @@ subtest 'Command only with env' => sub {
 };
 
 subtest 'Command with env and argv' => sub {
-    local @ARGV = qw(command_a --command_local1 13 --global 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1 13 --global 1)]);
     local $ENV{LOCAL1} = 12;
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
@@ -33,7 +33,7 @@ subtest 'Command with env and argv' => sub {
 };
 
 subtest 'Env not passing type constraint' => sub {
-    local @ARGV = qw(command_a --global 1);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --global 1)]);
     local $ENV{LOCAL1} = 'aa';
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');

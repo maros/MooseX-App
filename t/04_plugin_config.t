@@ -10,7 +10,7 @@ use lib 't/testlib';
 use Test01;
 
 subtest 'Command with config' => sub {
-    local @ARGV = qw(command_a --config t/config.pl);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --config t/config.pl)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     
@@ -21,14 +21,14 @@ subtest 'Command with config' => sub {
 };
 
 subtest 'Another command with config' => sub {
-    local @ARGV = qw(command_b --config t/config.pl --param_b bbb);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_b --config t/config.pl --param_b bbb)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandB');
     is($test01->global,'123','Arg from command config');
 };
 
 subtest 'Command with config and argv' => sub {
-    local @ARGV = qw(command_a --config t/config.pl --global 1234);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --config t/config.pl --global 1234)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
     is($test01->global,'1234','Arg from command config');
@@ -36,7 +36,7 @@ subtest 'Command with config and argv' => sub {
 };
 
 subtest 'Missing config' => sub {
-    local @ARGV = qw(command_a --config t/nosuchfile.pl --global 1234);
+    MooseX::App::ParsedArgv->new(argv => [qw(command_a --config t/nosuchfile.pl --global 1234)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     like($test01->blocks->[0]->header,qr/Could not find/,'Error message set');
