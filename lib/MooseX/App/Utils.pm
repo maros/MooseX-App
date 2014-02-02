@@ -152,6 +152,7 @@ sub parse_pod {
         
             if ($element->content eq 'NAME') {
                 my $content = _pod_node_to_text($element->children);
+                next unless defined $content;
                 $content =~ s/^$package(\s-)?\s//;
                 chomp($content);
                 $pod{NAME} = $content;
