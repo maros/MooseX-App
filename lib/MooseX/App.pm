@@ -459,7 +459,8 @@ your report as I make changes.
 =head1 CONTRIBUTORS
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
-Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
+Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
+J.R. Mash
 
 =head1 COPYRIGHT
 
