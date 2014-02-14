@@ -12,8 +12,6 @@ use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);
 
-our $VERSION = '1.15';
-
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
     with_meta           => [ qw(app_base app_fuzzy app_strict option parameter command_short_description command_long_description command_usage command_strict) ],
     also                => [ 'Moose' ],
