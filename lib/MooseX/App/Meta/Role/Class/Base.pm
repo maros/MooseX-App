@@ -50,6 +50,12 @@ has 'app_command_name' => (
     default     => sub { \&MooseX::App::Utils::class_to_command },
 );
 
+has 'app_prefer_commandline' => (
+    is              => 'rw',
+    isa             => 'Bool',
+    default         => 0,
+);
+
 has 'app_commands' => (
     is          => 'rw',
     isa         => 'HashRef[Str]',

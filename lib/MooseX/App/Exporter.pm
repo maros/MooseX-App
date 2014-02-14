@@ -74,6 +74,11 @@ sub _handle_attribute {
     return;
 }
 
+sub app_prefer_commandline($) {
+    my ( $meta, $value ) = @_;
+    return $meta->app_prefer_commandline($value);
+}
+
 sub app_strict($) {
     my ( $meta, $value ) = @_;
     return $meta->app_strict($value);
