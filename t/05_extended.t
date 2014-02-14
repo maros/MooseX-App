@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 21+1;
+use Test::Most tests => 23+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -190,10 +190,10 @@ subtest 'Test wrong positional params' => sub {
 };
 
 subtest 'Test missing positional params' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(extra  --value baer)]);
-    my $test13 = Test03->new_with_command;
-    isa_ok($test13,'MooseX::App::Message::Envelope');
-    is($test13->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
+    MooseX::App::ParsedArgv->new(argv => [qw(extra  --value  baer)]);
+    my $test14 = Test03->new_with_command;
+    isa_ok($test14,'MooseX::App::Message::Envelope');
+    is($test14->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
 };
 
 Test03->meta->app_fuzzy(1);
@@ -201,16 +201,40 @@ Test03->meta->app_strict(0);
 
 subtest 'Test extra positional params' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(extra p1 22 33 marder dachs --value 44 --flag luchs --flagg fuchs -- baer --hase)]);
-    my $test14 = Test03->new_with_command;
-    isa_ok($test14,'Test03::ExtraCommand');
-    is($test14->extra1,'p1','Param 1 ok');
-    is($test14->extra2,'22','Param 2 ok');
-    is($test14->alpha,'33','Param 3 ok');
-    is($test14->extra_argv->[0],'marder','Uncomsumed parameter ok');
-    is($test14->extra_argv->[1],'dachs','Uncomsumed parameter ok');
-    is($test14->extra_argv->[2],'luchs','Uncomsumed option ok');
-    is($test14->extra_argv->[3],'fuchs','Uncomsumed option ok');
-    is($test14->extra_argv->[4],'baer','Uncomsumed option ok');
-    is($test14->extra_argv->[5],'--hase','Uncomsumed option ok');
+    my $test15 = Test03->new_with_command;
+    isa_ok($test15,'Test03::ExtraCommand');
+    is($test15->extra1,'p1','Param 1 ok');
+    is($test15->extra2,'22','Param 2 ok');
+    is($test15->alpha,'33','Param 3 ok');
+    is($test15->extra_argv->[0],'marder','Uncomsumed parameter ok');
+    is($test15->extra_argv->[1],'dachs','Uncomsumed parameter ok');
+    is($test15->extra_argv->[2],'luchs','Uncomsumed option ok');
+    is($test15->extra_argv->[3],'fuchs','Uncomsumed option ok');
+    is($test15->extra_argv->[4],'baer','Uncomsumed option ok');
+    is($test15->extra_argv->[5],'--hase','Uncomsumed option ok');
+};
+
+subtest 'Test parameter preference' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(extra extra1 22 --value 13 --flag)]);
+    my $test16 = Test03->new_with_command(extra1 => 'extra1man', value => 14, flag => 0, flaggo => 1);
+    isa_ok($test16,'Test03::ExtraCommand');
+    is($test16->extra1,"extra1man","Extra param from new_with_command ok");
+    is($test16->extra2,22,"Extra param from argv ok");
+    is($test16->value,14,"value option from argv ok");
+    is($test16->flag,0,"Flag from new_with_command ok");
+    is($test16->flaggo,1,"Flago from new_with_command ok");
+};
+
+Test03->meta->app_prefer_commandline(1);
+
+subtest 'Test parameter preference reverse' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(extra extra1 22  --value 13 --flag)]);
+    my $test17 = Test03->new_with_command(extra1 => 'extra1man', value => 14, flag => 0, flaggo => 1);
+    isa_ok($test17,'Test03::ExtraCommand');
+    is($test17->extra1,"extra1","Extra param from new_with_command ok");
+    is($test17->extra2,22,"Extra param from argv ok");
+    is($test17->value,13,"value option from argv ok");
+    is($test17->flag,1,"Flag from new_with_command ok");
+    is($test17->flaggo,1,"Flago from new_with_command ok");
 };
 

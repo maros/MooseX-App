@@ -45,11 +45,20 @@ sub initialize_command_class {
     my ($result,$errors) = $meta->command_args($command_meta);
     push(@errors,@{$errors});
     
-    my %params = (            
-        %args,              # configs passed to new
-        %{ $proto_result }, # config params
-        %{ $result },       # params from CLI
-    );
+    my %params;
+    if ($meta->app_prefer_commandline) {
+        %params = (            
+            %args,              # configs passed to new
+            %{ $proto_result }, # config params
+            %{ $result },       # params from CLI
+        );
+    } else {
+        %params = (            
+            %{ $proto_result }, # config params
+            %{ $result },       # params from CLI
+            %args,              # configs passed to new
+        );
+    }
     
     # Check required values
     foreach my $attribute ($meta->command_usage_attributes($command_meta,[qw(option proto parameter)])) {

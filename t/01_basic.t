@@ -12,16 +12,16 @@ use Test01;
 
 subtest 'Excact command with option' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --global 10)]);
-    my $test01 = Test01->new_with_command({ global => 5 });
+    my $test01 = Test01->new_with_command();
     isa_ok($test01,'Test01::CommandA');
-    is($test01->global,'10','Param is set');
+    is($test01->global,10,'Param is set');
 };
 
 subtest 'Fuzzy command with option' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(Command_A --global 10)]);
-    my $test02 = Test01->new_with_command( global => 5 );
+    MooseX::App::ParsedArgv->new(argv => [qw(Command_A --globa 10)]);
+    my $test02 = Test01->new_with_command();
     isa_ok($test02,'Test01::CommandA');
-    is($test02->global,'10','Param is set');
+    is($test02->global,10,'Param is set');
 };
 
 subtest 'Wrong command' => sub {
@@ -71,10 +71,10 @@ subtest 'Help for command' => sub {
 };
 
 subtest 'With extra args' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(Command_b --global 10)]);
+    MooseX::App::ParsedArgv->new(argv => [qw(Command_b --global 10 --param_b aaa)]);
     my $test02 = Test01->new_with_command( 'param_b' => 'bbb', 'global' => 20, 'private'=>5  );
     isa_ok($test02,'Test01::CommandB');
-    is($test02->global,10,'Param global is set');
+    is($test02->global,20,'Param global is set');
     is($test02->param_b,'bbb','Param param_b is set');
     is($test02->private,5,'Param private is set');
 };
