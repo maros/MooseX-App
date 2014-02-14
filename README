@@ -22,15 +22,16 @@ SYNOPSIS
     you should use MooseX::App::Simple instead)
 
       package MyApp::SomeCommand;
-      use MooseX::App::Command; # important
+      use MooseX::App::Command; # important (also imports Moose)
       extends qw(MyApp); # optional, only if you want to use global options from base class
   
+      # Positional parameter
       parameter 'some_parameter' => (
           is            => 'rw',
           isa           => 'Str',
           required      => 1,
           documentation => q[Some parameter that you need to supply],
-      ); # Positional parameter
+      );
   
       option 'some_option' => (
           is            => 'rw',
@@ -44,7 +45,7 @@ SYNOPSIS
           # Do something
       }
 
-    And then in some simple wrapper script:
+    And then you need a simple wrapper script (called eg. myapp):
 
      #!/usr/bin/env perl
      use MyApp;
@@ -83,24 +84,24 @@ SYNOPSIS
          --help --usage -?  Prints this usage information. [Flag]
 
 DESCRIPTION
-    MooseX-App is a highly customizeable helper to write user-friendly
+    MooseX-App is a highly customisable helper to write user-friendly
     command line applications without having to worry about most of the
     annoying things usually involved. Just take any existing Moose class,
     add a single line ("use MooseX-App qw(PluginA PluginB ...);") and create
     one class for each command in an underlying namespace. Options and
     positional parameters can be defined as simple Moose accessors.
 
-    MooseX-App will then take care of
+    MooseX-App will then
 
-    *   Finding, loading and initializing the command classes
+    *   Find, load and initialise the command classes
 
-    *   Creating automated help and documentation from modules POD and
-        attributes
+    *   Create automated help and documentation from modules POD and
+        attributes metadata
 
-    *   Reading, encoding and validating the command line options and
-        positional parameters entered by the user
+    *   Read, encode and validate the command line options and positional
+        parameters entered by the user from @ARGV
 
-    *   Providing helpful error messages if user input cannot be validated
+    *   Provide helpful error messages if user input cannot be validated
 
     Commandline options are defined using the 'option' keyword which accepts
     the same attributes as Moose' 'has' keyword.
@@ -115,8 +116,8 @@ DESCRIPTION
       has 'some_option' => (
           is            => 'rw',
           isa           => 'Str',
-          traits        => ['AppOption'],
-          cmd_type      => 'option',
+          traits        => ['AppOption'],   # Load extra metaclass
+          cmd_type      => 'option',        # Set attribute type
       );
 
     Positional parameters are defined with the 'parameter' keyword
@@ -303,7 +304,8 @@ AUTHOR
 
 CONTRIBUTORS
     In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
-    Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez
+    Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David
+    Golden, J.R. Mash
 
 COPYRIGHT
     MooseX::App is Copyright (c) 2012-14 Maroš Kollár.
