@@ -791,6 +791,12 @@ positional parameters should terminate with an error message or not.
 If disabled all extra parameters will be copied to the L<extra_argv> 
 command class attribute.
 
+=head2 app_prefer_commandline
+
+By default, arguments passed to new_with_command and new_with_options have a 
+higher priority than the command line options. This boolean flag will give 
+the command line an higher priority.
+
 =head1 METHODS
 
 =head2 command_register

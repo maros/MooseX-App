@@ -151,15 +151,16 @@ Write multiple command classes (If you have only a single command class
 you should use L<MooseX::App::Simple> instead)
 
   package MyApp::SomeCommand;
-  use MooseX::App::Command; # important
+  use MooseX::App::Command; # important (also imports Moose)
   extends qw(MyApp); # optional, only if you want to use global options from base class
   
+  # Positional parameter
   parameter 'some_parameter' => (
       is            => 'rw',
       isa           => 'Str',
       required      => 1,
       documentation => q[Some parameter that you need to supply],
-  ); # Positional parameter
+  );
   
   option 'some_option' => (
       is            => 'rw',
@@ -173,7 +174,7 @@ you should use L<MooseX::App::Simple> instead)
       # Do something
   }
 
-And then in some simple wrapper script:
+And then you need a simple wrapper script (called eg. myapp):
  
  #!/usr/bin/env perl
  use MyApp;
@@ -213,24 +214,26 @@ or
 
 =head1 DESCRIPTION
 
-MooseX-App is a highly customizeable helper to write user-friendly 
+MooseX-App is a highly customisable helper to write user-friendly 
 command line applications without having to worry about most of the annoying 
 things usually involved. Just take any existing L<Moose> class, add a single 
 line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
 for each command in an underlying namespace. Options and positional parameters
 can be defined as simple L<Moose> accessors.
 
-MooseX-App will then take care of
+MooseX-App will then
 
 =over
 
-=item * Finding, loading and initializing the command classes
+=item * Find, load and initialise the command classes
 
-=item * Creating automated help and documentation from modules POD and attributes
+=item * Create automated help and documentation from modules POD and 
+attributes metadata
 
-=item * Reading, encoding and validating the command line options and positional parameters entered by the user
+=item * Read, encode and validate the command line options and positional 
+parameters entered by the user from @ARGV
 
-=item * Providing helpful error messages if user input cannot be validated
+=item * Provide helpful error messages if user input cannot be validated
 
 =back
 
@@ -247,8 +250,8 @@ This is equivalent to
   has 'some_option' => (
       is            => 'rw',
       isa           => 'Str',
-      traits        => ['AppOption'],
-      cmd_type      => 'option',
+      traits        => ['AppOption'],   # Load extra metaclass
+      cmd_type      => 'option',        # Set attribute type
   );
 
 Positional parameters are defined with the 'parameter' keyword
@@ -422,7 +425,7 @@ Display full manpage
 
 Startup time may be an issue. If you do not require plugins and ability for
 fine grained customisation then you should probably use L<MooX::Options> 
-or L<MooX::Cmd>.
+or L<MooX::Cmd>. 
 
 In some cases - especially when using non-standard class inheritance - you may
 end up with command classes lacking the help attribute. In this case you need
