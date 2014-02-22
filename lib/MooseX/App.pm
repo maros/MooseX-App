@@ -53,9 +53,9 @@ sub app_command_name(&) {
     return $meta->app_command_name($namesub);
 }
 
-sub app_namespace($) {
-    my ( $meta, $name ) = @_;
-    return $meta->app_namespace($name);
+sub app_namespace {
+    my $meta = shift;
+    return $meta->app_namespace( \@_ );
 }
 
 sub new_with_command {
@@ -305,10 +305,11 @@ be changed via the app_base function.
 
 =head2 app_namespace
 
- app_namespace 'MyApp::Commands';
+ app_namespace 'MyApp::Commands', 'YourApp::MoreCommands';
 
 Usually MooseX::App will take the package name of the base class as the 
-namespace for commands. This namespace can be changed.
+namespace for commands. This namespace can be changed and you can add
+several other namespaces.
 
 =head2 app_fuzzy
 

@@ -22,7 +22,7 @@ has 'app_messageclass' => (
 
 has 'app_namespace' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => 'ArrayRef[Str]',
     lazy_build  => 1,
 );
 
@@ -74,32 +74,35 @@ sub _build_app_messageclass {
 
 sub _build_app_namespace {
     my ($self) = @_;
-    return $self->name;
+    return [ $self->name ];
 }
 
 sub _build_app_commands {
     my ($self) = @_;
     
-    my $mpo = Module::Pluggable::Object->new(
-        search_path => [ $self->app_namespace ],
-    );
-    
-    my $namespace = $self->app_namespace;
-    my $commandsub = $self->app_command_name;
-    
     my %return;
-    foreach my $command_class ($mpo->plugins) {
-        my $command_class_name =  substr($command_class,length($namespace)+2);
+
+    foreach my $namespace ( @{ $self->app_namespace } )
+    {
+        my $mpo = Module::Pluggable::Object->new(
+            search_path => [ $namespace ],
+        );
         
-        next
-            if $command_class_name =~ m/::/;
-        
-        $command_class_name =~ s/^\Q$namespace\E:://;
-        $command_class_name =~ s/^.+::([^:]+)$/$1/;
-        
-        my $command = $commandsub->($command_class_name,$command_class);
-        
-        $return{$command} = $command_class;
+        my $commandsub = $self->app_command_name;
+
+        foreach my $command_class ($mpo->plugins) {
+            my $command_class_name =  substr($command_class,length($namespace)+2);
+            
+            next
+                if $command_class_name =~ m/::/;
+            
+            $command_class_name =~ s/^\Q$namespace\E:://;
+            $command_class_name =~ s/^.+::([^:]+)$/$1/;
+            
+            my $command = $commandsub->($command_class_name,$command_class);
+            
+            $return{$command} = $command_class;
+        }
     }
     
     return \%return;
