@@ -1,5 +1,9 @@
 Changes for MooseX-App
 
+1.25 Sun, Feb 24, 2014
+    - Allow multiple command namespaces (Thilo Fester)
+    - Documentation
+
 1.24 Fri, Feb 14, 2014
     - Fix POD warnings (David Golden)
     - Always reuse existing MooseX::App::ParsedArgv instances

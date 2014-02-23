@@ -39,7 +39,7 @@
 #   Mac OSX SMB mount metadata files
 \B\._
 
-^MooseX-App-\d\.\d+\.tar\.gz
+^MooseX-App-\d\.\d+\.tar(\.gz)?
 nytprof/
 meta/
 nytprof.out

@@ -165,10 +165,11 @@ GLOBAL OPTIONS
     changed via the app_base function.
 
   app_namespace
-     app_namespace 'MyApp::Commands';
+     app_namespace 'MyApp::Commands', 'YourApp::MoreCommands';
 
     Usually MooseX::App will take the package name of the base class as the
-    namespace for commands. This namespace can be changed.
+    namespace for commands. This namespace can be changed and you can add
+    several other namespaces.
 
   app_fuzzy
      app_fuzzy(1); # default
@@ -194,7 +195,7 @@ GLOBAL OPTIONS
      app_command_name {
          my ($package) = shift;
          # munge package name;
-         return $command_name
+         return $command_name;
      };
 
     This sub can be used to control how package names should be translated
@@ -207,7 +208,7 @@ GLOBAL ATTRIBUTES
     Carries all parameters from @ARGV that were not consumed.
 
   help_flag
-    Help flag option
+    Help flag that is set when help was requested.
 
 ATTRIBUTE OPTIONS
     *   cmd_tags - Extra tags
@@ -305,7 +306,7 @@ AUTHOR
 CONTRIBUTORS
     In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
     Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David
-    Golden, J.R. Mash
+    Golden, J.R. Mash, Thilo Fester
 
 COPYRIGHT
     MooseX::App is Copyright (c) 2012-14 Maroš Kollár.

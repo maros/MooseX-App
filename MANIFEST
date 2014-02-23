@@ -53,8 +53,6 @@ LICENCE
 Makefile.PL
 MANIFEST			This list of files
 META.yml
-MYMETA.json
-MYMETA.yml
 README
 t/00_load.t
 t/01_basic.t
@@ -81,6 +79,7 @@ t/testlib/Test02.pm
 t/testlib/Test02/Command/Error.pm
 t/testlib/Test02/Command/Record.pm
 t/testlib/Test02/Command/Required.pm
+t/testlib/Test02/MoreCommands/Test.pm
 t/testlib/Test03.pm
 t/testlib/Test03/AnotherCommand.pm
 t/testlib/Test03/BrokenCommand.pm

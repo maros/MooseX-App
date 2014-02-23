@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = 1.24;
+our $VERSION = 1.25;
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_base app_fuzzy app_strict app_prefer_commandline option parameter);
@@ -464,7 +464,7 @@ your report as I make changes.
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
-J.R. Mash
+J.R. Mash, Thilo Fester
 
 =head1 COPYRIGHT
 
