@@ -353,7 +353,7 @@ Carries all parameters from @ARGV that were not consumed.
 
 =head2 help_flag
 
-Help flag option
+Help flag that is set when help was requested.
 
 =head1 ATTRIBUTE OPTIONS
 

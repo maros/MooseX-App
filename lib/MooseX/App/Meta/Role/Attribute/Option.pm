@@ -217,9 +217,23 @@ MooseX::App::Meta::Role::Attribute::Option - Meta attribute role for options
 =head1 DESCRIPTION
 
 This meta attribute role will automatically be applied to all attributes
-that should be used as options.
+that should be used as options. 
 
 =head1 ACCESSORS
+
+In your app and command classes you can
+use the following attributes in option or parameter definitions.
+
+ option 'myoption' => (
+     is                 => 'rw',
+     isa                => 'ArrayRef[Str]',
+     documentation      => 'My special option',
+     cmd_flag           => 'myopt',
+     cmd_aliases        => [qw(mopt localopt)],
+     cmd_tags           => [qw(Important!)],
+     cmd_position       => 1,
+     cmd_split          => qr/,/,
+ );
 
 =head2 cmd_flag
 
@@ -229,13 +243,15 @@ Use this name instead of the attribute name as the option name
 
 Option to mark if this attribute should be used as an option or parameter value.
 
-Allowed values are
+Allowed values are:
 
 =over
 
 =item * option - Command line option
 
-=item * proto - Command line option that should be processed first  (eg. a config-file option that sets other attribues)
+=item * proto - Command line option that should be processed prior to other
+options (eg. a config-file option that sets other attribues) Usually only 
+used for plugin developmemt
 
 =item * parameter - Positional parameter command line value
 
@@ -251,12 +267,12 @@ Extra option tags displayed in the usage information (in brackets)
 
 =head2 cmd_position
 
-Override the order of the parameters in the help text.
+Override the order of the parameters in the usage message.
 
 =head2 cmd_split
 
 Splits multiple values at the given separator string or regular expression. 
-Only works in conjunction with an 'ArrayRef[*]' type constraint.
+Only works in conjunction with an 'ArrayRef[*]' type constraint (isa).
 
 =head1 METHODS
 
