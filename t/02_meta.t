@@ -11,12 +11,11 @@ use Test01;
 
 my $meta = Test01->meta;
 
-is($meta->app_namespace,'Test01','Command namespace ok');
 my $commands = $meta->app_commands;
 is(join(',',sort keys %{$commands}),'command_a,command_b,command_c1','Commands found');
 is(join(',',sort values %{$commands}),'Test01::CommandA,Test01::CommandB,Test01::CommandC1','Commands found');
 
-is($meta->app_namespace,'Test01','Command namespace ok');
+cmp_deeply($meta->app_namespace,[qw(Test01)],'Command namespace ok');
 is($meta->app_base,'02_meta.t','Command base ok');
 is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
 
