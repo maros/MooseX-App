@@ -52,9 +52,9 @@ has 'app_command_name' => (
 );
 
 has 'app_prefer_commandline' => (
-    is              => 'rw',
-    isa             => 'Bool',
-    default         => 0,
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => 0,
 );
 
 has 'app_commands' => (
@@ -81,32 +81,39 @@ sub _build_app_namespace {
 sub _build_app_commands {
     my ($self) = @_;
     
-    my %return;
-
-    foreach my $namespace ( @{ $self->app_namespace } )
-    {
-        my $mpo = Module::Pluggable::Object->new(
-            search_path => [ $namespace ],
-        );
-        
-        my $commandsub = $self->app_command_name;
-
-        foreach my $command_class ($mpo->plugins) {
-            my $command_class_name =  substr($command_class,length($namespace)+2);
-            
-            next
-                if $command_class_name =~ m/::/;
-            
-            $command_class_name =~ s/^\Q$namespace\E:://;
-            $command_class_name =~ s/^.+::([^:]+)$/$1/;
-            
-            my $command = $commandsub->($command_class_name,$command_class);
-            
-            $return{$command} = $command_class;
-        }
+    my @list;
+    foreach my $namespace ( @{ $self->app_namespace } ) {
+        push(@list,$self->command_scan_namespace($namespace));
     }
     
-    return \%return;
+    return { @list };
+}
+
+sub command_scan_namespace {
+    my ($self,$namespace) = @_;
+    
+    my $mpo = Module::Pluggable::Object->new(
+        search_path => [ $namespace ],
+    );
+    
+    my $commandsub = $self->app_command_name;
+
+    my %return;
+    foreach my $command_class ($mpo->plugins) {
+        my $command_class_name =  substr($command_class,length($namespace)+2);
+        
+        next
+            if $command_class_name =~ m/::/;
+        
+        $command_class_name =~ s/^\Q$namespace\E:://;
+        $command_class_name =~ s/^.+::([^:]+)$/$1/;
+        
+        my $command = $commandsub->($command_class_name,$command_class);
+        
+        $return{$command} = $command_class;
+    }
+    
+    return %return;
 }
 
 sub command_args {
