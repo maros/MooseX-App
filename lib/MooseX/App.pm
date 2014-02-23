@@ -53,9 +53,9 @@ sub app_command_name(&) {
     return $meta->app_command_name($namesub);
 }
 
-sub app_namespace {
-    my $meta = shift;
-    return $meta->app_namespace( \@_ );
+sub app_namespace(@) {
+    my ( $meta, @namespaces ) = @_;
+    return $meta->app_namespace( \@namespaces );
 }
 
 sub new_with_command {
@@ -337,7 +337,7 @@ individually for each command.
  app_command_name {
      my ($package) = shift;
      # munge package name;
-     return $command_name
+     return $command_name;
  };
 
 This sub can be used to control how package names should be translated

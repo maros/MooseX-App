@@ -5,7 +5,7 @@ use MooseX::App qw(BashCompletion ConfigHome Color Version Env Typo Man);
 
 our $VERSION = 1.01;
 
-app_namespace "Test02::Command";
+app_namespace "Test02::Command","Test02::MoreCommands";
 #app_fuzzy;
 
 sub run {
