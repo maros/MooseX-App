@@ -11,6 +11,27 @@ use List::Util qw(max);
 our $SCREEN_WIDTH = 78;
 our $INDENT = 4;
 
+use Moose::Util::TypeConstraints;
+
+subtype 'MooseX::App::Types::List' 
+    => as 'ArrayRef';
+
+coerce 'MooseX::App::Types::List'
+    => from 'Str'
+    => via { [$_] };
+
+subtype 'MooseX::App::Types::CmdTypes' 
+    => as enum([qw(proto option parameter)]);
+
+subtype 'MooseX::App::Types::MessageString' 
+    => as 'Str';
+
+coerce 'MooseX::App::Types::MessageString'
+    => from 'ArrayRef'
+    => via { sprintf(@{$_}) };
+
+no Moose::Util::TypeConstraints;
+
 sub class_to_command {
     my ($class) = @_;
     

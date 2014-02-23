@@ -8,18 +8,6 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
-use Moose::Util::TypeConstraints;
-
-subtype 'MooseX::App::Types::CmdAliases' 
-    => as 'ArrayRef';
-
-coerce 'MooseX::App::Types::CmdAliases'
-    => from 'Str'
-    => via { [$_] };
-
-subtype 'MooseX::App::Types::CmdTypes' 
-    => as enum([qw(proto option parameter)]);
-
 has 'cmd_type' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::CmdTypes',
@@ -40,14 +28,14 @@ has 'cmd_flag' => (
 
 has 'cmd_aliases' => (
     is          => 'rw',
-    isa         => 'MooseX::App::Types::CmdAliases',
+    isa         => 'MooseX::App::Types::List',
     predicate   => 'has_cmd_aliases',
     coerce      => 1,
 );
 
 has 'cmd_split' => (
     is          => 'rw',
-    isa         => union([qw(Str RegexpRef)]),
+    isa         => Moose::Util::TypeConstraints::union([qw(Str RegexpRef)]),
     predicate   => 'has_cmd_split',
 );
 
@@ -56,8 +44,6 @@ has 'cmd_position' => (
     isa => 'Int',
     default => 0,
 );
-
-no Moose::Util::TypeConstraints;
 
 my $GLOBAL_COUNTER = 1;
 

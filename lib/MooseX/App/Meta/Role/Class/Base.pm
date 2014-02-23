@@ -22,7 +22,8 @@ has 'app_messageclass' => (
 
 has 'app_namespace' => (
     is          => 'rw',
-    isa         => 'ArrayRef[Str]',
+    isa         => 'MooseX::App::Types::List',
+    coerce      => 1,
     lazy_build  => 1,
 );
 

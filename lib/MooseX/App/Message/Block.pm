@@ -10,17 +10,6 @@ use Moose;
 
 use MooseX::App::Utils;
 
-use Moose::Util::TypeConstraints;
-
-subtype 'MooseX::App::Types::MessageString' 
-    => as 'Str';
-
-coerce 'MooseX::App::Types::MessageString'
-    => from 'ArrayRef'
-    => via { sprintf(@{$_}) };
-
-no Moose::Util::TypeConstraints;
-
 use overload
     '""' => "stringify";
 
