@@ -915,6 +915,13 @@ if a validation error occurs.
 
 Returns a human-readable type constraint description.
 
+=head2 command_scan_namespace
+ 
+ my %namespaces = $self->command_scan_namespace($namespace);
+
+Scans a namespace for command classes. Returns a hash with command names
+as keys and package names as values.
+
 =head2 command_process_attributes
 
  my @attributes = $self->command_process_attributes($metaclass,[qw(option proto)]);
