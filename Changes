@@ -1,6 +1,9 @@
 Changes for MooseX-App
 
-1.25 Sun, Feb 24, 2014
+1.26 Mon, Feb 24, 2014
+    - Fix failing tests
+
+1.25 Sun, Feb 23, 2014
     - Allow multiple command namespaces (Thilo Fester)
     - Documentation
 
