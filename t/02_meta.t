@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 28+1;
+use Test::Most tests => 27+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
