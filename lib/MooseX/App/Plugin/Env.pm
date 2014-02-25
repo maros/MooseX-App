@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::BashCompletion - Read options from environment
+MooseX::App::Plugin::Env - Read options from environment
 
 =head1 SYNOPSIS
 

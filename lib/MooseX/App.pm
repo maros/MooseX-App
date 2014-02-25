@@ -376,7 +376,7 @@ documentation.
 
 =head1 PLUGINS
 
-The behaviour of MooseX-App can be customized with plugins. To load a
+The behaviour of MooseX-App can be customised with plugins. To load a
 plugin just pass a list of plugin names after the C<use MooseX-App> statement.
 
  use MooseX::App qw(PluginA PluginB);
