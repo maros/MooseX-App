@@ -217,7 +217,8 @@ you usually do not need to interact with this class.
 
 =head2 new
 
-Create a new MooseX::App::ParsedArgv instance. 
+Create a new MooseX::App::ParsedArgv instance. Needs to be called as soon
+as possible.
 
 =head2 instance 
 
@@ -231,7 +232,7 @@ Accessor for the original @ARGV.
 =head2 hints
 
 Accessor for an array of attributes that tells the parser which attributes
-should be regarded as flags without value.
+should be regarded as flags without values.
 
 =head2 first_argv
 

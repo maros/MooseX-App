@@ -100,7 +100,7 @@ if there is an error or if the user requests help.
 
 To avoid useless object type checks when working with this method, 
 MooseX::App::Message::Envelope follows the Null-class pattern. So you can do 
-this:
+this, no matter if new_with_command fails or not:
 
  MyApp->new_with_command->some_method->only_called_if_successful;
 

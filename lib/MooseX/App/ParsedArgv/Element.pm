@@ -76,7 +76,7 @@ MooseX::App::ParsedArgv::Element - Parsed element from @ARGV
 
 =head1 DESCRIPTION
 
-Every instance of this class represents a logical element from @ARGV
+Every instance of this class represents a logical entity from @ARGV
 
 =head1 METHODS
 
@@ -103,3 +103,5 @@ Consumes element. Dies if element is already consumed
 =head2 serialize
 
 Serializes element (Does not procuce output that is identical with original @ARGV)
+
+=cut

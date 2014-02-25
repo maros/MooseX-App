@@ -30,7 +30,7 @@ Changes for MooseX-App
 1.20 Mon, Apr 8, 2013
     - Add cmd_split and cmd_position option
     - Fixed parameter position (Yanick Champoux)
-    - app_strict option to set if app should termiate when unknown parameters
+    - app_strict option to set if app should terminate when unknown parameters
       or options are supplied
 
 1.19 Thu, Mar 28, 2013
@@ -51,14 +51,14 @@ Changes for MooseX-App
     - Better license parsing
     - Fix failing tests
     - Use Class::Load instead of Class::MOP to load classes
-    - Remove MooseX::Getopt depedency. Parse @ARGV ourself
+    - Remove MooseX::Getopt dependency. Parse @ARGV ourself
     - Renamed meta class methods to use single prefix
     - Moved meta class methods to attribute meta class
     - Much more tests (95% statement and 90% total coverage)
     - Better error handling for Environment plugin
 
 1.15 Fri, Jan 18, 2012
-    - Fix wrong attribute initalization order
+    - Fix wrong attribute initialisation order
 
 1.14 Tue, Jan 15, 2012
     - Fix failing test
@@ -91,7 +91,7 @@ Changes for MooseX-App
     - Fix failing load test
 
 1.08 Sat, Nov 17, 2012
-    - Refactor object initialization
+    - Refactor object initialisation
     - Fix missing bash-completion prefix (Steve Nolte)
     - Require latest MooseX::Getopt (Steve Nolte)
     - Fix Plugin::Version docs RT81186 (Michael G)
