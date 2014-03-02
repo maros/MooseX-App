@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = 1.26;
+our $VERSION = 1.27;
 
 use Moose::Exporter;
 use MooseX::App::Exporter qw(app_base app_fuzzy app_strict app_prefer_commandline option parameter command_short_description command_long_description command_usage command_strict);

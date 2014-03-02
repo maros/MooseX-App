@@ -1,5 +1,10 @@
 Changes for MooseX-App
 
+1.27 Sun, Mar 2, 2014
+    - Fix warnings on warnings on 5.18 again
+    - Documentation
+    - Fix spelling (Gregor Herrmann)
+    
 1.26 Mon, Feb 24, 2014
     - Fix failing tests
 
