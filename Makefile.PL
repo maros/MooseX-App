@@ -20,8 +20,8 @@ requires        'MooseX::Types::Path::Class'    => 0;
 requires        'Config::Any'                   => 0;
 requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
-requires        'IO::Interactive'               => 0;
 
+recommends      'IO::Interactive'               => 0;
 recommends      'Term::ANSIColor'               => 0;
 recommends      'File::HomeDir'                 => 0;
 recommends      'Text::WagnerFischer'           => 0;
