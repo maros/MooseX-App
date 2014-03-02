@@ -778,7 +778,7 @@ namespace for commands. This namespace can be changed.
 =head2 app_base
 
 Usually MooseX::App will take the name of the calling wrapper script to 
-construct the programm name in various help messages. This name can 
+construct the program name in various help messages. This name can 
 be changed via the app_base accessor. Defaults to the base name of $0
 
 =head2 app_fuzzy

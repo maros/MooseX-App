@@ -164,7 +164,8 @@ terminate with an error message if superfluous/unknown positional parameters
 are supplied. If disabled all extra parameters will be copied to the 
 L<extra_argv> attribute.
 
-The app_strict function in the app classes allows to set this option globally.
+The app_strict function in the app classes allows one to set this option 
+globally.
 
 =head1 METHODS
 

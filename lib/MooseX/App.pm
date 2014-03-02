@@ -300,7 +300,7 @@ Helper method to initialize the command class for the given command.
  app_base 'my_script';
 
 Usually MooseX::App will take the name of the calling wrapper script to 
-construct the programm name in various help messages. This name can 
+construct the program name in various help messages. This name can 
 be changed via the app_base function.
 
 =head2 app_namespace
@@ -325,11 +325,11 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
  OR
  app_strict(1); 
 
-If strict is enabled the programm will terminate with an error message if
+If strict is enabled the program will terminate with an error message if
 superfluous/unknown positional parameters are supplied. If disabled all 
 extra parameters will be copied to the L<extra_argv> attribute. 
 
-The command_strict config in the command classes allows to set this option
+The command_strict config in the command classes allows one to set this option
 individually for each command.
 
 =head2 app_command_name
@@ -464,7 +464,7 @@ your report as I make changes.
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
-J.R. Mash, Thilo Fester
+J.R. Mash, Thilo Fester, Gregor Herrmann
 
 =head1 COPYRIGHT
 
