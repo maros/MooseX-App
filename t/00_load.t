@@ -44,7 +44,7 @@ SKIP :{
         use_ok( 'MooseX::App::Plugin::Color::Meta::Class');
     };
     unless ($ok) {
-        skip "Term::ANSIColor is not installed",3;
+        skip "Term::ANSIColor and/or IO::Interactive is not installed",3;
     }
 }
 
