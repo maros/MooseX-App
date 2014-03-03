@@ -161,7 +161,7 @@ GLOBAL OPTIONS
      app_base 'my_script';
 
     Usually MooseX::App will take the name of the calling wrapper script to
-    construct the programm name in various help messages. This name can be
+    construct the program name in various help messages. This name can be
     changed via the app_base function.
 
   app_namespace
@@ -184,11 +184,11 @@ GLOBAL OPTIONS
      OR
      app_strict(1);
 
-    If strict is enabled the programm will terminate with an error message
-    if superfluous/unknown positional parameters are supplied. If disabled
-    all extra parameters will be copied to the extra_argv attribute.
+    If strict is enabled the program will terminate with an error message if
+    superfluous/unknown positional parameters are supplied. If disabled all
+    extra parameters will be copied to the extra_argv attribute.
 
-    The command_strict config in the command classes allows to set this
+    The command_strict config in the command classes allows one to set this
     option individually for each command.
 
   app_command_name
@@ -225,7 +225,7 @@ ATTRIBUTE OPTIONS
     documentation.
 
 PLUGINS
-    The behaviour of MooseX-App can be customized with plugins. To load a
+    The behaviour of MooseX-App can be customised with plugins. To load a
     plugin just pass a list of plugin names after the "use MooseX-App"
     statement.
 
@@ -306,7 +306,7 @@ AUTHOR
 CONTRIBUTORS
     In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
     Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David
-    Golden, J.R. Mash, Thilo Fester
+    Golden, J.R. Mash, Thilo Fester, Gregor Herrmann
 
 COPYRIGHT
     MooseX::App is Copyright (c) 2012-14 Maroš Kollár.
