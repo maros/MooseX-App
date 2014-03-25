@@ -1,9 +1,12 @@
 Changes for MooseX-App
 
+1.28 Tue, Mar 25, 2014
+    - Fix failing tests (reported by Michael Greb and Dagfinn Ilmari Mannsåker)
+
 1.27 Sun, Mar 2, 2014
     - Fix warnings on warnings on 5.18 again
     - Documentation
-    - Fix spelling (Gregor Herrmann)
+    - Fix spelling (fixed by Gregor Herrmann)
     
 1.26 Mon, Feb 24, 2014
     - Fix failing tests
@@ -13,10 +16,10 @@ Changes for MooseX-App
     - Documentation
 
 1.24 Fri, Feb 14, 2014
-    - Fix POD warnings (David Golden)
+    - Fix POD warnings (fixed by David Golden)
     - Always reuse existing MooseX::App::ParsedArgv instances
     - Parse @ARGV as soon as possible
-    - Fix Win32 colorisation issues (J.R. Mash)
+    - Fix Win32 colorisation issues (fixed by J.R. Mash)
     - Add app_prefer_commandline option
 
 1.23 Mon, Jan 27, 2014
@@ -26,7 +29,7 @@ Changes for MooseX-App
     - Cleanup deprecated code
 
 1.22 Fri, May 24, 2013
-    - Silence experimental::smartmatch warnings on 5.18 (Mike Doherty)
+    - Silence experimental::smartmatch warnings on 5.18 (fixed by Mike Doherty)
 
 1.21 Sat, Apr 13, 2013
     - Fix option sorting
@@ -34,7 +37,7 @@ Changes for MooseX-App
 
 1.20 Mon, Apr 8, 2013
     - Add cmd_split and cmd_position option
-    - Fixed parameter position (Yanick Champoux)
+    - Fixed parameter position (fixed by Yanick Champoux)
     - app_strict option to set if app should terminate when unknown parameters
       or options are supplied
 
@@ -68,7 +71,7 @@ Changes for MooseX-App
 1.14 Tue, Jan 15, 2012
     - Fix failing test
     - Update documentation
-    - Optional usage information from POD (Yanick Champoux)
+    - Optional usage information from POD (fixed by Yanick Champoux)
     - app_fuzzy now defaults to true
     - Version plugin prints license and copyright
 
@@ -82,7 +85,7 @@ Changes for MooseX-App
 
 1.11 Tue, Jan 8, 2012
     - Parse DistZilla ABSTRACT for documentation
-    - Improve tutorial and fix typo (George Hartzell)
+    - Improve tutorial and fix typo (fixed by George Hartzell)
     - Saner bash completion and version plugin
     - Fix fuzzy command and attribute matching
     - Deprecate fuzzy plugin, use typo plugin instead
@@ -90,16 +93,16 @@ Changes for MooseX-App
     - More tests
 
 1.10 Mon, Jan 7, 2013
-    - Fix bash completion plugin (Steve Nolte)
+    - Fix bash completion plugin (fixed by Steve Nolte)
 
 1.09 Thu, Nov 22, 2012
     - Fix failing load test
 
 1.08 Sat, Nov 17, 2012
     - Refactor object initialisation
-    - Fix missing bash-completion prefix (Steve Nolte)
-    - Require latest MooseX::Getopt (Steve Nolte)
-    - Fix Plugin::Version docs RT81186 (Michael G)
+    - Fix missing bash-completion prefix (fixed by Steve Nolte)
+    - Require latest MooseX::Getopt (fixed by Steve Nolte)
+    - Fix Plugin::Version docs RT81186 (fixed by Michael G)
     - Update documentation
 
 1.07 Wed, Aug 22, 2012
