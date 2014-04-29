@@ -225,13 +225,14 @@ MooseX-App will then
 
 =over
 
-=item * Find, load and initialise the command classes
+=item * Find, load and initialise the command classes (see L<MooseX-App-Simple>
+for single command applications)
 
 =item * Create automated help and documentation from modules POD and 
 attributes metadata
 
 =item * Read, encode and validate the command line options and positional 
-parameters entered by the user from @ARGV
+parameters entered by the user from @ARGV (and possibly %ENV)
 
 =item * Provide helpful error messages if user input cannot be validated
 
@@ -279,25 +280,25 @@ MooseX::App command line application.
 
  my $myapp_command = MyApp->new_with_command();
 
-This method reads the command line arguments from the user and tries to create
-a command object. If it fails it retuns a L<MooseX::App::Message::Envelope> 
-object holding an error message.
+This constructor reads the command line arguments and tries to create a 
+command class instance. If it fails it retuns a 
+L<MooseX::App::Message::Envelope> object holding an error message.
 
-You can pass a hash of default params to new_with_command
+You can pass a hash of default/fallback params to new_with_command
 
- MyApp->new_with_command(%default);
+ my $obj = MyApp->new_with_command(%default);
 
 =head2 initialize_command_class
 
- my $myapp_command = MyApp->initialize_command_class($command_name,%default);
+ my $obj = MyApp->initialize_command_class($command_name,%default);
 
-Helper method to initialize the command class for the given command.
+Helper method to instantiate the command class for the given command.
 
 =head1 GLOBAL OPTIONS
 
 =head2 app_base
 
- app_base 'my_script';
+ app_base 'my_script'; # Defaults to $0
 
 Usually MooseX::App will take the name of the calling wrapper script to 
 construct the program name in various help messages. This name can 
@@ -309,7 +310,7 @@ be changed via the app_base function.
 
 Usually MooseX::App will take the package name of the base class as the 
 namespace for commands. This namespace can be changed and you can add
-several other namespaces.
+multiple extra namespaces.
 
 =head2 app_fuzzy
 
@@ -345,11 +346,12 @@ to command names.
 
 =head1 GLOBAL ATTRIBUTES
 
-All MooseX::App classes will have two extra attributes/accessors
+All MooseX::App classes will have two extra attributes
 
 =head2 extra_argv
 
-Carries all parameters from @ARGV that were not consumed.
+Carries all parameters from @ARGV that were not consumed (only if app_strict
+is turned off, otherwise superfluous parameters will raise an exception).
 
 =head2 help_flag
 
@@ -380,9 +382,6 @@ The behaviour of MooseX-App can be customised with plugins. To load a
 plugin just pass a list of plugin names after the C<use MooseX-App> statement.
 
  use MooseX::App qw(PluginA PluginB);
-
-Read the L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
-documentation on how to create your own plugins.
 
 Currently the following plugins are shipped with MooseX::App
 
@@ -421,6 +420,9 @@ Adds a command to display the version and license of your application
 Display full manpage
 
 =back
+
+Refer to L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
+for documentation on how to create your own plugins.
 
 =head1 CAVEATS & KNOWN BUGS
 

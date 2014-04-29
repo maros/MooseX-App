@@ -231,8 +231,8 @@ Accessor for the original @ARGV.
 
 =head2 hints
 
-Accessor for an array of attributes that tells the parser which attributes
-should be regarded as flags without values.
+ArrayRef of attributes that tells the parser which attributes should be 
+regarded as flags without values.
 
 =head2 first_argv
 

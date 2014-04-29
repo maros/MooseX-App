@@ -33,6 +33,7 @@ no Moose::Util::TypeConstraints;
 
 no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;
 
+# Default package name to command name translation function
 sub class_to_command {
     my ($class) = @_;
     
@@ -43,6 +44,7 @@ sub class_to_command {
     return lc(join('_',@parts));
 }
 
+# Format output text for fixed screen width
 sub format_text {
     my ($text) = @_;
     
@@ -58,6 +60,7 @@ sub format_text {
     );
 }
 
+# Format bullet list for fixed screen width
 sub format_list {
     my (@list) = @_;
     
@@ -77,6 +80,7 @@ sub format_list {
     return join("\n",@return);
 }
 
+# Simple splitting of long sentences on whitespaces or punctuation
 sub split_string {
     my ($maxlength, $string) = @_;
     
@@ -116,6 +120,7 @@ sub split_string {
     return @lines;
 }
 
+# Try to get filename for a given package name
 sub package_to_filename {
     my ($package) = @_;
     
@@ -139,6 +144,7 @@ sub package_to_filename {
     return $package_filepath;
 }
 
+# Parse pod
 sub parse_pod {
     my ($package) = @_;
     
@@ -190,6 +196,7 @@ sub parse_pod {
     return %pod;
 }
 
+# Transform POD to simple markup
 sub _pod_node_to_text {
     my ($node,$indent) = @_;
     
