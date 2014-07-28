@@ -369,20 +369,20 @@ sub command_check_attribute {
     unless ($type_constraint->check($value)) {
         my $message;
         
+        if (ref($value) eq 'ARRAY') {
+            $value = join(', ',@$value);
+        } elsif (ref($value) eq 'HASH') {
+            $value = join(', ',map { $_.'='.$value->{$_} } keys %$value)
+        }
+        
         # We have a custom message
         if ($type_constraint->has_message) {
             $message = $type_constraint->get_message($value);
         # No message
         } else {
-            my $type_human = $self->command_type_constraint_description($type_constraint->name);
-            if (defined $type_human) { 
-                $message = "Value must be "; # LOCALIZE
-                if ($type_human =~ /^[aeiouy]/) {
-                    $message .= "an $type_human";
-                } else {
-                    $message .= "a $type_human";
-                }
-                $message .= " (not '$value')";
+            my $message_human = $self->command_type_constraint_description($type_constraint);
+            if (defined $message_human) {
+                $message = "Value must be ". $message_human ." (not '$value')";
             } else {
                 $message = $type_constraint->get_message($value);
             }
@@ -400,28 +400,60 @@ sub command_check_attribute {
 
 
 sub command_type_constraint_description {
-    my ($self,$type_constraint_name) = @_;
+    my ($self,$type_constraint,$singular) = @_;
     
-    given ($type_constraint_name) {
-        when ('Int') {
-            return 'integer'; # LOCALIZE
+    $singular //= 1;
+    
+    say $type_constraint.'-'.ref($type_constraint);
+    if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
+        return 'one of these values: '.join(', ',@{$type_constraint->values});
+    } elsif ($type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized')) {
+        my $from = $type_constraint->parameterized_from;
+        if ($from->is_a_type_of('ArrayRef')) {
+            return $self->command_type_constraint_description($type_constraint->type_parameter);
+        } elsif ($from->is_a_type_of('HashRef')) {
+            return 'key-value pairs of '.$self->command_type_constraint_description($type_constraint->type_parameter,0);
         }
-        when ('Num') {
-            return 'number'; # LOCALIZE
-        }
-        when (/^ArrayRef\[(.*)\]$/) {
-            return $self->command_type_constraint_description($1);
-        }
-        when ('HashRef') {
-            return 'key-value pairs'; # LOCALIZE
-        } 
-        when (/^HashRef\[(.+)\]$/) {
-            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values'; # LOCALIZE
-        }
-        when ('Str') {
-            return 'string'; # LOCALIZE
-        }
+    # TODO union
+    } elsif ($type_constraint->equals('Int')) {
+        return $singular ? 'an integer':'integers'; # LOCALIZE
+    } elsif ($type_constraint->equals('Num')) {
+        return $singular ? 'a number':'numbers'; # LOCALIZE
+    } elsif ($type_constraint->equals('Str')) {
+        return $singular ? 'a string':'strings';
+    } elsif ($type_constraint->equals('HashRef')) {
+        return 'key-value pairs'; # LOCALIZE
     }
+    
+    if ($type_constraint->has_parent) {
+        return $self->command_type_constraint_description($type_constraint->parent);
+    }
+    
+    return;
+    
+#    given ($type_constraint_name) {
+#        when ('Int') {
+#            return 'integer'; # LOCALIZE
+#        }
+#        when ('Num') {
+#            
+#        }
+#        when (/^ArrayRef\[(.*)\]$/) {
+#            return $self->command_type_constraint_description($1);
+#        }
+#        when ('HashRef') {
+#            return 'key-value pairs'; # LOCALIZE
+#        } 
+#        when (/^HashRef\[(.+)\]$/) {
+#            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values'; # LOCALIZE
+#        }
+#        when ('Str') {
+#            return 'string'; # LOCALIZE
+#        }
+#        default {
+#            $type_constraint
+#        }
+#    }
     
     return;
 }
