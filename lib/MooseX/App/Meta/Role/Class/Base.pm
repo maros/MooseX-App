@@ -404,7 +404,6 @@ sub command_type_constraint_description {
     
     $singular //= 1;
     
-    say $type_constraint.'-'.ref($type_constraint);
     if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
         return 'one of these values: '.join(', ',@{$type_constraint->values});
     } elsif ($type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized')) {
