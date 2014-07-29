@@ -4,6 +4,8 @@ use MooseX::App::Command;
 extends qw(Test03);
 with qw(Test03::Role::TestRole);
 
+use Moose::Util::TypeConstraints;
+
 parameter 'param_a' => (
     is            => 'rw',
     isa           => 'Str',
@@ -11,7 +13,7 @@ parameter 'param_a' => (
 
 parameter 'param_b' => (
     is            => 'rw',
-    isa           => 'Str',
+    isa           => enum([qw(aaa bbb ccc ddd eee fff)]),
 );
 
 

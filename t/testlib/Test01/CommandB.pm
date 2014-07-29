@@ -4,13 +4,15 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test01);
 
+use Moose::Util::TypeConstraints;
+
 has 'param_a' => (
     isa         => 'Str',
     is          => 'rw',
 );
 
 option 'param_b' => (
-    isa         => 'Str',
+    isa         => enum([qw(aaa bbb ccc ddd eee fff)]),
     is          => 'rw',
     required    => 1,
 );

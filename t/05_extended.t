@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 23+1;
+use Test::Most tests => 24+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -238,3 +238,9 @@ subtest 'Test parameter preference reverse' => sub {
     is($test17->flaggo,1,"Flago from new_with_command ok");
 };
 
+subtest 'Test enum error message' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand --another hase hh h ggg)]);
+    my $test18 = Test03->new_with_command();
+    isa_ok($test18,'MooseX::App::Message::Envelope');
+    is($test18->blocks->[0]->body,"Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff (not 'ggg')","Check enum error message");
+};

@@ -2,7 +2,7 @@
 
 # t/02_meta.t - MOP tests
 
-use Test::Most tests => 27+1;
+use Test::Most tests => 28+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -69,3 +69,5 @@ another interesting paragraph.','Pod long description parsed ok');
 require Test01::CommandC1;
 is(Test01::CommandB->meta->command_usage,'use with care','Command usage parsed ok');
 is(Test01::CommandC1->meta->find_attribute_by_name('param_internal_name')->cmd_name_primary,'external_name','Attribute name ok');
+
+is(join(',',Test01::CommandB->meta->find_attribute_by_name('param_b')->cmd_tags_list),'Required,Possible values: aaa, bbb, ccc, ddd, eee, fff','Check attributes tags');
