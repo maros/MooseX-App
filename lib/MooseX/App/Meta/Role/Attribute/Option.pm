@@ -182,6 +182,8 @@ sub cmd_tags_list {
                 push(@tags ,'Number');
             } elsif ($type_constraint->is_a_type_of('Bool')) {
                 push(@tags ,'Flag');
+            } elsif ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
+                push(@tags ,'Possible values: '.join(', ',@{$type_constraint->values}));
             }
         }
     }
