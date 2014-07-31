@@ -11,13 +11,13 @@ our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = 1.28;
 
 use MooseX::App::Meta::Role::Attribute::Option;
-use MooseX::App::Exporter qw(app_base app_fuzzy app_strict app_prefer_commandline option parameter);
+use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline option parameter);
 use MooseX::App::Message::Envelope;
 use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_namespace app_base app_fuzzy app_command_name app_strict option parameter) ],
+    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_strict option parameter) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -41,7 +41,7 @@ sub init_meta {
     
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
-        class               => ['MooseX::App::Meta::Role::Class::Base'],
+        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Command'],
         attribute           => ['MooseX::App::Meta::Role::Attribute::Option'],
     };
     
@@ -67,7 +67,7 @@ sub new_with_command {
     my $meta = $class->meta;
 
     Moose->throw_error('new_with_command may only be called from the application base package')
-        if $meta->meta->does_role('MooseX::App::Meta::Role::Class::Command');
+        unless $meta->meta->does_role('MooseX::App::Meta::Role::Class::Base');
         
     # Extra args
     my %args;

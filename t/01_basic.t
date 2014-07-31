@@ -34,12 +34,12 @@ subtest 'Wrong command' => sub {
     is($test03->blocks->[1]->body,"    01_basic.t <command> [long options...]
     01_basic.t help
     01_basic.t <command> --help",'Usage body set');
-    is($test03->blocks->[2]->header,"global options:",'Global options set');
-    is($test03->blocks->[2]->body,"    --config              Path to command config file
+    is($test03->blocks->[3]->header,"global options:",'Global options set');
+    is($test03->blocks->[3]->body,"    --config              Path to command config file
     --global              test [Required; Integer; Important!]
     --help -h --usage -?  Prints this usage information. [Flag]",'Global options body set');
-    is($test03->blocks->[3]->header,"available commands:",'Available commands set');
-    is($test03->blocks->[3]->body,"    command_a   Command A!
+    is($test03->blocks->[4]->header,"available commands:",'Available commands set');
+    is($test03->blocks->[4]->body,"    command_a   Command A!
     command_b   Test class command B for test 01
     command_c1  Test C1
     help        Prints this usage information",'Available commands body set');

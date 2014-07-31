@@ -174,10 +174,12 @@ sub command_usage($) {
     return $meta->command_usage($usage);
 }
 
+*app_description    = \&command_long_description;
+*app_usage          = \&command_usage;
+
 sub command_strict($) {
     my ( $meta, $value ) = @_;
     return $meta->command_strict($value);
 }
-
 
 1;

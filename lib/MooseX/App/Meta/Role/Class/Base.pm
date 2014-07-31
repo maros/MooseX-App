@@ -5,13 +5,14 @@ package MooseX::App::Meta::Role::Class::Base;
 use utf8;
 use 5.010;
 
+use List::Util qw(max);
+
 use namespace::autoclean;
 use Moose::Role;
 
 use MooseX::App::Utils;
 use Path::Class;
 use Module::Pluggable::Object;
-use List::Util qw(max);
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'app_messageclass' => (
@@ -764,7 +765,7 @@ sub command_usage_command {
     
     my @usage;
     push(@usage,$self->command_usage_header($command_meta_class));
-    push(@usage,$self->command_usage_description($command_meta_class,)); 
+    push(@usage,$self->command_usage_description($command_meta_class)); 
     push(@usage,$self->command_usage_parameters($command_meta_class,'parameters:')); # LOCALIZE
     push(@usage,$self->command_usage_options($command_meta_class,'options:')); # LOCALIZE
     
@@ -792,10 +793,11 @@ sub command_usage_global {
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
     
     my @usage;
-    push (@usage,$self->command_usage_header());
+    push(@usage,$self->command_usage_header());
+    push(@usage,$self->command_usage_description($self)); # LOCALIZE
     push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
-    push (@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
-    push (@usage,
+    push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
+    push(@usage,
         $self->command_message(
             header  => 'available commands:', # LOCALIZE
             body    => MooseX::App::Utils::format_list(@commands),

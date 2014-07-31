@@ -5,6 +5,8 @@ use MooseX::App qw(Config Env);
 
 app_strict 1;
 
+app_description "Huissasa";
+
 option 'global' => (
     isa             => 'Int',
     is              => 'rw',
@@ -17,5 +19,7 @@ has 'private' => (
     isa             => 'Int',
     is              => 'rw',
 );
+
+
 
 1;
