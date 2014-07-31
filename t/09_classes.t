@@ -56,11 +56,11 @@ subtest 'Attributes from role' => sub {
 };
 
 subtest 'Correct order from role ' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(somecommand a1 b2 c3 --another b)]);
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand a1 b2 ccc --another b)]);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'Test03::SomeCommand');
     is($test03->param_c,'a1','First from role');
     is($test03->param_a,'b2','Second from role');
-    is($test03->param_b,'c3','Third from role');
+    is($test03->param_b,'ccc','Third from role');
     
 };
