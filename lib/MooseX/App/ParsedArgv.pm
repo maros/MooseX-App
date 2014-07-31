@@ -80,7 +80,10 @@ sub _build_elements {
     
     foreach my $element (@{$self->argv}) {
         if ($stopprocessing) {
-            push (@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'extra' ));
+            push (@elements,MooseX::App::ParsedArgv::Element->new( 
+                key => $element, 
+                type => 'extra', 
+            ));
         } else {
             given ($element) {
                 # Flags
@@ -88,7 +91,11 @@ sub _build_elements {
                     undef $lastkey;
                     foreach my $flag (split(//,$1)) {
                         unless (defined $options{$flag}) {
-                            $options{$flag} = MooseX::App::ParsedArgv::Element->new( key => $flag, type => 'option' );
+                            $options{$flag} = MooseX::App::ParsedArgv::Element->new( 
+                                key => $flag, 
+                                type => 'option',
+                                raw => $element,
+                            );
                             push(@elements,$options{$flag});
                         }
                         $lastkey = $options{$flag};
@@ -99,7 +106,11 @@ sub _build_elements {
                     undef $lastkey;
                     my ($key,$value) = ($1,$2);
                     unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Element->new( key => $key, type => 'option' );
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new(
+                            key => $key,
+                            type => 'option',
+                            raw => $element,
+                        );
                         push(@elements,$options{$key});
                     }
                     $options{$key}->add_value($value);
@@ -108,7 +119,11 @@ sub _build_elements {
                 when (m/^--([^-].*)/) {
                     my $key = $1;
                     unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Element->new( key => $key, type => 'option' );
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new( 
+                            key => $key, 
+                            type => 'option',
+                            raw => $element,
+                        );
                         push(@elements,$options{$key});
                     }
                     $lastkey = $options{$key};

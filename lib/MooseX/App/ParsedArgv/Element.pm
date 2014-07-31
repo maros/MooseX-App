@@ -38,6 +38,21 @@ has 'type' => (
     required        => 1,
 );
 
+has 'raw' => (
+    is              => 'rw',
+    isa             => 'Str',
+    predicate       => 'has_raw',
+);
+
+sub original {
+    my ($self) = @_;
+    if ($self->has_raw) {
+        return $self->raw;
+    } else {
+        return $self->key;
+    }
+}
+
 sub consume {
     my ($self,$attribute) = @_;
     

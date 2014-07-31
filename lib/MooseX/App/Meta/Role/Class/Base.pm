@@ -126,14 +126,44 @@ sub command_args {
     my @attributes_option  = $self->command_usage_attributes($metaclass,'option');
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
-    
+
+    my %raw_error;
     foreach my $option ($parsed_argv->available('option')) {
-        unshift(@{$errors},
-            $self->command_message(
+        my $key = $option->key;
+        my $raw = $option->original;
+        my $message;
+        next
+            if defined $raw_error{$raw};
+        
+        if (length $key == 1
+            && $raw =~ m/^-(\w+)$/) {
+            POSSIBLE_ATTRIBUTES:
+            foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
+                foreach my $name ($attribute->cmd_name_possible) {
+                    # TODO fuzzy match
+                    if ($name eq $1) {
+                        $raw_error{$raw} = 1;
+                        $message = "Did you mean '--$name'?";
+                        last POSSIBLE_ATTRIBUTES;
+                    }
+                }
+            }
+        }
+        
+        my $error;
+        if (defined $message) {
+            $error = $self->command_message(
+                header          => "Unknown option '".$raw."'", # LOCALIZE
+                body            => $message,
+                type            => "error",
+            );
+        } else {
+            $error = $self->command_message(
                 header          => "Unknown option '".$option->key."'", # LOCALIZE
                 type            => "error",
-            )
-        );
+            );
+        }
+        unshift(@{$errors},$error);
     }
     
     # Process params
