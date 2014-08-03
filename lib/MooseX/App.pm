@@ -388,6 +388,27 @@ Help flag that is set when help was requested.
 Refer to L<MooseX::App::Meta::Role::Attribute::Option> for detailed 
 documentation.
 
+=head1 METADATA
+
+MooseX::App will use your class metadata and POD to construct the commands and
+helpful error- or usage- messages. These bits of information are utilised:
+
+=over
+
+=item * Package names
+
+=item * Attribute L<required> options
+
+=item * Attribute L<documentation> options
+
+=item * POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS and OVERVIEW sections)
+
+=item * Dzil ABSTRACT tag if no POD is available yet
+
+=item * Attribute Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and ENUM)
+
+=back
+
 =head1 PLUGINS
 
 The behaviour of MooseX-App can be customised with plugins. To load a
