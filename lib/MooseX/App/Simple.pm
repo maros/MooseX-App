@@ -44,7 +44,7 @@ sub init_meta {
         class               => [
             'MooseX::App::Meta::Role::Class::Base',
             'MooseX::App::Meta::Role::Class::Simple',
-            'MooseX::App::Meta::Role::Class::Command'
+            'MooseX::App::Meta::Role::Class::Documentation'
         ],
         attribute           => [
             'MooseX::App::Meta::Role::Attribute::Option'

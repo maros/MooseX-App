@@ -41,7 +41,10 @@ sub init_meta {
     
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
-        class               => ['MooseX::App::Meta::Role::Class::Base','MooseX::App::Meta::Role::Class::Command'],
+        class               => [
+            'MooseX::App::Meta::Role::Class::Base',
+            'MooseX::App::Meta::Role::Class::Documentation'
+        ],
         attribute           => ['MooseX::App::Meta::Role::Attribute::Option'],
     };
     
@@ -65,9 +68,11 @@ sub new_with_command {
         if ! defined $class || blessed($class);
     
     my $meta = $class->meta;
+    my $metameta = $meta->meta;
     # TODO Fix this check
     Moose->throw_error('new_with_command may only be called from the application base package:'.$class.'->'.$meta)
-        unless $meta->can('command_args');
+        if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
+        || ! $metameta->does_role('MooseX::App::Meta::Role::Class::Base');
         
     # Extra args
     my %args;

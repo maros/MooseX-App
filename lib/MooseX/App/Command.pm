@@ -25,7 +25,10 @@ sub init_meta {
     Moose::Util::MetaRole::apply_metaroles(
         for             => $meta,
         class_metaroles => {
-            class           => ['MooseX::App::Meta::Role::Class::Command'],
+            class           => [
+                'MooseX::App::Meta::Role::Class::Documentation',
+                'MooseX::App::Meta::Role::Class::Command'
+            ],
             attribute       => ['MooseX::App::Meta::Role::Attribute::Option'],
         },
     );
