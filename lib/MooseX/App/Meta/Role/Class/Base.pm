@@ -782,19 +782,22 @@ sub command_usage_global {
     
     while (my ($command,$class) = each %$commands) {
         Class::Load::load_class($class);
-        my $description;
-        $description = $class->meta->command_short_description
+        my $command_description;
+        $command_description = $class->meta->command_short_description
             if $class->meta->can('command_short_description');
         
-        $description ||= '';
-        push(@commands,[$command,$description]);
+        $command_description ||= '';
+        push(@commands,[$command,$command_description]);
     }
     
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
     
     my @usage;
     push(@usage,$self->command_usage_header());
-    push(@usage,$self->command_usage_description($self)); # LOCALIZE
+    
+    my $description = $self->command_usage_description($self);
+    push(@usage,$description)
+        if $description;
     push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
     push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
     push(@usage,
