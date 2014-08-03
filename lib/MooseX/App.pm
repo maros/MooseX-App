@@ -65,9 +65,9 @@ sub new_with_command {
         if ! defined $class || blessed($class);
     
     my $meta = $class->meta;
-
-    Moose->throw_error('new_with_command may only be called from the application base package')
-        unless $meta->meta->does_role('MooseX::App::Meta::Role::Class::Base');
+    # TODO Fix this check
+    Moose->throw_error('new_with_command may only be called from the application base package:'.$class.'->'.$meta)
+        unless $meta->can('command_args');
         
     # Extra args
     my %args;
@@ -234,7 +234,8 @@ attributes metadata
 =item * Read, encode and validate the command line options and positional 
 parameters entered by the user from @ARGV (and possibly %ENV)
 
-=item * Provide helpful error messages if user input cannot be validated
+=item * Provide helpful error messages if user input cannot be validated (
+either missing or wrong attributes or Moose type constraints not satisfied)
 
 =back
 

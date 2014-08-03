@@ -220,3 +220,9 @@ modification.
  use MyApp;
  MyApp->new_with_options->run();
 
+=head1 HOW TO CONTINUE
+
+Once you have a basic working application you can make it more user friendly
+by adding documentation (either by using the app_description, app_usage,
+command_short_description, ... options or by writing POD) and Moose type
+constraints and additional plugins (eg. colorise the output).
