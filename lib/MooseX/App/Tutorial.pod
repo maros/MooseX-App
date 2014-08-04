@@ -37,6 +37,8 @@ The base class can be customized by
 
 =item * defining global attributes used by all command classes (if they inherit from the base class)
 
+=item * add documentation (either POD or via the app_usage and app_description functions)
+
 =item * and changing MooseX-App flags (eg. turn fuzzy matching off)
 
 =back
@@ -155,7 +157,7 @@ usage header):
 
 In case you want to include an attribute not defined with the 'option' or 
 'parameter' keyword you can use the 'AppOption' trait and 'cmd_type' 
-attribute. (L<MooseX::App::Meta::Attribute::Option>).
+attribute. (see L<MooseX::App::Meta::Attribute::Option>).
 
   has 'myoption' => (
       is                => 'rw',
@@ -224,5 +226,7 @@ modification.
 
 Once you have a basic working application you can make it more user friendly
 by adding documentation (either by using the app_description, app_usage,
-command_short_description, ... options or by writing POD) and Moose type
+command_short_description, ... functions or by writing POD) and Moose type
 constraints and additional plugins (eg. colorise the output).
+
+=cut
