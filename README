@@ -241,21 +241,20 @@ ATTRIBUTE OPTIONS
 METADATA
     MooseX::App will use your class metadata and POD to construct the
     commands and helpful error- or usage- messages. These bits of
-    information are utilised:
+    information are utilised and should be provided if possible:
 
     *   Package names
 
-    *   Attribute required options
+    *   required options for Moose attributes
 
-    *   Attribute documentation options
+    *   documentation options for Moose attributes
+
+    *   Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and Enum)
 
     *   POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS and OVERVIEW
         sections)
 
     *   Dzil ABSTRACT tag if no POD is available yet
-
-    *   Attribute Moose type constraints (Bool, ArrayRef, HashRef, Int, Num,
-        and ENUM)
 
 PLUGINS
     The behaviour of MooseX-App can be customised with plugins. To load a

@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = 1.28;
+our $VERSION = 1.29;
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline option parameter);
@@ -396,21 +396,22 @@ documentation.
 =head1 METADATA
 
 MooseX::App will use your class metadata and POD to construct the commands and
-helpful error- or usage- messages. These bits of information are utilised:
+helpful error- or usage- messages. These bits of information are utilised 
+and should be provided if possible:
 
 =over
 
 =item * Package names
 
-=item * Attribute L<required> options
+=item * L<required> options for Moose attributes
 
-=item * Attribute L<documentation> options
+=item * L<documentation> options for Moose attributes
+
+=item * Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and Enum)
 
 =item * POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS and OVERVIEW sections)
 
 =item * Dzil ABSTRACT tag if no POD is available yet
-
-=item * Attribute Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and ENUM)
 
 =back
 

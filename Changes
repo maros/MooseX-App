@@ -1,5 +1,12 @@
 Changes for MooseX-App
 
+1.29 Tue, Aug 5, 2014
+    - Documentation improvements and fixups
+    - Better error messages if type constraints fail
+    - Better suggestions in case of errors
+    - Handle enum type constraints in usage info
+    - Display application documentation
+
 1.28 Tue, Mar 25, 2014
     - Fix failing tests (reported by Michael Greb and Dagfinn Ilmari Mannsåker)
 

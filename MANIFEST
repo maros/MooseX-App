@@ -18,6 +18,7 @@ lib/MooseX/App/Message/Envelope.pm
 lib/MooseX/App/Meta/Role/Attribute/Option.pm
 lib/MooseX/App/Meta/Role/Class/Base.pm
 lib/MooseX/App/Meta/Role/Class/Command.pm
+lib/MooseX/App/Meta/Role/Class/Documentation.pm
 lib/MooseX/App/Meta/Role/Class/Simple.pm
 lib/MooseX/App/ParsedArgv.pm
 lib/MooseX/App/ParsedArgv/Element.pm
