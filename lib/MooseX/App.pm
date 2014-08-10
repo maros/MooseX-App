@@ -91,7 +91,7 @@ sub new_with_command {
     
     # Requested help
     if (defined $first_argv 
-        && lc($first_argv) =~ m/^(help|h|\?|usage|-h|--help|-\?)$/) {
+        && lc($first_argv) =~ m/^(help|h|\?|usage|-h|--help|-\?|--usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
