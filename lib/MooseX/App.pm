@@ -69,8 +69,8 @@ sub new_with_command {
     
     my $meta = $class->meta;
     my $metameta = $meta->meta;
-    # TODO Fix this check
-    Moose->throw_error('new_with_command may only be called from the application base package:'.$class.'->'.$meta)
+    
+    Moose->throw_error('new_with_command may only be called from the application base package:'.$class)
         if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
         || ! $metameta->does_role('MooseX::App::Meta::Role::Class::Base');
         
@@ -89,19 +89,21 @@ sub new_with_command {
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
     my $first_argv = $parsed_argv->first_argv;
     
+    # Requested help
+    if (defined $first_argv 
+        && lc($first_argv) =~ m/^(help|h|\?|usage|-h|--help|-\?)$/) {
+        return MooseX::App::Message::Envelope->new(
+            $meta->command_usage_global(),
+        );
     # No args
-    if (! defined $first_argv
-        || $first_argv =~ m/^\s*$/) {
+    } elsif (! defined $first_argv
+        || $first_argv =~ m/^\s*$/
+        || $first_argv =~ m/^-{1,2}\w/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_message(
                 header          => "Missing command", # LOCALIZE
                 type            => "error",
             ),
-            $meta->command_usage_global(),
-        );
-    # Requested help
-    } elsif (lc($first_argv) =~ m/^(help|h|\?|usage)$/) {
-        return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
     # Looks like a command
