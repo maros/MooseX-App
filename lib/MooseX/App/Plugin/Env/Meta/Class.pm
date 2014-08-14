@@ -8,7 +8,7 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
-around 'command_proto' => sub {
+around 'command_args' => sub {
     my ($orig,$self,$command_meta) = @_;
     
     my ($result,$errors) = $self->$orig($command_meta);
