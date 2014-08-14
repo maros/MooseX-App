@@ -17,9 +17,9 @@ around 'command_proto' => sub {
         next
             unless $attribute->can('has_cmd_env')
             && $attribute->has_cmd_env;
-       
+        
         my $cmd_env = $attribute->cmd_env;
-       
+        
         if (exists $ENV{$cmd_env}
             && ! defined $result->{$attribute->name}) {
             $result->{$attribute->name} = $ENV{$cmd_env};

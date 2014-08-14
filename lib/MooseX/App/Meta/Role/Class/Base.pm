@@ -371,7 +371,6 @@ sub command_process_attribute {
                 )
             );
         } else {
-                        
             if ($attribute->should_coerce
                 && $type_constraint->has_coercion) {
                 my $coercion = $type_constraint->coercion;
