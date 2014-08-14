@@ -9,9 +9,9 @@ use namespace::autoclean;
 use Moose::Role;
 
 around 'command_proto' => sub {
-    my ($orig,$self,$command_meta,$processed_argv) = @_;
+    my ($orig,$self,$command_meta) = @_;
     
-    my ($result,$errors) = $self->$orig($command_meta,$processed_argv);
+    my ($result,$errors) = $self->$orig($command_meta);
     
     foreach my $attribute ($self->command_usage_attributes($command_meta)) {
         next

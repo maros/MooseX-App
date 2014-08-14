@@ -9,9 +9,9 @@ use namespace::autoclean;
 use Moose::Role;
 
 around 'command_proto' => sub {
-    my ($orig,$self,$metaclass,$processed_argv) = @_;
+    my ($orig,$self,$metaclass) = @_;
     
-    my ($result,$errors) = $self->$orig($metaclass,$processed_argv);
+    my ($result,$errors) = $self->$orig($metaclass);
     delete $result->{config}
         unless defined $result->{config};
     
