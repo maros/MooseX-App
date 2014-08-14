@@ -14,6 +14,38 @@ has 'cmd_term' => (
     default     => 0,
 );
 
+has 'cmd_term_label' => (
+    is          => 'rw',
+    isa         => 'Str',
+    predicate   => 'has_cmd_term_label',
+);
+
+sub cmd_term_label_full {
+    my ($self) = @_;
+    
+    my $label = $self->cmd_term_label_name;
+    my @tags = $self->cmd_tags_list();
+    if (scalar @tags) {
+        $label .= ' ('.join(', ',@tags).')';
+    }
+    $label .= ': ';
+    
+    return $label;
+}
+
+sub cmd_term_label_name {
+    my ($self) = @_;
+    
+    my $label;
+    if ($self->has_cmd_term_label) {
+        return $self->cmd_term_label;
+    } elsif ($self->has_documentation) {
+        return $self->documentation;
+    } else {
+        $self->name;
+    }
+}
+
 around 'cmd_tags_list' => sub {
     my $orig = shift;
     my ($self) = @_;
