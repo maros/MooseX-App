@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 37;
+use Test::Most tests => 40;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::ParsedArgv' );
@@ -35,6 +35,19 @@ use_ok( 'MooseX::App::Simple');
 use_ok( 'MooseX::App::Exporter');
 use_ok( 'MooseX::App::Role::Base');
 use_ok( 'MooseX::App::Role::Common');
+
+SKIP :{
+    my $ok = eval {
+        Class::Load::load_class('Term::ReadKey');
+        Class::Load::load_class('IO::Interactive');
+        use_ok( 'MooseX::App::Plugin::Term' );
+        use_ok( 'MooseX::App::Plugin::Term::Meta::Class');
+        use_ok( 'MooseX::App::Plugin::Term::Meta::Attribute');
+    };
+    unless ($ok) {
+        skip "Term::ReadKey and/or IO::Interactive are not installed",3;
+    }
+}
 
 SKIP :{
     my $ok = eval {

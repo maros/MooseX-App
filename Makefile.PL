@@ -22,6 +22,7 @@ requires        'List::Util'                    => 0;
 requires        'Pod::Elemental'                => 0;
 
 recommends      'IO::Interactive'               => 0;
+recommends      'Term::ReadKey'                 => 0;
 recommends      'Term::ANSIColor'               => 0;
 recommends      'File::HomeDir'                 => 0;
 recommends      'Text::WagnerFischer'           => 0;
