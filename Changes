@@ -1,5 +1,10 @@
 Changes for MooseX-App
 
+1.30 ?, ? ?, 2014
+    - Better error message if command was not specified
+    - Help improved
+    - Term plugin
+
 1.29 Tue, Aug 5, 2014
     - Documentation improvements and fixups
     - Better error messages if type constraints fail
