@@ -87,7 +87,11 @@ sub cmd_term_read_string {
     TRY:
     while (1) {
         $return = '';
-        say "$label: ";
+        if (defined $Term::ANSIColor::VERSION) {
+            say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
+        } else {
+            say $label.": ";
+        }
         KEY: 
         while (1) {
             1 while defined ReadKey -1; # discard any previous input
@@ -105,7 +109,11 @@ sub cmd_term_read_string {
                     }
                     my $error = $self->cmd_type_constraint_check($return);
                     if ($error) {
-                        say $error;
+                        if (defined $Term::ANSIColor::VERSION) {
+                            say Term::ANSIColor::color('bright_red bold').$error.Term::ANSIColor::color('reset');
+                        } else {
+                            say $error;
+                        }
                         next TRY;
                     } else {
                         last TRY; 
