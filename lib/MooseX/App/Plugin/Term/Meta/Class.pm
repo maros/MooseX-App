@@ -8,6 +8,8 @@ use utf8;
 use namespace::autoclean;
 use Moose::Role;
 
+use IO::Interactive qw(is_interactive);
+
 around 'command_args' => sub {
     my ($orig,$self,$command_meta) = @_;
     
@@ -17,28 +19,13 @@ around 'command_args' => sub {
         && is_interactive()) {
         foreach my $attribute ($self->command_usage_attributes($command_meta,'all')) {
             next
-                unless $attribute->can('has_cmd_term')
+                unless $attribute->can('cmd_term')
                 && $attribute->cmd_term;
             
             if (! defined $result->{$attribute->name}) {
-                
-                my $label = $attribute->cmd_term_label_full;
-                #say $label;
-                    
-                # $attribute->cmd_is_bool
-                # $attribute->has_type_constraint
-                #  - Bool
-                #  - Num
-                #  - Float
-                #  - Enum
-                #  - Str/other
-                
-                
-                
-#                $result->{$attribute->name} = $ENV{$cmd_env};
-#                my $error = $self->command_check_attribute($attribute,$ENV{$cmd_env});
-#                push(@{$errors},$error)
-#                    if $error;
+                my $return = $attribute->cmd_term_read();
+                $result->{$attribute->name} = $return
+                    if defined $return;
             }
         }
     }
