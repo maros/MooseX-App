@@ -85,7 +85,8 @@ sub cmd_is_bool {
         return 1;
     }
     
-    return undef
+    my $ud = undef; # Make perlcritic happy
+    return $ud;
 }
 
 sub cmd_type_constraint_description {

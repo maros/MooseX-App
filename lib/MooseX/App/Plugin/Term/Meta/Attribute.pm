@@ -60,7 +60,7 @@ sub cmd_term_label_name {
     } elsif ($self->has_documentation) {
         return $self->documentation;
     } else {
-        $self->name;
+        return $self->name;
     }
 }
 
@@ -81,7 +81,7 @@ sub cmd_term_read_string {
     my $label = $self->cmd_term_label_full;
     my $return;
     
-    binmode STDIN,':utf8';
+    binmode STDIN,':encoding(UTF-8)';
     
     ReadMode 4; # change to raw input mode
     TRY_STRING:
