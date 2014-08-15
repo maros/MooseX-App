@@ -41,7 +41,7 @@ In your command class:
  
  option 'some_option' => (
      is             => 'rw',
-     isa            => 'Str',
+     isa            => 'Int',
      documentation  => 'Something'
      cmd_term       => 1,
  );
@@ -54,14 +54,20 @@ In your command class:
 In your shell
 
  bash$ myapp some_command
- Something (Optional):
+ Something (Required, an integer):
  test
+ Value must be an integer (not 'test')
+ 1
  
- Some option is test
+ Some option is 1
 
 =head1 DESCRIPTION
 
-This plugin can prompt the user for missing options/parameters on the terminal
+This plugin can prompt the user for missing options/parameters on the 
+terminal. The user will only be promted if the parameter were not provided
+by different means (parameter and option or config files and environment
+values if the respectice plugins have been loaded before this plugin) and
+if the script is connected to an interactive terminal.
 
 =cut
 

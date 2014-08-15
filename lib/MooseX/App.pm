@@ -421,6 +421,7 @@ and should be provided if possible:
 
 The behaviour of MooseX-App can be customised with plugins. To load a
 plugin just pass a list of plugin names after the C<use MooseX-App> statement.
+(Attention: order sometimes matters)
 
  use MooseX::App qw(PluginA PluginB);
 
@@ -442,11 +443,15 @@ Config files for MooseX::App applications
 
 =item * L<MooseX::App::Plugin::ConfigHome>
 
-Config files in users home directory
+Search config files in users home directory
 
 =item * L<MooseX::App::Plugin::Env>
 
-Read options from environment
+Read options and parameters from environment
+
+=item * L<MooseX::App::Plugin::Term>
+
+Prompt user for options and parameters
 
 =item * L<MooseX::App::Plugin::Typo>
 
