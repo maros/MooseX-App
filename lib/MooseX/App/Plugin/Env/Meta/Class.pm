@@ -23,9 +23,16 @@ around 'command_args' => sub {
         if (exists $ENV{$cmd_env}
             && ! defined $result->{$attribute->name}) {
             $result->{$attribute->name} = $ENV{$cmd_env};
-            my $error = $self->command_check_attribute($attribute,$ENV{$cmd_env});
-            push(@{$errors},$error)
-                if $error;
+            my $error = $attribute->cmd_type_constraint_check($ENV{$cmd_env});
+            if ($error) {
+                push(@{$errors},
+                    $self->command_message(
+                        header          => "Invalid environment value for '".$cmd_env."'", # LOCALIZE
+                        type            => "error",
+                        body            => $error,
+                    )
+                );
+            }
         }
     }
     

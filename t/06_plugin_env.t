@@ -37,5 +37,5 @@ subtest 'Env not passing type constraint' => sub {
     local $ENV{LOCAL1} = 'aa';
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Invalid value for 'command_local1'","Message ok");
+    is($test01->blocks->[0]->header,"Invalid environment value for 'LOCAL1'","Message ok");
 };
