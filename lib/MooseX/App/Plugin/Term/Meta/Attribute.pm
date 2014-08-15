@@ -84,7 +84,7 @@ sub cmd_term_read_string {
     binmode STDIN,':utf8';
     
     ReadMode 4; # change to raw input mode
-    TRY:
+    TRY_STRING:
     while (1) {
         $return = '';
         if (defined $Term::ANSIColor::VERSION) {
@@ -92,7 +92,7 @@ sub cmd_term_read_string {
         } else {
             say $label.": ";
         }
-        KEY: 
+        KEY_STRING: 
         while (1) {
             1 while defined ReadKey -1; # discard any previous input
             my $key = ReadKey 0; # read a single character
@@ -101,10 +101,10 @@ sub cmd_term_read_string {
                     print "\n";
                     if ($return =~ m/^\s*$/) {
                         if ($self->is_required) {
-                            $return = '';
-                            last TRY;
+                            next TRY_STRING;
                         } else {
-                            next TRY;
+                            $return = undef;
+                            last TRY_STRING;
                         }
                     }
                     my $error = $self->cmd_type_constraint_check($return);
@@ -114,16 +114,16 @@ sub cmd_term_read_string {
                         } else {
                             say $error;
                         }
-                        next TRY;
+                        next TRY_STRING;
                     } else {
-                        last TRY; 
+                        last TRY_STRING; 
                     }
                 }
                 when (3) { # Ctrl-C
-                    next TRY; 
+                    next TRY_STRING; 
                 }
                 when (27) { # ESC
-                    next TRY; 
+                    next TRY_STRING; 
                 }
                 when (127) { # Backspace
                     chop($return);

@@ -21,7 +21,6 @@ parameter 'first' => (
 option 'second' => (
     isa             => 'Int',
     is              => 'rw',
-    required        => 1,
     cmd_term        => 1,
 );
 
