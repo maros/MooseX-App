@@ -9,10 +9,20 @@ use Moose;
 use MooseX::App::Command;
 extends qw(Test02);
 
-option 'local' => (
+use Moose::Util::TypeConstraints;
+
+parameter 'first' => (
+    isa             => enum([qw(a1 b2 b3)]),
+    is              => 'rw',
+    required        => 1,
+    cmd_term        => 1,
+);
+
+option 'second' => (
     isa             => 'Int',
     is              => 'rw',
     required        => 1,
+    cmd_term        => 1,
 );
 
 1;
