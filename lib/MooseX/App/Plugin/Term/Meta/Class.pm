@@ -13,8 +13,9 @@ around 'command_args' => sub {
     
     my ($result,$errors) = $self->$orig($command_meta);
     
-    if (scalar @{$errors} == 0) {
-        foreach my $attribute ($self->command_usage_attributes($command_meta)) {
+    if (scalar @{$errors} == 0
+        && is_interactive()) {
+        foreach my $attribute ($self->command_usage_attributes($command_meta,'all')) {
             next
                 unless $attribute->can('has_cmd_term')
                 && $attribute->cmd_term;
