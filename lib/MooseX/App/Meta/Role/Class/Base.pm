@@ -201,11 +201,10 @@ sub command_proto {
     $metaclass   ||= $self;
     
     my @attributes;
-    foreach my $attribute ($self->command_usage_attributes($metaclass)) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass,'proto')) {
         next
             unless $attribute->does('AppOption')
-            && $attribute->has_cmd_type
-            && $attribute->cmd_type eq 'proto';
+            && $attribute->has_cmd_type;
         push(@attributes,$attribute);
     }
     
@@ -376,9 +375,16 @@ sub command_process_attribute {
                 my $coercion = $type_constraint->coercion;
                 $value = $coercion->coerce($value) // $value;
             }
-            my $error = $self->command_check_attribute($attribute,$value);
-            push(@errors,$error)
-                if $error;
+            my $error = $attribute->cmd_type_constraint_check($value);
+            if (defined $error) {
+                push(@errors,
+                    $self->command_message(
+                        header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
+                        type            => "error",
+                        body            => $error,
+                    )
+                );
+            }
         }
         
     } else {
@@ -388,104 +394,10 @@ sub command_process_attribute {
     return ($value,\@errors);
 }
 
-sub command_check_attribute {
-    my ($self,$attribute,$value) = @_;
-    
-    return 
-        unless ($attribute->has_type_constraint);
-    my $type_constraint = $attribute->type_constraint;
-    
-    # Check type constraints
-    unless ($type_constraint->check($value)) {
-        my $message;
-        
-        if (ref($value) eq 'ARRAY') {
-            $value = join(', ',@$value);
-        } elsif (ref($value) eq 'HASH') {
-            $value = join(', ',map { $_.'='.$value->{$_} } keys %$value)
-        }
-        
-        # We have a custom message
-        if ($type_constraint->has_message) {
-            $message = $type_constraint->get_message($value);
-        # No message
-        } else {
-            my $message_human = $self->command_type_constraint_description($type_constraint);
-            if (defined $message_human) {
-                $message = "Value must be ". $message_human ." (not '$value')";
-            } else {
-                $message = $type_constraint->get_message($value);
-            }
-        }
-        
-        return $self->command_message(
-            header          => "Invalid value for '".$attribute->cmd_name_primary."'", # LOCALIZE
-            type            => "error",
-            body            => $message,
-        );
-    }
-    
-    return;
-}
 
 
-sub command_type_constraint_description {
-    my ($self,$type_constraint,$singular) = @_;
-    
-    $singular //= 1;
-    
-    if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
-        return 'one of these values: '.join(', ',@{$type_constraint->values});
-    } elsif ($type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized')) {
-        my $from = $type_constraint->parameterized_from;
-        if ($from->is_a_type_of('ArrayRef')) {
-            return $self->command_type_constraint_description($type_constraint->type_parameter);
-        } elsif ($from->is_a_type_of('HashRef')) {
-            return 'key-value pairs of '.$self->command_type_constraint_description($type_constraint->type_parameter,0);
-        }
-    # TODO union
-    } elsif ($type_constraint->equals('Int')) {
-        return $singular ? 'an integer':'integers'; # LOCALIZE
-    } elsif ($type_constraint->equals('Num')) {
-        return $singular ? 'a number':'numbers'; # LOCALIZE
-    } elsif ($type_constraint->equals('Str')) {
-        return $singular ? 'a string':'strings';
-    } elsif ($type_constraint->equals('HashRef')) {
-        return 'key-value pairs'; # LOCALIZE
-    }
-    
-    if ($type_constraint->has_parent) {
-        return $self->command_type_constraint_description($type_constraint->parent);
-    }
-    
-    return;
-    
-#    given ($type_constraint_name) {
-#        when ('Int') {
-#            return 'integer'; # LOCALIZE
-#        }
-#        when ('Num') {
-#            
-#        }
-#        when (/^ArrayRef\[(.*)\]$/) {
-#            return $self->command_type_constraint_description($1);
-#        }
-#        when ('HashRef') {
-#            return 'key-value pairs'; # LOCALIZE
-#        } 
-#        when (/^HashRef\[(.+)\]$/) {
-#            return 'key-value pairs with '.$self->command_type_constraint_description($1).' values'; # LOCALIZE
-#        }
-#        when ('Str') {
-#            return 'string'; # LOCALIZE
-#        }
-#        default {
-#            $type_constraint
-#        }
-#    }
-    
-    return;
-}
+
+
 
 sub command_candidates {
     my ($self,$command) = @_;
@@ -619,8 +531,11 @@ sub command_usage_attributes {
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('AppOption')
-            && $attribute->has_cmd_type
-            && $attribute->cmd_type ~~ $types;
+            && $attribute->has_cmd_type;
+        
+        next
+            unless $types eq 'all'
+            || $attribute->cmd_type ~~ $types;
         
         push(@return,$attribute);
     }
@@ -966,19 +881,6 @@ command. Is a wrapper around L<command_parse_options>.
  my ($options,$errors) = $self->command_parse_options(\@attribute_metaclasses);
 
 Tries to parse the selected attributes from @ARGV.
-
-=head2 command_check_attribute
-
- my ($error) = $self->command_check_attribute($attribute_meta_class,$value);
-
-Checks if a value is valid for the given attribute. Returns a message object
-if a validation error occurs.
-
-=head2 command_type_constraint_description
-
- my ($description) = $self->command_type_constraint_description($type_constraint);
-
-Returns a human-readable type constraint description.
 
 =head2 command_scan_namespace
  
