@@ -472,9 +472,10 @@ for documentation on how to create your own plugins.
 
 =head1 CAVEATS & KNOWN BUGS
 
-Startup time may be an issue - escpecially if you load many pluginc. If you do
-not require plugins and ability for fine grained customisation then you should 
-probably use L<MooX::Options> or L<MooX::Cmd>. 
+Startup time may be an issue - escpecially if you load many plugins. If you do
+not require the functionality of plugins and ability for fine grained 
+customisation (or Moose for that matter) then you should probably 
+use L<MooX::Options> or L<MooX::Cmd>. 
 
 In some cases - especially when using non-standard class inheritance - you may
 end up with command classes lacking the help attribute. In this case you need
