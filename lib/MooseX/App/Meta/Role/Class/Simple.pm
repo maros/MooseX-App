@@ -13,10 +13,29 @@ around 'command_usage_header' => sub {
     
     my $caller = $self->app_base;
     
+    my $usage;
+    if ($self->can('command_usage')
+        && $self->command_usage_predicate) {
+        $usage = MooseX::App::Utils::format_text($self->command_usage);
+    }
+    
+    unless ($usage) {
+        my $command = $caller;
+        my @parameter= $self->command_usage_attributes($self,'parameter');
+        foreach my $attribute (@parameter) {
+            if ($attribute->is_required) {
+                $command .= " <".$attribute->cmd_usage_name.'>';
+            } else {
+                $command .= ' ['.$attribute->cmd_usage_name.']';
+            }
+        }
+        $usage = MooseX::App::Utils::format_text("$command [long options...]
+$caller --help")
+    }
+    
     return $self->command_message(
         header  => 'usage:',
-        body    => MooseX::App::Utils::format_text("$caller [long options...]
-$caller --help")); # LOCALIZE
+        body    => $usage); # LOCALIZE
 };
 
 1;
