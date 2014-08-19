@@ -4,6 +4,9 @@ Changes for MooseX-App
     - Better error message if command was not specified
     - Help improved
     - Term plugin
+    - Deprecate Env plugin; Now in core
+    - Fix broken usage in M::A::Simple
+    -
 
 1.29 Tue, Aug 5, 2014
     - Documentation improvements and fixups
