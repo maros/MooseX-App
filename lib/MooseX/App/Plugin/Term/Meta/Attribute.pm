@@ -137,7 +137,7 @@ sub cmd_term_read_string {
                     print "\b \b";
                 }
                 default {
-                    if ($_ >= 31) { # ignore controll chars
+                    if ($_ <= 31) { # ignore controll chars
                         next KEY_STRING;
                     }
                     $return .= $key;
