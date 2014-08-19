@@ -32,12 +32,13 @@ lib/MooseX/App/Plugin/Config/Meta/Class.pm
 lib/MooseX/App/Plugin/ConfigHome.pm
 lib/MooseX/App/Plugin/ConfigHome/Meta/Class.pm
 lib/MooseX/App/Plugin/Env.pm
-lib/MooseX/App/Plugin/Env/Meta/Attribute.pm
-lib/MooseX/App/Plugin/Env/Meta/Class.pm
 lib/MooseX/App/Plugin/Fuzzy.pm
 lib/MooseX/App/Plugin/Man.pm
 lib/MooseX/App/Plugin/Man/Command.pm
 lib/MooseX/App/Plugin/Man/Meta/Class.pm
+lib/MooseX/App/Plugin/Term.pm
+lib/MooseX/App/Plugin/Term/Meta/Attribute.pm
+lib/MooseX/App/Plugin/Term/Meta/Class.pm
 lib/MooseX/App/Plugin/Typo.pm
 lib/MooseX/App/Plugin/Typo/Meta/Class.pm
 lib/MooseX/App/Plugin/Version.pm
@@ -61,7 +62,7 @@ t/02_meta.t
 t/03_utils.t
 t/04_plugin_config.t
 t/05_extended.t
-t/06_plugin_env.t
+t/06_env.t
 t/07_single.t
 t/08_plugin_various.t
 t/09_classes.t
