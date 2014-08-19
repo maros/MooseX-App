@@ -192,6 +192,29 @@ sub command_args {
         }
     }
     
+    foreach my $attribute ($self->command_usage_attributes($metaclass,'all')) {
+        next
+            unless $attribute->can('has_cmd_env')
+            && $attribute->has_cmd_env;
+        
+        my $cmd_env = $attribute->cmd_env;
+        
+        if (exists $ENV{$cmd_env}
+            && ! defined $return->{$attribute->name}) {
+            $return->{$attribute->name} = $ENV{$cmd_env};
+            my $error = $attribute->cmd_type_constraint_check($ENV{$cmd_env});
+            if ($error) {
+                push(@{$errors},
+                    $self->command_message(
+                        header          => "Invalid environment value for '".$cmd_env."'", # LOCALIZE
+                        type            => "error",
+                        body            => $error,
+                    )
+                );
+            }
+        }
+    }
+    
     return ($return,$errors);
 }
 

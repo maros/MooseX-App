@@ -39,6 +39,12 @@ has 'cmd_split' => (
     predicate   => 'has_cmd_split',
 );
 
+has 'cmd_env' => (
+    is          => 'rw',
+    isa         => 'MooseX::App::Types::Env',
+    predicate   => 'has_cmd_env',
+);
+
 has 'cmd_position' => (
     is => 'rw',
     isa => 'Int',
@@ -253,6 +259,11 @@ sub cmd_tags_list {
         }
     }
     
+    if ($self->can('has_cmd_env')
+        && $self->has_cmd_env) {
+        push(@tags,'Env: '.$self->cmd_env)
+    }
+    
     if ($self->can('cmd_tags')
         && $self->can('cmd_tags')
         && $self->has_cmd_tags) {
@@ -298,6 +309,7 @@ use the following attributes in option or parameter definitions.
      cmd_flag           => 'myopt',
      cmd_aliases        => [qw(mopt localopt)],
      cmd_tags           => [qw(Important!)],
+     cmd_env            => 'MY_OPTION',
      cmd_position       => 1,
      cmd_split          => qr/,/,
  );
@@ -323,6 +335,12 @@ used for plugin developmemt
 =item * parameter - Positional parameter command line value
 
 =back
+
+=head2 cmd_env
+
+Environment variable name (only uppercase letters, numeric and underscores
+allowed). If variable was not specified otherwise the value will be
+taken from %ENV.
 
 =head2 cmd_aliases
 

@@ -62,7 +62,7 @@ subtest 'Help for command' => sub {
     Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
     is($test04->blocks->[2]->header,"options:",'Options header is set');
     is($test04->blocks->[2]->body,"    --command_local1      some docs about the long texts that seem to occur
-                          randomly [Integer; Important; Env: LOCAL1]
+                          randomly [Integer; Env: LOCAL1; Important]
     --command_local2      Verylongwordwithoutwhitespacestotestiftextformating
                           worksproperly [Env: LOCAL2]
     --config              Path to command config file

@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/06_plugin_env.t - Test env plugin
+# t/06_plugin_env.t - Test env
 
 use Test::Most tests => 4+1;
 use Test::NoWarnings;

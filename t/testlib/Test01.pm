@@ -1,7 +1,7 @@
 package Test01;
 
 use Moose;
-use MooseX::App qw(Config Env);
+use MooseX::App qw(Config);
 
 app_strict 1;
 

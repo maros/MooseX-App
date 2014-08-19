@@ -29,6 +29,10 @@ coerce 'MooseX::App::Types::MessageString'
     => from 'ArrayRef'
     => via { sprintf(@{$_}) };
 
+subtype 'MooseX::App::Types::Env'
+    => as 'Str'
+    => where { m/^[A-Z0-9_]+$/ };
+
 no Moose::Util::TypeConstraints;
 
 no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;

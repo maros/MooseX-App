@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    warn "MooseX::App Fuzzy plugin is deprecated use Typo instead";
+    warn "MooseX::App Fuzzy plugin is deprecated. Use Typo instead";
     return;
 }
 
