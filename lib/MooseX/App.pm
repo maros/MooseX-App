@@ -235,11 +235,11 @@ MooseX-App will then
 =item * Find, load and initialise the command classes (see L<MooseX-App-Simple>
 for single command applications)
 
-=item * Create automated help and documentation from modules POD and 
-attributes metadata
+=item * Create automated help and documentation from modules POD as well as
+attributes metadata and type constraints
 
 =item * Read, encode and validate the command line options and positional 
-parameters entered by the user from @ARGV (and possibly %ENV)
+parameters entered by the user from @ARGV and %ENV
 
 =item * Provide helpful error messages if user input cannot be validated (
 either missing or wrong attributes or Moose type constraints not satisfied)
@@ -277,6 +277,14 @@ This is equivalent to
       isa           => 'Str',
       traits        => ['AppOption'],
       cmd_type      => 'parameter',
+  );
+
+Furthermore all options and parameters can also be suplied vie %ENV
+
+  option 'some_option' => (
+      is            => 'rw',
+      isa           => 'Str',
+      cmd_env       => 'SOME_OPTION',
   );
 
 Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
@@ -341,6 +349,15 @@ extra parameters will be copied to the L<extra_argv> attribute.
 The command_strict config in the command classes allows one to set this option
 individually for each command.
 
+=head2 app_prefer_commandline
+
+ app_prefer_commandline(0); # default
+ or
+ app_prefer_commandline(1);
+
+Specifies if parameters/options supplied via @ARGV,%ENV should take precedence
+over arguments passed to new_with_command.
+
 =head2 app_command_name
 
  app_command_name {
@@ -389,6 +406,8 @@ Help flag that is set when help was requested.
 =item * cmd_split - Split values
 
 =item * cmd_position - Option/Parameter order
+
+=item * cmd_env - Read options from %ENV
 
 =back
 
@@ -445,13 +464,9 @@ Config files for MooseX::App applications
 
 Search config files in users home directory
 
-=item * L<MooseX::App::Plugin::Env>
-
-Read options and parameters from environment
-
 =item * L<MooseX::App::Plugin::Term>
 
-Prompt user for options and parameters not provided via options or params
+Prompt user for options and parameters that were not provided via options or params
 
 =item * L<MooseX::App::Plugin::Typo>
 
