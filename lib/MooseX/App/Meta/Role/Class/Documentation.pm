@@ -39,7 +39,7 @@ has 'command_strict' => (
 
 sub command_short_description_predicate {
     my ($self) = @_;  
-    return $self->_command_description_predicate('command_short_description');
+    return $self->_command_pod_predicate('command_short_description');
 }
 
 sub _build_command_short_description {
@@ -52,7 +52,7 @@ sub _build_command_short_description {
 
 sub command_long_description_predicate {
     my ($self) = @_;
-    return $self->_command_description_predicate('command_long_description');
+    return $self->_command_pod_predicate('command_long_description');
 }
 
 sub _build_command_long_description {
@@ -65,7 +65,7 @@ sub _build_command_long_description {
 
 sub command_usage_predicate {
     my ($self) = @_;
-    return $self->_command_description_predicate('command_usage');
+    return $self->_command_pod_predicate('command_usage');
 }
 
 sub _build_command_usage {
@@ -76,7 +76,7 @@ sub _build_command_usage {
     return;
 }
 
-sub _command_description_predicate {
+sub _command_pod_predicate {
     my ($self,$field) = @_;
     
     my $attribute = $self->meta->find_attribute_by_name($field);
@@ -86,7 +86,7 @@ sub _command_description_predicate {
     }
     
     my $value = $attribute->get_value($self); 
-        
+    
     return (defined $value && $value ? 1:0);
 }
 
@@ -103,9 +103,6 @@ sub _build_command_pod {
     );
     
     while (my ($key,$value) = each %pod) {
-        next
-            unless defined $value;
-            
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next
             unless defined $meta_attribute;
