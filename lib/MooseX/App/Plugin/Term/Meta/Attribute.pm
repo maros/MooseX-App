@@ -86,6 +86,8 @@ sub cmd_term_read_string {
     ReadMode 4; # change to raw input mode
     TRY_STRING:
     while (1) {
+        print "\n"
+            if $return !~ /^\s*$/;
         $return = '';
         if (defined $Term::ANSIColor::VERSION) {
             say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
@@ -120,7 +122,11 @@ sub cmd_term_read_string {
                     }
                 }
                 when (3) { # Ctrl-C
-                    next TRY_STRING; 
+                    print "\n"
+                        if $return !~ /^\s*$/;
+                    ReadMode 0;
+                    kill INT => $$; # Not sure ?
+                    #next TRY_STRING; 
                 }
                 when (27) { # ESC
                     next TRY_STRING; 
@@ -130,7 +136,9 @@ sub cmd_term_read_string {
                     print "\b \b";
                 }
                 default {
-                    # TODO Check printable
+                    if ($_ >= 31) { # ignore controll chars
+                        next KEY_STRING;
+                    }
                     $return .= $key;
                     print $key;
                 }
