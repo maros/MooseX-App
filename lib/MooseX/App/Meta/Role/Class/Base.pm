@@ -625,16 +625,15 @@ sub command_usage_header {
     my $caller = $self->app_base;
     
     my ($command_name,$usage);
+    if ($command_meta_class->can('command_usage')
+        && $command_meta_class->command_usage_predicate) {
+        $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
+    }
     if ($command_meta_class) {
         $command_name = $self->command_class_to_command($command_meta_class->name);
-        if ($command_meta_class->can('command_usage')
-            && $command_meta_class->command_usage_predicate) {
-            $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
-        }
     } else {
         $command_name = '<command>';
     }
-    
     unless (defined $usage) {
         # LOCALIZE
         $usage = "$caller $command_name ";
