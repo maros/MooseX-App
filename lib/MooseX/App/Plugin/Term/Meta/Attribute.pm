@@ -87,7 +87,8 @@ sub cmd_term_read_string {
     TRY_STRING:
     while (1) {
         print "\n"
-            if $return !~ /^\s*$/;
+            if defined $return 
+            && $return !~ /^\s*$/;
         $return = '';
         if (defined $Term::ANSIColor::VERSION) {
             say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
