@@ -106,6 +106,8 @@ sub _build_command_pod {
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next
             unless defined $meta_attribute;
+        next
+            if $meta_attribute->has_value($self);
         $meta_attribute->set_raw_value($self,$value);
     }
     
