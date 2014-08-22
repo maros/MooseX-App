@@ -60,19 +60,7 @@ sub initialize_command_class {
         );
     }
     
-    # Check required values
-    foreach my $attribute ($meta->command_usage_attributes($command_meta,[qw(option proto parameter)])) {
-        if ($attribute->is_required
-            && ! exists $params{$attribute->name}
-            && ! $attribute->has_default) {
-            push(@errors,
-                $meta->command_message(
-                    header          => "Required ".($attribute->cmd_type eq 'parameter' ? 'parameter':'option')." '".$attribute->cmd_name_primary."' missing", # LOCALIZE
-                    type            => "error",
-                )
-            );
-        }
-    }
+    $meta->command_check_attributes($command_meta,\@errors,\%params);
     
     if (scalar @errors) {
         return MooseX::App::Message::Envelope->new(

@@ -544,6 +544,28 @@ sub command_message {
     return $messageclass->new(@args);
 }
 
+sub command_check_attributes {
+    my ($self,$command_meta,$errors,$params) = @_;
+    
+    $command_meta ||= $self;
+    
+    # Check required values
+    foreach my $attribute ($self->command_usage_attributes($command_meta,[qw(option proto parameter)])) {
+        if ($attribute->is_required
+            && ! exists $params->{$attribute->name}
+            && ! $attribute->has_default) {
+            push(@{$errors},
+                $self->command_message(
+                    header          => "Required ".($attribute->cmd_type eq 'parameter' ? 'parameter':'option')." '".$attribute->cmd_name_primary."' missing", # LOCALIZE
+                    type            => "error",
+                )
+            );
+        }
+    }
+    
+    return $errors;
+}
+
 sub command_usage_attributes {
     my ($self,$metaclass,$types) = @_;
     
