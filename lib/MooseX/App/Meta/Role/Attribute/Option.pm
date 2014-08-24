@@ -69,10 +69,9 @@ around 'new' => sub {
     return $self;
 };
 
-
 sub cmd_is_bool {
     my ($self) = @_; 
-   
+    
     if ($self->has_type_constraint
         && $self->type_constraint->is_a_type_of('Bool')) {
         
@@ -98,6 +97,7 @@ sub cmd_is_bool {
 sub cmd_type_constraint_description {
     my ($self,$type_constraint,$singular) = @_;
     
+    $type_constraint //= $self->type_constraint;
     $singular //= 1;
     
     if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
