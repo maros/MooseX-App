@@ -410,5 +410,17 @@ of the attribute:
 
 =back
 
+=head2 cmd_type_constraint_check
+
+ $attribute->cmd_type_constraint_check($value)
+
+Checks the type constraint. Returns an error message if the check fails
+
+=head2 cmd_type_constraint_description
+
+ $attribute->cmd_type_constraint_description($type_constraint,$singular)
+
+Creates a description of the selected type constraint.
+
 =cut
 

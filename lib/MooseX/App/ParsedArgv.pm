@@ -243,7 +243,7 @@ a new one will be created.
 
 =head2 argv
 
-Accessor for the original @ARGV. 
+Accessor for the    inal @ARGV. 
 
 =head2 hints
 

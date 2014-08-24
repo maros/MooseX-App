@@ -103,6 +103,10 @@ Parameter value or option key
 
 Arrayref of values 
 
+=head2 raw
+
+Raw value as supplied by the user
+
 =head2 type
 
 Type of element. Can be 'option', 'parameter' or 'extra'

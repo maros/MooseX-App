@@ -935,7 +935,7 @@ Tries to parse the selected attributes from @ARGV.
 Scans a namespace for command classes. Returns a hash with command names
 as keys and package names as values.
 
-=head2 command_process_attributes
+=head2 command_process_attribute
 
  my @attributes = $self->command_process_attributes($metaclass,[qw(option proto)]);
  my @attributes = $self->command_process_attributes($metaclass,'parameter');
@@ -953,4 +953,17 @@ Returns the options usage as a message object
  my $usage = $self->command_usage_parameters($metaclass,$headline);
 
 Returns the positional parameters usage as a message object
+
+=head2 command_check_attributes
+
+ $errors = $self->command_check_attributes($command_meta,$errors,$params)
+ 
+Checks all attributes. Returns/alters the $errors arrayref
+
+=head2 command_parser_hints
+
+ $self->command_parser_hints($self,$metaclass)
+
+Generates parser hints as required by L<MooseX::App::ParsedArgv>
+
 =cut
