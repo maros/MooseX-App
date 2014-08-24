@@ -1,1 +1,3 @@
 * Better hashref support (eg colons, multiple pairs)
+* Nested subcommands
+* Better positional param detection
