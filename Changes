@@ -1,6 +1,6 @@
-Changes for MooseX-App
+Release history for Perl module MooseX::App
 
-1.30 Sun, Aug 24, 2014
+1.30 2014-08-24
     - Better error message if command was not specified
     - Help improved
     - Term plugin
@@ -8,69 +8,69 @@ Changes for MooseX-App
     - Fix broken usage in M::A::Simple
     - Fix documentation being parsed called multiple times
 
-1.29 Tue, Aug 5, 2014
+1.29 2014-08-05
     - Documentation improvements and fixups
     - Better error messages if type constraints fail
     - Better suggestions in case of errors
     - Handle enum type constraints in usage info
     - Display application documentation
 
-1.28 Tue, Mar 25, 2014
+1.28 2014-03-25
     - Fix failing tests (reported by Michael Greb and Dagfinn Ilmari Mannsåker)
 
-1.27 Sun, Mar 2, 2014
+1.27 2014-03-02
     - Fix warnings on warnings on 5.18 again
     - Documentation
     - Fix spelling (fixed by Gregor Herrmann)
     
-1.26 Mon, Feb 24, 2014
+1.26 2014-02-24
     - Fix failing tests
 
-1.25 Sun, Feb 23, 2014
+1.25 2014-02-23
     - Allow multiple command namespaces (Thilo Fester)
     - Documentation
 
-1.24 Fri, Feb 14, 2014
+1.24 2014-02-14
     - Fix POD warnings (fixed by David Golden)
     - Always reuse existing MooseX::App::ParsedArgv instances
     - Parse @ARGV as soon as possible
     - Fix Win32 colorisation issues (fixed by J.R. Mash)
     - Add app_prefer_commandline option
 
-1.23 Mon, Jan 27, 2014
+1.23 2014-01-27
     - Documentation
     - Manual plugin
     - More inheritance tests
     - Cleanup deprecated code
 
-1.22 Fri, May 24, 2013
+1.22 2013-05-24
     - Silence experimental::smartmatch warnings on 5.18 (fixed by Mike Doherty)
 
-1.21 Sat, Apr 13, 2013
+1.21 2013-04-13
     - Fix option sorting
     - Fix parsing of positional parameters
 
-1.20 Mon, Apr 8, 2013
+1.20 2013-04-08
     - Add cmd_split and cmd_position option
     - Fixed parameter position (fixed by Yanick Champoux)
     - app_strict option to set if app should terminate when unknown parameters
       or options are supplied
 
-1.19 Thu, Mar 28, 2013
+1.19 2013-03-28
     - Fixed failing tests
     - Fixed bug that was triggered by Moose 2.0800
     - Fixed on MSWin
 
-1.18 Sun, Mar 24, 2013
+1.18 2013-03-24
     - Added positional parameters with 'parameter' keyword 
       (Attention: this change might break things if you used to work with @extra)
     - Parameters are handled in the meta class
     - Usage meta class methods refactored
 
-1.17 Wed, Mar 6, 2013
+1.17 2013-03-06
     - Fix failing tests
 
-1.16 Wed, Feb 27, 2012
+1.16 2013-02-27
     - Better license parsing
     - Fix failing tests
     - Use Class::Load instead of Class::MOP to load classes
@@ -80,25 +80,25 @@ Changes for MooseX-App
     - Much more tests (95% statement and 90% total coverage)
     - Better error handling for Environment plugin
 
-1.15 Fri, Jan 18, 2012
+1.15 2013-01-18
     - Fix wrong attribute initialisation order
 
-1.14 Tue, Jan 15, 2012
+1.14 2013-01-15
     - Fix failing test
     - Update documentation
     - Optional usage information from POD (fixed by Yanick Champoux)
     - app_fuzzy now defaults to true
     - Version plugin prints license and copyright
 
-1.13 Fri, Jan 11, 2012
+1.13 2013-01-11
     - Fix failing test
     - Update documentation
 
-1.12 Thu, Jan 10, 2012
+1.12 2013-01-10
     - Fix failing test
     - Fix pod (Andrew Jones)
 
-1.11 Tue, Jan 8, 2012
+1.11 2013-01-08
     - Parse DistZilla ABSTRACT for documentation
     - Improve tutorial and fix typo (fixed by George Hartzell)
     - Saner bash completion and version plugin
@@ -107,23 +107,23 @@ Changes for MooseX-App
     - Handle shell character encodings
     - More tests
 
-1.10 Mon, Jan 7, 2013
+1.10 2013-01-07
     - Fix bash completion plugin (fixed by Steve Nolte)
 
-1.09 Thu, Nov 22, 2012
+1.09 2012-11-22
     - Fix failing load test
 
-1.08 Sat, Nov 17, 2012
+1.08 2012-11-17
     - Refactor object initialisation
     - Fix missing bash-completion prefix (fixed by Steve Nolte)
     - Require latest MooseX::Getopt (fixed by Steve Nolte)
     - Fix Plugin::Version docs RT81186 (fixed by Michael G)
     - Update documentation
 
-1.07 Wed, Aug 22, 2012
+1.07 2012-08-22
     - Fix failing load tests
     
-1.06 Mon, Aug 20, 2012
+1.06 2012-08-20
     - Single command interface (MooseX::App::Simple)
     - Fuzzy command matching plugin
     - Only lowercase command names
@@ -131,17 +131,17 @@ Changes for MooseX-App
     - Version plugin
     - Various cleanups
 
-1.05 Mon, Jun 4, 2012
+1.05 2012-06-04
     - Fix broken load tests
     - Join M::A::Meta::Attribute::Base and M::A::Meta::Attribute::Option
 
-1.04 Sat, Jun 2, 2012
+1.04 2012-06-02
     - Fix bugs in BashCompletion plugin
     - Remove code duplication
     - Fix --help flag in command classes
     - Fix pod to text conversion
 
-1.03 Sat, Jun 2, 2012
+1.03 2012-06-02
     - Do not expose all attributes as options but only those defined via 
       'option' keyword
     - More tests
@@ -149,15 +149,15 @@ Changes for MooseX-App
       only once, ...)
     - Fix various bugs
 
-1.02 Sun, Apr 15, 2012
+1.02 2012-04-15
     - Fix command usage generation bug
     - Automatically apply MooseX-Getopt attribute traits
     - Rename command_tag to cmd_tag attribute
 
-1.01 Thu, Apr 12, 2012
+1.01 2012-04-12
     - Fix text failures
     - Fix Pod
     - Add missing tutorials to manifest
 
-1.00 Sat, Apr 7, 2012
+1.00 2012-04-07
     - Initial version
