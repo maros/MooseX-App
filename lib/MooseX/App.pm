@@ -279,7 +279,7 @@ This is equivalent to
       cmd_type      => 'parameter',
   );
 
-Furthermore all options and parameters can also be suplied vie %ENV
+Furthermore, all options and parameters can also be supplied via %ENV
 
   option 'some_option' => (
       is            => 'rw',
