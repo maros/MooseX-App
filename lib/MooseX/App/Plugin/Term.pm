@@ -25,7 +25,7 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Term - Allows to specify options/parameters via terminal prompts
+MooseX::App::Plugin::Term - Allows one to specify options/parameters via terminal prompts
 
 =head1 SYNOPSIS
 
