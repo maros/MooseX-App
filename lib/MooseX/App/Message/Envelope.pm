@@ -14,7 +14,7 @@ use overload
     '""' => "stringify";
 
 has 'blocks' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'ArrayRef[MooseX::App::Message::Block]',
     traits      => ['Array'],
     handles     => {

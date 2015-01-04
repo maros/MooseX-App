@@ -14,19 +14,19 @@ use overload
     '""' => "stringify";
 
 has 'header' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'MooseX::App::Types::MessageString',
     predicate   => 'has_header',
 );
 
 has 'type' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'Str',
     default     => sub {'default'},
 );
 
 has 'body' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'MooseX::App::Types::MessageString',
     predicate   => 'has_body',
 );

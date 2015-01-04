@@ -15,7 +15,7 @@ has 'key' => (
 );
 
 has 'value' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'ArrayRef[Str]',
     traits          => ['Array'],
     default         => sub { [] },
@@ -33,13 +33,13 @@ has 'consumed' => (
 );
 
 has 'type' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'Str',
     required        => 1,
 );
 
 has 'raw' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'Str',
     predicate       => 'has_raw',
 );

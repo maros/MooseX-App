@@ -13,13 +13,13 @@ no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 use Term::ReadKey;
 
 has 'cmd_term' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'Bool',
     default     => sub {0},
 );
 
 has 'cmd_term_label' => (
-    is          => 'rw',
+    is          => 'ro',
     isa         => 'Str',
     predicate   => 'has_cmd_term_label',
 );
