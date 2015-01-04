@@ -16,25 +16,28 @@ use Pod::Elemental::Transformer::Nester;
 has 'command_short_description' => (
     is          => 'rw',
     isa         => 'Maybe[Str]',
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_command_short_description',
 );
 
 has 'command_long_description' => (
     is          => 'rw',
     isa         => 'Maybe[Str]',
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_command_long_description',
 );
 
 has 'command_usage' => (
     is          => 'rw',
     isa         => 'Maybe[Str]',
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_command_usage',
 );
 
 has 'command_strict' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 0,
+    default     => sub {0},
 );
 
 sub command_short_description_predicate {

@@ -29,7 +29,7 @@ has 'value' => (
 has 'consumed' => (
     is              => 'rw',
     isa             => 'Bool',
-    default         => 0,
+    default         => sub {0},
 );
 
 has 'type' => (

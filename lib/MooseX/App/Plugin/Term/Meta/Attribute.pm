@@ -15,7 +15,7 @@ use Term::ReadKey;
 has 'cmd_term' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 0,
+    default     => sub {0},
 );
 
 has 'cmd_term_label' => (

@@ -18,14 +18,16 @@ no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 has 'app_messageclass' => (
     is          => 'rw',
     isa         => 'ClassName',
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_app_messageclass',
 );
 
 has 'app_namespace' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::List',
     coerce      => 1,
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_app_namespace',
 );
 
 has 'app_base' => (
@@ -37,13 +39,13 @@ has 'app_base' => (
 has 'app_strict' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 0,
+    default     => sub {0},
 );
 
 has 'app_fuzzy' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 1,
+    default     => sub {1},
 );
 
 has 'app_command_name' => (
@@ -55,7 +57,7 @@ has 'app_command_name' => (
 has 'app_prefer_commandline' => (
     is          => 'rw',
     isa         => 'Bool',
-    default     => 0,
+    default     => sub {0},
 );
 
 has 'app_commands' => (
@@ -66,7 +68,8 @@ has 'app_commands' => (
         command_register    => 'set', 
         command_get         => 'get',  
     },
-    lazy_build  => 1,
+    lazy        => 1,
+    builder     => '_build_app_commands',
 );
 
 sub _build_app_messageclass {

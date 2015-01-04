@@ -45,7 +45,8 @@ has 'hints' => (
 has 'elements' => (
     is              => 'rw',
     isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
-    lazy_build      => 1,
+    lazy            => 1,
+    builder         => '_build_elements',
     clearer         => 'reset_elements',
 );
 

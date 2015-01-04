@@ -22,7 +22,7 @@ has 'header' => (
 has 'type' => (
     is          => 'rw',
     isa         => 'Str',
-    default     => 'default',
+    default     => sub {'default'},
 );
 
 has 'body' => (
