@@ -46,9 +46,9 @@ has 'cmd_env' => (
 );
 
 has 'cmd_position' => (
-    is => 'rw',
-    isa => 'Int',
-    default => 0,
+    is      => 'rw',
+    isa     => 'Int',
+    default => sub {0},
 );
 
 my $GLOBAL_COUNTER = 1;

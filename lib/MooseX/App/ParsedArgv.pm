@@ -14,7 +14,7 @@ no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 my $SINGLETON;
 
 has 'argv' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'ArrayRef[Str]',
     default         => sub {
         my @argv;
@@ -43,9 +43,10 @@ has 'hints' => (
 ); # Hints for boolean flags
 
 has 'elements' => (
-    is              => 'rw',
+    is              => 'ro',
     isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
-    lazy_build      => 1,
+    lazy            => 1,
+    builder         => '_build_elements',
     clearer         => 'reset_elements',
 );
 
