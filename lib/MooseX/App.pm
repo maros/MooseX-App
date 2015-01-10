@@ -526,9 +526,11 @@ your report as I make changes.
     
 =head1 CONTRIBUTORS
 
+Special thanks to all contributors.
+
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
-J.R. Mash, Thilo Fester, Gregor Herrmann
+J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X
 
 =head1 COPYRIGHT
 
