@@ -43,7 +43,6 @@ sub cmd_term_label_full {
             push(@tags,$self->cmd_type_constraint_description($type_constraint));
         }
     }
-    # TODO; Handle type constraints
     if (scalar @tags) {
         $label .= ' ('.join(', ',@tags).')';
     }
