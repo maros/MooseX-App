@@ -6,7 +6,8 @@ A list of TODO tasks if you are interested in improving MooseX::App
     * allow to specify multiple pairs in one attribute. ie. instead of
       --hash key=value --hash anotherkey=anothervalue
       allow the following syntax
-      --hash key=value anotherkey=anothervalue
+      --hash key=value anotherkey=anothervalue 
+      also see permute
 * Nested subcommands (Difficulty:Medium-Hard)
     * ie. "mycommand.pl some command" would translate to 
       "MyCommand::Some::Command"
@@ -15,7 +16,7 @@ A list of TODO tasks if you are interested in improving MooseX::App
       should return a list of available subcommands for "some")
     * Make sure that the typo plugin handles subcommands
 * Better positional param detection (Difficulty:Medium)
-* Better error messages on unrecognized params  (Difficulty:Medium)
+* Better error messages on unrecognized params (Difficulty:Medium)
     * Improve "Did you mean ..." suggestions
     * Suggestions if attribute was suplied with only one leading dash
 * Handle type constraint unions (Difficulty:Easy) 
@@ -32,3 +33,16 @@ A list of TODO tasks if you are interested in improving MooseX::App
     * General improvements
     * Extend tutorials
     * Clarify and highlight MooseX::App::Simple
+* Optional bundling of params (Difficulty:Medium)
+   * currently -bac translates to '-b -a -c'
+   * Optionally turn this behaviour off
+* Getopt::Long compatibility (Difficulty:Medium)
+   * coordinates=f{2} - Accept multiple values per key
+   * library=s@ - Accept empty options
+   * ! - Negation 
+   * + - Increment
+* Virtual attributes (Difficulty:Medium)
+   * Handled via callbacks
+* Permute (Difficulty:Medium)
+   * see Getopt::Long permute
+   * "--attr val1 --attr val2" vs. "--attr val1 val2"
