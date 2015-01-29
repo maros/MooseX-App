@@ -31,6 +31,11 @@ option 'another_option' => (
     cmd_tags      => ['Not important'],
 );
 
+option 'list' => (
+    is            => 'rw',
+    isa           => 'ArrayRef[Maybe[Str]]',
+);
+
 has 'private' => (
     is              => 'rw',
     isa             => 'Str',

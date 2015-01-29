@@ -174,11 +174,11 @@ sub command_args {
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
 
     foreach my $attribute (@attributes_parameter) {
-        my $value = $parsed_argv->consume('parameter');
+        my $element = $parsed_argv->consume('parameter');
         last
-            unless defined $value;
+            unless defined $element;
 
-        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute,$value->key);
+        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute,$element->key);
         push(@{$errors},@{$parameter_errors});
         $return->{$attribute->name} = $parameter_value;
     }
@@ -262,7 +262,7 @@ sub command_parse_options {
     # Loop all exact matches
     foreach my $option ($parsed_argv->available('option')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
-            $match->{$attribute->name} = $option->value;
+            $match->{$attribute->name} = $option->full_value;
             $option->consume($attribute);
         }
     }
@@ -304,7 +304,7 @@ sub command_parse_options {
                     my $attribute = $match_attributes->[0];
                     $option->consume();
                     $match->{$attribute->name} ||= [];
-                    push(@{$match->{$attribute->name}},@{$option->value}); 
+                    push(@{$match->{$attribute->name}},@{$option->full_value}); 
                 }
                 # Multiple matches
                 default {

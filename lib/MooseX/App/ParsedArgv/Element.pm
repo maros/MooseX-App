@@ -19,10 +19,11 @@ has 'value' => (
     isa             => 'ArrayRef[Str]',
     traits          => ['Array'],
     default         => sub { [] },
-    handles => {
+    handles         => {
         add_value       => 'push',
         has_values      => 'count',
         get_value       => 'get',
+        raw_values      => 'elements',
     }
 );
 
@@ -44,6 +45,16 @@ has 'raw' => (
     predicate       => 'has_raw',
 );
 
+has 'occurence' => (
+    is              => 'ro',
+    isa             => 'Int',
+    default         => sub { 1 },
+    traits          => ['Counter'],
+    handles         => {
+        inc_occurence   => 'inc',
+    }
+);
+
 sub original {
     my ($self) = @_;
     if ($self->has_raw) {
@@ -62,6 +73,34 @@ sub consume {
     
     return $self; 
 }
+
+sub full_value {
+    my ($self) = @_;
+    
+    # Fill up empty values
+    if ($self->has_values < $self->occurence) {
+        return [
+            $self->raw_values,
+            (undef) x ($self->occurence - $self->has_values)
+        ];
+    } else {
+        return $self->value;
+    }
+}
+
+#sub set_value {
+#    my ($self,$value) = @_;
+#    
+#    unless (scalar @{$self->value}) {
+#        $self->add_value($value);
+#    } else {
+#        if (! defined $self->value->[-1]) {
+#            $self->value->[-1] = $value;
+#        } else {
+#            $self->add_value($value);
+#        }
+#    }
+#}
 
 sub serialize {
     my ($self) = @_;

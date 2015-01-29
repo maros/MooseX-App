@@ -99,6 +99,8 @@ sub _build_elements {
                                 raw => $element,
                             );
                             push(@elements,$options{$flag});
+                        } else {
+                            $options{$flag}->inc_occurence;
                         }
                         $lastkey = $options{$flag};
                     }
@@ -114,6 +116,8 @@ sub _build_elements {
                             raw => $element,
                         );
                         push(@elements,$options{$key});
+                    } else {
+                        $options{$key}->inc_occurence;
                     }
                     $options{$key}->add_value($value);
                 }
@@ -127,6 +131,8 @@ sub _build_elements {
                             raw => $element,
                         );
                         push(@elements,$options{$key});
+                    } else {
+                        $options{$key}->inc_occurence;
                     }
                     $lastkey = $options{$key};
                 }

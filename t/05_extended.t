@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 24+1;
+use Test::Most tests => 25+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -61,6 +61,7 @@ subtest 'All options available & no description' => sub {
     is($test04->blocks->[2]->body,"    --another             [Required; Not important]
     --global_option       Enable this to do fancy stuff [Flag]
     --help -h --usage -?  Prints this usage information. [Flag]
+    --list                [Multiple]
     --roleattr            [Role]
     --some_option         Very important option!","Message ok");
 };
@@ -244,3 +245,14 @@ subtest 'Test enum error message' => sub {
     isa_ok($test18,'MooseX::App::Message::Envelope');
     is($test18->blocks->[0]->body,"Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff (not 'ggg')","Check enum error message");
 };
+
+subtest 'Test empty multi' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(somecommand --another hase --list val1 --list val2 --list)]);
+    my $test19 = Test03->new_with_command();
+    isa_ok($test19,'Test03::SomeCommand');
+    is(scalar(@{$test19->list}),3,'Has three list items');
+    is($test19->list->[0],'val1','First value ok');
+    is($test19->list->[2],undef,'First value empty');
+    
+};
+
