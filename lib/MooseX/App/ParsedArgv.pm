@@ -40,7 +40,7 @@ has 'hints' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
-); # Hints for boolean flags
+); # Hints for the parser
 
 has 'elements' => (
     is              => 'ro',
@@ -144,11 +144,10 @@ sub _build_elements {
                 # Value
                 default {
                     if (defined $lastkey) {
-                        # Is boolean 
-                        # TODO handle fuzzy
+                        # No value 
                         if ($lastkey->key ~~ $self->hints) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
-                        # Not a boolean field
+                        # Has value
                         } else {
                             $lastkey->add_value($element);
                         }
@@ -250,7 +249,7 @@ a new one will be created.
 
 =head2 argv
 
-Accessor for the    inal @ARGV. 
+Accessor for the initinal @ARGV. 
 
 =head2 hints
 

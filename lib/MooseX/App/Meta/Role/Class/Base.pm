@@ -393,7 +393,12 @@ sub command_process_attribute {
                 }
             }
         } elsif ($type_constraint->is_a_type_of('Bool')) {
-            $value = $attribute->cmd_is_bool; # TODO or 0 if no!
+            $value = 1; # TODO or 0 if no!
+            
+#            if ($self->has_default 
+#                && ! $self->is_default_a_coderef
+#                && $self->default == 1) {
+            
         } elsif ($type_constraint->is_a_type_of('Int')) {
             $value = $raw->[-1];
         } else {

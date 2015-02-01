@@ -137,6 +137,7 @@ subtest 'Test flags & defaults' => sub {
     is($test11->bool2,1,'Bool2 flag is set');
     is($test11->bool3,1,'Bool3 flag is set');
     is($test11->value,'hase','Value is default');
+    
 };
 
 subtest 'Test more flags & defaults' => sub {
@@ -144,7 +145,7 @@ subtest 'Test more flags & defaults' => sub {
     my $test11 = Test03->new_with_command;
     isa_ok($test11,'Test03::YetAnotherCommand');
     is($test11->bool1,1,'Bool1 flag is undef');
-    is($test11->bool2,0,'Bool2 flag is unset');
+    is($test11->bool2,1,'Bool2 flag is unset');
     is($test11->bool3,1,'Bool3 flag is set');
     is($test11->value,'baer','Value is set');
 };

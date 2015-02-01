@@ -39,6 +39,12 @@ has 'cmd_split' => (
     predicate   => 'has_cmd_split',
 );
 
+has 'cmd_count' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => sub { 0 },
+);
+
 has 'cmd_env' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::Env',
@@ -76,22 +82,26 @@ sub cmd_is_bool {
         && $self->type_constraint->is_a_type_of('Bool')) {
         
         # Bool and defaults to true 
-        if ($self->has_default 
-            && ! $self->is_default_a_coderef
-            && $self->default == 1) {
-            return 0;
+        #if ($self->has_default 
+        #    && ! $self->is_default_a_coderef
+        #    && $self->default == 1) {
+        #    return 0;
         ## Bool and is required
         #} elsif (! $self->has_default
         #    && $self->is_required) {
         #    return 0; 
-        }
+        #}
         
         # Ordinary bool
         return 1;
     }
     
-    my $ud = undef; # Make perlcritic happy
-    return $ud;
+    if ($self->cmd_count) {
+        return 1;
+    }
+    
+    my $undef = undef; # Make perlcritic happy
+    return $undef;
 }
 
 sub cmd_type_constraint_description {
