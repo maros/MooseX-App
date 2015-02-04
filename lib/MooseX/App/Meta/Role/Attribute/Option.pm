@@ -75,7 +75,7 @@ around 'new' => sub {
     return $self;
 };
 
-sub cmd_is_bool {
+sub cmd_has_value {
     my ($self) = @_; 
     
     if ($self->has_type_constraint
@@ -100,8 +100,7 @@ sub cmd_is_bool {
         return 1;
     }
     
-    my $undef = undef; # Make perlcritic happy
-    return $undef;
+    return 0;
 }
 
 sub cmd_type_constraint_description {
@@ -403,12 +402,12 @@ Returns the description as used by the usage text
 
 Returns a list of tags
 
-=head2 cmd_is_bool
+=head2 cmd_has_value
 
- my $bool = $attribute->cmd_is_bool();
+ my $has_value = $attribute->cmd_has_value();
 
-Returns true, false or undef depending on the type constraint and default
-of the attribute:
+Indicates if an commandline attribute has a value. Usually attributes with a 
+boolean type constraint or counters don't have values.
 
 =over
 

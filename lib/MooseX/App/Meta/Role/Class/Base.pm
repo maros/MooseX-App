@@ -513,7 +513,7 @@ sub command_parser_hints {
     my %names;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         foreach my $name ($attribute->cmd_name_possible) {
-            $names{$name} = { name => $attribute->name, bool => $attribute->cmd_is_bool };
+            $names{$name} = { name => $attribute->name, novalue => ! $attribute->cmd_has_value };
             $hints{$name} = $names{$name};
         }
     }
