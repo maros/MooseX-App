@@ -94,9 +94,11 @@ sub cmd_term_read_string {
         } else {
             say $label.": ";
         }
+        
+        1 while defined ReadKey -1; # discard any previous input
+        
         KEY_STRING: 
         while (1) {
-            1 while defined ReadKey -1; # discard any previous input
             my $key = ReadKey 0; # read a single character
             given (ord($key)) {
                 when (10) { # Enter
@@ -168,6 +170,9 @@ sub cmd_term_read_bool {
             last;
         } elsif (ord($key) == 10 && ! $self->is_required) {
             last;
+        } elsif (ord($key) == 3) {
+            ReadMode 0;
+            kill INT => $$; # Not sure ?
         }
     }
     ReadMode 0;
