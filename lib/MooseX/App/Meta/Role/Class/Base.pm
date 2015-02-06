@@ -545,7 +545,7 @@ sub command_parser_hints {
     my @return;
     foreach my $name (keys %hints) {
         next
-            unless defined $hints{$name}->{bool};
+            if $hints{$name}->{novalue};
         push(@return,$name);
     }
     
