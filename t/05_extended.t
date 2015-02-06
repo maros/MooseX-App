@@ -208,12 +208,7 @@ subtest 'Test extra positional params' => sub {
     is($test15->extra1,'p1','Param 1 ok');
     is($test15->extra2,'22','Param 2 ok');
     is($test15->alpha,'33','Param 3 ok');
-    is($test15->extra_argv->[0],'marder','Uncomsumed parameter ok');
-    is($test15->extra_argv->[1],'dachs','Uncomsumed parameter ok');
-    is($test15->extra_argv->[2],'luchs','Uncomsumed option ok');
-    is($test15->extra_argv->[3],'fuchs','Uncomsumed option ok');
-    is($test15->extra_argv->[4],'baer','Uncomsumed option ok');
-    is($test15->extra_argv->[5],'--hase','Uncomsumed option ok');
+    cmp_deeply($test15->extra_argv,[qw(marder dachs luchs fuchs baer --hase)],'Uncomsumed option ok');
 };
 
 subtest 'Test parameter preference' => sub {
