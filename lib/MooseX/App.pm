@@ -530,11 +530,11 @@ Special thanks to all contributors.
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
-J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X
+J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012-14 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-15 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as 
 perl itself. The full text of the licence can be found in the LICENCE file 
