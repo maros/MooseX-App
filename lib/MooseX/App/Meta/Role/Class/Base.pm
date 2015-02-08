@@ -204,8 +204,20 @@ sub command_args {
         
         if (exists $ENV{$cmd_env}
             && ! defined $return->{$attribute->name}) {
-            $return->{$attribute->name} = $ENV{$cmd_env};
-            my $error = $attribute->cmd_type_constraint_check($ENV{$cmd_env});
+            
+            my $value = $ENV{$cmd_env};
+            
+            if ($attribute->has_type_constraint) {
+                my $type_constraint = $attribute->type_constraint;
+                if ($attribute->should_coerce
+                    && $type_constraint->has_coercion) {
+                    my $coercion = $type_constraint->coercion;
+                    $value = $coercion->coerce($value) // $value;
+                }
+            }
+            
+            $return->{$attribute->name} = $value;
+            my $error = $attribute->cmd_type_constraint_check($value);
             if ($error) {
                 push(@{$errors},
                     $self->command_message(
@@ -419,11 +431,6 @@ sub command_process_attribute {
     
     return ($value,\@errors);
 }
-
-
-
-
-
 
 sub command_candidates {
     my ($self,$command) = @_;
