@@ -52,9 +52,9 @@ has 'cmd_env' => (
 );
 
 has 'cmd_position' => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => sub {0},
+    is          => 'rw',
+    isa         => 'Int',
+    default     => sub { 0 },
 );
 
 my $GLOBAL_COUNTER = 1;
@@ -93,14 +93,14 @@ sub cmd_has_value {
         #}
         
         # Ordinary bool
-        return 1;
+        return 0;
     }
     
     if ($self->cmd_count) {
-        return 1;
+        return 0;
     }
     
-    return 0;
+    return 1;
 }
 
 sub cmd_type_constraint_description {
