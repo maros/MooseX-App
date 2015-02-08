@@ -150,6 +150,10 @@ Raw value as supplied by the user
 
 Type of element. Can be 'option', 'parameter' or 'extra'
 
+=head2 occurence
+
+Number of occurences in @ARGV
+
 =head2 consumed
 
 Flag that indicates if element was already consumed

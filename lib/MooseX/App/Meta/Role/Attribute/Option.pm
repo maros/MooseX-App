@@ -367,6 +367,14 @@ Override the order of the parameters in the usage message.
 
 Splits multiple values at the given separator string or regular expression. 
 Only works in conjunction with an 'ArrayRef[*]' type constraint (isa).
+ie. '--myattr value1,value2' with cmd_split set to ',' would produce an 
+arrayref with to elements.
+
+=head2 cmd_count
+
+Similar to the Getopt::Long '+' modifier, cmd_count turns the attribute into
+a counter. Every occurence of the attribute in @ARGV (without any value)
+would increment the resulting value by one
 
 =head1 METHODS
 
