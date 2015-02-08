@@ -1,5 +1,9 @@
-A list of TODO tasks if you are interested in improving MooseX::App 
+A list of TODO tasks sorted by priority if you are interested in improving 
+MooseX::App
 
+* Permute (Difficulty:Medium)
+    * see Getopt::Long permute
+    * "--attr val1 --attr val2" vs. "--attr val1 val2"
 * Better support for Hashref attrs (Difficulty:Medium)
     * optionally use colons (or any other character) instead of equal signs 
       as key-value separators
@@ -8,6 +12,10 @@ A list of TODO tasks if you are interested in improving MooseX::App
       allow the following syntax
       --hash key=value anotherkey=anothervalue 
       also see permute
+* Getopt::Long compatibility (Difficulty:Medium)
+    * coordinates=f{2} - Accept multiple values per key
+    * ! - Negation 
+    * + - Increment
 * Nested subcommands (Difficulty:Medium-Hard)
     * ie. "mycommand.pl some command" would translate to 
       "MyCommand::Some::Command"
@@ -15,13 +23,20 @@ A list of TODO tasks if you are interested in improving MooseX::App
     * Make sure that help handles subcomands (ie. "mycommand.pl some help"
       should return a list of available subcommands for "some")
     * Make sure that the typo plugin handles subcommands
+* Handle type constraint unions (Difficulty:Easy) 
+    * generating description for attributes
 * Better positional param detection (Difficulty:Medium)
 * Better error messages on unrecognized params (Difficulty:Medium)
     * Improve "Did you mean ..." suggestions
     * Suggestions if attribute was suplied with only one leading dash
-* Handle type constraint unions (Difficulty:Easy) 
-    * generating description for attributes
+* Documentation
+    * General improvements
+    * Extend tutorials
+    * Clarify and highlight MooseX::App::Simple
+    * Add recipies (aka Moose recipies)
 * Allow alternative param/attribute syntax (Difficulty:Easy-Medium)
+* Rework Testsuite (Difficulty:Medium)
+    * Testsuite fixtures are currently a mess
 * I18N (Difficulty:Hard)
     * Based on current user locale
     * Register languages
@@ -29,20 +44,6 @@ A list of TODO tasks if you are interested in improving MooseX::App
     * How to handle PODs?
     * Language fallbacks
     * Allow to specify command documentation in multiple languages
-* Documentation
-    * General improvements
-    * Extend tutorials
-    * Clarify and highlight MooseX::App::Simple
-* Optional bundling of params (Difficulty:Medium)
-   * currently -bac translates to '-b -a -c'
-   * Optionally turn this behaviour off
-* Getopt::Long compatibility (Difficulty:Medium)
-   * coordinates=f{2} - Accept multiple values per key
-   * library=s@ - Accept empty options
-   * ! - Negation 
-   * + - Increment
 * Virtual attributes (Difficulty:Medium)
-   * Handled via callbacks
-* Permute (Difficulty:Medium)
-   * see Getopt::Long permute
-   * "--attr val1 --attr val2" vs. "--attr val1 val2"
+    * Handled via callbacks
+    * Not sure if really needed - find workaround and add howto pod
