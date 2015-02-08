@@ -1,5 +1,14 @@
 Release history for Perl module MooseX::App
 
+1.31 2015-02-08
+    - Dist cleanup (Sergey Romanov)
+    - Moose cleanups (Sawyer X)
+    - Fixed TERM plugin input
+    - Coercion for ENV variables (Roman F.)
+    - Refactor handling of boolean values
+    - Allow for empty values
+    - Add cmd_count option for counters
+
 1.30 2014-08-24
     - Better error message if command was not specified
     - Help improved
