@@ -51,6 +51,11 @@ option 'split' => (
     cmd_split     => qr/;/i,
 );
 
+option 'count' => (
+    is            => 'rw',
+    cmd_count     => 1,
+);
+
 option ['extra1','extra2'] => (
     is            => 'rw',
 );

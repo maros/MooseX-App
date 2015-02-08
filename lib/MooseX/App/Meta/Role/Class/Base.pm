@@ -371,6 +371,11 @@ sub command_process_attribute {
         $raw = \@raw_unfolded;
     }
     
+    # Attribute with counter
+    if ($attribute->cmd_count) {
+        $raw = [ scalar(@$raw) ];
+    }
+    
     # Attribute with type constraint
     if ($attribute->has_type_constraint) {
         my $type_constraint = $attribute->type_constraint;
