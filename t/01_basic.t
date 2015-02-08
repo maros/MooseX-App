@@ -42,6 +42,7 @@ subtest 'Wrong command' => sub {
     is($test03->blocks->[4]->body,"    command_a   Command A!
     command_b   Test class command B for test 01
     command_c1  Test C1
+    command_d   Command A!
     help        Prints this usage information",'Available commands body set');
 };
 

@@ -12,8 +12,8 @@ use Test01;
 my $meta = Test01->meta;
 
 my $commands = $meta->app_commands;
-is(join(',',sort keys %{$commands}),'command_a,command_b,command_c1','Commands found');
-is(join(',',sort values %{$commands}),'Test01::CommandA,Test01::CommandB,Test01::CommandC1','Commands found');
+is(join(',',sort keys %{$commands}),'command_a,command_b,command_c1,command_d','Commands found');
+is(join(',',sort values %{$commands}),'Test01::CommandA,Test01::CommandB,Test01::CommandC1,Test01::CommandD','Commands found');
 
 cmp_deeply($meta->app_namespace,[qw(Test01)],'Command namespace ok');
 is($meta->app_base,'02_meta.t','Command base ok');
@@ -22,10 +22,10 @@ is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
 ok(Test01->can('new_with_command'),'Role applied to base class');
 ok(Test01->can('initialize_command_class'),'Role applied to base class');
 
-is(scalar keys %{$commands},3,'Found three commands');
+is(scalar keys %{$commands},4,'Found three commands');
 is($commands->{command_a},'Test01::CommandA','Command A found');
 is($meta->command_find('COMMAND_a'),'command_a','Command A matched');
-cmp_deeply($meta->command_candidates('COmmand'),['command_a','command_b','command_c1'],'Command A,B and C1 matched');
+cmp_deeply($meta->command_candidates('COmmand'),['command_a','command_b','command_c1','command_d'],'Command A,B,C1 and D matched');
 cmp_deeply($meta->command_candidates('command_C'),['command_c1'],'Command C1 matched fuzzy');
 is($meta->command_candidates('command_c1'),'command_c1','Command C1 matched exactly');
 
