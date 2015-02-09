@@ -130,31 +130,31 @@ sub cmd_term_read_string {
                 }
                 when (27) { # Escape sequence
                     my $escape;
-                    while (1) {
+                    while (1) { # Read rest of escape sequence
                         my $code = ReadKey -1;
                         last unless defined $code;
                         $escape .= $code;
                     }
                     if (defined $escape) {
-                        # Cursor left
-                        if ($escape eq '[D') {
-                            if ($cursor > 0) {
-                                print "\b";
-                                $cursor--;
+                        given ($escape) {
+                            when ('[D') { # Cursor left
+                                if ($cursor > 0) {
+                                    print "\b";
+                                    $cursor--;
+                                }
                             }
-                        # Cursor right
-                        } elsif ($escape eq '[C') {
-                            if ($cursor < $length) {
-                                print substr $return,$cursor,1;
-                                $cursor++;
+                            when ($escape eq '[C') { # Cursor right
+                                if ($cursor < length($return)) {
+                                    print substr $return,$cursor,1;
+                                    $cursor++;
+                                }
                             }
-                        # Del
-                        } elsif ($escape eq '[3~') {
-                            if ($cursor != $length) {
-                                substr $return,$cursor,1,'';
- 
-                                print substr $return,$cursor;
-                                print " ".(("\b") x (length($return) - $cursor + 1));
+                            when ($escape eq '[3~') { # Del
+                                if ($cursor != length($return)) {
+                                    substr $return,$cursor,1,'';
+                                    print substr $return,$cursor;
+                                    print " ".(("\b") x (length($return) - $cursor + 1));
+                                }
                             }
                         }
                     } else {
@@ -167,29 +167,20 @@ sub cmd_term_read_string {
                         next KEY_STRING;
                     }
                     $cursor--;
-                    substr $return,$cursor,1,'';
-                    print "\b".substr $return,$cursor;
-                    print " ".(("\b") x (length($return) - $cursor + 1)) ;
+                    substr $return,$cursor,1,''; # string
+                    print "\b".substr $return,$cursor; # print
+                    print " ".(("\b") x (length($return) - $cursor + 1)); # cursor
                 }
-                default {
+                default { # Character
                     if ($_ <= 31) { # ignore controll chars
                         next KEY_STRING;
                     }
-                    if ($cursor == $length) {
-                        $return .= $key;
-                    } else {
-                        substr $return,$cursor,0,$key;
-                    }
-                    print substr $return,$cursor;
+                    substr $return,$cursor,0,$key; # string
+                    print substr $return,$cursor; # print
                     $cursor++;
-                    print (("\b") x (length($return) - $cursor)) ;
+                    print (("\b") x (length($return) - $cursor)); # cursor
                 }
             }
-            
-            if (length $return < $length) {
-                #warn 'XXX';
-            }
-            
         }
     }
     ReadMode 0;
@@ -207,7 +198,11 @@ sub cmd_term_read_bool {
     TRY:
     while (1) {
         1 while defined ReadKey -1; # discard any previous input
-        say "$label: ";
+        if (defined $Term::ANSIColor::VERSION) {
+            say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
+        } else {
+            say $label.": ";
+        }
         my $key = ReadKey 0; # read a single character
         if ($key =~ /^[yn]$/i) {
             say uc($key);
