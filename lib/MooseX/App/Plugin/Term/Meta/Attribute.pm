@@ -81,6 +81,23 @@ sub cmd_term_read_string {
     my $return;
     
     binmode STDIN,':encoding(UTF-8)';
+    my @history = ("");
+    
+    # Prefill history with enums
+    if ($self->has_type_constraint
+        && $self->type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
+        push(@history,@{$self->type_constraint->values});
+    }
+    
+    my $history_index = 0;
+    my $history_add = sub {
+        my $entry = shift;
+        if (defined $entry
+            && $entry !~ m/^\s*$/
+            && ! ($entry ~~ \@history)) {
+            push(@history,$entry);
+        }
+    };
     
     ReadMode('cbreak'); # change input mode
     TRY_STRING:
@@ -123,6 +140,7 @@ sub cmd_term_read_string {
                         } else {
                             say $error;
                         }
+                        $history_add->($return);
                         next TRY_STRING;
                     } else {
                         last TRY_STRING; 
@@ -149,6 +167,23 @@ sub cmd_term_read_string {
                                     $cursor++;
                                 }
                             }
+                            when ($escape eq '[A') { # Cursor up
+                                $history_add->($return);
+                                print "\b" x $cursor;
+                                print " " x length($return);
+                                print "\b" x length($return);
+                                
+                                $history_index ++
+                                    if defined $history[$history_index]
+                                    && $history[$history_index] eq $return;
+                                $history_index = 0
+                                    unless defined $history[$history_index];
+                                
+                                $return = $history[$history_index];
+                                $cursor = length($return);
+                                print $return;
+                                $history_index++;
+                            }
                             when ($escape eq '[3~') { # Del
                                 if ($cursor != length($return)) {
                                     substr $return,$cursor,1,'';
@@ -156,8 +191,12 @@ sub cmd_term_read_string {
                                     print " ".(("\b") x (length($return) - $cursor + 1));
                                 }
                             }
+                            default {
+                                #print $escape;
+                            }
                         }
                     } else {
+                        $history_add->($return);
                         next TRY_STRING; 
                     }
                     
