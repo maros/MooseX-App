@@ -82,13 +82,14 @@ sub cmd_term_read_string {
     
     binmode STDIN,':encoding(UTF-8)';
     
-    ReadMode 4; # change to raw input mode
+    ReadMode('cbreak'); # change input mode
     TRY_STRING:
     while (1) {
         print "\n"
             if defined $return 
             && $return !~ /^\s*$/;
         $return = '';
+        
         if (defined $Term::ANSIColor::VERSION) {
             say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
         } else {
@@ -97,9 +98,13 @@ sub cmd_term_read_string {
         
         1 while defined ReadKey -1; # discard any previous input
         
+        my $cursor = 0;
+        
         KEY_STRING: 
         while (1) {
             my $key = ReadKey 0; # read a single character
+            my $length = length($return);
+            
             given (ord($key)) {
                 when (10) { # Enter
                     print "\n";
@@ -123,28 +128,68 @@ sub cmd_term_read_string {
                         last TRY_STRING; 
                     }
                 }
-                when (3) { # Ctrl-C
-                    print "\n"
-                        if $return !~ /^\s*$/;
-                    ReadMode 0;
-                    kill INT => $$; # Not sure ?
-                    #next TRY_STRING; 
-                }
-                when (27) { # ESC
-                    next TRY_STRING; 
+                when (27) { # Escape sequence
+                    my $escape;
+                    while (1) {
+                        my $code = ReadKey -1;
+                        last unless defined $code;
+                        $escape .= $code;
+                    }
+                    if (defined $escape) {
+                        # Cursor left
+                        if ($escape eq '[D') {
+                            if ($cursor > 0) {
+                                print "\b";
+                                $cursor--;
+                            }
+                        # Cursor right
+                        } elsif ($escape eq '[C') {
+                            if ($cursor < $length) {
+                                print substr $return,$cursor,1;
+                                $cursor++;
+                            }
+                        # Del
+                        } elsif ($escape eq '[3~') {
+                            if ($cursor != $length) {
+                                substr $return,$cursor,1,'';
+ 
+                                print substr $return,$cursor;
+                                print " ".(("\b") x (length($return) - $cursor + 1));
+                            }
+                        }
+                    } else {
+                        next TRY_STRING; 
+                    }
+                    
                 }
                 when (127) { # Backspace
-                    chop($return);
-                    print "\b \b";
+                    if ($cursor == 0) { # Ignore first
+                        next KEY_STRING;
+                    }
+                    $cursor--;
+                    substr $return,$cursor,1,'';
+                    print "\b".substr $return,$cursor;
+                    print " ".(("\b") x (length($return) - $cursor + 1)) ;
                 }
                 default {
                     if ($_ <= 31) { # ignore controll chars
                         next KEY_STRING;
                     }
-                    $return .= $key;
-                    print $key;
+                    if ($cursor == $length) {
+                        $return .= $key;
+                    } else {
+                        substr $return,$cursor,0,$key;
+                    }
+                    print substr $return,$cursor;
+                    $cursor++;
+                    print (("\b") x (length($return) - $cursor)) ;
                 }
             }
+            
+            if (length $return < $length) {
+                #warn 'XXX';
+            }
+            
         }
     }
     ReadMode 0;
