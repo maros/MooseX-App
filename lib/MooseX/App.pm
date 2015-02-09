@@ -409,6 +409,8 @@ Help flag that is set when help was requested.
 
 =item * cmd_env - Read options from %ENV
 
+=item * cmd_count - Value equals to number of occurences in @ARGV
+
 =back
 
 Refer to L<MooseX::App::Meta::Role::Attribute::Option> for detailed 
