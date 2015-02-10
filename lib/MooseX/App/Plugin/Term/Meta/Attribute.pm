@@ -196,9 +196,17 @@ sub cmd_term_read_string {
                                     print " ".(("\b") x (length($return) - $cursor + 1));
                                 }
                             }
-                            default {
-                                #print $escape;
+                            when ($escape eq 'OH') { # Pos 1
+                                print (("\b") x $cursor);
+                                $cursor = 0;
                             }
+                            when ($escape eq 'OF') { # End
+                                print substr $return,$cursor;
+                                $cursor = length($return);
+                            }
+                            #default {
+                            #    print $escape;
+                            #}
                         }
                     } else {
                         $history_add->($return);
