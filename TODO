@@ -29,6 +29,10 @@ MooseX::App
 * Handle type constraint unions (Difficulty:Easy) 
     * generating description for attributes
 * Better positional param detection (Difficulty:Medium)
+* Bash completiton plugin
+    * Handle enum type constraints
+    * Hide in help (?)
+    * Hide bash completiton from bash completiton
 * Better error messages on unrecognized params (Difficulty:Medium)
     * Improve "Did you mean ..." suggestions
     * Suggestions if attribute was suplied with only one leading dash

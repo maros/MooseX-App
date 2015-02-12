@@ -258,7 +258,7 @@ regarded as flags without values.
 
 =head2 first_argv
 
-Shifts the current first element from ARGV.
+Shifts the current first element from @ARGV.
 
 =head2 available
 
