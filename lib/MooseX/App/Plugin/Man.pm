@@ -51,6 +51,7 @@ In your shell
  
 =head1 DESCRIPTION
 
-This plugin adds a command to display the full manpage of your application.
+This plugin adds a command to display the full manpage/perldoc of your 
+application.
 
 =cut

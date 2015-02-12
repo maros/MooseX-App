@@ -7,7 +7,7 @@ Release history for Perl module MooseX::App
     - Coercion for ENV variables (Roman F.)
     - Refactor handling of boolean values
     - Allow for empty values
-    - Add cmd_count option for counters
+    - Add cmd_count option for counter attributes
 
 1.30 2014-08-24
     - Better error message if command was not specified

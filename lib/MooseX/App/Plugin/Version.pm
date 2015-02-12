@@ -64,6 +64,6 @@ This plugin adds a command to display the version of your application,
 MooseX::App and perl.
 
 Furthermore it tries to parse the Pod of the base class and extract
-LICENSE and COPYRIGHT sections
+LICENSE, AUTHOR and COPYRIGHT sections
 
 =cut

@@ -69,6 +69,8 @@ by different means (parameter and option or config files and environment
 values if the respectice plugins have been loaded before this plugin) and
 if the script is connected to an interactive terminal.
 
+Term input has basic editing capabilities (cursor, del, backspace and history)
+
 =cut
 
 

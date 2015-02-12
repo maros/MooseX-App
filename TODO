@@ -1,6 +1,9 @@
 A list of TODO tasks sorted by priority if you are interested in improving 
 MooseX::App
 
+* Commands (Difficulty:Medium)
+    * Alias command names
+    * Manually load commands
 * Permute (Difficulty:Medium)
     * see Getopt::Long permute
     * "--attr val1 --attr val2" vs. "--attr val1 val2"
