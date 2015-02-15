@@ -326,10 +326,15 @@ be changed via the app_base function.
 =head2 app_namespace
 
  app_namespace 'MyApp::Commands', 'YourApp::MoreCommands';
+ OR
+ app_namespace();
 
 Usually MooseX::App will take the package name of the base class as the 
 namespace for commands. This namespace can be changed and you can add
 multiple extra namespaces.
+
+If app_namespace is called with no parameters then autoloading of command
+classes will be disabled entirely.
 
 =head2 app_fuzzy
 
@@ -374,10 +379,14 @@ to command names.
 
 =head2 app_description
 
+ app_description qq[Description text];
+
 Set the description. If not set this information will be taken from the
 Pod DESCRIPTION or OVERVIEW sections.
 
 =head2 app_usage
+
+ app_usage qq[myapp --option ...];
 
 Set custom usage. If not set this will be taken from the Pod SYNOPSIS or 
 USAGE section. If both sections are not available, the usage
@@ -437,6 +446,9 @@ and should be provided if possible:
 
 =item * Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and Enum)
 
+=item * Documentation set via app_description, app_usage, 
+command_short_description, command_long_description and command_usage
+
 =item * POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS, OVERVIEW, 
 COPYRIGHT, LICENSE, COPYRIGHT AND LICENSE, AUTHOR and AUTHORS sections)
 
@@ -475,7 +487,7 @@ Search config files in users home directory.
 =item * L<MooseX::App::Plugin::Term>
 
 Prompt user for options and parameters that were not provided via options or 
-params.
+params. Prompt offers basic editing capabilities and history
 
 =item * L<MooseX::App::Plugin::Typo>
 
