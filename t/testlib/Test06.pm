@@ -2,10 +2,12 @@ package Test06;
 
 use MooseX::App qw(Config);
 app_fuzzy(1);
+#app_namespace();
 app_command_name {
     my @parts = split( /[_\s]+|\b|(?<![A-Z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/, shift );
     return lc(join('-',@parts));
 };
+app_command_register 'command-c' => 'Test03::ExtraCommand';
 
 option 'some_option' => (
     is            => 'rw',

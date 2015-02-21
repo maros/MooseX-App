@@ -17,7 +17,7 @@ use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_strict option parameter) ],
+    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_command_register app_strict option parameter) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -54,6 +54,14 @@ sub init_meta {
 sub app_command_name(&) {
     my ( $meta, $namesub ) = @_;
     return $meta->app_command_name($namesub);
+}
+
+sub app_command_register(%) {
+    my ( $meta, %commands ) = @_;
+    
+    foreach my $command (keys %commands) {
+        $meta->command_register($command,$commands{$command});
+    }
 }
 
 sub app_namespace(@) {
@@ -323,19 +331,6 @@ Usually MooseX::App will take the name of the calling wrapper script to
 construct the program name in various help messages. This name can 
 be changed via the app_base function.
 
-=head2 app_namespace
-
- app_namespace 'MyApp::Commands', 'YourApp::MoreCommands';
- OR
- app_namespace();
-
-Usually MooseX::App will take the package name of the base class as the 
-namespace for commands. This namespace can be changed and you can add
-multiple extra namespaces.
-
-If app_namespace is called with no parameters then autoloading of command
-classes will be disabled entirely.
-
 =head2 app_fuzzy
 
  app_fuzzy(1); # default
@@ -366,6 +361,19 @@ individually for each command in the respective command class.
 Specifies if parameters/options supplied via @ARGV,%ENV should take precedence
 over arguments passed to new_with_command.
 
+=head2 app_namespace
+
+ app_namespace 'MyApp::Commands', 'YourApp::MoreCommands';
+ OR
+ app_namespace();
+
+Usually MooseX::App will take the package name of the base class as the 
+namespace for commands. This namespace can be changed and you can add
+multiple extra namespaces.
+
+If app_namespace is called with no parameters then autoloading of command
+classes will be disabled entirely.
+
 =head2 app_command_name
 
  app_command_name {
@@ -374,8 +382,17 @@ over arguments passed to new_with_command.
      return $command_name;
  };
 
-This sub can be used to control how package names should be translated
-to command names.
+This coderef can be used to control how autoloaded package names should be 
+translated to command names.
+
+=head2 app_command_register
+
+ app_command_register
+    do      => 'MyApp::Commands::DoSomething',
+    undo    => 'MyApp::Commands::UndoSomething';
+
+This keyword can be used to register additional commands. Especially
+usefull in conjunction with app_namespace.
 
 =head2 app_description
 
