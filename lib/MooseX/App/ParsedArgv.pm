@@ -42,6 +42,12 @@ has 'hints' => (
     default         => sub { [] },
 ); # Hints for the parser
 
+has 'permute' => (
+    is              => 'rw',
+    isa             => 'Bool',
+    default         => sub { 0 },
+);
+
 has 'elements' => (
     is              => 'ro',
     isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
