@@ -89,6 +89,11 @@ sub app_fuzzy($) {
     return $meta->app_fuzzy($value);
 }
 
+sub app_permute($) {
+    my ( $meta, $value ) = @_;
+    return $meta->app_permute($value);
+}
+
 sub app_base($) {
     my ( $meta, $name ) = @_;
     return $meta->app_base($name);

@@ -10,7 +10,7 @@ our $AUTHORITY = 'cpan:MAROS';
 our $VERSION = 1.27;
 
 use Moose::Exporter;
-use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline option parameter command_short_description command_long_description command_usage command_strict);
+use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline app_permute option parameter command_short_description command_long_description command_usage command_strict);
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);

@@ -60,6 +60,12 @@ has 'app_prefer_commandline' => (
     default     => sub {0},
 );
 
+has 'app_permute' => (
+    is          => 'rw',
+    isa         => 'Bool',
+    default     => sub {0},
+);
+
 has 'app_commands' => (
     is          => 'rw',
     isa         => 'HashRef[Str]',
