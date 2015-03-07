@@ -525,7 +525,7 @@ sub command_parser_hints {
     
     if ($self->app_fuzzy) {
         my $length = max(map { length($_) } keys %names) // 0;
-        foreach my $l (reverse(1..$length)) {
+        foreach my $l (reverse(2..$length)) {
             my %tmp;
             foreach my $name (keys %names) {
                 next
