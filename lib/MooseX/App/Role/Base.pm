@@ -66,6 +66,7 @@ sub initialize_command_class {
         return MooseX::App::Message::Envelope->new(
             @errors,
             $meta->command_usage_command($command_meta),
+            1, # exitcode
         );
     }
     
@@ -78,6 +79,7 @@ sub initialize_command_class {
         return MooseX::App::Message::Envelope->new(
             @errors,
             $meta->command_usage_command($command_meta),
+            1, # exitcode
         );
     }
             

@@ -11,7 +11,7 @@ use Moose;
 use MooseX::App::Message::Block;
 
 use overload
-    '""' => "stringify";
+    '""' => "overload";
 
 has 'blocks' => (
     is          => 'ro',
@@ -23,27 +23,62 @@ has 'blocks' => (
     },
 );
 
+has 'exitcode' => (
+    is          => 'ro',
+    isa         => 'Int',
+    predicate   => 'has_exitcode',
+);
+
 around 'BUILDARGS' => sub {
     my $orig = shift;
     my $self = shift;
     my @args = @_;
     
-    my @blocks;
-    foreach my $element (@args) {
-        if (blessed $element
-            && $element->isa('MooseX::App::Message::Block')) {
-            push(@blocks,$element);
-        } else {
-            push(@blocks,MooseX::App::Message::Block->new(
-                header  => $element,
-            ));
+    my $params;
+    if (scalar @args == 1
+        && ref($args[0]) eq 'HASH') {
+        $params = $args[0];
+    } else {
+        $params = {
+            blocks  => [],
+        };
+        my @blocks;
+        foreach my $element (@args) {
+            next
+                unless defined $element;
+            if (blessed $element
+                && $element->isa('MooseX::App::Message::Block')) {
+                push(@{$params->{blocks}},$element);
+            } elsif ($element =~ /^\d+$/ 
+                && $element <= 255
+                && $element >= 0) {
+                $params->{exitcode} = $element;
+            } else {
+                push(@{$params->{blocks}},MooseX::App::Message::Block->new(
+                    header  => $element,
+                ));
+            }
         }
     }
-
-    return $self->$orig({ 
-        blocks  => \@blocks,
-    });
+    
+    return $self->$orig($params);
 };
+
+sub overload {
+    my ($self) = @_;
+    
+    if ($self->has_exitcode) {
+        my $exitcode = $self->exitcode;
+        if ($exitcode == 0) {
+            print $self->stringify;
+        } else {
+            print STDERR $self->stringify;
+        }
+        exit $exitcode;
+    } else {
+        print $self->stringify;
+    }
+}
 
 sub stringify {
     my ($self) = @_;
@@ -58,7 +93,7 @@ sub stringify {
 
 sub AUTOLOAD { 
     my ($self) = @_;
-    print $self->stringify;
+    $self->overload;
     return $MooseX::App::Null::NULL;
 }
 

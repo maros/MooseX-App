@@ -113,6 +113,7 @@ sub new_with_command {
                 type            => "error",
             ),
             $meta->command_usage_global(),
+            127, # exitcode
         );
     # Looks like a command
     } else {
@@ -124,6 +125,7 @@ sub new_with_command {
             return MooseX::App::Message::Envelope->new(
                 $return,
                 $meta->command_usage_global(),
+                127, # exitcode
             );
         # One command found
         } else {
