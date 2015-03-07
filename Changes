@@ -1,5 +1,10 @@
 Release history for Perl module MooseX::App
 
+1.32 2015-?-?
+    - Improved Term Plugin (History, Delete, Pasting, Pos1/End, Cursors)
+    - Documentation
+    - Added app_command_register
+
 1.31 2015-02-08
     - Dist cleanup (Sergey Romanov)
     - Moose cleanups (Sawyer X)
