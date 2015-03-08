@@ -4,6 +4,10 @@ Release history for Perl module MooseX::App
     - Improved Term Plugin (History, Delete, Pasting, Pos1/End, Cursors)
     - Documentation
     - Added app_command_register
+    - Errors are now printed on STDERR
+    - Disable fuzzy match for single letter parameters
+    - Use proper exitcodes if errors occur
+    - Add tests for subprocesses
 
 1.31 2015-02-08
     - Dist cleanup (Sergey Romanov)

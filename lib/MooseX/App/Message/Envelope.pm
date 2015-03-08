@@ -139,11 +139,19 @@ this, no matter if new_with_command fails or not:
 
  MyApp->new_with_command->some_method->only_called_if_successful;
 
+If
+
 =head1 METHODS
 
 =head2 stringify
 
 Stringifies the messages
+
+=head2 overload
+
+This method is called whenever the object is stringified via overload. In this
+case it prints the message on either STDERR or STDOUT, and exits the process
+with the given exitcode (if any).
 
 =head2 add_block
 
@@ -156,6 +164,14 @@ Returns a list on message blocks.
 =head2 blocks
 
 Message block accessor.
+
+=head2 exitcode
+
+Exitcode accessor.
+
+=head2 has_exitcode
+
+Check if exitcode is set.
 
 =head2 OVERLOAD
 
