@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 25+1;
+use Test::Most tests => 24+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -64,11 +64,6 @@ subtest 'All options available & no description' => sub {
     --list                [Multiple]
     --roleattr            [Role]
     --some_option         Very important option!","Message ok");
-};
-
-subtest 'Test wrapper script error' => sub {
-    my $output = `$^X $FindBin::Bin/example/test03.pl some`;
-    like($output,qr/equired option 'another' missing/,'Output is ok');
 };
 
 # Not working on cpan testers
