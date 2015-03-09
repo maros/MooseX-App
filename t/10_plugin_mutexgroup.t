@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/10_plugin_various.t - Test MutexGroup
+# t/10_plugin_mutexgroup.t - Test MutexGroup
 
 use Test::Most tests => 1+1;
 use Test::NoWarnings;

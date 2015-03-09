@@ -70,6 +70,7 @@ t/07_single.t
 t/08_plugin_various.t
 t/09_classes.t
 t/10_plugin_mutexgroup.t
+t/11_process.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl
