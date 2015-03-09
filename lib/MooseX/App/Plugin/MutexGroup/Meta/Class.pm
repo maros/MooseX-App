@@ -1,4 +1,6 @@
+# ============================================================================
 package MooseX::App::Plugin::MutexGroup::Meta::Class;
+# ============================================================================
 
 use Moose::Role;
 use namespace::autoclean;
@@ -14,16 +16,30 @@ around 'command_check_attributes' => sub {
    }
 
    while ( my ($mutex_group, $options) = each %mutex_groups ) {
-      my $initialized_options = grep { defined $params->{$_->name} } @$options;
+      my $initialized_options = 
+         grep { defined $params->{ $_->cmd_name_primary } } @$options;
       if ( $initialized_options > 1 ) {
-         die "More than one attribute from mutexgroup $mutex_group" 
-            . '(' . join(',', map { "'" . $_->name . "'" } @$options) . ')' 
+         my $error_msg = 
+            "More than one attribute from mutexgroup $mutex_group" 
+            . '(' . join(',', map { "'" . $_->cmd_name_primary . "'" } @$options) . ')' 
             . " *cannot* be specified";
+         push @$errors,
+            $self->command_message(
+               header => $error_msg,
+               type   => "error",
+            );
       }
       elsif ( $initialized_options == 0 ) {
-         die "One attribute from mutexgroup $mutex_group" 
-            . '(' . join(',', map { "'" . $_->name . "'" } @$options) . ')' 
+         my $error_msg = 
+            "One attribute from mutexgroup $mutex_group" 
+            . '(' . join(',', map { "'" . $_->cmd_name_primary . "'" } @$options) . ')' 
             . " *must* be specified";
+
+         push @$errors,
+            $self->command_message(
+               header => $error_msg,
+               type   => "error",
+            );    
       }
    }
 

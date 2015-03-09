@@ -1,14 +1,13 @@
+# ============================================================================
 package MooseX::App::Plugin::MutexGroup::Meta::Attribute;
+# ============================================================================
 
 use Moose::Role;
 use namespace::autoclean;
 
-use Data::Dumper;
-
 has 'mutexgroup' => (
-   is      => 'ro',
-   isa     => 'Str',
-   default => 0,
+   is  => 'ro',
+   isa => 'Str',
 );
 
 around 'cmd_tags_list' => sub {
