@@ -520,6 +520,10 @@ Adds a command to display the version and license of your application.
 
 Display full manpage of application and commands.
 
+=item * L<MooseX::App::Plugin::MutexGroup>
+
+Allow for mutally exclusive options
+
 =back
 
 Refer to L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
@@ -570,7 +574,8 @@ Special thanks to all contributors.
 
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
-J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.
+J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
+Hunter McMillen
 
 =head1 COPYRIGHT
 
