@@ -19,4 +19,8 @@ has 'private_option' => (
    default => 0,
 );
 
+sub run {
+    print "ok";
+}
+
 1;
