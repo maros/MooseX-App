@@ -1,4 +1,4 @@
-package MooseX::App::Plugin::Requires;
+package MooseX::App::Plugin::Depends;
 
 use Moose::Role;
 use namespace::clean;
@@ -7,8 +7,8 @@ sub plugin_metaroles {
    my ($self, $class) = @_;
    
    return {
-      attribute => ['MooseX::App::Plugin::Requires::Meta::Attribute'],
-      class     => ['MooseX::App::Plugin::Requires::Meta::Class'],
+      attribute => ['MooseX::App::Plugin::Depends::Meta::Attribute'],
+      class     => ['MooseX::App::Plugin::Depends::Meta::Class'],
    }
 }
 
@@ -20,14 +20,14 @@ __END__
 
 =head1 NAME
 
-MooseX::App::Plugin::Requires - Adds dependent options
+MooseX::App::Plugin::Depends - Adds dependent options
 
 =head1 SYNOPSIS
 
 In your base class: 
 
  package MyApp;
- use MooseX::App qw(Requires);
+ use MooseX::App qw(Depends);
  
  use Moose::Util::TypeConstraints;
 
@@ -39,7 +39,7 @@ In your base class:
  option 'WriteToFile' => ( 
    is       => 'ro',
    isa      => 'Bool',
-   requires => [qw(FileFormat)],
+   depends => [qw(FileFormat)],
  );
 
 In your script: 

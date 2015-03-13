@@ -1,5 +1,5 @@
 # ============================================================================
-package MooseX::App::Plugin::Requires::Meta::Class;
+package MooseX::App::Plugin::Depends::Meta::Class;
 # ============================================================================
 
 use Moose::Role;
@@ -14,12 +14,12 @@ around 'command_check_attributes' => sub {
       next ATTR
          unless defined $params->{ $attribute->cmd_name_primary };
       next ATTR 
-         unless $attribute->can('requires')
-         && ref($attribute->requires) eq 'ARRAY'
-         && scalar @{ $attribute->requires } > 0;
+         unless $attribute->can('depends')
+         && ref($attribute->depends) eq 'ARRAY'
+         && scalar @{ $attribute->depends } > 0;
 
     OPT:
-      foreach my $required_option ( @{ $attribute->requires } ) {
+      foreach my $required_option ( @{ $attribute->depends } ) {
          next OPT
             if defined $params->{$required_option};
 

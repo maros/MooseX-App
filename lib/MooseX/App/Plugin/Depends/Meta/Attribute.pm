@@ -1,11 +1,11 @@
 # ============================================================================
-package MooseX::App::Plugin::Requires::Meta::Attribute;
+package MooseX::App::Plugin::Depends::Meta::Attribute;
 # ============================================================================
 
 use Moose::Role;
 use namespace::autoclean;
 
-has 'requires' => (
+has 'depends' => (
    is      => 'ro',
    isa     => 'ArrayRef[Str]',
    default => sub { [] },
@@ -17,20 +17,20 @@ around 'cmd_tags_list' => sub {
    
    my @tags = $self->$orig();
    
-   push(@tags,'Requires')
-      if $self->can('requires')
-      && $self->requires;
+   push(@tags,'Depends')
+      if $self->can('depends')
+      && $self->depends;
 
    return @tags;
 };
 
 {
-   package Moose::Meta::Attribute::Custom::Trait::AppRequires;
+   package Moose::Meta::Attribute::Custom::Trait::AppDepends;
      
    use strict;
    use warnings;
    
-   sub register_implementation { return 'MooseX::App::Plugin::Requires::Meta::Attribute' }
+   sub register_implementation { return 'MooseX::App::Plugin::Depends::Meta::Attribute' }
 }
 
 1;

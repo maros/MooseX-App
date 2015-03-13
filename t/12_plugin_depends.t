@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/10_plugin_requires.t - Test Requires
+# t/10_plugin_depends.t - Test Depends
 
 use Test::Most tests => 1+1;
 use Test::NoWarnings;
@@ -8,7 +8,7 @@ use Test::NoWarnings;
 use lib 't/testlib';
 use Test08;
 
-subtest 'Requires' => sub {
+subtest 'Depends' => sub {
    plan tests => 8;
 
    {

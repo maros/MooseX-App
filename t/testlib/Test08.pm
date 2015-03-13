@@ -1,5 +1,5 @@
 package Test08;
-use MooseX::App::Simple qw(MutexGroup Requires);
+use MooseX::App::Simple qw(MutexGroup Depends);
 use Moose::Util::TypeConstraints;
 
 option 'FileFormat' => (
@@ -11,14 +11,14 @@ option 'WriteToFile' => (
    is         => 'ro',
    isa        => 'Bool',
    mutexgroup => 'FileOp',
-   requires   => [qw(FileFormat)],
+   depends    => [qw(FileFormat)],
 );
 
 option 'ReadFromFile' => (
    is         => 'ro',
    isa        => 'Bool',
    mutexgroup => 'FileOp',
-   requires   => [qw(FileFormat)],
+   depends    => [qw(FileFormat)],
 );
 
 has 'private_option' => (
