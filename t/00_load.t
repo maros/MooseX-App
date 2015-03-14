@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 37;
+use Test::Most tests => 43;
 
 use_ok( 'MooseX::App' ); 
 use_ok( 'MooseX::App::ParsedArgv' );
@@ -27,6 +27,12 @@ use_ok( 'MooseX::App::Plugin::Version::Meta::Class');
 use_ok( 'MooseX::App::Plugin::Man' );
 use_ok( 'MooseX::App::Plugin::Man::Command');
 use_ok( 'MooseX::App::Plugin::Man::Meta::Class');
+use_ok( 'MooseX::App::Plugin::Depends' );
+use_ok( 'MooseX::App::Plugin::Depends::Meta::Attribute');
+use_ok( 'MooseX::App::Plugin::Depends::Meta::Class');
+use_ok( 'MooseX::App::Plugin::MutexGroup' );
+use_ok( 'MooseX::App::Plugin::MutexGroup::Meta::Attribute');
+use_ok( 'MooseX::App::Plugin::MutexGroup::Meta::Class');
 use_ok( 'MooseX::App::Utils');
 use_ok( 'MooseX::App::Simple');
 use_ok( 'MooseX::App::Exporter');
