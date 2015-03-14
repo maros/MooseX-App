@@ -524,6 +524,10 @@ Display full manpage of application and commands.
 
 Allow for mutally exclusive options
 
+=item * L<MooseX::App::Plugin::Depends>
+
+Adds dependent options
+
 =back
 
 Refer to L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
