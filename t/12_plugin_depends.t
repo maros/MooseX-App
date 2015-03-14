@@ -18,7 +18,7 @@ subtest 'Depends' => sub {
       my @errors = grep { $_->type eq 'error' } @{ $test01->blocks };
       is( scalar @errors, 1, 'only returned a single error' );
       is( $errors[0]->header,
-          'Attribute \'WriteToFile\' requires \'FileFormat\' to be defined',
+          'Option \'WriteToFile\' requires \'FileFormat\' to be defined',
           'generated an error when an option dependency was not present'
       );
    }
@@ -30,7 +30,7 @@ subtest 'Depends' => sub {
       my @errors = grep { $_->type eq 'error' } @{ $test02->blocks };
       is( scalar @errors, 1, 'only returned a single error' );
       is( $errors[0]->header,
-          'Attribute \'ReadFromFile\' requires \'FileFormat\' to be defined',
+          'Option \'ReadFromFile\' requires \'FileFormat\' to be defined',
           'generated an error when an option dependency was not present'
       );
    }

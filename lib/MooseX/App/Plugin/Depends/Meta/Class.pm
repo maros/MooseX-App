@@ -23,7 +23,7 @@ around 'command_check_attributes' => sub {
          next OPT
             if defined $params->{$required_option};
 
-         my $error_msg = "Attribute " 
+         my $error_msg = "Option " 
             . "'" . $attribute->cmd_name_primary . "'"
             . " requires '$required_option' to be defined";
          

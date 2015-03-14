@@ -53,7 +53,7 @@ In your script:
 
  MyApp->new_with_options( WriteToFile => 1 );
  # generates Error
- # Attribute 'WriteToFile' requires 'FileFormat' to be defined
+ # Option 'WriteToFile' requires 'FileFormat' to be defined
 
  MyApp->new_with_options( WriteToFile => 1, FileFormat => 'tsv );
  # generates no errors 
@@ -63,8 +63,9 @@ In your script:
 
 =head1 DESCRIPTION
 
-In many real-world scenarios, sets of options are, by design, needed to be specified together. 
-This plugin adds the ability to create dependent options to your application, options that require one or more other options
+In many real-world scenarios, sets of options are, by design, needed to be 
+specified together. This plugin adds the ability to create dependent options 
+to your application, options that require one or more other options
 for your application to perform properly. 
 
 =cut
