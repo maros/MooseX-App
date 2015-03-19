@@ -18,7 +18,7 @@ subtest 'MutexGroup' => sub {
        my @errors = grep { $_->type eq 'error' } @{ $test01->blocks };
        is( scalar @errors, 1, 'only returned a single error' );
        is( $errors[0]->header, 
-           'More than one attribute from mutexgroup NonMixableCleaningChemicals(\'UseAmmonia\',\'UseChlorine\') *cannot* be specified',
+           'Options UseAmmonia and UseChlorine are mutally exclusive',
            'generated an error when more than one option in the same mutexgroup is initialized'
        );
     }
@@ -30,14 +30,14 @@ subtest 'MutexGroup' => sub {
        my @errors = grep { $_->type eq 'error' } @{ $test02->blocks };
        is( scalar @errors, 1, 'only returned a single error' );
        is( $errors[0]->header, 
-           'One attribute from mutexgroup NonMixableCleaningChemicals(\'UseAmmonia\',\'UseChlorine\') *must* be specified',
+           'Either UseAmmonia or UseChlorine must be specified',
            'generated an error when no options in the same mutexgroup are initialized'
        );
     } 
 
     {
        my $test03 = Test07->new_with_options( UseAmmonia => 1 );
-       ok( ! $test03->can('blocks'), 
+       ok( $test03->isa('Test07'), 
            'generated no errors when only a single option from the same mutexgroup is initialized' 
        );
     } 
