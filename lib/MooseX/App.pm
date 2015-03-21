@@ -62,6 +62,7 @@ sub app_command_register(%) {
     foreach my $command (keys %commands) {
         $meta->command_register($command,$commands{$command});
     }
+    return;
 }
 
 sub app_namespace(@) {

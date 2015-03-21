@@ -78,6 +78,7 @@ sub overload {
     } else {
         print $self->stringify;
     }
+    return;
 }
 
 sub stringify {
