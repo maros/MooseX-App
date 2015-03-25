@@ -5,11 +5,13 @@ use MooseX::App::Command;
 extends qw(Test02);
 
 sub BUILD {
-    die('XXX');
+    warn('XXX');
+    exit 25;
 }
 
 sub run {
-    die('YYY');
+    warn('YYY');
+    exit 77;
 }
 
 command_usage "Use me not";

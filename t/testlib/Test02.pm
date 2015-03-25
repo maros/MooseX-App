@@ -1,7 +1,7 @@
 package Test02;
 
 use Moose;
-use MooseX::App qw(BashCompletion ConfigHome Color Version Typo Man Term);
+use MooseX::App (qw(BashCompletion Version Man), ($ENV{HARNESS} ? ():qw(ConfigHome Color Typo Term) ));
 
 our $VERSION = 1.01;
 
