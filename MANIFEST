@@ -42,9 +42,6 @@ lib/MooseX/App/Plugin/Man/Meta/Class.pm
 lib/MooseX/App/Plugin/MutexGroup.pm
 lib/MooseX/App/Plugin/MutexGroup/Meta/Attribute.pm
 lib/MooseX/App/Plugin/MutexGroup/Meta/Class.pm
-lib/MooseX/App/Plugin/Requires.pm
-lib/MooseX/App/Plugin/Requires/Meta/Attribute.pm
-lib/MooseX/App/Plugin/Requires/Meta/Class.pm
 lib/MooseX/App/Plugin/Term.pm
 lib/MooseX/App/Plugin/Term/Meta/Attribute.pm
 lib/MooseX/App/Plugin/Term/Meta/Class.pm
@@ -78,7 +75,6 @@ t/09_classes.t
 t/10_plugin_mutexgroup.t
 t/11_process.t
 t/12_plugin_depends.t
-t/12_plugin_requires.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl
