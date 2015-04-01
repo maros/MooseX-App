@@ -12,53 +12,58 @@ use Symbol qw(gensym);
 my $BASE = "$^X $FindBin::Bin/example";
 
 subtest 'Test basic exit codes' => sub {
-    test_subprocess(
-        bin     => 'test02.pl',
-        exit    => 127,
-        out     => '',
-        err     => qr/Missing command/,
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl error',
-        exit    => 25,
-        err     => qr/XXX/,
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl version',
-        exit    => 0,
-        out     => qr/VERSION/,
-        err     => '',
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl version',
-        exit    => 0,
-        out     => qr/VERSION/,
-        err     => '',
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl record --help',
-        exit    => 0,
-        out     => qr/usage:/,
-        err     => '',
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl record',
-        exit    => 0,
-        out     => qr/RAN/,
-        err     => '',
-    );
-    
-    test_subprocess(
-        bin     => 'test02.pl record --notthere',
-        exit    => 1,
-        out     => '',
-        err     => qr/Unknown option 'notthere'/,
-    );
+    SKIP: {
+        skip "Cannot test on MSWin",7
+            if $^O =~ /^MSWin/;
+        
+        test_subprocess(
+            bin     => 'test02.pl',
+            exit    => 127,
+            out     => '',
+            err     => qr/Missing command/,
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl error',
+            exit    => 25,
+            err     => qr/XXX/,
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl version',
+            exit    => 0,
+            out     => qr/VERSION/,
+            err     => '',
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl version',
+            exit    => 0,
+            out     => qr/VERSION/,
+            err     => '',
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl record --help',
+            exit    => 0,
+            out     => qr/usage:/,
+            err     => '',
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl record',
+            exit    => 0,
+            out     => qr/RAN/,
+            err     => '',
+        );
+        
+        test_subprocess(
+            bin     => 'test02.pl record --notthere',
+            exit    => 1,
+            out     => '',
+            err     => qr/Unknown option 'notthere'/,
+        );
+    }
 };
 
 
