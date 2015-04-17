@@ -1,6 +1,10 @@
 Release history for Perl module MooseX::App
 
-1.32 2015-?-?
+1.33 2015-04-17
+    - Fix failing tests
+    - Fix manifest
+
+1.32 2015-03-21
     - Improved Term Plugin (History, Delete, Pasting, Pos1/End, Cursors)
     - Documentation
     - Added app_command_register

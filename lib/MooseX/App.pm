@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.32';
+our $VERSION = '1.33';
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline option parameter);
@@ -580,7 +580,7 @@ Special thanks to all contributors.
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
-Hunter McMillen
+Hunter McMillen, Maik Hentsche
 
 =head1 COPYRIGHT
 
