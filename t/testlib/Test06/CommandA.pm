@@ -23,7 +23,7 @@ option 'command_local2' => (
 sub run {
     my ($self) = @_;
     print "NEW WITH A";
-    $self->initialize_command_class('Test06::CommandB')->run;
+    ref($self)->initialize_command_class('Test06::CommandB')->run;
     #$self->initialize_command_class('Test06::CommandB');   
 }
 

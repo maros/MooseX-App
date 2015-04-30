@@ -9,6 +9,8 @@ app_command_name {
 };
 app_command_register 'command-c' => 'Test03::ExtraCommand';
 
+app_permute 1;
+
 option 'some_option' => (
     is            => 'rw',
     isa           => 'Bool',
