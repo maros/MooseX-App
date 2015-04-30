@@ -16,7 +16,7 @@ use MooseX::App::Message::Envelope;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_usage app_description app_base app_fuzzy app_strict option parameter command_short_description command_long_description command_usage command_strict) ],
+    with_meta           => [ qw(app_usage app_description app_base app_fuzzy app_strict app_permute option parameter command_short_description command_long_description command_usage command_strict) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_options' ],
     install             => [ 'unimport', 'init_meta' ],
