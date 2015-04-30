@@ -146,7 +146,7 @@ sub cmd_type_constraint_check {
     # Check type constraints
     unless ($type_constraint->check($value)) {
         if (ref($value) eq 'ARRAY') {
-            $value = join(', ',@$value);
+            $value = join(', ',grep { defined } @$value);
         } elsif (ref($value) eq 'HASH') {
             $value = join(', ',map { $_.'='.$value->{$_} } keys %$value)
         }
