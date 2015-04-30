@@ -2,19 +2,7 @@ A list of TODO tasks sorted by priority if you are interested in improving
 MooseX::App
 
 * Alias command names (Difficulty:Medium)
-* Permute (Difficulty:Medium)
-    * see Getopt::Long permute
-    * "--attr val1 --attr val2" vs. "--attr val1 val2"
-* Better support for Hashref attrs (Difficulty:Medium)
-    * optionally use colons (or any other character) instead of equal signs 
-      as key-value separators
-    * allow to specify multiple pairs in one attribute. ie. instead of
-      --hash key=value --hash anotherkey=anothervalue
-      allow the following syntax
-      --hash key=value anotherkey=anothervalue 
-      also see permute
 * Getopt::Long compatibility (Difficulty:Medium)
-    * coordinates=f{2} - Accept multiple values per key (see permute)
     * ! - Negation
 * Nested subcommands (Difficulty:Medium-Hard)
     * ie. "mycommand.pl some command" would translate to 
@@ -28,20 +16,20 @@ MooseX::App
 * Better positional param detection (Difficulty:Medium)
 * Term plugin (Difficulty:Easy)
     * History callbacks
-* Bash completiton plugin (Difficulty:Easy-Medium)
-    * Handle enum type constraints
-    * Hide in help (?)
-    * Hide bash completion from bash completion
 * Documentation
     * General improvements
     * Extend tutorials
     * Clarify and highlight MooseX::App::Simple
     * Add recipes (aka Moose recipes)
+* Rework Testsuite (Difficulty:Medium)
+    * Testsuite fixtures are currently a mess
+* Bash completiton plugin (Difficulty:Easy-Medium)
+    * Handle enum type constraints
+    * Hide in help (?)
+    * Hide bash completion from bash completion
 * Better error messages on unrecognised params (Difficulty:Medium)
     * Improve "Did you mean ..." suggestions
     * Suggestions if attribute was supplied with only one leading dash
-* Rework Testsuite (Difficulty:Medium)
-    * Testsuite fixtures are currently a mess
 * Allow alternative param/attribute syntax (Difficulty:Easy-Medium)
 * I18N (Difficulty:Hard)
     * Based on current user locale
