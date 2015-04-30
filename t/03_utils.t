@@ -55,12 +55,12 @@ subtest 'Formater' => sub {
 
 subtest 'Parser' => sub {
     my $parser = MooseX::App::ParsedArgv->new({
-        argv    => ['hello','--bool','mellow','-hui','--help','--help','--test','1','baer','--test','2','--key=value1','--key=value2','-u','--','hase','--luchs'],
-        hints   => ['bool'],
+        argv            => ['hello','--bool','mellow','-hui','--help','--help','--test','1','baer','--test','2','--xxx','x1','x2','--key=value1','--key=value2','-u','--','hase','--luchs'],
+        hints_flags     => ['bool'],
+        hints_permute   => ['xxx'],
     });
     
-    
-    is(scalar(@{$parser->elements}),12,'Has 12 elements');
+    is(scalar(@{$parser->elements}),13,'Has 13 elements');
     is($parser->elements->[0]->key,'hello','Parameter parsed ok');
     is($parser->elements->[0]->type,'parameter','Parameter type ok');
     is($parser->elements->[1]->key,'bool','Flag parsed ok');
@@ -73,9 +73,11 @@ subtest 'Parser' => sub {
     is($parser->elements->[7]->key,'test','Option parsed ok');
     cmp_deeply($parser->elements->[7]->value,[1,2],'Option value ok');
     is($parser->elements->[8]->key,'baer','Parameter parsed ok');
-    is($parser->elements->[9]->key,'key','Option parsed ok');
-    is($parser->elements->[9]->key,'key','Extra parsed ok');
-    cmp_deeply($parser->elements->[9]->value,['value1','value2'],'Option value ok');
-    is($parser->elements->[10]->key,'hase','Extra parsed ok');
-    is($parser->elements->[11]->key,'--luchs','Extra parsed ok');
+    is($parser->elements->[9]->key,'xxx','Parameter parsed ok');
+    cmp_deeply($parser->elements->[9]->value,['x1','x2'],'Option value ok');
+    is($parser->elements->[10]->key,'key','Option parsed ok');
+    is($parser->elements->[10]->key,'key','Extra parsed ok');
+    cmp_deeply($parser->elements->[10]->value,['value1','value2'],'Option value ok');
+    is($parser->elements->[11]->key,'hase','Extra parsed ok');
+    is($parser->elements->[12]->key,'--luchs','Extra parsed ok');
 };
