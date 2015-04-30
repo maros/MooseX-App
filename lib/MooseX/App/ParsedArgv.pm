@@ -36,11 +36,17 @@ has 'argv' => (
     },
 );
 
-has 'hints' => (
+has 'hints_flags' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
-); # Hints for the parser
+); # Flag hints for the parser
+
+has 'hints_permute' => (
+    is              => 'rw',
+    isa             => 'ArrayRef[Str]',
+    default         => sub { [] },
+); # Permute hints for the parser
 
 has 'permute' => (
     is              => 'rw',
@@ -150,14 +156,18 @@ sub _build_elements {
                 # Value
                 default {
                     if (defined $lastkey) {
-                        # No value 
-                        if ($lastkey->key ~~ $self->hints) {
+                        # No value
+                        if ($lastkey->key ~~ $self->hints_flags) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
+                            undef $lastkey;
+                        # Permute values
+                        } elsif ($lastkey->key ~~ $self->hints_permute) {
+                            $lastkey->add_value($element);
                         # Has value
                         } else {
                             $lastkey->add_value($element);
+                            undef $lastkey;
                         }
-                        undef $lastkey;
                     } else {
                         push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                     }
@@ -165,7 +175,7 @@ sub _build_elements {
             } 
         }
     }
-      
+    
     return \@elements;
 }
 

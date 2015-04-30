@@ -25,7 +25,11 @@ sub initialize_command_class {
     
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
     $parsed_argv->permute($meta->app_permute);
-    $parsed_argv->hints($meta->command_parser_hints($command_meta));
+    my $hints = $meta->command_parser_hints($command_meta);
+    $parsed_argv->hints_flags($hints->{flags});
+    if ($meta->app_permute) {
+        $parsed_argv->hints_permute($hints->{permute});
+    }
     
     my ($proto_result,$proto_errors) = $meta->command_proto($command_meta);
     

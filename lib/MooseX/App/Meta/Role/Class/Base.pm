@@ -523,9 +523,24 @@ sub command_parser_hints {
     my %hints;
     my %names;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
+        my $permute = 0;
+        my $type_constraint = $attribute->type_constraint;
+        if ($type_constraint
+            && (
+                $type_constraint->is_subtype_of('ArrayRef')
+                || $type_constraint->is_subtype_of('HashRef')
+            )) {
+            $permute = 1;
+        }
+        
+        my $hint = { 
+            name => $attribute->name, 
+            flag => ! $attribute->cmd_has_value,
+            permute => $permute,
+        };
+        
         foreach my $name ($attribute->cmd_name_possible) {
-            $names{$name} = { name => $attribute->name, novalue => $attribute->cmd_has_value };
-            $hints{$name} = $names{$name};
+             $names{$name} = $hints{$name} = $hint;
         }
     }
     
@@ -553,14 +568,16 @@ sub command_parser_hints {
         }
     }
     
-    my @return;
+    my $return = { permute => [], flags => [] };
     foreach my $name (keys %hints) {
-        next
-            if $hints{$name}->{novalue};
-        push(@return,$name);
+        if ($hints{$name}->{flag}) {
+            push(@{$return->{flags}},$name);
+        }
+        if ($hints{$name}->{permute}) {
+            push(@{$return->{permute}},$name);
+        }
     }
-    
-    return \@return;
+    return $return;
 }
 
 sub command_message {
