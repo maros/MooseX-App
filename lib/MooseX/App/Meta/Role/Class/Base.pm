@@ -877,6 +877,11 @@ By default, arguments passed to new_with_command and new_with_options have a
 higher priority than the command line options. This boolean flag will give 
 the command line an higher priority.
 
+=head2 app_permute
+
+Boolean flag that controls if command line arguments that take multiple values
+(ie ArrayRef or HashRef type constraints) can be permuted.
+
 =head1 METHODS
 
 =head2 command_register

@@ -1,5 +1,8 @@
 Release history for Perl module MooseX::App
 
+1.34 2015-?-?
+    - Add permute option to specify multiple values with one attribute
+
 1.33 2015-04-17
     - Fix failing tests
     - Fix manifest
