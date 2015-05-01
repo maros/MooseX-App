@@ -4,6 +4,7 @@ use MooseX::App qw(BashCompletion Version);
 
 our $VERSION = '22.02';
 
+app_permute 1;
 app_base 'test03';
 app_command_name { 
     my ($package) = @_;

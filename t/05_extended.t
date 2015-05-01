@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 24+1;
+use Test::Most tests => 26+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -245,6 +245,20 @@ subtest 'Test empty multi' => sub {
     is(scalar(@{$test19->list}),3,'Has three list items');
     is($test19->list->[0],'val1','First value ok');
     is($test19->list->[2],undef,'First value empty');
-    
 };
 
+subtest 'Test permute' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(differentcommand --list elem1 elem2 --list elem3 --int 10 --hash key1=val1 key2=val2)]);
+    my $test20 = Test03->new_with_command();
+    cmp_deeply($test20->list,[qw(elem1 elem2 elem3)],'Permute array ok');
+    cmp_deeply($test20->hash,{ key1 => 'val1', key2 => 'val2' },'Permute hash ok');
+};
+
+subtest 'Test permute off' => sub {
+    Test03->meta->app_permute(0);
+    MooseX::App::ParsedArgv->new(argv => [qw(differentcommand --list elem1 elem2 --list elem3 --int 10 --hash key1=val1 key2=val2)]);
+    my $test20 = Test03->new_with_command();
+    cmp_deeply($test20->list,[qw(elem1 elem3)],'No permute array ok');
+    cmp_deeply($test20->hash,{ key1 => 'val1' },'No permute hash ok');
+    Test03->meta->app_permute(1);
+};
