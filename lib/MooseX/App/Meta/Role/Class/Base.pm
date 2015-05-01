@@ -527,8 +527,8 @@ sub command_parser_hints {
         my $type_constraint = $attribute->type_constraint;
         if ($type_constraint
             && (
-                $type_constraint->is_subtype_of('ArrayRef')
-                || $type_constraint->is_subtype_of('HashRef')
+                $type_constraint->is_a_type_of('ArrayRef')
+                || $type_constraint->is_a_type_of('HashRef')
             )) {
             $permute = 1;
         }
