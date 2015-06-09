@@ -69,8 +69,8 @@ MooseX::App::Command - Load command class metaclasses
 
 =head1 DESCRIPTION
 
-By loading this class into your command classes you enable all documentation
-features such as:
+By loading this class into your command classes you import all required 
+symbols, and enable all documentation features such as:
  
 =over
 
