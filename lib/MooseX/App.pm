@@ -17,7 +17,7 @@ use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_command_register app_strict option parameter app_permute) ],
+    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_command_register app_strict app_prefer_commandline option parameter app_permute) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],

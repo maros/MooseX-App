@@ -4,6 +4,7 @@ use Moose;
 use MooseX::App qw(Config);
 
 app_strict 1;
+app_prefer_commandline 0;
 
 app_description "Huissasa";
 
