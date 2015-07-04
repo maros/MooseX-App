@@ -1,7 +1,9 @@
 Release history for Perl module MooseX::App
 
 1.34 2015-?-?
-    - Add permute option to specify multiple values with one attribute
+    - Add permute option to specify multiple values with one attribute key
+    - Fix imports (fixed by Alexander Stoddard)
+    - Documentation
 
 1.33 2015-04-17
     - Fix failing tests
@@ -13,7 +15,7 @@ Release history for Perl module MooseX::App
     - Added app_command_register
     - Errors are now printed on STDERR
     - Disable fuzzy match for single letter parameters
-    - Use proper exitcodes if errors occur
+    - Use proper exit codes if errors occur
     - Add tests for subprocesses
     - Add MutexGroup plugin (implemented by Hunter McMillen)
     - Add Depends plugin (implemented by Hunter McMillen)

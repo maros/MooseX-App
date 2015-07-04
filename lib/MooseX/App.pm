@@ -615,7 +615,7 @@ Special thanks to all contributors.
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
-Hunter McMillen, Maik Hentsche
+Hunter McMillen, Maik Hentsche, Alexander Stoddard
 
 =head1 COPYRIGHT
 
