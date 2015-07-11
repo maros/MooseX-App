@@ -445,7 +445,8 @@ command)
 
 Allows to specify multiple values with one key. So instead of writing
 C<--list element1 --list element2 --list element3> one might write
-C<--list element1 element2 element3>.
+C<--list element1 element2 element3> for ArrayRef elements. HashRef elements
+may be expressed as <--hash key=value key2=value2>
 
 =head1 GLOBAL ATTRIBUTES
 
