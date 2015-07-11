@@ -418,7 +418,7 @@ translated to command names.
     undo    => 'MyApp::Commands::UndoSomething';
 
 This keyword can be used to register additional commands. Especially
-usefull in conjunction with app_namespace.
+useful in conjunction with app_namespace.
 
 =head2 app_description
 

@@ -213,7 +213,7 @@ L<MooseX::App::Message::Envelope> follows the Null object pattern you can
 call any method on it without checking the object type. Note that 
 MooseX::App::Message::Envelope objects may also have an exitcode set. In this
 case whenever the object gets stringified, it print on STDERR/STDOUT and exits
-the programm using the specified exitcode. Don't use the ovleroad 
+the program using the specified exitcode. Don't use the ovleroad 
 stingification if you don't want this behaviour.
 
 You can also pass default/fallback values to the constructor
