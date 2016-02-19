@@ -243,7 +243,7 @@ MooseX-App will then
 
 =over
 
-=item * Find, load and initialise the command classes (see L<MooseX-App-Simple>
+=item * Find, load and initialise the command classes (see L<MooseX::App::Simple>
 for single command applications)
 
 =item * Create automated help and documentation from modules POD as well as
@@ -251,7 +251,7 @@ attributes metadata and type constraints
 
 =item * Read, encode and validate the command line options and positional 
 parameters entered by the user from @ARGV and %ENV (and possibly prompt
-the user for additional parameters see L<MooseX-App-Plugin-Term>)
+the user for additional parameters see L<MooseX::App::Plugin::Term>)
 
 =item * Provide helpful error messages if user input cannot be validated 
 (either missing or wrong attributes or Moose type constraints not satisfied)

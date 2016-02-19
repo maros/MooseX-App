@@ -138,7 +138,7 @@ MooseX::App::Meta::Role::Class::Documentation - Meta class role for command clas
 
 This meta class role will automatically be applied to all command classes.
 This documentation is only of interest if you intend to write plugins for 
-MooseX-App.
+MooseX::App.
 
 =head1 ACCESSORS
 

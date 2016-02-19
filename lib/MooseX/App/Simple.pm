@@ -124,7 +124,7 @@ And then in some simple wrapper script:
 
 =head1 DESCRIPTION
 
-MooseX-App-Simple works basically just as MooseX-App, however it does 
+MooseX-App::Simple works basically just as MooseX::App, however it does 
 not search for commands and assumes that you have all options and parameters 
 defined in the current class.
 
