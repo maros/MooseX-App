@@ -10,8 +10,8 @@ use Moose::Role;
 
 use MooseX::App::Message::BlockColor;
 
-around '_build_app_messageclass' => sub {
-    return 'MooseX::App::Message::BlockColor'
+around '_build_app_renderer' => sub {
+    return 'MooseX::App::Message::RendererColor'
 };
 
 1;

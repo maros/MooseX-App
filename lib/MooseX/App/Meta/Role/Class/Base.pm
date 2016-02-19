@@ -15,11 +15,11 @@ use Path::Class;
 use Module::Pluggable::Object;
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
-has 'app_messageclass' => (
+has 'app_renderer' => (
     is          => 'rw',
     isa         => 'ClassName',
     lazy        => 1,
-    builder     => '_build_app_messageclass',
+    builder     => '_build_app_renderer',
 );
 
 has 'app_namespace' => (
@@ -87,9 +87,9 @@ has 'app_commands' => (
     builder     => '_build_app_commands',
 );
 
-sub _build_app_messageclass {
+sub _build_app_renderer {
     my ($self) = @_;
-    return 'MooseX::App::Message::Block'
+    return 'MooseX::App::Message::Renderer'
 }
 
 sub _build_app_namespace {
@@ -970,15 +970,15 @@ MooseX::App::Meta::Role::Class::Base - Meta class role for application base clas
 
 This meta class role will automatically be applied to the application base
 class. This documentation is only of interest if you intend to write
-plugins for MooseX-App.
+plugins for MooseX::App.
 
 =head1 ACCESSORS
 
-=head2 app_messageclass
+=head2 app_renderer
 
-Message class for generating error messages. Defaults to
-MooseX::App::Message::Block. The default can be overwritten by altering
-the C<_build_app_messageclass> method. Defaults to MooseX::App::Message::Block
+Renderer class for generating error messages. Defaults to
+MooseX::App::Message::Renderer. The default can be overwritten by altering
+the C<_build_app_renderer> method.
 
 =head2 app_namespace
 
