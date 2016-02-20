@@ -105,13 +105,13 @@ sub _build_command_pod {
         command_short_description   => ($pod_raw{NAME} || $pod_raw{ABSTRACT}),
     );
     
-    while (my ($key,$value) = each %pod) {
+    foreach my $key (keys %pod) {
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next
             unless defined $meta_attribute;
         next
             if $meta_attribute->has_value($self);
-        $meta_attribute->set_raw_value($self,$value);
+        $meta_attribute->set_raw_value($self,$pod{$key});
     }
     
     return %pod;

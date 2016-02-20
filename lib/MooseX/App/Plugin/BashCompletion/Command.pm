@@ -28,7 +28,8 @@ sub bash_completion {
     
     $prefix             =~ tr/./_/;
     
-    while (my ($command,$command_class) = each %$commands) {
+    foreach my $command (keys %{$commands}) {
+        my $command_class = $commands->{$command};
         Class::Load::load_class($command_class);
         #my @parameters = $app_meta->command_usage_attributes($command_class->meta,'parameter');
         my @options = $app_meta->command_usage_attributes($command_class->meta,[qw(option proto)]);
@@ -57,10 +58,10 @@ _${prefix}_macc_help() {
 
 EOT
  
-    while (my ($command, $data) = each %command_map) {
+    foreach my $command (keys %command_map) {
         $syntax .= "_${prefix}_macc_${command}() {\n    _${prefix}_compreply \"";
         #$syntax .= join(" ", @{$data->{parameters}});
-        $syntax .= join(" ", @{$data->{options}});
+        $syntax .= join(" ", @{$command_map{$command}->{options}});
         $syntax .= "\"\n}\n\n";
     }
  
