@@ -1,6 +1,9 @@
 Release history for Perl module MooseX::App
 
-1.34 2015-?-?
+1.34 2016-?-?
+    - Do not accept invalid character in Term plugin
+    - Fix RT112156: Command class lacking attribute metarole (reported by Marc Logghe)
+    - Apply Spelling fixes RT105717 (fixed by Gregor Herrmann)
     - Add permute option to specify multiple values with one attribute key
     - Fix imports (fixed by Alexander Stoddard)
     - Documentation
