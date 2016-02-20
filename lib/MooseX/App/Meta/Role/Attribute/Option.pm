@@ -143,6 +143,10 @@ sub cmd_type_constraint_check {
         unless ($self->has_type_constraint);
     my $type_constraint = $self->type_constraint;
     
+    if ($type_constraint->has_coercion) {
+        $value = $type_constraint->coerce($value)
+    }
+    
     # Check type constraints
     unless ($type_constraint->check($value)) {
         if (ref($value) eq 'ARRAY') {

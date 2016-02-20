@@ -78,18 +78,27 @@ sub cmd_term_read_string {
     my ($self) = @_;
     
     my $label = $self->cmd_term_label_full;
-    my ($return,@history,$history_disable);
+    my ($return,@history,$history_disable,$allowed);
     
     binmode STDIN,':encoding(UTF-8)';
     
     # Prefill history with enums
-    if ($self->has_type_constraint
-        && $self->type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
-        push(@history,@{$self->type_constraint->values});
-        $history_disable = 1
-    } else {
-        push(@history,"");
+    if ($self->has_type_constraint) {
+        my $type_constraint = $self->type_constraint;
+        if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
+            push(@history,@{$self->type_constraint->values});
+            $history_disable = 1
+        } elsif (!$type_constraint->has_coercion) {
+            if ($type_constraint->is_a_type_of('Int')) {
+                $allowed = qr/[0-9]/;
+            } elsif ($type_constraint->is_a_type_of('Num')) {
+                $allowed = qr/[0-9.]/;
+            }
+        }
     }
+    
+    push(@history,"")
+        unless scalar @history;
     
     my $history_index = 0;
     my $history_add = sub {
@@ -225,6 +234,11 @@ sub cmd_term_read_string {
                 }
                 default { # Character
                     if ($_ <= 31) { # ignore controll chars
+                        print "\a";
+                        next KEY_STRING;
+                    } elsif (defined $allowed
+                        && $key !~ /$allowed/) {
+                        print "\a";
                         next KEY_STRING;
                     }
                     substr $return,$cursor,0,$key; # string
