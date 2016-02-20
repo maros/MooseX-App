@@ -529,6 +529,7 @@ Currently the following plugins are shipped with MooseX::App
 =item * L<MooseX::App::Plugin::BashCompletion>
 
 Adds a command that genereates a bash completion script for your application.
+See L<MooseX::App::Plugin::ZshCompletion> for Z shell .
 
 =item * L<MooseX::App::Plugin::Color>
 
@@ -540,12 +541,12 @@ Config files for MooseX::App applications.
 
 =item * L<MooseX::App::Plugin::ConfigHome>
 
-Search config files in users home directory.
+Try to find config files in users home directory.
 
 =item * L<MooseX::App::Plugin::Term>
 
 Prompt user for options and parameters that were not provided via options or 
-params. Prompt offers basic editing capabilities and history
+params. Prompt offers basic editing capabilities and history.
 
 =item * L<MooseX::App::Plugin::Typo>
 
@@ -577,13 +578,23 @@ for documentation on how to create your own plugins.
 Startup time may be an issue - escpecially if you load many plugins. If you do
 not require the functionality of plugins and ability for fine grained 
 customisation (or Moose for that matter) then you should probably 
-use L<MooX::Options> or L<MooX::Cmd>. 
+use L<MooX::Options> or L<MooX::Cmd>.
 
 In some cases - especially when using non-standard class inheritance - you may
 end up with command classes lacking the help attribute. In this case you need
 to include the following line in your base class
 
  with qw(MooseX::App::Role::Common);
+
+When manually registering command classes (eg. via app_command_register) in
+multiple base classes with different sets of plugins (why would you ever want 
+to do that?), then meta attributes may miss some attribute metaclasses. In 
+this case you need to load the missing attribute traits explicitely:
+
+ option 'argument' => (
+    depends => 'otherargument',
+    trait   => ['MooseX::App::Plugin::Depends::Meta::Attribute'], # load trait
+ );
 
 =head1 SEE ALSO
 
