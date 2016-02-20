@@ -72,7 +72,9 @@ has 'app_commands' => (
     traits      => ['Hash'],
     handles     => {
         command_register    => 'set', 
-        command_get         => 'get',  
+        command_get         => 'get',
+        command_classes     => 'values',
+        command_list        => 'shallow_clone',
     },
     lazy        => 1,
     builder     => '_build_app_commands',
@@ -783,7 +785,8 @@ sub command_usage_global {
     
     my $commands = $self->app_commands;
     
-    while (my ($command,$class) = each %$commands) {
+    foreach my $command (keys %$commands) {
+        my $class = $commands->{$command}; 
         Class::Load::load_class($class);
         my $command_description;
         $command_description = $class->meta->command_short_description
