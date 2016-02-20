@@ -121,15 +121,18 @@ sub process_plugins {
 sub process_init_meta {
     my ($self,%args) = @_;
     
-    my $meta            = Moose->init_meta( %args );
+    Moose->init_meta( %args );
+    
     my $plugins         = $PLUGIN_SPEC{$args{for_class}} || [];
     my $apply_metaroles = delete $args{metaroles} || {};
     my $apply_roles     = delete $args{roles} || [];
     
+    # Add plugin roles
     foreach my $plugin (@$plugins) {
         push(@{$apply_roles},$plugin,{ -excludes => [ 'plugin_metaroles' ] } )
     }
     
+    # Add common role
     push(@{$apply_roles},'MooseX::App::Role::Common')
         unless $apply_roles ~~ 'MooseX::App::Role::Common';
     
@@ -155,11 +158,15 @@ sub process_init_meta {
     # Add class roles
     Moose::Util::apply_all_roles($args{for_class},@{$apply_roles});
     
+    # Init plugins
     foreach my $plugin_class (@{$plugins}) {
         if ($plugin_class->can('init_plugin')) {
             $plugin_class->init_plugin($args{for_class});
         }
     }
+    
+    # Return meta
+    my $meta = $args{for_class}->meta;
     
     return $meta;
 }

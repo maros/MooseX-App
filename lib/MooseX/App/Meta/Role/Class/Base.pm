@@ -247,7 +247,7 @@ sub command_proto {
     my @attributes;
     foreach my $attribute ($self->command_usage_attributes($metaclass,'proto')) {
         next
-            unless $attribute->does('AppOption')
+            unless $attribute->does('MooseX::App::Meta::Role::Attribute::Option')
             && $attribute->has_cmd_type;
         push(@attributes,$attribute);
     }
@@ -618,7 +618,7 @@ sub command_usage_attributes {
     my @return;
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
-            unless $attribute->does('AppOption')
+            unless $attribute->does('MooseX::App::Meta::Role::Attribute::Option')
             && $attribute->has_cmd_type;
         
         next

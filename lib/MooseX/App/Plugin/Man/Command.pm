@@ -17,7 +17,7 @@ has 'command' => (
     isa             => 'Str',
     predicate       => 'has_command',
     documentation   => q[Command],
-    traits          => ['AppOption'],
+    traits          => ['MooseX::App::Meta::Role::Attribute::Option'],
     cmd_type        => 'parameter',
     cmd_position    => 1,
 );

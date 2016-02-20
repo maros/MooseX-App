@@ -45,7 +45,9 @@ sub init_meta {
             'MooseX::App::Meta::Role::Class::Base',
             'MooseX::App::Meta::Role::Class::Documentation'
         ],
-        attribute           => ['MooseX::App::Meta::Role::Attribute::Option'],
+        attribute           => [
+            'MooseX::App::Meta::Role::Attribute::Option'
+        ],
     };
     
     return MooseX::App::Exporter->process_init_meta(%args);
@@ -76,8 +78,8 @@ sub new_with_command {
     Moose->throw_error('new_with_command is a class method')
         if ! defined $class || blessed($class);
     
-    my $meta = $class->meta;
-    my $metameta = $meta->meta;
+    my $meta        = $class->meta;
+    my $metameta    = $meta->meta;
     
     Moose->throw_error('new_with_command may only be called from the application base package:'.$class)
         if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
@@ -96,7 +98,7 @@ sub new_with_command {
     
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
-    my $first_argv = $parsed_argv->first_argv;
+    my $first_argv  = $parsed_argv->first_argv;
     
     # Requested help
     if (defined $first_argv 

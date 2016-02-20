@@ -18,7 +18,7 @@ has 'config' => (
     coerce          => 1,
     predicate       => 'has_config',
     documentation   => q[Path to command config file],
-    traits          => ['AppOption'],
+    traits          => ['MooseX::App::Meta::Role::Attribute::Option'],
     cmd_type        => 'proto',
     cmd_position    => 99990,
 );

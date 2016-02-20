@@ -42,7 +42,7 @@ In your command class:
  option 'some_option' => (
      is             => 'rw',
      isa            => 'Int',
-     documentation  => 'Something'
+     documentation  => 'Something',
      cmd_term       => 1,
  );
  

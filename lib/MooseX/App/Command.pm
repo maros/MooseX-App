@@ -29,7 +29,9 @@ sub init_meta {
                 'MooseX::App::Meta::Role::Class::Documentation',
                 'MooseX::App::Meta::Role::Class::Command'
             ],
-            attribute       => ['MooseX::App::Meta::Role::Attribute::Option'],
+            attribute       => [
+                'MooseX::App::Meta::Role::Attribute::Option'
+            ],
         },
     );
     

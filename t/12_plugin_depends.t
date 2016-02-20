@@ -1,6 +1,6 @@
 # -*- perl -*-
 
-# t/10_plugin_depends.t - Test Depends
+# t/12_plugin_depends.t - Test Depends
 
 use Test::Most tests => 1+1;
 use Test::NoWarnings;
