@@ -1,7 +1,7 @@
 package MooseX::App::Plugin::Depends;
 
 use Moose::Role;
-use namespace::clean;
+use namespace::autoclean;
 
 sub plugin_metaroles {
    my ($self, $class) = @_;
