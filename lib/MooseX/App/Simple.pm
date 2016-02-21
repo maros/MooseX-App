@@ -138,7 +138,7 @@ MooseX::App command line application.
  my $myapp_command = MyApp->new_with_options();
 
 This method reads the command line arguments from the user and tries to create
-instantiate the current class with the ARGV-input. If it fails it retuns a 
+instantiate the current class with the ARGV-input. If it fails it returns a 
 L<MooseX::App::Message::Envelope> object holding an error message.
 
 You can pass a hash or hashref of default params to new_with_options

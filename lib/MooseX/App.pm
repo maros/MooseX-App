@@ -336,7 +336,7 @@ MooseX::App command line application.
  my $myapp_command = MyApp->new_with_command();
 
 This constructor reads the command line arguments and tries to create a 
-command class instance. If it fails it retuns a 
+command class instance. If it fails it returns a 
 L<MooseX::App::Message::Envelope> object holding an error message.
 
 You can pass a hash of default/fallback params to new_with_command
@@ -445,7 +445,7 @@ command)
  OR
  app_permute(1);
 
-Allows to specify multiple values with one key. So instead of writing
+Allows one to specify multiple values with one key. So instead of writing
 C<--list element1 --list element2 --list element3> one might write
 C<--list element1 element2 element3> for ArrayRef elements. HashRef elements
 may be expressed as <--hash key=value key2=value2>
@@ -481,7 +481,7 @@ Options and parameters accept extra attributes for customisation:
 
 =item * cmd_env - Read options/parameters from %ENV
 
-=item * cmd_count - Value of option equals to number of occurences in @ARGV
+=item * cmd_count - Value of option equals to number of occurrences in @ARGV
 
 =back
 
@@ -528,7 +528,7 @@ Currently the following plugins are shipped with MooseX::App
 
 =item * L<MooseX::App::Plugin::BashCompletion>
 
-Adds a command that genereates a bash completion script for your application.
+Adds a command that generates a bash completion script for your application.
 See L<MooseX::App::Plugin::ZshCompletion> for Z shell .
 
 =item * L<MooseX::App::Plugin::Color>
@@ -589,7 +589,7 @@ to include the following line in your base class
 When manually registering command classes (eg. via app_command_register) in
 multiple base classes with different sets of plugins (why would you ever want 
 to do that?), then meta attributes may miss some attribute metaclasses. In 
-this case you need to load the missing attribute traits explicitely:
+this case you need to load the missing attribute traits explicitly:
 
  option 'argument' => (
     depends => 'otherargument',

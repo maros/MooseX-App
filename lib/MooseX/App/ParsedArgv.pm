@@ -106,7 +106,7 @@ sub _build_elements {
                             );
                             push(@elements,$options{$flag});
                         } else {
-                            $options{$flag}->inc_occurence;
+                            $options{$flag}->inc_occurrence;
                         }
                         $lastkey = $options{$flag};
                     }
@@ -123,7 +123,7 @@ sub _build_elements {
                         );
                         push(@elements,$options{$key});
                     } else {
-                        $options{$key}->inc_occurence;
+                        $options{$key}->inc_occurrence;
                     }
                     $options{$key}->add_value($value);
                 }
@@ -138,7 +138,7 @@ sub _build_elements {
                         );
                         push(@elements,$options{$key});
                     } else {
-                        $options{$key}->inc_occurence;
+                        $options{$key}->inc_occurrence;
                     }
                     $lastkey = $options{$key};
                 }

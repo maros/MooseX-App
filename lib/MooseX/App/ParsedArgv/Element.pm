@@ -45,13 +45,13 @@ has 'raw' => (
     predicate       => 'has_raw',
 );
 
-has 'occurence' => (
+has 'occurrence' => (
     is              => 'ro',
     isa             => 'Int',
     default         => sub { 1 },
     traits          => ['Counter'],
     handles         => {
-        inc_occurence   => 'inc',
+        inc_occurrence   => 'inc',
     }
 );
 
@@ -78,10 +78,10 @@ sub full_value {
     my ($self) = @_;
     
     # Fill up empty values
-    if ($self->has_values < $self->occurence) {
+    if ($self->has_values < $self->occurrence) {
         return [
             $self->raw_values,
-            (undef) x ($self->occurence - $self->has_values)
+            (undef) x ($self->occurrence - $self->has_values)
         ];
     } else {
         return $self->value;
@@ -150,9 +150,9 @@ Raw value as supplied by the user
 
 Type of element. Can be 'option', 'parameter' or 'extra'
 
-=head2 occurence
+=head2 occurrence
 
-Number of occurences in @ARGV
+Number of occurrences in @ARGV
 
 =head2 consumed
 

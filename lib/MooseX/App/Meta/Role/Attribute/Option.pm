@@ -377,7 +377,7 @@ arrayref with to elements.
 =head2 cmd_count
 
 Similar to the Getopt::Long '+' modifier, cmd_count turns the attribute into
-a counter. Every occurence of the attribute in @ARGV (without any value)
+a counter. Every occurrence of the attribute in @ARGV (without any value)
 would increment the resulting value by one
 
 =head1 METHODS
