@@ -352,6 +352,12 @@ You can pass a hash of default/fallback params to new_with_command
 
  my $obj = MyApp->new_with_command(%default);
 
+Optionally you can pass a custom ARGV to this constructor
+
+ my $obj = MyApp->new_with_command( ARGV => \@myARGV );
+
+However, if you do so you must take care of propper encoding yourself.
+
 =head2 initialize_command_class
 
  my $obj = MyApp->initialize_command_class($command_name,%default);
