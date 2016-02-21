@@ -75,6 +75,7 @@ t/09_classes.t
 t/10_plugin_mutexgroup.t
 t/11_process.t
 t/12_plugin_depends.t
+t/13_rt_112156.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl
@@ -98,6 +99,7 @@ t/testlib/Test02/MoreCommands/Test.pm
 t/testlib/Test03.pm
 t/testlib/Test03/AnotherCommand.pm
 t/testlib/Test03/BrokenCommand.pm
+t/testlib/Test03/DifferentCommand.pm
 t/testlib/Test03/ExtraCommand.pm
 t/testlib/Test03/Role/TestRole.pm
 t/testlib/Test03/SomeCommand.pm
@@ -109,6 +111,7 @@ t/testlib/Test05.pm
 t/testlib/Test06.pm
 t/testlib/Test06/CommandA.pm
 t/testlib/Test06/CommandB.pm
+t/testlib/Test06/CommandD.pm
 t/testlib/Test07.pm
 t/testlib/Test08.pm
 TODO
