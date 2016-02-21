@@ -35,13 +35,15 @@ The base class can be customized by
 
 =item * changing the command-class namespace
 
-=item * defining global attributes used by all command classes (if they 
-inherit from the base class)
+=item * defining global attributes used by all command classes (only if 
+command classes inherit from the base class)
 
 =item * add documentation (either POD or via the app_usage and 
 app_description functions)
 
 =item * and changing MooseX-App flags (eg. turn fuzzy matching off)
+
+=item * Adding Moose attribute documentation and type constraints.
 
 =back
 
@@ -56,6 +58,7 @@ classes from your base class is purely optional).
   option 'some_global_option' => (
       is                => 'rw',
       isa               => 'Str',
+      required          => 1,
       documentation     => q[Some important global option],
   );
   
@@ -82,7 +85,7 @@ The command classes must reside in the namespace of the base class
 be changed via the 'app_namespace' function in the base class, or by simply
 registering command classes manually via 'app_command_register'.
 
-All command classes must use MooseX::App::Command.
+All command classes must use MooseX::App::Command, which will also load Moose.
 
   package MyApp::SomeCommand;
   use MooseX::App::Command;
@@ -169,7 +172,7 @@ attribute. (see L<MooseX::App::Meta::Attribute::Option>).
   );
 
 Finally your command classes will need a method which should be called
-if the command is invoked by the user.
+if the command is invoked by the user. 
 
  sub run {
     my ($self) = @_;
@@ -212,8 +215,8 @@ containing an error message and a usage message. Since
 L<MooseX::App::Message::Envelope> follows the Null object pattern you can 
 call any method on it without checking the object type. Note that 
 MooseX::App::Message::Envelope objects may also have an exitcode set. In this
-case whenever the object gets stringified, it print on STDERR/STDOUT and exits
-the program using the specified exitcode. Don't use the ovleroad 
+case whenever the object gets stringified, it prints on STDERR/STDOUT and 
+exits the program using the specified exitcode. Don't use the ovleroaded 
 stingification if you don't want this behaviour.
 
 You can also pass default/fallback values to the constructor
@@ -223,7 +226,7 @@ You can also pass default/fallback values to the constructor
  MyApp->new_with_command( some_global_option => 'something' )->run();
 
 If using L<MooseX::App::Simple> your invocation script needs some 
-modification.
+modification and call C<new_with_options> instead of C<new_with_command>.
 
  #!/usr/bin/env perl
  use MyApp;
@@ -233,7 +236,11 @@ modification.
 
 Once you have a basic working application you can make it more user friendly
 by adding documentation (either by using the app_description, app_usage,
-command_short_description, ... functions or by writing POD) and Moose type
-constraints and additional plugins (eg. colorise the output).
+command_short_description, ... functions or by writing POD), Moose type
+constraints and additional plugins (eg. colorise the output) and some helpful
+plugins.
+
+If you want custom behaviour you could start writing your own 
+L<MooseX::App::WritingPlugins|plugins>.
 
 =cut

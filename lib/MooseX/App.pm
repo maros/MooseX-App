@@ -39,6 +39,7 @@ sub import {
 sub init_meta {
     my ($class,%args) = @_;
     
+    # Get required roles and metaroles
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
         class               => [
@@ -81,6 +82,7 @@ sub new_with_command {
     my $meta        = $class->meta;
     my $metameta    = $meta->meta;
     
+    # Sanity check
     Moose->throw_error('new_with_command may only be called from the application base package:'.$class)
         if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
         || ! $metameta->does_role('MooseX::App::Meta::Role::Class::Base');
@@ -307,16 +309,16 @@ Furthermore, all options and parameters can also be supplied via %ENV
       cmd_env       => 'SOME_OPTION',
   );
 
-Moose type constraints help MooseX::App to construct meaningful error messages
+Moose type constraints help MooseX::App to construct helpful error messages
 and parse @ARGV in a meaningful way. These type constraints are supported
 
 =over
 
-=item * ArrayRef: Specify multiple values ('--list value1 --list value2',
+=item * ArrayRef: Specify multiple values ('--opt value1 --opt value2',
 also see L<app_permute>)
 
-=item * HashRef: Specify multiple key value pairs (--option key=value, 
-also see L<app_permute>)
+=item * HashRef: Specify multiple key value pairs ('--opt key=value --opt
+key2=value2', also see L<app_permute>)
 
 =item * Enum: Display all possibilites
 
@@ -351,6 +353,8 @@ Helper method to instantiate the command class for the given command.
 
 =head1 GLOBAL OPTIONS
 
+These options may be used to alter the default behaviour of MooseX-App.
+
 =head2 app_base
 
  app_base 'my_script'; # Defaults to $0
@@ -361,17 +365,17 @@ be changed via the app_base function.
 
 =head2 app_fuzzy
 
- app_fuzzy(1); # default
+ app_fuzzy 1; # default
  OR
- app_fuzzy(0);
+ app_fuzzy 0;
 
 Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 =head2 app_strict
 
- app_strict(0); # default 
+ app_strict 0; # default 
  OR
- app_strict(1); 
+ app_strict 1; 
 
 If strict is enabled the program will terminate with an error message if
 superfluous/unknown positional parameters are supplied. If disabled all 
@@ -382,9 +386,9 @@ individually for each command in the respective command class.
 
 =head2 app_prefer_commandline
 
- app_prefer_commandline(0); # default
+ app_prefer_commandline 0; # default
  or
- app_prefer_commandline(1);
+ app_prefer_commandline 1;
 
 Specifies if parameters/options supplied via @ARGV,%ENV should take precedence
 over arguments passed to new_with_command.
@@ -399,7 +403,7 @@ Usually MooseX::App will take the package name of the base class as the
 namespace for commands. This namespace can be changed and you can add
 multiple extra namespaces.
 
-If app_namespace is called with no parameters then autoloading of command
+If app_namespace is called with no arguments then autoloading of command
 classes will be disabled entirely.
 
 =head2 app_command_name
@@ -420,13 +424,13 @@ translated to command names.
     undo    => 'MyApp::Commands::UndoSomething';
 
 This keyword can be used to register additional commands. Especially
-useful in conjunction with app_namespace.
+useful in conjunction with app_namespace and disabled autoloading.
 
 =head2 app_description
 
  app_description qq[Description text];
 
-Set the description. If not set this information will be taken from the
+Set the  app description. If not set this information will be taken from the
 Pod DESCRIPTION or OVERVIEW sections. (see command_description to set usage 
 per command)
 
@@ -441,9 +445,9 @@ command)
 
 =head2 app_permute
 
- app_permute(0); # default
+ app_permute 0; # default
  OR
- app_permute(1);
+ app_permute 1;
 
 Allows one to specify multiple values with one key. So instead of writing
 C<--list element1 --list element2 --list element3> one might write
@@ -473,9 +477,9 @@ Options and parameters accept extra attributes for customisation:
 
 =item * cmd_flag - Override option/parameter name
 
-=item * cmd_aliases - Additional option/parameter  names
+=item * cmd_aliases - Additional option/parameter name aliases
 
-=item * cmd_split - Split values into ArrayRefs
+=item * cmd_split - Split values into ArrayRefs on this token
 
 =item * cmd_position - Specify option/parameter order in help
 
@@ -529,7 +533,7 @@ Currently the following plugins are shipped with MooseX::App
 =item * L<MooseX::App::Plugin::BashCompletion>
 
 Adds a command that generates a bash completion script for your application.
-See L<MooseX::App::Plugin::ZshCompletion> for Z shell .
+See third party L<MooseX::App::Plugin::ZshCompletion> for Z shell completion.
 
 =item * L<MooseX::App::Plugin::Color>
 
@@ -546,7 +550,7 @@ Try to find config files in users home directory.
 =item * L<MooseX::App::Plugin::Term>
 
 Prompt user for options and parameters that were not provided via options or 
-params. Prompt offers basic editing capabilities and history.
+params. Prompt offers basic editing capabilities and non-persistent history.
 
 =item * L<MooseX::App::Plugin::Typo>
 
@@ -633,7 +637,7 @@ Hunter McMillen, Maik Hentsche, Alexander Stoddard
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012-15 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-16 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as 
 perl itself. The full text of the licence can be found in the LICENCE file 
