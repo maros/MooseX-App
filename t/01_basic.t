@@ -18,10 +18,9 @@ subtest 'Excact command with option' => sub {
 };
 
 subtest 'Fuzzy command with option' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(Command_A --globa 10)]);
-    my $test02 = Test01->new_with_command();
+    my $test02 = Test01->new_with_command( ARGV => [qw(Command_A --globa 11)]);
     isa_ok($test02,'Test01::CommandA');
-    is($test02->global,10,'Param is set');
+    is($test02->global,11,'Param is set');
 };
 
 subtest 'Wrong command' => sub {

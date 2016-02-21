@@ -38,7 +38,7 @@ sub import {
 sub init_meta {
     my ($class,%args) = @_;
     
-    my $for_class       = $args{for_class};
+    # Get required roles and metaroles
     $args{roles}        = ['MooseX::App::Role::Base' ];
     $args{metaroles}    = {
         class               => [
@@ -52,14 +52,16 @@ sub init_meta {
     };
     my $meta = MooseX::App::Exporter->process_init_meta(%args);
     
-    $for_class->meta->app_commands({ 'self' => $for_class });
+    # Register only one command
+    $meta->app_commands({ 'self' => $args{for_class} });
     
     return $meta;
 }
 
 sub new_with_options {
     my ($class,@args) = @_;
-
+    
+    # Sanity check
     Moose->throw_error('new_with_options is a class method')
         if ! defined $class || blessed($class);
 
@@ -73,8 +75,15 @@ sub new_with_options {
         Moose->throw_error('new_with_command got invalid extra arguments');
     }
     
-    my $parsed_argv = MooseX::App::ParsedArgv->instance();
-        
+    # Get ARGV
+    my $argv = delete $args{ARGV};
+    my $parsed_argv;
+    if (defined $argv) {
+        $parsed_argv = MooseX::App::ParsedArgv->new( argv => $argv );
+    } else {
+        $parsed_argv = MooseX::App::ParsedArgv->instance();
+    }
+    
     return $class->initialize_command_class($class,%args);
 }
 
@@ -144,6 +153,12 @@ L<MooseX::App::Message::Envelope> object holding an error message.
 You can pass a hash or hashref of default params to new_with_options
 
  MyApp->new_with_options( %default );
+
+Optionally you can pass a custom ARGV to this constructor
+
+ my $obj = MyApp->new_with_options( ARGV => \@myARGV );
+
+However, if you do so you must take care of propper encoding yourself.
 
 =head1 OPTIONS
 

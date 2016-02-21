@@ -31,7 +31,6 @@ has 'argv' => (
         if ($@) {
             @argv = @ARGV;
         }
-        
         return \@argv;
     },
 );
@@ -58,8 +57,19 @@ has 'elements' => (
 
 sub BUILD {
     my ($self) = @_;
+    
+    # Register singleton
     $SINGLETON = $self;
     return $self;
+}
+
+sub DEMOLISH {
+    my ($self) = @_;
+    
+    # Unregister singleton if it is stll the same
+    $SINGLETON = undef
+        if defined $SINGLETON
+        && $SINGLETON == $self;
 }
 
 sub instance {
