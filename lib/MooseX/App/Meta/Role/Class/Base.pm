@@ -122,7 +122,8 @@ sub command_scan_namespace {
         
         my $command = $commandsub->($command_class_name,$command_class);
         
-        $return{$command} = $command_class;
+        $return{$command} = $command_class
+            if defined $command;
     }
     
     return %return;
