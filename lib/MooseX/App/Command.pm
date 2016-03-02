@@ -57,8 +57,7 @@ MooseX::App::Command - Load command class metaclasses
 
  package MyApp::SomeCommand;
  
- use Moose; # optional
- use MooseX::App::Command
+ use MooseX::App::Command; # Also loads Moose
  
  option 'testattr' => (
     isa             => 'rw',

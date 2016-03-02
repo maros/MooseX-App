@@ -133,7 +133,7 @@ And then in some simple wrapper script:
 
 =head1 DESCRIPTION
 
-MooseX-App::Simple works basically just as MooseX::App, however it does 
+MooseX-App-Simple works basically just as MooseX::App, however it does 
 not search for commands and assumes that you have all options and parameters 
 defined in the current class.
 
@@ -158,7 +158,7 @@ Optionally you can pass a custom ARGV to this constructor
 
  my $obj = MyApp->new_with_options( ARGV => \@myARGV );
 
-However, if you do so you must take care of propper encoding yourself.
+However, if you do so you must take care of propper @ARGV encoding yourself.
 
 =head1 OPTIONS
 

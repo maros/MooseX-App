@@ -35,8 +35,8 @@ The base class can be customized by
 
 =item * changing the command-class namespace
 
-=item * defining global attributes used by all command classes (only if 
-command classes inherit from the base class)
+=item * defining global options/parameters used by all command classes (only 
+if command classes inherit from the base class)
 
 =item * add documentation (either POD or via the app_usage and 
 app_description functions)
@@ -237,8 +237,7 @@ modification and call C<new_with_options> instead of C<new_with_command>.
 Once you have a basic working application you can make it more user friendly
 by adding documentation (either by using the app_description, app_usage,
 command_short_description, ... functions or by writing POD), Moose type
-constraints and additional plugins (eg. colorise the output) and some helpful
-plugins.
+constraints and additional plugins (eg. colorise the output).
 
 If you want custom behaviour you could start writing your own 
 L<MooseX::App::WritingPlugins|plugins>.
