@@ -856,12 +856,12 @@ be changed via the app_base accessor. Defaults to the base name of $0
 
 =head2 app_fuzzy
 
-Boolean flag that controlls if command names and attributes should be 
+Boolean flag that controls if command names and attributes should be 
 matched exactly or fuzzy. Defaults to true.
 
 =head2 app_command_name
 
-Coderef attribute that controlls how package names are translated to command 
+Coderef attribute that controls how package names are translated to command 
 names and attributes. Defaults to &MooseX::App::Utils::class_to_command
 
 =head2 app_commands

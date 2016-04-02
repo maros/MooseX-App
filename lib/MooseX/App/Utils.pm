@@ -259,3 +259,44 @@ sub _pod_node_to_text {
 
 
 1;
+
+=pod
+
+=head1 NAME
+
+MooseX::App::Utils - Utility functions
+
+=head1 DESCRIPTION
+
+This package holds various utility functions used by MooseX-App internally.
+Unless you develop plugins you will not need to interact with this class.
+
+=head1 FUNCTIONS
+
+=head2 class_to_command
+
+=head2 package_to_filename
+
+Tries to determine the filename containing the given package name.
+
+=head2 format_list
+
+=head2 format_text
+
+=head2 parse_pod
+
+=head2 split_string
+
+
+
+=head1 GLOBALS
+
+=head2 $MooseX::App::Utils::SCREEN_WIDTH
+
+Screen width for printing help and error messages
+
+=head2 $MooseX::App::Utils::INDENT
+
+Indent for printing help and error messages
+
+=cut
