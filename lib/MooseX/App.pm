@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.34';
+our $VERSION = '1.35';
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline app_permute option parameter);
@@ -649,6 +649,10 @@ In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
 Hunter McMillen, Maik Hentsche, Alexander Stoddard
+
+You are more than welcome to contribute to MooseX-App. Please have a look
+at the L<https://github.com/maros/MooseX-App/issues?q=is%3Aissue+is%3Aopen+label%3AWishlist>
+list of open wishlist issues for ideas.
 
 =head1 COPYRIGHT
 

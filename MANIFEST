@@ -85,7 +85,6 @@ t/example/test05.pl
 t/example/test06.pl
 t/example/test07.pl
 t/example/test08.pl
-t/testlib/MyMessage.pm
 t/testlib/Test01.pm
 t/testlib/Test01/CommandA.pm
 t/testlib/Test01/CommandB.pm
