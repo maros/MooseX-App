@@ -23,8 +23,10 @@ has 'argv' => (
             I18N::Langinfo->import(qw(langinfo CODESET));
             my $codeset = langinfo(CODESET());
             # TODO Not sure if this is the right place?
-            binmode(STDOUT, ":encoding(UTF-8)")
-                if $codeset =~ m/^UTF-?8$/i;
+            if ($codeset =~ m/^UTF-?8$/i) {
+                binmode(STDOUT, ":encoding(UTF-8)");
+                binmode(STDERR, ":encoding(UTF-8)");
+            }
             return map { decode($codeset,$_) } @ARGV;
         };
         # Fallback to standard
@@ -224,7 +226,7 @@ sub extra {
             unless $element->type eq 'parameter'
             || $element->type eq 'extra';
         push(@extra,$element->key);
-    }  
+    }
     
     return @extra;
 }
