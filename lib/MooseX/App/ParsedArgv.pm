@@ -139,6 +139,22 @@ sub _build_elements {
                     }
                     $options{$key}->add_value($value);
                 }
+                # Key --no
+                when (m/^--no-([^-].+)/) {
+                    my $key = $1;
+                    unless (defined $options{$key}) {
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new(
+                            key => $key,
+                            type => 'option',
+                            raw => $element,
+                        );
+                        push(@elements,$options{$key});
+                    } else {
+                        $options{$key}->inc_occurrence;
+                    }
+                    $options{$key}->add_value(0);
+                    $lastkey = $options{$key};
+                }
                 # Key
                 when (m/^--([^-].*)/) {
                     my $key = $1;

@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 27+1;
+use Test::Most tests => 29;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -144,6 +144,13 @@ subtest 'Test more flags & defaults' => sub {
     is($test11->bool2,1,'Bool2 flag is unset');
     is($test11->bool3,1,'Bool3 flag is set');
     is($test11->value,'baer','Value is set');
+};
+
+subtest 'Test Negate boolean options' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(yet --no-bool3)]);
+    my $test11 = Test03->new_with_command;
+    isa_ok($test11,'Test03::YetAnotherCommand');
+    is($test11->bool3,0,'Bool3 flag is negated');
 };
 
 subtest 'Test positional params' => sub {
