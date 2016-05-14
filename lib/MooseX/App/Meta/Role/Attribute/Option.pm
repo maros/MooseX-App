@@ -243,17 +243,19 @@ sub cmd_tags_list {
         }
     }
     
+    if ($self->has_cmd_split) {
+        my $split = $self->cmd_split;
+        if (ref($split) eq 'Regexp') {
+            $split = "$split";
+            $split =~ s/^\(\?\^\w*:(.+)\)$/$1/x;
+        }
+        push(@tags,'Multiple','Split by "'.$split.'"');
+    }
+    
     if ($self->has_type_constraint) {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_a_type_of('ArrayRef')) {
-            if ($self->has_cmd_split) {
-                my $split = $self->cmd_split;
-                if (ref($split) eq 'Regexp') {
-                    $split = "$split";
-                    $split =~ s/^\(\?\^\w*:(.+)\)$/$1/x;
-                }
-                push(@tags,'Multiple','Split by "'.$split.'"');
-            } else {
+            if (! $self->has_cmd_split) {
                 push(@tags,'Multiple');
             }
         } elsif ($type_constraint->is_a_type_of('HashRef')) {
