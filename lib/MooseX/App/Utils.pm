@@ -73,6 +73,7 @@ sub format_list {
     my $prefix_length = $max_length + $INDENT + 2;
     my @return;
     
+    # Loop all items
     foreach my $command (@list) {
         my $description = $command->[1] // '';
         my @lines = split_string($description_length,$description);
@@ -248,6 +249,7 @@ sub _pod_node_to_text {
     return
         unless scalar @lines;
     
+    # Convert text markup
     my $return = join ("\n", grep { defined $_ } @lines);
     $return =~ s/\n\n\n+/\n\n/g; # Max one empty line
     $return =~ s/I<([^>]+)>/_$1_/g;

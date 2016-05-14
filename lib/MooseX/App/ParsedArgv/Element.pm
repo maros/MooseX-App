@@ -124,7 +124,7 @@ Parameter value or option key
 =head2 value
 
 Arrayref of values. A value itself is an arrayref of the raw value and the
-original position in Argv.
+original position in ARGV.
 
 =head2 raw
 

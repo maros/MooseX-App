@@ -60,12 +60,14 @@ sub _handle_attribute {
         
         # Get required extra traits for this class on first attrubute
         unless ($meta->has_app_attribute_metaroles) {
+            # Find MooseX::App::Meta::Role::Class::Base in ISA
             foreach my $parent ($meta->linearized_isa) {
                 if ($parent->meta->does_role('MooseX::App::Meta::Role::Class::Base')) {
                     $meta->app_attribute_metaroles([]);
                     last;
                 }
             }
+            # Apply missing meta roles if required to do so
             unless ($meta->has_app_attribute_metaroles) {
                 my @extra_classes;
                 foreach my $class (keys %PLUGIN_SPEC) {
@@ -92,8 +94,8 @@ sub _handle_attribute {
         push(@{$attributes{traits}},$meta->app_attribute_metaroles_uniq);
     }
     
-    
     $attributes{'cmd_type'} = $type;
+    # Loop all attributes and check attribute traits
     foreach my $attr (@$attrs) {
         my %local_attributes = %attributes;
         if ($attr =~ m/^\+(.+)/) {

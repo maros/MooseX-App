@@ -41,7 +41,7 @@ has 'hints_flags' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
-); # Flag hints for the parser
+); # No value hints for the parser (such as for flags)
 
 has 'hints_permute' => (
     is              => 'rw',

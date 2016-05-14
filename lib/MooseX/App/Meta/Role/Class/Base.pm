@@ -104,6 +104,7 @@ sub _build_app_commands {
 sub command_scan_namespace {
     my ($self,$namespace) = @_;
     
+    # Find all packages in namespace
     my $mpo = Module::Pluggable::Object->new(
         search_path => [ $namespace ],
     );
@@ -111,17 +112,20 @@ sub command_scan_namespace {
     my $commandsub = $self->app_command_name;
 
     my %return;
+    # Loop all packages
     foreach my $command_class ($mpo->plugins) {
         my $command_class_name =  substr($command_class,length($namespace)+2);
         
+        # Check for odd class names - needs to be refactored for subcommands support
         next
             if $command_class_name =~ m/::/;
         
+        # Extract command name
         $command_class_name =~ s/^\Q$namespace\E:://;
         $command_class_name =~ s/^.+::([^:]+)$/$1/;
-        
         my $command = $commandsub->($command_class_name,$command_class);
         
+        # Check if command was loaded
         $return{$command} = $command_class
             if defined $command;
     }
