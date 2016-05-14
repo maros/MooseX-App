@@ -1,5 +1,12 @@
 Release history for Perl module MooseX::App
 
+1.36 2016-05-XX
+    - Set encoding on STDERR
+    - Documentation
+    - Add ability to negate boolean options (implemented by Marc Logghe)
+    - Apply Spelling fixes github#39 (fixed by Gregor Herrmann)
+    - Improved retaining the initial element order for arrays
+
 1.35 2016-04-02
     - Apply Spelling fixes RT112234 (fixed by Gregor Herrmann)
     - Documentation
