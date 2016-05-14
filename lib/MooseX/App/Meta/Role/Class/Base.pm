@@ -181,13 +181,13 @@ sub command_args {
     
     # Process params
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
-
+    
     foreach my $attribute (@attributes_parameter) {
         my $element = $parsed_argv->consume('parameter');
         last
             unless defined $element;
-
-        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute,$element->key);
+        
+        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute, [ $element->key ] );
         push(@{$errors},@{$parameter_errors});
         $return->{$attribute->name} = $parameter_value;
     }
@@ -283,8 +283,8 @@ sub command_parse_options {
     # Loop all exact matches
     foreach my $option ($parsed_argv->available('option')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
-            $match->{$attribute->name} = $option->full_value;
             $option->consume($attribute);
+            $match->{$attribute->name} = [ $option ];
         }
     }
     
@@ -311,7 +311,7 @@ sub command_parse_options {
                 if (lc($option->key) eq $name_short) {
                     my $attribute = $option_to_attribute{$name};
                     unless (grep { $attribute == $_ } @{$match_attributes}) {
-                        push(@{$match_attributes},$attribute);   
+                        push(@{$match_attributes},$attribute);
                     }
                 }
             }
@@ -325,7 +325,7 @@ sub command_parse_options {
                     my $attribute = $match_attributes->[0];
                     $option->consume();
                     $match->{$attribute->name} ||= [];
-                    push(@{$match->{$attribute->name}},@{$option->full_value}); 
+                    push(@{$match->{$attribute->name}},$option); 
                 }
                 # Multiple matches
                 default {
@@ -353,7 +353,14 @@ sub command_parse_options {
         next
             unless exists $match->{$attribute->name};
         
-        my ($value,$errors) = $self->command_process_attribute($attribute,$match->{$attribute->name});
+        my $raw = [
+            map { $_->[0] }
+            sort { $a->[1] <=> $b->[1] }
+            map { @{$_->value} }
+            @{$match->{$attribute->name}}
+        ];
+        
+        my ($value,$errors) = $self->command_process_attribute( $attribute, $raw );
         push(@errors,@{$errors});
         
         $return->{$attribute->name} = $value;
@@ -987,10 +994,10 @@ as keys and package names as values.
 
 =head2 command_process_attribute
 
- my @attributes = $self->command_process_attributes($metaclass,[qw(option proto)]);
- my @attributes = $self->command_process_attributes($metaclass,'parameter');
+ my @attributes = $self->command_process_attribute($attribute_metaclass,$matches);
 
-Returns a list of all attributes with the given type
+TODO
+###Returns a list of all attributes with the given type
 
 =head2 command_usage_options
 
@@ -1006,7 +1013,7 @@ Returns the positional parameters usage as a message object
 
 =head2 command_check_attributes
 
- $errors = $self->command_check_attributes($command_meta,$errors,$params)
+ $errors = $self->command_check_attributes($command_metaclass,$errors,$params)
  
 Checks all attributes. Returns/alters the $errors arrayref
 

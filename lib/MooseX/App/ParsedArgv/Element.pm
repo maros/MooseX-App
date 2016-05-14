@@ -16,13 +16,12 @@ has 'key' => (
 
 has 'value' => (
     is              => 'ro',
-    isa             => 'ArrayRef[Str]',
+    isa             => 'ArrayRef[ArrayRef]',
     traits          => ['Array'],
     default         => sub { [] },
     handles         => {
-        add_value       => 'push',
+        add_raw_value   => 'push',
         has_values      => 'count',
-        get_value       => 'get',
         raw_values      => 'elements',
     }
 );
@@ -86,20 +85,6 @@ sub consume {
     return $self; 
 }
 
-sub full_value {
-    my ($self) = @_;
-    
-    # Fill up empty values
-    if ($self->has_values < $self->occurrence) {
-        return (
-            $self->all_values,
-            (undef) x ($self->occurrence - $self->has_values)
-        );
-    } else {
-        return $self->all_values;
-    }
-}
-
 sub serialize {
     my ($self) = @_;
     given ($self->type) {
@@ -138,7 +123,8 @@ Parameter value or option key
 
 =head2 value
 
-Arrayref of values 
+Arrayref of values. A value itself is an arrayref of the raw value and the
+original position in Argv.
 
 =head2 raw
 
