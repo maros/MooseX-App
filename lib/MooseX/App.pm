@@ -249,7 +249,7 @@ things usually involved. Just take any existing L<Moose> class, add a single
 line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
 for each command in an underlying namespace. Options and positional parameters
 can be defined as simple L<Moose> accessors using the C<option> and
-C<parameter> keywords repectively.
+C<parameter> keywords respectively.
 
 MooseX-App will then
 
@@ -329,7 +329,7 @@ also see L<app_permute> and L<cmd_split>)
 =item * HashRef: Specify multiple key value pairs ('--opt key=value --opt
 key2=value2', also see L<app_permute>)
 
-=item * Enum: Display all possibilites
+=item * Enum: Display all possibilities
 
 =item * Bool: Flags that do not require values
 
