@@ -2,7 +2,7 @@
 
 # t/05_extended.t - Extended tests
 
-use Test::Most tests => 29;
+use Test::Most tests => 29+1;
 use Test::NoWarnings;
 
 use FindBin qw();
@@ -133,7 +133,6 @@ subtest 'Test flags & defaults' => sub {
     is($test11->bool2,1,'Bool2 flag is set');
     is($test11->bool3,1,'Bool3 flag is set');
     is($test11->value,'hase','Value is default');
-    
 };
 
 subtest 'Test more flags & defaults' => sub {
@@ -251,6 +250,7 @@ subtest 'Test empty multi' => sub {
     isa_ok($test19,'Test03::SomeCommand');
     is(scalar(@{$test19->list}),3,'Has three list items');
     is($test19->list->[0],'val1','First value ok');
+    is($test19->list->[1],'val2','Second value ok');
     is($test19->list->[2],undef,'First value empty');
 };
 
@@ -276,5 +276,11 @@ subtest 'Test parameter order' => sub {
     is($test21->param_a,'aa1','Param a ok');
     is($test21->param_b,'bbb','Param b ok');
     is($test21->param_c,'cc1','Param c ok');
-    
+};
+
+subtest 'Test mixed multi' => sub {
+    my $x = MooseX::App::ParsedArgv->new(argv => [qw(somecommand --another hase --li val1 --lis val2 --list val3 --lis val4)]);
+    my $test22 = Test03->new_with_command();
+    isa_ok($test22,'Test03::SomeCommand');
+    cmp_deeply($test22->list,[qw(val1 val2 val3 val4)],'List ok');
 };
