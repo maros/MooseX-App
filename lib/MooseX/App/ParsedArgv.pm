@@ -93,7 +93,7 @@ sub _build_elements {
     my ($self) = @_;
     
     my (@elements);
-
+    
     my %options;
     my $lastkey;
     my $stopprocessing;
@@ -227,7 +227,7 @@ sub consume {
             && $element->type ne $type;
         $element->consume;
         return $element;
-    }  
+    }
     return; 
 }
 

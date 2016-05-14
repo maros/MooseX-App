@@ -64,6 +64,18 @@ sub original {
     }
 }
 
+sub add_value {
+    my ($self,$value,$position) = @_;
+    $position //= 999;
+    $self->add_raw_value([ $value,$position ]);
+}
+
+sub all_values {
+    return map { $_->[0] }
+        sort { $a->[1] <=> $b->[1] }
+        $_[0]->raw_values;
+}
+
 sub consume {
     my ($self,$attribute) = @_;
     
@@ -79,28 +91,14 @@ sub full_value {
     
     # Fill up empty values
     if ($self->has_values < $self->occurrence) {
-        return [
-            $self->raw_values,
+        return (
+            $self->all_values,
             (undef) x ($self->occurrence - $self->has_values)
-        ];
+        );
     } else {
-        return $self->value;
+        return $self->all_values;
     }
 }
-
-#sub set_value {
-#    my ($self,$value) = @_;
-#    
-#    unless (scalar @{$self->value}) {
-#        $self->add_value($value);
-#    } else {
-#        if (! defined $self->value->[-1]) {
-#            $self->value->[-1] = $value;
-#        } else {
-#            $self->add_value($value);
-#        }
-#    }
-#}
 
 sub serialize {
     my ($self) = @_;
@@ -113,7 +111,7 @@ sub serialize {
         }
         when ('option') { 
             my $key = (length $self->key == 1 ? '-':'--').$self->key;
-            return join(' ',map { $key.' '.$_ } @{$self->value});
+            return join(' ',map { $key.' '.$_ } $self->all_values);
         }
     }
     return;

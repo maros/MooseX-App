@@ -300,7 +300,6 @@ sub command_parse_options {
             
             my ($match_attributes) = [];
             
-            
             # Try to match attributes
             foreach my $name (keys %option_to_attribute) {
                 next
@@ -317,6 +316,7 @@ sub command_parse_options {
                 }
             }
             
+            # Process matches
             given (scalar @{$match_attributes}) {
                 # No match
                 when(0) {}
@@ -365,7 +365,7 @@ sub command_parse_options {
 sub command_process_attribute {
     my ($self,$attribute,$raw) = @_;
     
-    $raw = [$raw]
+    $raw = [ $raw ]
         unless ref($raw) eq 'ARRAY';
     
     my @errors;
@@ -380,9 +380,9 @@ sub command_process_attribute {
         $raw = \@raw_unfolded;
     }
     
-    # Attribute with counter
+    # Attribute with counter - transform value count into value
     if ($attribute->cmd_count) {
-        $raw = [ scalar(@$raw) ];
+        $value = $raw = [ scalar(@$raw) ];
     }
     
     # Attribute with type constraint
@@ -413,8 +413,6 @@ sub command_process_attribute {
 #                && ! $self->is_default_a_coderef
 #                && $self->default == 1) {
             
-        } elsif ($type_constraint->is_a_type_of('Int')) {
-            $value = $raw->[-1];
         } else {
             $value = $raw->[-1];
         }
