@@ -546,8 +546,8 @@ sub command_parser_hints {
         }
         
         my $hint = { 
-            name => $attribute->name, 
-            flag => ! $attribute->cmd_has_value,
+            name    => $attribute->name, 
+            novalue => ! $attribute->cmd_has_value,
             permute => $permute,
         };
         
@@ -580,10 +580,10 @@ sub command_parser_hints {
         }
     }
     
-    my $return = { permute => [], flags => [] };
+    my $return = { permute => [], novalue => [] };
     foreach my $name (keys %hints) {
-        if ($hints{$name}->{flag}) {
-            push(@{$return->{flags}},$name);
+        if ($hints{$name}->{novalue}) {
+            push(@{$return->{novalue}},$name);
         }
         if ($hints{$name}->{permute}) {
             push(@{$return->{permute}},$name);

@@ -37,7 +37,7 @@ has 'argv' => (
     },
 );
 
-has 'hints_flags' => (
+has 'hints_novalue' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
@@ -159,7 +159,7 @@ sub _build_elements {
                         $options{$key}->inc_occurrence;
                     }
                     # This is a boolean key
-                    if ($key ~~ $self->hints_flags) {
+                    if ($key ~~ $self->hints_novalue) {
                         $options{$key}->add_value($1 ? 0:1,$position);
                     } else {
                         $lastkey = $options{$key};
@@ -174,7 +174,7 @@ sub _build_elements {
                 default {
                     if (defined $lastkey) {
                         # This is a parameter - last key was a flag
-                        if ($lastkey->key ~~ $self->hints_flags) {
+                        if ($lastkey->key ~~ $self->hints_novalue) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                             undef $lastkey;
                         # Permute values
