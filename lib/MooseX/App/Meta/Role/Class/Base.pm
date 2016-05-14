@@ -407,7 +407,7 @@ sub command_process_attribute {
                 }
             }
         } elsif ($type_constraint->is_a_type_of('Bool')) {
-            $value = 1; # TODO or 0 if no!
+            $value = defined $raw->[-1] ? $raw->[-1] : 1;
             
 #            if ($self->has_default 
 #                && ! $self->is_default_a_coderef
