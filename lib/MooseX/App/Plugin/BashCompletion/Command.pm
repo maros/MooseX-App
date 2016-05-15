@@ -26,7 +26,7 @@ sub bash_completion {
     $mday               = sprintf('%02i',$mday);
     $mon                = sprintf('%02i',$mon+1);
     
-    $prefix             =~ tr/./_/;
+    $prefix             =~ tr/.-/_/;
     
     foreach my $command (keys %{$commands}) {
         my $command_class = $commands->{$command};
