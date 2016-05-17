@@ -20,6 +20,7 @@ option 'bool2' => (
 option 'bool3' => (
     is            => 'rw',
     isa           => 'Bool',
+    cmd_aliases   => '!no-bool3',
     required      => 1,
 );
 

@@ -146,8 +146,8 @@ sub _build_elements {
                     $options{$key}->add_value($value,$position);
                 }
                 # Keys (--key or --not-key)
-                when (m/^--(not?-)?([^-].*)/) {
-                    my $key = $2;
+                when (m/^--([^-].*)/) {
+                    my $key = $1;
                     unless (defined $options{$key}) {
                         $options{$key} = MooseX::App::ParsedArgv::Element->new( 
                             key => $key, 
@@ -160,7 +160,7 @@ sub _build_elements {
                     }
                     # This is a boolean key
                     if ($key ~~ $self->hints_novalue) {
-                        $options{$key}->add_value($1 ? 0:1,$position);
+                        $options{$key}->add_value(1,$position);
                     } else {
                         $lastkey = $options{$key};
                     }

@@ -197,26 +197,40 @@ sub cmd_usage_name {
     }
 }
 
-sub cmd_name_primary {
+sub cmd_name_primary_raw {
     my ($self) = @_;
     
+    my $name;
     if ($self->has_cmd_flag) {
-        return $self->cmd_flag;
+        $name = $self->cmd_flag;
     } else {
-        return $self->name;
+        $name = $self->name;
     }
+    $name =~ s/^!//;
+    return $name;
+}
+
+sub cmd_name_possible_raw {
+    my ($self) = @_;
+    
+    my @names = ($self->cmd_name_primary_raw);
+    
+    if ($self->has_cmd_aliases) {
+        push(@names,@{$self->cmd_aliases});
+    }
+    
+    return @names;
+}
+
+sub cmd_name_primary {
+    my ($self) = @_;
+    my $name = $self->cmd_name_primary_raw;
+    return $name =~ s/^!//r;
 }
 
 sub cmd_name_possible {
     my ($self) = @_;
-    
-    my @names = ($self->cmd_name_primary);
-    
-    if ($self->has_cmd_aliases) {
-        push(@names, @{$self->cmd_aliases});
-    }
-    
-    return @names;
+    return map { s/^!//r } $self->cmd_name_possible_raw;
 }
 
 sub cmd_tags_list {

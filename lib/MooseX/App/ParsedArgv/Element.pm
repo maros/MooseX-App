@@ -85,6 +85,14 @@ sub consume {
     return $self; 
 }
 
+sub negate_values {
+    my ($self) = @_;
+    
+    foreach my $element ($self->raw_values) {
+        $element->[0] = 0;
+    }
+}
+
 sub serialize {
     my ($self) = @_;
     given ($self->type) {

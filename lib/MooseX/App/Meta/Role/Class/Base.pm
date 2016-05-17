@@ -265,30 +265,36 @@ sub command_proto {
 sub command_parse_options {
     my ($self,$attributes) = @_;
     
+    my $match = {};
+    my $return = {};
+    my @errors;
+    
     # Build attribute lookup hash
     my %option_to_attribute;
     foreach my $attribute (@{$attributes}) {
-        foreach my $name ($attribute->cmd_name_possible) {
+        foreach my $name ($attribute->cmd_name_possible_raw) {
             if (defined $option_to_attribute{$name}
                 && $option_to_attribute{$name} != $attribute) {
                 Moose->throw_error('Command line option conflict: '.$name);    
             }
-            $option_to_attribute{$name} = $attribute;
+            my $invert = ($name =~ s/^!//);
+            $option_to_attribute{$name} = { attribute => $attribute, negate => $invert };
         }
     }
-    
-    my $match = {};
-    my $return = {};
-    my @errors;
     
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Loop all exact matches
     foreach my $option ($parsed_argv->available('option')) {
-        if (my $attribute = $option_to_attribute{$option->key}) {
-            $option->consume($attribute);
-            $match->{$attribute->name} = [ $option ];
+        if (exists $option_to_attribute{$option->key}) {
+            if (my $attribute = $option_to_attribute{$option->key}{attribute}) {
+                $option->consume($attribute);
+                if ($option_to_attribute{$option->key}{negate}) {
+                    $option->negate_values;
+                }
+                $match->{$attribute->name} = [ $option ];
+            }
         }
     }
     
@@ -296,13 +302,13 @@ sub command_parse_options {
     if ($self->app_fuzzy) {
         # Loop all options (sorted by length)
         foreach my $option (sort { length($b->key) <=> length($a->key) } $parsed_argv->available('option')) {
-
+            
             # No fuzzy matching for one-letter flags
             my $option_length = length($option->key);
-            next
+            last
                 if $option_length == 1;
             
-            my ($match_attributes) = [];
+            my ($match_attributes) = {};
             
             # Try to match attributes
             foreach my $name (keys %option_to_attribute) {
@@ -313,21 +319,22 @@ sub command_parse_options {
                 
                 # Partial match
                 if (lc($option->key) eq $name_short) {
-                    my $attribute = $option_to_attribute{$name};
-                    unless (grep { $attribute == $_ } @{$match_attributes}) {
-                        push(@{$match_attributes},$attribute);
-                    }
+                    my $attribute = $option_to_attribute{$name}{attribute};
+                    $match_attributes->{$name} = $attribute;
                 }
             }
             
             # Process matches
-            given (scalar @{$match_attributes}) {
+            given (scalar keys %{$match_attributes}) {
                 # No match
                 when(0) {}
                 # One match
                 when(1) {
-                    my $attribute = $match_attributes->[0];
+                    my $name        = (keys %{$match_attributes})[0];
+                    my $attribute   = $match_attributes->{$name};
                     $option->consume();
+                    $option->negate_values()
+                        if $option_to_attribute{$name}{negate};
                     $match->{$attribute->name} ||= [];
                     push(@{$match->{$attribute->name}},$option); 
                 }
@@ -341,8 +348,8 @@ sub command_parse_options {
                             body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
                                 map { [ $_ ] } 
                                 sort 
-                                map { $_->cmd_name_primary } 
-                                @{$match_attributes} 
+                                map { $match_attributes->{$_}->cmd_name_primary } 
+                                keys %{$match_attributes} 
                             ),
                         )
                     );
