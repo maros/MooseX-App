@@ -104,8 +104,8 @@ sub _build_elements {
         # We are behind first ' -- ' occurence: Do not process further
         if ($stopprocessing) {
             push (@elements,MooseX::App::ParsedArgv::Element->new( 
-                key => $element, 
-                type => 'extra', 
+                key => $element,
+                type => 'extra',
             ));
         # Process element
         } else {
@@ -117,9 +117,9 @@ sub _build_elements {
                     foreach my $flag (split(//,$1)) {
                         unless (defined $options{$flag}) {
                             $options{$flag} = MooseX::App::ParsedArgv::Element->new( 
-                                key => $flag, 
+                                key => $flag,
                                 type => 'option',
-                                #raw => $element,
+                                raw => $element,
                             );
                             push(@elements,$options{$flag});
                         } else {
@@ -137,7 +137,7 @@ sub _build_elements {
                         $options{$key} = MooseX::App::ParsedArgv::Element->new(
                             key => $key,
                             type => 'option',
-                            #raw => $element,
+                            raw => $element,
                         );
                         push(@elements,$options{$key});
                     } else {
@@ -152,7 +152,7 @@ sub _build_elements {
                         $options{$key} = MooseX::App::ParsedArgv::Element->new( 
                             key => $key, 
                             type => 'option',
-                            #raw => $element,
+                            raw => $element,
                         );
                         push(@elements,$options{$key});
                     } else {

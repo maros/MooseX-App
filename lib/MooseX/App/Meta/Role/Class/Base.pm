@@ -140,11 +140,12 @@ sub command_args {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Process options
-    my @attributes_option  = $self->command_usage_attributes($metaclass,'option');
+    my @attributes_option = $self->command_usage_attributes($metaclass,'option');
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
 
     my %raw_error;
+    # Loop all left over options
     foreach my $option ($parsed_argv->available('option')) {
         my $key = $option->key;
         my $raw = $option->original;
@@ -152,6 +153,7 @@ sub command_args {
         next
             if defined $raw_error{$raw};
         
+        # Get possible options with double dash - might be missing
         if (length $key == 1
             && $raw =~ m/^-(\w+)$/) {
             POSSIBLE_ATTRIBUTES:
@@ -167,6 +169,7 @@ sub command_args {
             }
         }
         
+        # Handle error messages
         my $error;
         if (defined $message) {
             $error = $self->command_message(
@@ -183,7 +186,7 @@ sub command_args {
         unshift(@{$errors},$error);
     }
     
-    # Process params
+    # Process positional parameters
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
     
     foreach my $attribute (@attributes_parameter) {
@@ -208,6 +211,7 @@ sub command_args {
         }
     }
     
+    # Handle ENV
     foreach my $attribute ($self->command_usage_attributes($metaclass,'all')) {
         next
             unless $attribute->can('has_cmd_env')
