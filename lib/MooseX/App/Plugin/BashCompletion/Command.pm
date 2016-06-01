@@ -40,8 +40,8 @@ sub bash_completion {
         };
     }
 
-    my $syntax = '';;
-
+    my $syntax = '';
+    
     $syntax .= <<"EOT";
 #!/bin/bash
 

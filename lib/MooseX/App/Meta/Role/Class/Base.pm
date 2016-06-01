@@ -104,6 +104,7 @@ sub _build_app_commands {
 sub command_scan_namespace {
     my ($self,$namespace) = @_;
     
+    # Find all packages in namespace
     my $mpo = Module::Pluggable::Object->new(
         search_path => [ $namespace ],
     );
@@ -111,17 +112,20 @@ sub command_scan_namespace {
     my $commandsub = $self->app_command_name;
 
     my %return;
+    # Loop all packages
     foreach my $command_class ($mpo->plugins) {
         my $command_class_name =  substr($command_class,length($namespace)+2);
         
+        # Check for odd class names - needs to be refactored for subcommands support
         next
             if $command_class_name =~ m/::/;
         
+        # Extract command name
         $command_class_name =~ s/^\Q$namespace\E:://;
         $command_class_name =~ s/^.+::([^:]+)$/$1/;
-        
         my $command = $commandsub->($command_class_name,$command_class);
         
+        # Check if command was loaded
         $return{$command} = $command_class
             if defined $command;
     }
@@ -136,11 +140,12 @@ sub command_args {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
     
     # Process options
-    my @attributes_option  = $self->command_usage_attributes($metaclass,'option');
+    my @attributes_option = $self->command_usage_attributes($metaclass,'option');
     
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
 
     my %raw_error;
+    # Loop all left over options
     foreach my $option ($parsed_argv->available('option')) {
         my $key = $option->key;
         my $raw = $option->original;
@@ -148,6 +153,7 @@ sub command_args {
         next
             if defined $raw_error{$raw};
         
+        # Get possible options with double dash - might be missing
         if (length $key == 1
             && $raw =~ m/^-(\w+)$/) {
             POSSIBLE_ATTRIBUTES:
@@ -163,6 +169,7 @@ sub command_args {
             }
         }
         
+        # Handle error messages
         my $error;
         if (defined $message) {
             $error = $self->command_message(
@@ -179,15 +186,15 @@ sub command_args {
         unshift(@{$errors},$error);
     }
     
-    # Process params
+    # Process positional parameters
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
-
+    
     foreach my $attribute (@attributes_parameter) {
         my $element = $parsed_argv->consume('parameter');
         last
             unless defined $element;
-
-        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute,$element->key);
+        
+        my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute, [ $element->key ] );
         push(@{$errors},@{$parameter_errors});
         $return->{$attribute->name} = $parameter_value;
     }
@@ -204,6 +211,7 @@ sub command_args {
         }
     }
     
+    # Handle ENV
     foreach my $attribute ($self->command_usage_attributes($metaclass,'all')) {
         next
             unless $attribute->can('has_cmd_env')
@@ -283,8 +291,8 @@ sub command_parse_options {
     # Loop all exact matches
     foreach my $option ($parsed_argv->available('option')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
-            $match->{$attribute->name} = $option->full_value;
             $option->consume($attribute);
+            $match->{$attribute->name} = [ $option ];
         }
     }
     
@@ -300,7 +308,6 @@ sub command_parse_options {
             
             my ($match_attributes) = [];
             
-            
             # Try to match attributes
             foreach my $name (keys %option_to_attribute) {
                 next
@@ -312,11 +319,12 @@ sub command_parse_options {
                 if (lc($option->key) eq $name_short) {
                     my $attribute = $option_to_attribute{$name};
                     unless (grep { $attribute == $_ } @{$match_attributes}) {
-                        push(@{$match_attributes},$attribute);   
+                        push(@{$match_attributes},$attribute);
                     }
                 }
             }
             
+            # Process matches
             given (scalar @{$match_attributes}) {
                 # No match
                 when(0) {}
@@ -325,7 +333,7 @@ sub command_parse_options {
                     my $attribute = $match_attributes->[0];
                     $option->consume();
                     $match->{$attribute->name} ||= [];
-                    push(@{$match->{$attribute->name}},@{$option->full_value}); 
+                    push(@{$match->{$attribute->name}},$option); 
                 }
                 # Multiple matches
                 default {
@@ -353,7 +361,14 @@ sub command_parse_options {
         next
             unless exists $match->{$attribute->name};
         
-        my ($value,$errors) = $self->command_process_attribute($attribute,$match->{$attribute->name});
+        my $raw = [
+            map { $_->[0] }
+            sort { $a->[1] <=> $b->[1] }
+            map { @{$_->value} }
+            @{$match->{$attribute->name}}
+        ];
+        
+        my ($value,$errors) = $self->command_process_attribute( $attribute, $raw );
         push(@errors,@{$errors});
         
         $return->{$attribute->name} = $value;
@@ -365,7 +380,7 @@ sub command_parse_options {
 sub command_process_attribute {
     my ($self,$attribute,$raw) = @_;
     
-    $raw = [$raw]
+    $raw = [ $raw ]
         unless ref($raw) eq 'ARRAY';
     
     my @errors;
@@ -380,9 +395,9 @@ sub command_process_attribute {
         $raw = \@raw_unfolded;
     }
     
-    # Attribute with counter
+    # Attribute with counter - transform value count into value
     if ($attribute->cmd_count) {
-        $raw = [ scalar(@$raw) ];
+        $value = $raw = [ scalar(@$raw) ];
     }
     
     # Attribute with type constraint
@@ -407,14 +422,12 @@ sub command_process_attribute {
                 }
             }
         } elsif ($type_constraint->is_a_type_of('Bool')) {
-            $value = 1; # TODO or 0 if no!
+            $value = defined $raw->[-1] ? $raw->[-1] : 1;
             
 #            if ($self->has_default 
 #                && ! $self->is_default_a_coderef
 #                && $self->default == 1) {
             
-        } elsif ($type_constraint->is_a_type_of('Int')) {
-            $value = $raw->[-1];
         } else {
             $value = $raw->[-1];
         }
@@ -537,8 +550,8 @@ sub command_parser_hints {
         }
         
         my $hint = { 
-            name => $attribute->name, 
-            flag => ! $attribute->cmd_has_value,
+            name    => $attribute->name, 
+            novalue => ! $attribute->cmd_has_value,
             permute => $permute,
         };
         
@@ -571,10 +584,10 @@ sub command_parser_hints {
         }
     }
     
-    my $return = { permute => [], flags => [] };
+    my $return = { permute => [], novalue => [] };
     foreach my $name (keys %hints) {
-        if ($hints{$name}->{flag}) {
-            push(@{$return->{flags}},$name);
+        if ($hints{$name}->{novalue}) {
+            push(@{$return->{novalue}},$name);
         }
         if ($hints{$name}->{permute}) {
             push(@{$return->{permute}},$name);
@@ -989,10 +1002,10 @@ as keys and package names as values.
 
 =head2 command_process_attribute
 
- my @attributes = $self->command_process_attributes($metaclass,[qw(option proto)]);
- my @attributes = $self->command_process_attributes($metaclass,'parameter');
+ my @attributes = $self->command_process_attribute($attribute_metaclass,$matches);
 
-Returns a list of all attributes with the given type
+TODO
+###Returns a list of all attributes with the given type
 
 =head2 command_usage_options
 
@@ -1008,7 +1021,7 @@ Returns the positional parameters usage as a message object
 
 =head2 command_check_attributes
 
- $errors = $self->command_check_attributes($command_meta,$errors,$params)
+ $errors = $self->command_check_attributes($command_metaclass,$errors,$params)
  
 Checks all attributes. Returns/alters the $errors arrayref
 

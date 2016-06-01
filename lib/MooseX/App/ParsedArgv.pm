@@ -37,11 +37,11 @@ has 'argv' => (
     },
 );
 
-has 'hints_flags' => (
+has 'hints_novalue' => (
     is              => 'rw',
     isa             => 'ArrayRef[Str]',
     default         => sub { [] },
-); # Flag hints for the parser
+); # No value hints for the parser (such as for flags)
 
 has 'hints_permute' => (
     is              => 'rw',
@@ -93,26 +93,31 @@ sub _build_elements {
     my ($self) = @_;
     
     my (@elements);
-
+    
     my %options;
     my $lastkey;
-    my $stopprocessing;
+    my $stopprocessing; # flag that is set after ' -- '
+    my $position = 0;
     
+    # Loop all elements of our ARGV copy
     foreach my $element (@{$self->argv}) {
+        # We are behind first ' -- ' occurence: Do not process further
         if ($stopprocessing) {
             push (@elements,MooseX::App::ParsedArgv::Element->new( 
-                key => $element, 
-                type => 'extra', 
+                key => $element,
+                type => 'extra',
             ));
+        # Process element
         } else {
             given ($element) {
-                # Flags
+                # Flags with only one leading dash (-h or -vh)
                 when (m/^-([^-][[:alnum:]]*)$/) {
                     undef $lastkey;
+                    # Split into single letter flags
                     foreach my $flag (split(//,$1)) {
                         unless (defined $options{$flag}) {
                             $options{$flag} = MooseX::App::ParsedArgv::Element->new( 
-                                key => $flag, 
+                                key => $flag,
                                 type => 'option',
                                 raw => $element,
                             );
@@ -120,10 +125,11 @@ sub _build_elements {
                         } else {
                             $options{$flag}->inc_occurrence;
                         }
+                        $options{$flag}->add_value(1,$position);
                         $lastkey = $options{$flag};
                     }
                 }
-                # Key-value combined
+                # Key-value combined (--key=value)
                 when (m/^--([^-=][^=]*)=(.+)$/) {
                     undef $lastkey;
                     my ($key,$value) = ($1,$2);
@@ -137,11 +143,11 @@ sub _build_elements {
                     } else {
                         $options{$key}->inc_occurrence;
                     }
-                    $options{$key}->add_value($value);
+                    $options{$key}->add_value($value,$position);
                 }
-                # Key
-                when (m/^--([^-].*)/) {
-                    my $key = $1;
+                # Keys (--key or --not-key)
+                when (m/^--(not?-)?([^-].*)/) {
+                    my $key = $2;
                     unless (defined $options{$key}) {
                         $options{$key} = MooseX::App::ParsedArgv::Element->new( 
                             key => $key, 
@@ -152,9 +158,14 @@ sub _build_elements {
                     } else {
                         $options{$key}->inc_occurrence;
                     }
-                    $lastkey = $options{$key};
+                    # This is a boolean key
+                    if ($key ~~ $self->hints_novalue) {
+                        $options{$key}->add_value($1 ? 0:1,$position);
+                    } else {
+                        $lastkey = $options{$key};
+                    }
                 }
-                # Extra values
+                # Extra values - stop processing after this token
                 when ('--') {
                     undef $lastkey;
                     $stopprocessing = 1;
@@ -162,16 +173,16 @@ sub _build_elements {
                 # Value
                 default {
                     if (defined $lastkey) {
-                        # No value
-                        if ($lastkey->key ~~ $self->hints_flags) {
+                        # This is a parameter - last key was a flag
+                        if ($lastkey->key ~~ $self->hints_novalue) {
                             push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                             undef $lastkey;
                         # Permute values
                         } elsif ($lastkey->key ~~ $self->hints_permute) {
-                            $lastkey->add_value($element);
+                            $lastkey->add_value($element,$position);
                         # Has value
                         } else {
-                            $lastkey->add_value($element);
+                            $lastkey->add_value($element,$position);
                             undef $lastkey;
                         }
                     } else {
@@ -179,6 +190,15 @@ sub _build_elements {
                     }
                 }
             } 
+        }
+        $position++;
+    }
+    
+    # Check elements
+    foreach my $element (@elements) {
+        while ($element->has_values < $element->occurrence) {
+            $element->add_value(undef,$position);
+            $position++;
         }
     }
     
@@ -211,7 +231,7 @@ sub consume {
             && $element->type ne $type;
         $element->consume;
         return $element;
-    }  
+    }
     return; 
 }
 

@@ -105,6 +105,7 @@ sub _build_command_pod {
         command_short_description   => ($pod_raw{NAME} || $pod_raw{ABSTRACT}),
     );
     
+    # Loop sections that need to be extracted from POD
     foreach my $key (keys %pod) {
         my $meta_attribute = $self->meta->find_attribute_by_name($key);
         next

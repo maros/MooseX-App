@@ -16,13 +16,12 @@ has 'key' => (
 
 has 'value' => (
     is              => 'ro',
-    isa             => 'ArrayRef[Str]',
+    isa             => 'ArrayRef[ArrayRef]',
     traits          => ['Array'],
     default         => sub { [] },
     handles         => {
-        add_value       => 'push',
+        add_raw_value   => 'push',
         has_values      => 'count',
-        get_value       => 'get',
         raw_values      => 'elements',
     }
 );
@@ -64,6 +63,18 @@ sub original {
     }
 }
 
+sub add_value {
+    my ($self,$value,$position) = @_;
+    $position //= 999;
+    $self->add_raw_value([ $value,$position ]);
+}
+
+sub all_values {
+    return map { $_->[0] }
+        sort { $a->[1] <=> $b->[1] }
+        $_[0]->raw_values;
+}
+
 sub consume {
     my ($self,$attribute) = @_;
     
@@ -73,34 +84,6 @@ sub consume {
     
     return $self; 
 }
-
-sub full_value {
-    my ($self) = @_;
-    
-    # Fill up empty values
-    if ($self->has_values < $self->occurrence) {
-        return [
-            $self->raw_values,
-            (undef) x ($self->occurrence - $self->has_values)
-        ];
-    } else {
-        return $self->value;
-    }
-}
-
-#sub set_value {
-#    my ($self,$value) = @_;
-#    
-#    unless (scalar @{$self->value}) {
-#        $self->add_value($value);
-#    } else {
-#        if (! defined $self->value->[-1]) {
-#            $self->value->[-1] = $value;
-#        } else {
-#            $self->add_value($value);
-#        }
-#    }
-#}
 
 sub serialize {
     my ($self) = @_;
@@ -113,7 +96,7 @@ sub serialize {
         }
         when ('option') { 
             my $key = (length $self->key == 1 ? '-':'--').$self->key;
-            return join(' ',map { $key.' '.$_ } @{$self->value});
+            return join(' ',map { $key.' '.$_ } $self->all_values);
         }
     }
     return;
@@ -140,7 +123,8 @@ Parameter value or option key
 
 =head2 value
 
-Arrayref of values 
+Arrayref of values. A value itself is an arrayref of the raw value and the
+original position in ARGV.
 
 =head2 raw
 
