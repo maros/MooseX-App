@@ -511,7 +511,7 @@ documentation.
 =head1 METADATA
 
 MooseX::App will use your class metadata and POD to construct the commands and
-helpful error- or usage- messages. These bits of information are utilised 
+helpful error- or usage-messages. These bits of information are utilised 
 and should be provided if possible:
 
 =over
@@ -602,7 +602,7 @@ use L<MooX::Options> or L<MooX::Cmd>.
 
 In some cases - especially when using non-standard class inheritance - you may
 end up with command classes lacking the help attribute. In this case you need
-to include the following line in your base class
+to include the following line in your base class or command classes.
 
  with qw(MooseX::App::Role::Common);
 
@@ -623,16 +623,14 @@ MooseX::App command line application.
 
 For alternatives you can check out
 
-L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options>, 
-L<MooX::Cmd>  and L<App::Cmd>
+L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options>, L<MooX::Cmd>and L<App::Cmd>
 
 =head1 SUPPORT
 
-Please report any bugs or feature requests to 
-C<bug-moosex-app@rt.cpan.org>, or through the web interface at
-L<http://rt.cpan.org/Public/Bug/Report.html?Queue=MooseX-App>.  
-I will be notified, and then you'll automatically be notified of progress on 
-your report as I make changes.
+Please report any bugs or feature requests via
+L<https://github.com/maros/MooseX-App/issues/new>. I will be notified, and 
+then you'll automatically be notified of progress on your report as I make
+changes.
 
 =head1 AUTHOR
 
@@ -649,7 +647,8 @@ Special thanks to all contributors.
 In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
-Hunter McMillen, Maik Hentsche, Alexander Stoddard, Marc Logghe
+Hunter McMillen, Maik Hentsche, Alexander Stoddard, Marc Logghe, Tina Müller,
+Lisa Hare
 
 You are more than welcome to contribute to MooseX-App. Please have a look
 at the L<https://github.com/maros/MooseX-App/issues?q=is%3Aissue+is%3Aopen+label%3AWishlist>
