@@ -18,10 +18,9 @@ sub version {
     $version .= $app->meta->app_base. ' version '.$app->VERSION."\n";
     $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
     $version .= "Perl version ".sprintf("%vd", $^V);
+    my $renderer = $app->meta->app_renderer;
 
-    my $message_class = $app->meta->app_messageclass;
-
-    my @parts = ($message_class->new({
+    my @parts = ($renderer->new({
         header  => 'VERSION',
         body    => MooseX::App::Utils::format_text($version)
     }));
@@ -30,7 +29,7 @@ sub version {
 
     foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE','AUTHOR','AUTHORS') {
         if (defined $pod_raw{$part}) {
-            push(@parts,$message_class->new({
+            push(@parts, $renderer->new({
                 header  => $part,
                 body    => MooseX::App::Utils::format_text($pod_raw{$part}),
             }));

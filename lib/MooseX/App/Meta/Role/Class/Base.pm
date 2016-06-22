@@ -690,9 +690,10 @@ sub command_parser_hints {
 
 sub command_message {
     my ($self,@args) = @_;
-    my $messageclass = $self->app_messageclass;
-    Class::Load::load_class($messageclass);
-    return $messageclass->new(@args);
+    my $renderer = $self->app_renderer;
+    Class::Load::load_class($renderer);
+    # TODO render
+    return $renderer->new(@args);
 }
 
 sub command_check_attributes {

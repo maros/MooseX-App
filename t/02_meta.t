@@ -17,7 +17,7 @@ is(join(',',sort values %{$commands}),'Test01::CommandA,Test01::CommandB,Test01:
 
 cmp_deeply($meta->app_namespace,[qw(Test01)],'Command namespace ok');
 is($meta->app_base,'02_meta.t','Command base ok');
-is($meta->app_messageclass,'MooseX::App::Message::Block','Message class');
+is($meta->app_renderer,'MooseX::App::Message::Renderer','Renderer class');
 
 ok(Test01->can('new_with_command'),'Role applied to base class');
 ok(Test01->can('initialize_command_class'),'Role applied to base class');
