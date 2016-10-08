@@ -58,12 +58,12 @@ subtest 'All options available & no description' => sub {
     my $test04 = Test03->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
     is($test04->blocks->[2]->header,'options:','No description');
-    is($test04->blocks->[2]->body,"    --another             [Required; Not important]
-    --global_option       Enable this to do fancy stuff [Flag]
-    --help -h --usage -?  Prints this usage information. [Flag]
-    --list                [Multiple]
+    is($test04->blocks->[2]->body,"    --global_option       Enable this to do fancy stuff [Flag]
     --roleattr            [Role]
-    --some_option         Very important option!","Message ok");
+    --some_option         Very important option!
+    --another             [Required; Not important]
+    --list                [Multiple]
+    --help -h --usage -?  Prints this usage information. [Flag]","Message ok");
 };
 
 # Not working on cpan testers
