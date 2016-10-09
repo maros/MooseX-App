@@ -645,7 +645,8 @@ sub command_usage_attributes {
     }
     
     return (sort { 
-        $a->cmd_position <=> $b->cmd_position
+        $a->cmd_position <=> $b->cmd_position ||
+        $a->cmd_usage_name cmp $b->cmd_usage_name
     } @return);
 }
 
@@ -656,12 +657,7 @@ sub command_usage_options {
     $metaclass ||= $self;
     
     my @options;
-    foreach my $attribute (
-        sort {
-            $a->cmd_position <=> $b->cmd_position ||
-            $a->cmd_usage_name cmp $b->cmd_usage_name
-        } $self->command_usage_attributes($metaclass,[qw(option proto)])
-    ) {
+    foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         push(@options,[
             $attribute->cmd_usage_name(),
             $attribute->cmd_usage_description()
