@@ -34,8 +34,8 @@ subtest 'Wrong command' => sub {
     01_basic.t help
     01_basic.t <command> --help",'Usage body set');
     is($test03->blocks->[3]->header,"global options:",'Global options set');
-    is($test03->blocks->[3]->body,"    --config              Path to command config file
-    --global              test [Required; Integer; Important!]
+    is($test03->blocks->[3]->body,"    --global              test [Required; Integer; Important!]
+    --config              Path to command config file
     --help -h --usage -?  Prints this usage information. [Flag]",'Global options body set');
     is($test03->blocks->[4]->header,"available commands:",'Available commands set');
     is($test03->blocks->[4]->body,"    command_a   Command A!
@@ -61,12 +61,12 @@ subtest 'Help for command' => sub {
     * bullet3
     Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
     is($test04->blocks->[2]->header,"options:",'Options header is set');
-    is($test04->blocks->[2]->body,"    --command_local1      some docs about the long texts that seem to occur
+    is($test04->blocks->[2]->body,"    --global              test [Required; Integer; Important!]
+    --command_local1      some docs about the long texts that seem to occur
                           randomly [Integer; Env: LOCAL1; Important]
     --command_local2      Verylongwordwithoutwhitespacestotestiftextformating
                           worksproperly [Env: LOCAL2]
     --config              Path to command config file
-    --global              test [Required; Integer; Important!]
     --help -h --usage -?  Prints this usage information. [Flag]",'Options body is set');
 };
 

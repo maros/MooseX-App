@@ -645,7 +645,8 @@ sub command_usage_attributes {
     }
     
     return (sort { 
-        $a->cmd_position <=> $b->cmd_position
+        $a->cmd_position <=> $b->cmd_position ||
+        $a->cmd_usage_name cmp $b->cmd_usage_name
     } @return);
 }
 
@@ -662,8 +663,6 @@ sub command_usage_options {
             $attribute->cmd_usage_description()
         ]);
     }
-    
-    @options = sort { $a->[0] cmp $b->[0] } @options;
     
     return
         unless scalar @options > 0;
