@@ -33,7 +33,7 @@ around 'BUILDARGS' => sub {
     my $orig = shift;
     my $self = shift;
     my @args = @_;
-    
+
     my $params;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH') {
@@ -49,7 +49,7 @@ around 'BUILDARGS' => sub {
             if (blessed $element
                 && $element->isa('MooseX::App::Message::Block')) {
                 push(@{$params->{blocks}},$element);
-            } elsif ($element =~ /^\d+$/ 
+            } elsif ($element =~ /^\d+$/
                 && $element <= 255
                 && $element >= 0) {
                 $params->{exitcode} = $element;
@@ -60,13 +60,13 @@ around 'BUILDARGS' => sub {
             }
         }
     }
-    
+
     return $self->$orig($params);
 };
 
 sub overload {
     my ($self) = @_;
-    
+
     if ($self->has_exitcode) {
         my $exitcode = $self->exitcode;
         if ($exitcode == 0) {
@@ -83,16 +83,16 @@ sub overload {
 
 sub stringify {
     my ($self) = @_;
-    
+
     my $message = '';
     foreach my $block ($self->list_blocks) {
         $message .= $block->stringify;
     }
-    
+
     return $message;
 }
 
-sub AUTOLOAD { 
+sub AUTOLOAD {
     my ($self) = @_;
     $self->overload;
     return $MooseX::App::Null::NULL;
@@ -100,10 +100,10 @@ sub AUTOLOAD {
 
 {
     package MooseX::App::Null;
-    
+
     use strict;
     use warnings;
-    
+
     use overload
       'bool'   => sub { 0 },
       '""'     => sub { '' },
@@ -125,8 +125,8 @@ MooseX::App::Message::Envelope - Message presented to the user
 
 =head1 DESCRIPTION
 
-Whenever MooseX::App needs to pass a message to the user, it does so by 
-generating a MooseX::App::Message::Envelope object. The object usually 
+Whenever MooseX::App needs to pass a message to the user, it does so by
+generating a MooseX::App::Message::Envelope object. The object usually
 contains one or more blocks (L<MooseX::App::Message::Block>) and can be
 easily stringified.
 
@@ -134,8 +134,8 @@ Usually a MooseX::App::Message::Envelope object is generated and returned
 by the L<new_with_command method in MooseX::App::Base|MooseX::App::Base/new_with_command>
 if there is an error or if the user requests help.
 
-To avoid useless object type checks when working with this method, 
-MooseX::App::Message::Envelope follows the Null-class pattern. So you can do 
+To avoid useless object type checks when working with this method,
+MooseX::App::Message::Envelope follows the Null-class pattern. So you can do
 this, no matter if new_with_command fails or not:
 
  MyApp->new_with_command->some_method->only_called_if_successful;

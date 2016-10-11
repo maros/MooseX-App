@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => ['MooseX::App::Plugin::Version::Meta::Class'],
     }
@@ -19,13 +19,13 @@ sub plugin_metaroles {
 around 'initialize_command_class' => sub {
     my $orig = shift;
     my $self = shift;
-    
+
     my $return = $self->$orig(@_);
-    if (blessed $return 
+    if (blessed $return
         && $return->isa('MooseX::App::Plugin::Version::Command')) {
         return $return->version($self);
     }
-    
+
     return $return;
 };
 
@@ -53,11 +53,11 @@ In your shell
      MyApp version 2.1
      MooseX::App version 1.08
      Perl version 5.16.2
-     
+ 
  LICENSE
      This library is free software and may be distributed under the same terms
      as perl itself.
- 
+
 =head1 DESCRIPTION
 
 This plugin adds a command to display the version of your application,

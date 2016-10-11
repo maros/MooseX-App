@@ -59,7 +59,7 @@ has 'elements' => (
 
 sub BUILD {
     my ($self) = @_;
-    
+
     # Register singleton
     $SINGLETON = $self;
     return $self;
@@ -67,7 +67,7 @@ sub BUILD {
 
 sub DEMOLISH {
     my ($self) = @_;
-    
+
     # Unregister singleton if it is stll the same
     $SINGLETON = undef
         if defined $SINGLETON
@@ -84,26 +84,26 @@ sub instance {
 
 sub first_argv {
     my ($self) = @_;
-    
+
     $self->reset_elements;
     return shift(@{$self->argv});
 }
 
 sub _build_elements {
     my ($self) = @_;
-    
+
     my (@elements);
-    
+
     my %options;
     my $lastkey;
     my $stopprocessing; # flag that is set after ' -- '
     my $position = 0;
-    
+
     # Loop all elements of our ARGV copy
     foreach my $element (@{$self->argv}) {
         # We are behind first ' -- ' occurence: Do not process further
         if ($stopprocessing) {
-            push (@elements,MooseX::App::ParsedArgv::Element->new( 
+            push (@elements,MooseX::App::ParsedArgv::Element->new(
                 key => $element,
                 type => 'extra',
             ));
@@ -116,7 +116,7 @@ sub _build_elements {
                     # Split into single letter flags
                     foreach my $flag (split(//,$1)) {
                         unless (defined $options{$flag}) {
-                            $options{$flag} = MooseX::App::ParsedArgv::Element->new( 
+                            $options{$flag} = MooseX::App::ParsedArgv::Element->new(
                                 key => $flag,
                                 type => 'option',
                                 raw => $element,
@@ -149,8 +149,8 @@ sub _build_elements {
                 when (m/^--(not?-)?([^-].*)/) {
                     my $key = $2;
                     unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Element->new( 
-                            key => $key, 
+                        $options{$key} = MooseX::App::ParsedArgv::Element->new(
+                            key => $key,
                             type => 'option',
                             raw => $element,
                         );
@@ -189,11 +189,11 @@ sub _build_elements {
                         push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                     }
                 }
-            } 
+            }
         }
         $position++;
     }
-    
+
     # Check elements
     foreach my $element (@elements) {
         while ($element->has_values < $element->occurrence) {
@@ -201,38 +201,38 @@ sub _build_elements {
             $position++;
         }
     }
-    
+
     return \@elements;
 }
 
 sub available {
     my ($self,$type) = @_;
-    
+
     my @elements;
     foreach my $element (@{$self->elements}) {
         next
             if $element->consumed;
         next
-            if defined $type 
+            if defined $type
             && $element->type ne $type;
         push(@elements,$element);
-    }  
-    return @elements; 
+    }
+    return @elements;
 }
 
 sub consume {
     my ($self,$type) = @_;
-    
+
     foreach my $element (@{$self->elements}) {
         next
             if $element->consumed;
         next
-            if defined $type 
+            if defined $type
             && $element->type ne $type;
         $element->consume;
         return $element;
     }
-    return; 
+    return;
 }
 
 sub extra {
@@ -247,7 +247,7 @@ sub extra {
             || $element->type eq 'extra';
         push(@extra,$element->key);
     }
-    
+
     return @extra;
 }
 
@@ -265,7 +265,7 @@ MooseX::App::ParsedArgv - Parses @ARGV
 =head1 SYNOPSIS
 
  use MooseX::App::ParsedArgv;
- my $argv = MooseX::App::ParsedArgv->instance; 
+ my $argv = MooseX::App::ParsedArgv->instance;
  
  foreach my $option ($argv->available('option')) {
      say "Parsed ".$option->key;
@@ -273,7 +273,7 @@ MooseX::App::ParsedArgv - Parses @ARGV
 
 =head1 DESCRIPTION
 
-This is a helper class that holds all options parsed from @ARGV. It is 
+This is a helper class that holds all options parsed from @ARGV. It is
 implemented as a singleton. Unless you are developing a MooseX::App plugin
 you usually do not need to interact with this class.
 
@@ -284,18 +284,18 @@ you usually do not need to interact with this class.
 Create a new MooseX::App::ParsedArgv instance. Needs to be called as soon
 as possible.
 
-=head2 instance 
+=head2 instance
 
 Get the current MooseX::App::ParsedArgv instance. If there is no instance
 a new one will be created.
 
 =head2 argv
 
-Accessor for the initinal @ARGV. 
+Accessor for the initinal @ARGV.
 
 =head2 hints
 
-ArrayRef of attributes that tells the parser which attributes should be 
+ArrayRef of attributes that tells the parser which attributes should be
 regarded as flags without values.
 
 =head2 first_argv
@@ -317,7 +317,7 @@ The array elements will be L<MooseX::App::ParsedArgv::Element> objects.
  OR
  my $option = $self->consume();
 
-Returns the first option/parameter of the local @ARGV that has not yet been 
+Returns the first option/parameter of the local @ARGV that has not yet been
 consumed as a L<MooseX::App::ParsedArgv::Element> object.
 
 =head2 elements

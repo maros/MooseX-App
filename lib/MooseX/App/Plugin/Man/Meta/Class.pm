@@ -13,10 +13,10 @@ use MooseX::App::Plugin::Man::Command;
 around '_build_app_commands' => sub {
     my $orig = shift;
     my $self = shift;
-    
+
     my $return = $self->$orig(@_);
     $return->{man} ||= 'MooseX::App::Plugin::Man::Command';
-    
+
     return $return;
 };
 

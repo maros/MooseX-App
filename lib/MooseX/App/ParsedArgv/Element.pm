@@ -77,24 +77,24 @@ sub all_values {
 
 sub consume {
     my ($self,$attribute) = @_;
-    
+
     Moose->throw_error('Element '.$self->type.' '.$self->key.' is already consumed')
         if $self->consumed;
-    $self->consumed(1);  
-    
-    return $self; 
+    $self->consumed(1);
+
+    return $self;
 }
 
 sub serialize {
     my ($self) = @_;
     given ($self->type) {
-        when ('extra') { 
+        when ('extra') {
             return $self->key
         }
-        when ('parameter') { 
+        when ('parameter') {
             return $self->key
         }
-        when ('option') { 
+        when ('option') {
             my $key = (length $self->key == 1 ? '-':'--').$self->key;
             return join(' ',map { $key.' '.$_ } $self->all_values);
         }

@@ -31,7 +31,7 @@ has '_config_data' => (
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => ['MooseX::App::Plugin::Config::Meta::Class'],
     }

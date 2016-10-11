@@ -5,7 +5,7 @@ use namespace::autoclean;
 
 sub plugin_metaroles {
    my ($self, $class) = @_;
-   
+
    return {
       attribute => ['MooseX::App::Plugin::MutexGroup::Meta::Attribute'],
       class     => ['MooseX::App::Plugin::MutexGroup::Meta::Class'],
@@ -18,49 +18,49 @@ __END__
 
 =encoding utf8
 
-=head1 NAME 
+=head1 NAME
 
 MooseX::App::Plugin::MutexGroup - Adds mutually exclusive options
 
 =head1 SYNOPSIS
 
-In your base class: 
+In your base class:
 
  package MyApp;
  use MooseX::App qw(MutexGroup);
-
+ 
  option 'UseAmmonia' => (
    is         => 'ro',
    isa        => 'Bool',
    mutexgroup => 'NonMixableCleaningChemicals',
  );
-
+ 
  option 'UseChlorine' => (
    is         => 'ro',
    isa        => 'Bool',
    mutexgroup => 'NonMixableCleaningChemicals'
  );
 
-In your script: 
- 
- #!/usr/bin/env perl 
-  
- use strict; 
- use warnings; 
- 
- use MyApp; 
+In your script:
 
+ #!/usr/bin/env perl
+ 
+ use strict;
+ use warnings;
+ 
+ use MyApp;
+ 
  MyApp->new_with_options( UseAmmonia => 1, UseChlorine => 1 );
- # generates Error 
+ # generates Error
  # More than one attribute from mutexgroup NonMixableCleaningChemicals('UseAmmonia','UseChlorine') *cannot* be specified
-
+ 
  MyApp->new_with_options();
- # generates Error 
+ # generates Error
  # One attribute from mutexgroup NonMixableCleaningChemicals('UseAmmonia','UseChlorine') *must* be specified
-
+ 
  MyApp->new_with_options( UseAmmonia => 1 );
  # generates no errors
-
+ 
  MyApp->new_with_options( UseChlorine => 1 );
  # generates no errors
 

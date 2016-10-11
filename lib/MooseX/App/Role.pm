@@ -18,16 +18,16 @@ Moose::Exporter->setup_import_methods(
 
 sub init_meta {
     my (undef,%args) = @_;
-    
+
     my $meta = Moose::Role->init_meta( %args );
-    
+
     Moose::Util::MetaRole::apply_metaroles(
         for             => $meta,
         role_metaroles  => {
             applied_attribute   => ['MooseX::App::Meta::Role::Attribute::Option'],
         },
     );
-    
+
     return $meta;
 }
 

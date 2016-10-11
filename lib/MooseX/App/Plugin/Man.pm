@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => ['MooseX::App::Plugin::Man::Meta::Class'],
     }
@@ -19,13 +19,13 @@ sub plugin_metaroles {
 around 'initialize_command_class' => sub {
     my $orig = shift;
     my $self = shift;
-    
+
     my $return = $self->$orig(@_);
-    if (blessed $return 
+    if (blessed $return
         && $return->isa('MooseX::App::Plugin::Man::Command')) {
         return $return->man($self);
     }
-    
+
     return $return;
 };
 1;
@@ -48,10 +48,10 @@ In your base class:
 In your shell
 
  bash$ myapp man somecommand
- 
+
 =head1 DESCRIPTION
 
-This plugin adds a command to display the full manpage/perldoc of your 
+This plugin adds a command to display the full manpage/perldoc of your
 application.
 
 =cut

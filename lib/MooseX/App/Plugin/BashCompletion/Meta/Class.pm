@@ -13,10 +13,10 @@ use MooseX::App::Plugin::BashCompletion::Command;
 around '_build_app_commands' => sub {
     my $orig = shift;
     my $self = shift;
-    
+
     my $return = $self->$orig(@_);
     $return->{bash_completion} ||= 'MooseX::App::Plugin::BashCompletion::Command';
-    
+
     return $return;
 };
 

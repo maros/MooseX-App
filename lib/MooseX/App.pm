@@ -25,20 +25,20 @@ my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
 
 sub import {
     my ( $class, @plugins ) = @_;
-    
+
     # Get caller
     my ($caller_class) = caller();
-    
+
     # Process plugins
     MooseX::App::Exporter->process_plugins($caller_class,@plugins);
-    
+
     # Call Moose-Exporter generated importer
     return $class->$IMPORT( { into => $caller_class } );
 }
 
 sub init_meta {
     my ($class,%args) = @_;
-    
+
     # Get required roles and metaroles
     $args{roles}        = ['MooseX::App::Role::Base'];
     $args{metaroles}    = {
@@ -50,7 +50,7 @@ sub init_meta {
             'MooseX::App::Meta::Role::Attribute::Option'
         ],
     };
-    
+
     return MooseX::App::Exporter->process_init_meta(%args);
 }
 
@@ -61,7 +61,7 @@ sub app_command_name(&) {
 
 sub app_command_register(%) {
     my ( $meta, %commands ) = @_;
-    
+
     foreach my $command (keys %commands) {
         $meta->command_register($command,$commands{$command});
     }
@@ -75,29 +75,29 @@ sub app_namespace(@) {
 
 sub new_with_command {
     my ($class,@args) = @_;
-    
+
     Moose->throw_error('new_with_command is a class method')
         if ! defined $class || blessed($class);
-    
+
     my $meta        = $class->meta;
     my $metameta    = $meta->meta;
-    
+
     # Sanity check
     Moose->throw_error('new_with_command may only be called from the application base package:'.$class)
         if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
         || ! $metameta->does_role('MooseX::App::Meta::Role::Class::Base');
-        
+
     # Extra args
     my %args;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH' ) {
-        %args = %{$args[0]}; 
+        %args = %{$args[0]};
     } elsif (scalar @args % 2 == 0) {
         %args = @args;
     } else {
         Moose->throw_error('new_with_command got invalid extra arguments');
     }
-    
+
     # Get ARGV
     my $argv = delete $args{ARGV};
     my $parsed_argv;
@@ -106,11 +106,11 @@ sub new_with_command {
     } else {
         $parsed_argv = MooseX::App::ParsedArgv->instance();
     }
-    
+
     my $first_argv  = $parsed_argv->first_argv;
-    
+
     # Requested help
-    if (defined $first_argv 
+    if (defined $first_argv
         && lc($first_argv) =~ m/^(help|h|\?|usage|-h|--help|-\?|--usage)$/) {
         return MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
@@ -130,7 +130,7 @@ sub new_with_command {
     # Looks like a command
     } else {
         my $return = $meta->command_find($first_argv);
-        
+
         # Nothing found
         if (blessed $return
             && $return->isa('MooseX::App::Message::Block')) {
@@ -172,7 +172,7 @@ In your base class:
       documentation => q[Enable this to do fancy stuff],
   ); # Global option
   
-  has 'private' => ( 
+  has 'private' => (
       is              => 'rw',
   ); # not exposed
 
@@ -204,7 +204,7 @@ you should use L<MooseX::App::Simple> instead)
   }
 
 And then you need a simple wrapper script (called eg. myapp):
- 
+
  #!/usr/bin/env perl
  use MyApp;
  MyApp->new_with_command->run;
@@ -243,9 +243,9 @@ or
 
 =head1 DESCRIPTION
 
-MooseX-App is a highly customisable helper to write user-friendly 
-command line applications without having to worry about most of the annoying 
-things usually involved. Just take any existing L<Moose> class, add a single 
+MooseX-App is a highly customisable helper to write user-friendly
+command line applications without having to worry about most of the annoying
+things usually involved. Just take any existing L<Moose> class, add a single
 line (C<use MooseX-App qw(PluginA PluginB ...);>) and create one class
 for each command in an underlying namespace. Options and positional parameters
 can be defined as simple L<Moose> accessors using the C<option> and
@@ -255,17 +255,17 @@ MooseX-App will then
 
 =over
 
-=item * Find, load and initialise the command classes (see 
+=item * Find, load and initialise the command classes (see
 L<MooseX::App::Simple> for single class/command applications)
 
 =item * Create automated help and documentation from modules POD as well as
 attributes metadata and type constraints
 
-=item * Read, encode and validate the command line options and positional 
+=item * Read, encode and validate the command line options and positional
 parameters entered by the user from @ARGV and %ENV (and possibly prompt
 the user for additional parameters see L<MooseX::App::Plugin::Term>)
 
-=item * Provide helpful error messages if user input cannot be validated 
+=item * Provide helpful error messages if user input cannot be validated
 (either missing or wrong attributes or Moose type constraints not satisfied)
 
 =back
@@ -306,7 +306,7 @@ This is equivalent to
   );
 
 All keywords are imported by L<Moosex::App> (in the app base class) and
-L<MooseX::App::Command> (in the command class) or L<MooseX::App::Simple> 
+L<MooseX::App::Command> (in the command class) or L<MooseX::App::Simple>
 (single class application).
 
 Furthermore, all options and parameters can also be supplied via %ENV
@@ -318,7 +318,7 @@ Furthermore, all options and parameters can also be supplied via %ENV
   );
 
 Moose type constraints help MooseX::App to construct helpful error messages
-and parse @ARGV in a meaningful way. The following type constraints are 
+and parse @ARGV in a meaningful way. The following type constraints are
 supported:
 
 =over
@@ -337,17 +337,17 @@ key2=value2', also see L<app_permute>)
 
 =back
 
-Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple
 MooseX::App command line application.
 
 =head1 METHODS
 
-=head2 new_with_command 
+=head2 new_with_command
 
  my $myapp_command = MyApp->new_with_command();
 
-This constructor reads the command line arguments and tries to create a 
-command class instance. If it fails it returns a 
+This constructor reads the command line arguments and tries to create a
+command class instance. If it fails it returns a
 L<MooseX::App::Message::Envelope> object holding an error message.
 
 You can pass a hash of default/fallback params to new_with_command
@@ -374,8 +374,8 @@ These options may be used to alter the default behaviour of MooseX-App.
 
  app_base 'my_script'; # Defaults to $0
 
-Usually MooseX::App will take the name of the calling wrapper script to 
-construct the program name in various help messages. This name can 
+Usually MooseX::App will take the name of the calling wrapper script to
+construct the program name in various help messages. This name can
 be changed via the app_base function.
 
 =head2 app_fuzzy
@@ -388,12 +388,12 @@ Enables fuzzy matching of commands and attributes. Is turned on by default.
 
 =head2 app_strict
 
- app_strict 0; # default 
+ app_strict 0; # default
  OR
- app_strict 1; 
+ app_strict 1;
 
 If strict is enabled the program will terminate with an error message if
-superfluous/unknown positional parameters are supplied. If disabled all 
+superfluous/unknown positional parameters are supplied. If disabled all
 extra parameters will be copied to the L<extra_argv> attribute. Unknown
 options (with leading dashes) will always yield an error message.
 
@@ -415,7 +415,7 @@ over arguments passed directly to new_with_command.
  OR
  app_namespace();
 
-Usually MooseX::App will take the package name of the base class as the 
+Usually MooseX::App will take the package name of the base class as the
 namespace for commands. This namespace can be changed and you can add
 multiple extra namespaces.
 
@@ -430,7 +430,7 @@ classes will be disabled entirely.
      return $command_name;
  };
 
-This coderef can be used to control how autoloaded package names should be 
+This coderef can be used to control how autoloaded package names should be
 translated to command names. If this command returns nothing the respective
 command class will be skipped and not loaded.
 
@@ -447,16 +447,16 @@ useful in conjunction with app_namespace and disabled autoloading.
 
  app_description qq[Description text];
 
-Set the app description text. If not set this information will be taken from 
-the Pod DESCRIPTION or OVERVIEW sections. (see command_description to set 
+Set the app description text. If not set this information will be taken from
+the Pod DESCRIPTION or OVERVIEW sections. (see command_description to set
 usage per command)
 
 =head2 app_usage
 
  app_usage qq[myapp --option ...];
 
-Set a custom usage text. If not set this will be taken from the Pod SYNOPSIS 
-or USAGE section. If both sections are not available, the usage information 
+Set a custom usage text. If not set this will be taken from the Pod SYNOPSIS
+or USAGE section. If both sections are not available, the usage information
 will be autogenerated. (see command_usage to set usage per command)
 
 =head2 app_permute
@@ -511,7 +511,7 @@ documentation.
 =head1 METADATA
 
 MooseX::App will use your class metadata and POD to construct the commands and
-helpful error- or usage-messages. These bits of information are utilised 
+helpful error- or usage-messages. These bits of information are utilised
 and should be provided if possible:
 
 =over
@@ -524,10 +524,10 @@ and should be provided if possible:
 
 =item * Moose type constraints (Bool, ArrayRef, HashRef, Int, Num, and Enum)
 
-=item * Documentation set via app_description, app_usage, 
+=item * Documentation set via app_description, app_usage,
 command_short_description, command_long_description and command_usage
 
-=item * POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS, OVERVIEW, 
+=item * POD (NAME, ABSTRACT, DESCRIPTION, USAGE, SYNOPSIS, OVERVIEW,
 COPYRIGHT, LICENSE, COPYRIGHT AND LICENSE, AUTHOR and AUTHORS sections)
 
 =item * Dzil ABSTRACT tag if no POD is available yet
@@ -565,7 +565,7 @@ Try to find config files in users home directory.
 
 =item * L<MooseX::App::Plugin::Term>
 
-Prompt user for options and parameters that were not provided via options or 
+Prompt user for options and parameters that were not provided via options or
 params. Prompt offers basic editing capabilities and non-persistent history.
 
 =item * L<MooseX::App::Plugin::Typo>
@@ -590,14 +590,14 @@ Adds dependent options.
 
 =back
 
-Refer to L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins> 
+Refer to L<Writing MooseX-App Plugins|MooseX::App::WritingPlugins>
 for documentation on how to create your own plugins.
 
 =head1 CAVEATS & KNOWN BUGS
 
 Startup time may be an issue - escpecially if you load many plugins. If you do
-not require the functionality of plugins and ability for fine grained 
-customisation (or Moose for that matter) then you should probably 
+not require the functionality of plugins and ability for fine grained
+customisation (or Moose for that matter) then you should probably
 use L<MooX::Options> or L<MooX::Cmd>.
 
 In some cases - especially when using non-standard class inheritance - you may
@@ -607,8 +607,8 @@ to include the following line in your base class or command classes.
  with qw(MooseX::App::Role::Common);
 
 When manually registering command classes (eg. via app_command_register) in
-multiple base classes with different sets of plugins (why would you ever want 
-to do that?), then meta attributes may lack some attribute metaclasses. In 
+multiple base classes with different sets of plugins (why would you ever want
+to do that?), then meta attributes may lack some attribute metaclasses. In
 this case you need to load the missing attribute traits explicitly:
 
  option 'argument' => (
@@ -618,7 +618,7 @@ this case you need to load the missing attribute traits explicitly:
 
 =head1 SEE ALSO
 
-Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple
 MooseX::App command line application.
 
 For alternatives you can check out
@@ -628,7 +628,7 @@ L<MooseX::App::Cmd>, L<MooseX::Getopt>, L<MooX::Options>, L<MooX::Cmd>and L<App:
 =head1 SUPPORT
 
 Please report any bugs or feature requests via
-L<https://github.com/maros/MooseX-App/issues/new>. I will be notified, and 
+L<https://github.com/maros/MooseX-App/issues/new>. I will be notified, and
 then you'll automatically be notified of progress on your report as I make
 changes.
 
@@ -639,12 +639,12 @@ changes.
     maros [at] k-1.com
     
     http://www.k-1.com
-    
+
 =head1 CONTRIBUTORS
 
 Special thanks to all contributors.
 
-In no particular order: Andrew Jones, George Hartzell, Steve Nolte, 
+In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
 Hunter McMillen, Maik Hentsche, Alexander Stoddard, Marc Logghe, Tina Müller,
@@ -658,8 +658,8 @@ list of open wishlist issues for ideas.
 
 MooseX::App is Copyright (c) 2012-16 Maroš Kollár.
 
-This library is free software and may be distributed under the same terms as 
-perl itself. The full text of the licence can be found in the LICENCE file 
+This library is free software and may be distributed under the same terms as
+perl itself. The full text of the licence can be found in the LICENCE file
 included with this module.
 
 =cut

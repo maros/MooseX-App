@@ -13,7 +13,7 @@ around 'command_check_attributes' => sub {
    foreach my $attribute ( $self->command_usage_attributes($command_meta, 'all') ) {
       next ATTR
          unless defined $params->{ $attribute->cmd_name_primary };
-      next ATTR 
+      next ATTR
          unless $attribute->can('depends')
          && ref($attribute->depends) eq 'ARRAY'
          && scalar @{ $attribute->depends } > 0;
@@ -23,18 +23,18 @@ around 'command_check_attributes' => sub {
          next OPT
             if defined $params->{$required_option};
 
-         my $error_msg = "Option " 
+         my $error_msg = "Option "
             . "'" . $attribute->cmd_name_primary . "'"
             . " requires '$required_option' to be defined";
-         
-         push @$errors, 
+
+         push @$errors,
             $self->command_message(
                header => $error_msg,
                type   => 'error',
             );
       }
    }
-   
+
    return $self->$orig($command_meta, $errors, $params);
 };
 

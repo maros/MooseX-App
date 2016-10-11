@@ -21,7 +21,7 @@ BEGIN {
 
 sub stringify {
     my ($self) = @_;
-    
+
     my $header_color;
     my $body_color;
     given ($self->type) {
@@ -36,26 +36,26 @@ sub stringify {
             $header_color = $_;
         }
     }
-    
+
     my $message = '';
     if ($self->has_header) {
         $message .= $self->_wrap_color($header_color,$self->header)."\n";
     }
-    
+
     if ($self->has_body) {
         $message .= $self->_wrap_color($body_color,$self->body)."\n\n";
     }
-    
+
     return $message;
 }
 
 sub _wrap_color {
     my ($self,$color,$string) = @_;
-    
+
     return $string
         unless is_interactive()
         && defined $color;
-    
+
     return Term::ANSIColor::color($color)
         .$string
         .Term::ANSIColor::color('reset');

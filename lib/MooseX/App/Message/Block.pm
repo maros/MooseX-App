@@ -33,14 +33,14 @@ has 'body' => (
 
 sub stringify {
     my ($self) = @_;
-    
+
     my $message = '';
     $message .= $self->header."\n"
         if $self->has_header;
-    
+
     $message .= $self->body."\n\n"
         if $self->has_body;
-    
+
     return $message;
 }
 

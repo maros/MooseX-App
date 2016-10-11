@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => ['MooseX::App::Plugin::Color::Meta::Class'],
     }

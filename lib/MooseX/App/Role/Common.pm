@@ -9,12 +9,12 @@ use namespace::autoclean;
 use Moose::Role;
 
 has extra_argv => (
-    is => 'rw', 
-    isa => 'ArrayRef', 
+    is => 'rw',
+    isa => 'ArrayRef',
 );
 
 has 'help_flag' => (
-    is              => 'ro', 
+    is              => 'ro',
     isa             => 'Bool',
     traits          => ['MooseX::App::Meta::Role::Attribute::Option'],
     cmd_flag        => 'help',

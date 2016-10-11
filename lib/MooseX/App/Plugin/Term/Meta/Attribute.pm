@@ -26,7 +26,7 @@ has 'cmd_term_label' => (
 
 sub cmd_term_label_full {
     my ($self) = @_;
-    
+
     my $label = $self->cmd_term_label_name;
     my @tags;
     if ($self->is_required) {
@@ -34,7 +34,7 @@ sub cmd_term_label_full {
     } else {
         push(@tags,'Optional');
     }
-    
+
     if ($self->has_type_constraint) {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_a_type_of('Bool')) {
@@ -46,13 +46,13 @@ sub cmd_term_label_full {
     if (scalar @tags) {
         $label .= ' ('.join(', ',@tags).')';
     }
-    
+
     return $label;
 }
 
 sub cmd_term_label_name {
     my ($self) = @_;
-    
+
     my $label;
     if ($self->has_cmd_term_label) {
         return $self->cmd_term_label;
@@ -65,8 +65,8 @@ sub cmd_term_label_name {
 
 sub cmd_term_read {
     my ($self) = @_;
-    
-    if ($self->has_type_constraint 
+
+    if ($self->has_type_constraint
         && $self->type_constraint->is_a_type_of('Bool')) {
         return $self->cmd_term_read_bool();
     } else {
@@ -76,12 +76,12 @@ sub cmd_term_read {
 
 sub cmd_term_read_string {
     my ($self) = @_;
-    
+
     my $label = $self->cmd_term_label_full;
     my ($return,@history,$history_disable,$allowed);
-    
+
     binmode STDIN,':encoding(UTF-8)';
-    
+
     # Prefill history with enums
     if ($self->has_type_constraint) {
         my $type_constraint = $self->type_constraint;
@@ -96,10 +96,10 @@ sub cmd_term_read_string {
             }
         }
     }
-    
+
     push(@history,"")
         unless scalar @history;
-    
+
     my $history_index = 0;
     my $history_add = sub {
         my $entry = shift;
@@ -110,30 +110,30 @@ sub cmd_term_read_string {
             push(@history,$entry);
         }
     };
-    
+
     ReadMode('cbreak'); # change input mode
     TRY_STRING:
     while (1) {
         print "\n"
-            if defined $return 
+            if defined $return
             && $return !~ /^\s*$/;
         $return = '';
-        
+
         if (defined $Term::ANSIColor::VERSION) {
             say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
         } else {
             say $label.": ";
         }
-        
+
         1 while defined ReadKey -1; # discard any previous input
-        
+
         my $cursor = 0;
-        
-        KEY_STRING: 
+
+        KEY_STRING:
         while (1) {
             my $key = ReadKey 0; # read a single character
             my $length = length($return);
-            
+
             given (ord($key)) {
                 when (10) { # Enter
                     print "\n";
@@ -157,7 +157,7 @@ sub cmd_term_read_string {
                         $history_add->($return);
                         next TRY_STRING;
                     } else {
-                        last TRY_STRING; 
+                        last TRY_STRING;
                     }
                 }
                 when (27) { # Escape sequence
@@ -186,13 +186,13 @@ sub cmd_term_read_string {
                                 print "\b" x $cursor;
                                 print " " x length($return);
                                 print "\b" x length($return);
-                                
+
                                 $history_index ++
                                     if defined $history[$history_index]
                                     && $history[$history_index] eq $return;
                                 $history_index = 0
                                     unless defined $history[$history_index];
-                                
+
                                 $return = $history[$history_index];
                                 $cursor = length($return);
                                 print $return;
@@ -219,9 +219,9 @@ sub cmd_term_read_string {
                         }
                     } else {
                         $history_add->($return);
-                        next TRY_STRING; 
+                        next TRY_STRING;
                     }
-                    
+
                 }
                 when (127) { # Backspace
                     if ($cursor == 0) { # Ignore first
@@ -250,16 +250,16 @@ sub cmd_term_read_string {
         }
     }
     ReadMode 0;
-    
+
     return $return;
 }
 
 sub cmd_term_read_bool {
     my ($self) = @_;
-    
+
     my $label = $self->cmd_term_label_full;
     my $return;
-    
+
     if (defined $Term::ANSIColor::VERSION) {
         say Term::ANSIColor::color('white bold').$label.' :'.Term::ANSIColor::color('reset');
     } else {
@@ -282,29 +282,29 @@ sub cmd_term_read_bool {
         }
     }
     ReadMode 0;
-    
+
     return $return;
 }
 
 around 'cmd_tags_list' => sub {
     my $orig = shift;
     my ($self) = @_;
-    
+
     my @tags = $self->$orig();
-    
+
     push(@tags,'Term')
         if $self->can('cmd_term')
         && $self->cmd_term;
-   
+
     return @tags;
 };
 
 {
     package Moose::Meta::Attribute::Custom::Trait::AppTerm;
-    
+
     use strict;
     use warnings;
-    
+
     sub register_implementation { return 'MooseX::App::Plugin::Term::Meta::Attribute' }
 }
 

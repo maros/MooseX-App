@@ -12,17 +12,17 @@ our $INDENT = 4;
 
 use Moose::Util::TypeConstraints;
 
-subtype 'MooseX::App::Types::List' 
+subtype 'MooseX::App::Types::List'
     => as 'ArrayRef';
 
 coerce 'MooseX::App::Types::List'
     => from 'Str'
     => via { [$_] };
 
-subtype 'MooseX::App::Types::CmdTypes' 
+subtype 'MooseX::App::Types::CmdTypes'
     => as enum([qw(proto option parameter)]);
 
-subtype 'MooseX::App::Types::MessageString' 
+subtype 'MooseX::App::Types::MessageString'
     => as 'Str';
 
 coerce 'MooseX::App::Types::MessageString'
@@ -40,10 +40,10 @@ no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;
 # Default package name to command name translation function
 sub class_to_command {
     my ($class) = @_;
-    
-    return 
+
+    return
         unless defined $class;
-    
+
     my @parts = split( /[_\s]+|\b|(?<![A-Z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/, $class );
     return lc(join('_',@parts));
 }
@@ -51,12 +51,12 @@ sub class_to_command {
 # Format output text for fixed screen width
 sub format_text {
     my ($text) = @_;
-    
+
     my @lines;
     foreach my $line (split(/\n/,$text)) {
         push(@lines,split_string($SCREEN_WIDTH-$INDENT,$line));
     }
-    
+
     return join(
         "\n",
         map { (' ' x $INDENT).$_ }
@@ -67,12 +67,12 @@ sub format_text {
 # Format bullet list for fixed screen width
 sub format_list {
     my (@list) = @_;
-    
+
     my $max_length = max(map { length($_->[0]) } @list);
     my $description_length = $SCREEN_WIDTH - $max_length - 7;
     my $prefix_length = $max_length + $INDENT + 2;
     my @return;
-    
+
     # Loop all items
     foreach my $command (@list) {
         my $description = $command->[1] // '';
@@ -88,13 +88,13 @@ sub format_list {
 # Simple splitting of long sentences on whitespaces or punctuation
 sub split_string {
     my ($maxlength, $string) = @_;
-    
-    return 
+
+    return
         unless defined $string;
-    
-    return $string 
+
+    return $string
         if length $string <= $maxlength;
-    
+
     my (@lines,$line);
     $line = '';
     foreach my $word (split(m/(\p{IsPunct}|\p{IsSpace})/,$string)) {
@@ -119,58 +119,58 @@ sub split_string {
     }
     push(@lines,$line)
         if ($line ne '');
-    
+
     @lines =  map { m/^\s*(.+?)\s*$/ ? $1 : $_  } @lines;
-    
+
     return @lines;
 }
 
 # Try to get filename for a given package name
 sub package_to_filename {
     my ($package) = @_;
-    
+
     # Package to filename
     my $package_filename = $package;
     $package_filename =~ s/::/\//g;
     $package_filename .= '.pm';
-    
-    
+
+
     my $package_filepath;
     if (defined $INC{$package_filename}) {
         $package_filepath = $INC{$package_filename};
         $package_filepath =~ s/\/{2,}/\//g;
     }
-    
+
     # No filename available
-    return 
+    return
         unless defined $package_filepath
         && -e $package_filepath;
-    
+
     return $package_filepath;
 }
 
 # Parse pod
 sub parse_pod {
     my ($package) = @_;
-    
+
     my $package_filepath = package_to_filename($package);
     return
         unless $package_filepath;
-    
+
     # Parse pod
     my $document = Pod::Elemental->read_file($package_filepath);
-    
+
     Pod::Elemental::Transformer::Pod5->new->transform_node($document);
-    
+
     my $nester_head = Pod::Elemental::Transformer::Nester->new({
         top_selector      => Pod::Elemental::Selectors::s_command('head1'),
-        content_selectors => [ 
+        content_selectors => [
             Pod::Elemental::Selectors::s_command([ qw(head2 head3 head4 over back item) ]),
-            Pod::Elemental::Selectors::s_flat() 
+            Pod::Elemental::Selectors::s_flat()
         ],
     });
     $document = $nester_head->transform_node($document);
-    
+
     # Process pod
     my %pod;
     foreach my $element (@{$document->children}) {
@@ -182,7 +182,7 @@ sub parse_pod {
         # Pod head1 sections
         } elsif ($element->isa('Pod::Elemental::Element::Nested')
             && $element->command eq 'head1') {
-        
+
             if ($element->content eq 'NAME') {
                 my $content = _pod_node_to_text($element->children);
                 next unless defined $content;
@@ -193,29 +193,29 @@ sub parse_pod {
                 my $content = _pod_node_to_text($element->children);
                 next unless defined $content;
                 chomp($content);
-                $pod{uc($element->content)} = $content; 
+                $pod{uc($element->content)} = $content;
             }
         }
     }
-        
+
     return %pod;
 }
 
 # Transform POD to simple markup
 sub _pod_node_to_text {
     my ($node,$indent) = @_;
-    
+
     unless (defined $indent) {
         my $indent_init = 0;
         $indent = \$indent_init;
     }
-    
+
     my (@lines);
     if (ref $node eq 'ARRAY') {
         foreach my $element (@$node) {
             push (@lines,_pod_node_to_text($element,$indent));
         }
-        
+
     } else {
         given (ref($node)) {
             when ('Pod::Elemental::Element::Pod5::Ordinary') {
@@ -245,10 +245,10 @@ sub _pod_node_to_text {
             }
         }
     }
-    
+
     return
         unless scalar @lines;
-    
+
     # Convert text markup
     my $return = join ("\n", grep { defined $_ } @lines);
     $return =~ s/\n\n\n+/\n\n/g; # Max one empty line

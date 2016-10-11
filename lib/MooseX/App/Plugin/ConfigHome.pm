@@ -11,7 +11,7 @@ with qw(MooseX::App::Plugin::Config);
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => [
             'MooseX::App::Plugin::Config::Meta::Class',

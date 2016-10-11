@@ -62,53 +62,53 @@ my $GLOBAL_COUNTER = 1;
 around 'new' => sub {
     my $orig = shift;
     my $class = shift;
-    
+
     my $self = $class->$orig(@_);
-    
+
     if ($self->has_cmd_type) {
         if ($self->cmd_position == 0) {
             $GLOBAL_COUNTER++;
             $self->cmd_position($GLOBAL_COUNTER);
         }
     }
-    
+
     return $self;
 };
 
 sub cmd_has_value {
-    my ($self) = @_; 
-    
+    my ($self) = @_;
+
     if ($self->has_type_constraint
         && $self->type_constraint->is_a_type_of('Bool')) {
-        
-        # Bool and defaults to true 
-        #if ($self->has_default 
+
+        # Bool and defaults to true
+        #if ($self->has_default
         #    && ! $self->is_default_a_coderef
         #    && $self->default == 1) {
         #    return 0;
         ## Bool and is required
         #} elsif (! $self->has_default
         #    && $self->is_required) {
-        #    return 0; 
+        #    return 0;
         #}
-        
+
         # Ordinary bool
         return 0;
     }
-    
+
     if ($self->cmd_count) {
         return 0;
     }
-    
+
     return 1;
 }
 
 sub cmd_type_constraint_description {
     my ($self,$type_constraint,$singular) = @_;
-    
+
     $type_constraint //= $self->type_constraint;
     $singular //= 1;
-    
+
     if ($type_constraint->isa('Moose::Meta::TypeConstraint::Enum')) {
         return 'one of these values: '.join(', ',@{$type_constraint->values});
     } elsif ($type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized')) {
@@ -128,25 +128,25 @@ sub cmd_type_constraint_description {
     } elsif ($type_constraint->equals('HashRef')) {
         return 'key-value pairs'; # LOCALIZE
     }
-    
+
     if ($type_constraint->has_parent) {
         return $self->cmd_type_constraint_description($type_constraint->parent);
     }
-    
+
     return;
 }
 
 sub cmd_type_constraint_check {
     my ($self,$value) = @_;
-    
-    return 
+
+    return
         unless ($self->has_type_constraint);
     my $type_constraint = $self->type_constraint;
-    
+
     if ($type_constraint->has_coercion) {
         $value = $type_constraint->coerce($value)
     }
-    
+
     # Check type constraints
     unless ($type_constraint->check($value)) {
         if (ref($value) eq 'ARRAY') {
@@ -154,7 +154,7 @@ sub cmd_type_constraint_check {
         } elsif (ref($value) eq 'HASH') {
             $value = join(', ',map { $_.'='.$value->{$_} } keys %$value)
         }
-        
+
         # We have a custom message
         if ($type_constraint->has_message) {
             return $type_constraint->get_message($value);
@@ -168,13 +168,13 @@ sub cmd_type_constraint_check {
             }
         }
     }
-    
+
     return;
 }
 
 sub cmd_usage_description {
     my ($self) = @_;
-    
+
     my $description = ($self->has_documentation) ? $self->documentation : '';
     my @tags = $self->cmd_tags_list();
     if (scalar @tags) {
@@ -183,15 +183,15 @@ sub cmd_usage_description {
         $description .= '['.join('; ',@tags).']';
     }
     return $description
-}   
-    
+}
+
 sub cmd_usage_name {
     my ($self) = @_;
-    
+
     if ($self->cmd_type eq 'parameter') {
         return $self->cmd_name_primary;
     } else {
-        return join(' ', 
+        return join(' ',
             map { (length($_) == 1) ? "-$_":"--$_" }
             $self->cmd_name_possible);
     }
@@ -199,7 +199,7 @@ sub cmd_usage_name {
 
 sub cmd_name_primary {
     my ($self) = @_;
-    
+
     if ($self->has_cmd_flag) {
         return $self->cmd_flag;
     } else {
@@ -209,27 +209,27 @@ sub cmd_name_primary {
 
 sub cmd_name_possible {
     my ($self) = @_;
-    
+
     my @names = ($self->cmd_name_primary);
-    
+
     if ($self->has_cmd_aliases) {
         push(@names, @{$self->cmd_aliases});
     }
-    
+
     return @names;
 }
 
 sub cmd_tags_list {
     my ($self) = @_;
-    
+
     my @tags;
-    
+
     if ($self->is_required
         && ! $self->is_lazy_build
         && ! $self->has_default) {
         push(@tags,'Required')
     }
-    
+
     if ($self->has_default && ! $self->is_default_a_coderef) {
         if ($self->has_type_constraint
             && $self->type_constraint->is_a_type_of('Bool')) {
@@ -242,7 +242,7 @@ sub cmd_tags_list {
             push(@tags,'Default:"'.$self->default.'"');
         }
     }
-    
+
     if ($self->has_cmd_split) {
         my $split = $self->cmd_split;
         if (ref($split) eq 'Regexp') {
@@ -251,7 +251,7 @@ sub cmd_tags_list {
         }
         push(@tags,'Multiple','Split by "'.$split.'"');
     }
-    
+
     if ($self->has_type_constraint) {
         my $type_constraint = $self->type_constraint;
         if ($type_constraint->is_a_type_of('ArrayRef')) {
@@ -273,27 +273,27 @@ sub cmd_tags_list {
             }
         }
     }
-    
+
     if ($self->can('has_cmd_env')
         && $self->has_cmd_env) {
         push(@tags,'Env: '.$self->cmd_env)
     }
-    
+
     if ($self->can('cmd_tags')
         && $self->can('cmd_tags')
         && $self->has_cmd_tags) {
         push(@tags,@{$self->cmd_tags});
     }
-    
+
     return @tags;
 }
 
 {
     package Moose::Meta::Attribute::Custom::Trait::AppOption;
-    
+
     use strict;
     use warnings;
-    
+
     sub register_implementation { return 'MooseX::App::Meta::Role::Attribute::Option' }
 }
 
@@ -310,7 +310,7 @@ MooseX::App::Meta::Role::Attribute::Option - Meta attribute role for options
 =head1 DESCRIPTION
 
 This meta attribute role will automatically be applied to all attributes
-that should be used as options. 
+that should be used as options.
 
 =head1 ACCESSORS
 
@@ -344,7 +344,7 @@ Allowed values are:
 =item * option - Command line option
 
 =item * proto - Command line option that should be processed prior to other
-options (eg. a config-file option that sets other attribues) Usually only 
+options (eg. a config-file option that sets other attribues) Usually only
 used for plugin developmemt
 
 =item * parameter - Positional parameter command line value
@@ -371,9 +371,9 @@ Override the order of the parameters in the usage message.
 
 =head2 cmd_split
 
-Splits multiple values at the given separator string or regular expression. 
+Splits multiple values at the given separator string or regular expression.
 Only works in conjunction with an 'ArrayRef[*]' type constraint (isa).
-ie. '--myattr value1,value2' with cmd_split set to ',' would produce an 
+ie. '--myattr value1,value2' with cmd_split set to ',' would produce an
 arrayref with to elements.
 
 =head2 cmd_count
@@ -420,7 +420,7 @@ Returns a list of tags
 
  my $has_value = $attribute->cmd_has_value();
 
-Indicates if an commandline attribute has a value. Usually attributes with a 
+Indicates if an commandline attribute has a value. Usually attributes with a
 boolean type constraint or counters don't have values.
 
 =over

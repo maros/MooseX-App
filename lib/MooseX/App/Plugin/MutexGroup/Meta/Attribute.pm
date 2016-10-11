@@ -13,9 +13,9 @@ has 'mutexgroup' => (
 around 'cmd_tags_list' => sub {
    my $orig = shift;
    my ($self) = @_;
-   
+
    my @tags = $self->$orig();
-   
+
    push(@tags,'MutexGroup')
       if $self->can('mutexgroup')
       && $self->mutexgroup;
@@ -25,10 +25,10 @@ around 'cmd_tags_list' => sub {
 
 {
    package Moose::Meta::Attribute::Custom::Trait::AppMutexGroup;
-     
+
    use strict;
    use warnings;
-   
+
    sub register_implementation { return 'MooseX::App::Plugin::MutexGroup::Meta::Attribute' }
 }
 

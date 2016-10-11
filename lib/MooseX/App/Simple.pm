@@ -24,20 +24,20 @@ my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
 
 sub import {
     my ( $class, @plugins ) = @_;
-    
+
     # Get caller
     my ($caller_class) = caller();
-    
+
     # Process plugins
     MooseX::App::Exporter->process_plugins($caller_class,@plugins);
-    
+
     # Call Moose-Exporter generated importer
     return $class->$IMPORT( { into => $caller_class } );
 }
 
 sub init_meta {
     my ($class,%args) = @_;
-    
+
     # Get required roles and metaroles
     $args{roles}        = ['MooseX::App::Role::Base' ];
     $args{metaroles}    = {
@@ -51,16 +51,16 @@ sub init_meta {
         ],
     };
     my $meta = MooseX::App::Exporter->process_init_meta(%args);
-    
+
     # Register only one command
     $meta->app_commands({ 'self' => $args{for_class} });
-    
+
     return $meta;
 }
 
 sub new_with_options {
     my ($class,@args) = @_;
-    
+
     # Sanity check
     Moose->throw_error('new_with_options is a class method')
         if ! defined $class || blessed($class);
@@ -68,13 +68,13 @@ sub new_with_options {
     my %args;
     if (scalar @args == 1
         && ref($args[0]) eq 'HASH' ) {
-        %args = %{$args[0]}; 
+        %args = %{$args[0]};
     } elsif (scalar @args % 2 == 0) {
         %args = @args;
     } else {
         Moose->throw_error('new_with_command got invalid extra arguments');
     }
-    
+
     # Get ARGV
     my $argv = delete $args{ARGV};
     my $parsed_argv;
@@ -83,7 +83,7 @@ sub new_with_options {
     } else {
         $parsed_argv = MooseX::App::ParsedArgv->instance();
     }
-    
+
     return $class->initialize_command_class($class,%args);
 }
 
@@ -116,7 +116,7 @@ MooseX::App::Simple - Single command applications
       documentation => q[Enable this to do fancy stuff],
   ); # Option (--my_option)
   
-  has 'private' => ( 
+  has 'private' => (
       is              => 'rw',
   ); # not exposed
   
@@ -133,11 +133,11 @@ And then in some simple wrapper script:
 
 =head1 DESCRIPTION
 
-MooseX-App-Simple works basically just as MooseX::App, however it does 
-not search for commands and assumes that you have all options and parameters 
+MooseX-App-Simple works basically just as MooseX::App, however it does
+not search for commands and assumes that you have all options and parameters
 defined in the current class.
 
-Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple
 MooseX::App command line application.
 
 =head1 METHODS
@@ -147,7 +147,7 @@ MooseX::App command line application.
  my $myapp_command = MyApp->new_with_options();
 
 This method reads the command line arguments from the user and tries to create
-instantiate the current class with the ARGV-input. If it fails it returns a 
+instantiate the current class with the ARGV-input. If it fails it returns a
 L<MooseX::App::Message::Envelope> object holding an error message.
 
 You can pass a hash or hashref of default params to new_with_options
@@ -171,7 +171,7 @@ will not work with MooseX::App::Simple.
 
 =head1 SEE ALSO
 
-Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple 
+Read the L<Tutorial|MooseX::App::Tutorial> for getting started with a simple
 MooseX::App command line application.
 
 See L<MooseX::Getopt> and L<MooX::Options> for alternatives

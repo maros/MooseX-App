@@ -14,9 +14,9 @@ has 'depends' => (
 around 'cmd_tags_list' => sub {
    my $orig = shift;
    my ($self) = @_;
-   
+
    my @tags = $self->$orig();
-   
+
    push(@tags,'Depends')
       if $self->can('depends')
       && $self->depends;
@@ -26,10 +26,10 @@ around 'cmd_tags_list' => sub {
 
 {
    package Moose::Meta::Attribute::Custom::Trait::AppDepends;
-     
+
    use strict;
    use warnings;
-   
+
    sub register_implementation { return 'MooseX::App::Plugin::Depends::Meta::Attribute' }
 }
 

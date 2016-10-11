@@ -18,13 +18,13 @@ around 'command_check_attributes' => sub {
     }
 
     foreach my $options ( values %mutex_groups ) {
-        my @initialized_options = 
-            grep { defined $params->{ $_->name } } 
+        my @initialized_options =
+            grep { defined $params->{ $_->name } }
             @$options;
-        
+
         unless ( scalar @initialized_options == 1 ) {
             my $error_msg;
-            
+
             if (scalar @initialized_options == 0) {
                 my $last = pop @$options;
                 $error_msg = "Either ".
@@ -35,14 +35,14 @@ around 'command_check_attributes' => sub {
             } else {
                 my @list = map { $_->cmd_name_primary } @initialized_options;
                 my $last = pop(@list);
-                
+
                 $error_msg = "Options ".
                     join(",",@list).
                     " and ".
                     $last.
                     " are mutally exclusive";
             }
-            
+
             push @$errors,
                 $self->command_message(
                 header => $error_msg,

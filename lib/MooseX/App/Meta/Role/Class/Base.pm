@@ -71,7 +71,7 @@ has 'app_commands' => (
     isa         => 'HashRef[Str]',
     traits      => ['Hash'],
     handles     => {
-        command_register    => 'set', 
+        command_register    => 'set',
         command_get         => 'get',
         command_classes     => 'values',
         command_list        => 'shallow_clone',
@@ -92,56 +92,56 @@ sub _build_app_namespace {
 
 sub _build_app_commands {
     my ($self) = @_;
-    
+
     my @list;
     foreach my $namespace ( @{ $self->app_namespace } ) {
         push(@list,$self->command_scan_namespace($namespace));
     }
-    
+
     return { @list };
 }
 
 sub command_scan_namespace {
     my ($self,$namespace) = @_;
-    
+
     # Find all packages in namespace
     my $mpo = Module::Pluggable::Object->new(
         search_path => [ $namespace ],
     );
-    
+
     my $commandsub = $self->app_command_name;
 
     my %return;
     # Loop all packages
     foreach my $command_class ($mpo->plugins) {
         my $command_class_name =  substr($command_class,length($namespace)+2);
-        
+
         # Check for odd class names - needs to be refactored for subcommands support
         next
             if $command_class_name =~ m/::/;
-        
+
         # Extract command name
         $command_class_name =~ s/^\Q$namespace\E:://;
         $command_class_name =~ s/^.+::([^:]+)$/$1/;
         my $command = $commandsub->($command_class_name,$command_class);
-        
+
         # Check if command was loaded
         $return{$command} = $command_class
             if defined $command;
     }
-    
+
     return %return;
 }
 
 sub command_args {
     my ($self,$metaclass) = @_;
-    
+
     $metaclass ||= $self;
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
-    
+
     # Process options
     my @attributes_option = $self->command_usage_attributes($metaclass,'option');
-    
+
     my ($return,$errors) = $self->command_parse_options(\@attributes_option);
 
     my %raw_error;
@@ -152,7 +152,7 @@ sub command_args {
         my $message;
         next
             if defined $raw_error{$raw};
-        
+
         # Get possible options with double dash - might be missing
         if (length $key == 1
             && $raw =~ m/^-(\w+)$/) {
@@ -168,7 +168,7 @@ sub command_args {
                 }
             }
         }
-        
+
         # Handle error messages
         my $error;
         if (defined $message) {
@@ -185,20 +185,20 @@ sub command_args {
         }
         unshift(@{$errors},$error);
     }
-    
+
     # Process positional parameters
     my @attributes_parameter  = $self->command_usage_attributes($metaclass,'parameter');
-    
+
     foreach my $attribute (@attributes_parameter) {
         my $element = $parsed_argv->consume('parameter');
         last
             unless defined $element;
-        
+
         my ($parameter_value,$parameter_errors) = $self->command_process_attribute($attribute, [ $element->key ] );
         push(@{$errors},@{$parameter_errors});
         $return->{$attribute->name} = $parameter_value;
     }
-    
+
     # Handle all unconsumed parameters and options
     if ($self->app_strict || $metaclass->command_strict) {
         foreach my $parameter ($parsed_argv->available('parameter')) {
@@ -210,20 +210,20 @@ sub command_args {
             );
         }
     }
-    
+
     # Handle ENV
     foreach my $attribute ($self->command_usage_attributes($metaclass,'all')) {
         next
             unless $attribute->can('has_cmd_env')
             && $attribute->has_cmd_env;
-        
+
         my $cmd_env = $attribute->cmd_env;
-        
+
         if (exists $ENV{$cmd_env}
             && ! defined $return->{$attribute->name}) {
-            
+
             my $value = $ENV{$cmd_env};
-            
+
             if ($attribute->has_type_constraint) {
                 my $type_constraint = $attribute->type_constraint;
                 if ($attribute->should_coerce
@@ -232,7 +232,7 @@ sub command_args {
                     $value = $coercion->coerce($value) // $value;
                 }
             }
-            
+
             $return->{$attribute->name} = $value;
             my $error = $attribute->cmd_type_constraint_check($value);
             if ($error) {
@@ -246,15 +246,15 @@ sub command_args {
             }
         }
     }
-    
+
     return ($return,$errors);
 }
 
 sub command_proto {
     my ($self,$metaclass) = @_;
-    
+
     $metaclass   ||= $self;
-    
+
     my @attributes;
     foreach my $attribute ($self->command_usage_attributes($metaclass,'proto')) {
         next
@@ -262,32 +262,32 @@ sub command_proto {
             && $attribute->has_cmd_type;
         push(@attributes,$attribute);
     }
-    
+
     return $self->command_parse_options(\@attributes);
 }
 
 sub command_parse_options {
     my ($self,$attributes) = @_;
-    
+
     # Build attribute lookup hash
     my %option_to_attribute;
     foreach my $attribute (@{$attributes}) {
         foreach my $name ($attribute->cmd_name_possible) {
             if (defined $option_to_attribute{$name}
                 && $option_to_attribute{$name} != $attribute) {
-                Moose->throw_error('Command line option conflict: '.$name);    
+                Moose->throw_error('Command line option conflict: '.$name);
             }
             $option_to_attribute{$name} = $attribute;
         }
     }
-    
+
     my $match = {};
     my $return = {};
     my @errors;
-    
+
     # Get ARGV
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
-    
+
     # Loop all exact matches
     foreach my $option ($parsed_argv->available('option')) {
         if (my $attribute = $option_to_attribute{$option->key}) {
@@ -295,7 +295,7 @@ sub command_parse_options {
             $match->{$attribute->name} = [ $option ];
         }
     }
-    
+
     # Process fuzzy matches
     if ($self->app_fuzzy) {
         # Loop all options (sorted by length)
@@ -305,16 +305,16 @@ sub command_parse_options {
             my $option_length = length($option->key);
             next
                 if $option_length == 1;
-            
+
             my ($match_attributes) = [];
-            
+
             # Try to match attributes
             foreach my $name (keys %option_to_attribute) {
                 next
                     if ($option_length >= length($name));
-                
+
                 my $name_short = lc(substr($name,0,$option_length));
-                
+
                 # Partial match
                 if (lc($option->key) eq $name_short) {
                     my $attribute = $option_to_attribute{$name};
@@ -323,7 +323,7 @@ sub command_parse_options {
                     }
                 }
             }
-            
+
             # Process matches
             given (scalar @{$match_attributes}) {
                 # No match
@@ -333,7 +333,7 @@ sub command_parse_options {
                     my $attribute = $match_attributes->[0];
                     $option->consume();
                     $match->{$attribute->name} ||= [];
-                    push(@{$match->{$attribute->name}},$option); 
+                    push(@{$match->{$attribute->name}},$option);
                 }
                 # Multiple matches
                 default {
@@ -343,10 +343,10 @@ sub command_parse_options {
                             header          => "Ambiguous option '".$option->key."'", # LOCALIZE
                             type            => "error",
                             body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
-                                map { [ $_ ] } 
-                                sort 
-                                map { $_->cmd_name_primary } 
-                                @{$match_attributes} 
+                                map { [ $_ ] }
+                                sort
+                                map { $_->cmd_name_primary }
+                                @{$match_attributes}
                             ),
                         )
                     );
@@ -354,38 +354,38 @@ sub command_parse_options {
             }
         }
     }
-    
+
     # Check all attributes
     foreach my $attribute (@{$attributes}) {
-        
+
         next
             unless exists $match->{$attribute->name};
-        
+
         my $raw = [
             map { $_->[0] }
             sort { $a->[1] <=> $b->[1] }
             map { @{$_->value} }
             @{$match->{$attribute->name}}
         ];
-        
+
         my ($value,$errors) = $self->command_process_attribute( $attribute, $raw );
         push(@errors,@{$errors});
-        
+
         $return->{$attribute->name} = $value;
     }
-    
+
     return ($return,\@errors);
 }
 
 sub command_process_attribute {
     my ($self,$attribute,$raw) = @_;
-    
+
     $raw = [ $raw ]
         unless ref($raw) eq 'ARRAY';
-    
+
     my @errors;
     my $value;
-    
+
     # Attribute with split
     if ($attribute->has_cmd_split) {
         my @raw_unfolded;
@@ -394,16 +394,16 @@ sub command_process_attribute {
         }
         $raw = \@raw_unfolded;
     }
-    
+
     # Attribute with counter - transform value count into value
     if ($attribute->cmd_count) {
         $value = $raw = [ scalar(@$raw) ];
     }
-    
+
     # Attribute with type constraint
     if ($attribute->has_type_constraint) {
         my $type_constraint = $attribute->type_constraint;
-        
+
         if ($type_constraint->is_a_type_of('ArrayRef')) {
             $value = $raw;
         } elsif ($type_constraint->is_a_type_of('HashRef')) {
@@ -423,15 +423,15 @@ sub command_process_attribute {
             }
         } elsif ($type_constraint->is_a_type_of('Bool')) {
             $value = defined $raw->[-1] ? $raw->[-1] : 1;
-            
-#            if ($self->has_default 
+
+#            if ($self->has_default
 #                && ! $self->is_default_a_coderef
 #                && $self->default == 1) {
-            
+
         } else {
             $value = $raw->[-1];
         }
-        
+
         unless(defined $value) {
             push(@errors,
                 $self->command_message(
@@ -456,23 +456,23 @@ sub command_process_attribute {
                 );
             }
         }
-        
+
     } else {
          $value = $raw->[-1];
     }
-    
+
     return ($value,\@errors);
 }
 
 sub command_candidates {
     my ($self,$command) = @_;
-    
+
     my $lc_command = lc($command);
     my $commands = $self->app_commands;
-    
+
     my @candidates;
     my $candidate_length = length($command);
-    
+
     # Compare all commands to find matching candidates
     foreach my $command_name (keys %$commands) {
         if ($command_name eq $lc_command) {
@@ -481,22 +481,22 @@ sub command_candidates {
             push(@candidates,$command_name);
         }
     }
-    
+
     return [ sort @candidates ];
 }
 
 sub command_find {
     my ($self,$command) = @_;
-    
+
     my $lc_command = lc($command);
     my $commands = $self->app_commands;
-    
+
     # Exact match
     if (defined $commands->{$lc_command}) {
         return $lc_command;
     } else {
         my $candidate =  $self->command_candidates($command);
-        
+
         if (ref $candidate eq '') {
             return $candidate;
         } else {
@@ -533,9 +533,9 @@ sub command_find {
 
 sub command_parser_hints {
     my ($self,$metaclass) = @_;
-    
+
     $metaclass ||= $self;
-    
+
     my %hints;
     my %names;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
@@ -548,18 +548,18 @@ sub command_parser_hints {
             )) {
             $permute = 1;
         }
-        
-        my $hint = { 
-            name    => $attribute->name, 
+
+        my $hint = {
+            name    => $attribute->name,
             novalue => ! $attribute->cmd_has_value,
             permute => $permute,
         };
-        
+
         foreach my $name ($attribute->cmd_name_possible) {
              $names{$name} = $hints{$name} = $hint;
         }
     }
-    
+
     if ($self->app_fuzzy) {
         my $length = max(map { length($_) } keys %names) // 0;
         foreach my $l (reverse(2..$length)) {
@@ -583,7 +583,7 @@ sub command_parser_hints {
             }
         }
     }
-    
+
     my $return = { permute => [], novalue => [] };
     foreach my $name (keys %hints) {
         if ($hints{$name}->{novalue}) {
@@ -605,9 +605,9 @@ sub command_message {
 
 sub command_check_attributes {
     my ($self,$command_meta,$errors,$params) = @_;
-    
+
     $command_meta ||= $self;
-    
+
     # Check required values
     foreach my $attribute ($self->command_usage_attributes($command_meta,[qw(option proto parameter)])) {
         if ($attribute->is_required
@@ -621,30 +621,30 @@ sub command_check_attributes {
             );
         }
     }
-    
+
     return $errors;
 }
 
 sub command_usage_attributes {
     my ($self,$metaclass,$types) = @_;
-    
+
     $metaclass ||= $self;
     $types ||= [qw(option proto)];
-    
+
     my @return;
     foreach my $attribute ($metaclass->get_all_attributes) {
         next
             unless $attribute->does('MooseX::App::Meta::Role::Attribute::Option')
             && $attribute->has_cmd_type;
-        
+
         next
             unless $types eq 'all'
             || $attribute->cmd_type ~~ $types;
-        
+
         push(@return,$attribute);
     }
-    
-    return (sort { 
+
+    return (sort {
         $a->cmd_position <=> $b->cmd_position ||
         $a->cmd_usage_name cmp $b->cmd_usage_name
     } @return);
@@ -652,10 +652,10 @@ sub command_usage_attributes {
 
 sub command_usage_options {
     my ($self,$metaclass,$headline) = @_;
-    
+
     $headline ||= 'options:'; # LOCALIZE
     $metaclass ||= $self;
-    
+
     my @options;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         push(@options,[
@@ -663,10 +663,10 @@ sub command_usage_options {
             $attribute->cmd_usage_description()
         ]);
     }
-    
+
     return
         unless scalar @options > 0;
-    
+
     return $self->command_message(
         header  => $headline,
         body    => MooseX::App::Utils::format_list(@options),
@@ -675,13 +675,13 @@ sub command_usage_options {
 
 sub command_usage_parameters {
     my ($self,$metaclass,$headline) = @_;
-    
+
     $headline ||= 'parameter:'; # LOCALIZE
     $metaclass ||= $self;
-    
+
     my @parameters;
-    foreach my $attribute (     
-        sort { $a->cmd_position <=> $b->cmd_position } 
+    foreach my $attribute (
+        sort { $a->cmd_position <=> $b->cmd_position }
              $self->command_usage_attributes($metaclass,'parameter')
     ) {
         push(@parameters,[
@@ -689,10 +689,10 @@ sub command_usage_parameters {
             $attribute->cmd_usage_description()
         ]);
     }
-    
+
     return
         unless scalar @parameters > 0;
-    
+
     return $self->command_message(
         header  => $headline,
         body    => MooseX::App::Utils::format_list(@parameters),
@@ -701,22 +701,22 @@ sub command_usage_parameters {
 
 sub command_usage_header {
     my ($self,$command_meta_class) = @_;
-    
+
     my $caller = $self->app_base;
-    
+
     my ($command_name,$usage);
     if ($command_meta_class) {
         $command_name = $self->command_class_to_command($command_meta_class->name);
     } else {
         $command_name = '<command>';
     }
-    
+
     $command_meta_class ||= $self;
     if ($command_meta_class->can('command_usage')
         && $command_meta_class->command_usage_predicate) {
         $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
     }
-    
+
     unless (defined $usage) {
         # LOCALIZE
         $usage = "$caller $command_name ";
@@ -733,7 +733,7 @@ $caller help
 $caller $command_name --help";
         $usage = MooseX::App::Utils::format_text($usage);
     }
-        
+
     return $self->command_message(
         header  => 'usage:', # LOCALIZE
         body    => $usage,
@@ -742,7 +742,7 @@ $caller $command_name --help";
 
 sub command_usage_description {
     my ($self,$command_meta_class) = @_;
-    
+
     $command_meta_class ||= $self;
     if ($command_meta_class->can('command_long_description')
         && $command_meta_class->command_long_description_predicate) {
@@ -762,58 +762,58 @@ sub command_usage_description {
 
 sub command_class_to_command {
     my ($self,$command_class) = @_;
-    
+
     my $commands = $self->app_commands;
     foreach my $element (keys %$commands) {
         if ($command_class eq $commands->{$element}) {
             return $element;
         }
     }
-    
+
     return;
 }
 
 sub command_usage_command {
     my ($self,$command_meta_class) = @_;
-    
+
     $command_meta_class ||= $self;
-    
+
     my $command_class = $command_meta_class->name;
     my $command_name = $self->command_class_to_command($command_class);
-    
+
     my @usage;
     push(@usage,$self->command_usage_header($command_meta_class));
-    push(@usage,$self->command_usage_description($command_meta_class)); 
+    push(@usage,$self->command_usage_description($command_meta_class));
     push(@usage,$self->command_usage_parameters($command_meta_class,'parameters:')); # LOCALIZE
     push(@usage,$self->command_usage_options($command_meta_class,'options:')); # LOCALIZE
-    
+
     return @usage;
 }
 
 sub command_usage_global {
     my ($self) = @_;
-    
+
     my @commands;
     push(@commands,['help','Prints this usage information']); # LOCALIZE
-    
+
     my $commands = $self->app_commands;
-    
+
     foreach my $command (keys %$commands) {
-        my $class = $commands->{$command}; 
+        my $class = $commands->{$command};
         Class::Load::load_class($class);
         my $command_description;
         $command_description = $class->meta->command_short_description
             if $class->meta->can('command_short_description');
-        
+
         $command_description ||= '';
         push(@commands,[$command,$command_description]);
     }
-    
+
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
-    
+
     my @usage;
     push(@usage,$self->command_usage_header());
-    
+
     my $description = $self->command_usage_description($self);
     push(@usage,$description)
         if $description;
@@ -825,7 +825,7 @@ sub command_usage_global {
             body    => MooseX::App::Utils::format_list(@commands),
         )
     );
-    
+
     return @usage;
 }
 
@@ -857,23 +857,23 @@ the C<_build_app_messageclass> method. Defaults to MooseX::App::Message::Block
 
 =head2 app_namespace
 
-Usually MooseX::App will take the package name of the base class as the 
+Usually MooseX::App will take the package name of the base class as the
 namespace for commands. This namespace can be changed.
 
 =head2 app_base
 
-Usually MooseX::App will take the name of the calling wrapper script to 
-construct the program name in various help messages. This name can 
+Usually MooseX::App will take the name of the calling wrapper script to
+construct the program name in various help messages. This name can
 be changed via the app_base accessor. Defaults to the base name of $0
 
 =head2 app_fuzzy
 
-Boolean flag that controls if command names and attributes should be 
+Boolean flag that controls if command names and attributes should be
 matched exactly or fuzzy. Defaults to true.
 
 =head2 app_command_name
 
-Coderef attribute that controls how package names are translated to command 
+Coderef attribute that controls how package names are translated to command
 names and attributes. Defaults to &MooseX::App::Utils::class_to_command
 
 =head2 app_commands
@@ -882,15 +882,15 @@ Hashref with command to command class map.
 
 =head2 app_strict
 
-Boolean flag that controls if an application with superfluous/unknown 
-positional parameters should terminate with an error message or not. 
-If disabled all extra parameters will be copied to the L<extra_argv> 
+Boolean flag that controls if an application with superfluous/unknown
+positional parameters should terminate with an error message or not.
+If disabled all extra parameters will be copied to the L<extra_argv>
 command class attribute.
 
 =head2 app_prefer_commandline
 
-By default, arguments passed to new_with_command and new_with_options have a 
-higher priority than the command line options. This boolean flag will give 
+By default, arguments passed to new_with_command and new_with_options have a
+higher priority than the command line options. This boolean flag will give
 the command line an higher priority.
 
 =head2 app_permute
@@ -920,9 +920,9 @@ Returns the command moniker for the given command class.
 
 =head2 command_message
 
- my $message = $meta->command_message( 
-    header  => $header, 
-    type    => 'error', 
+ my $message = $meta->command_message(
+    header  => $header,
+    type    => 'error',
     body    => $message
  );
 
@@ -993,7 +993,7 @@ command. Is a wrapper around L<command_parse_options>.
 Tries to parse the selected attributes from @ARGV.
 
 =head2 command_scan_namespace
- 
+
  my %namespaces = $self->command_scan_namespace($namespace);
 
 Scans a namespace for command classes. Returns a hash with command names
@@ -1021,7 +1021,7 @@ Returns the positional parameters usage as a message object
 =head2 command_check_attributes
 
  $errors = $self->command_check_attributes($command_metaclass,$errors,$params)
- 
+
 Checks all attributes. Returns/alters the $errors arrayref
 
 =head2 command_parser_hints

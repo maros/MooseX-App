@@ -26,17 +26,17 @@ MooseX::App::WritingPlugins - Writing plugins for MooseX::App
 =head1 DESCRIPTION
 
 Plugins are implemented as Moose roles and must reside in the
-MooseX::App::Plugin::* namespace. Metaclasses can be altered via the 
-'plugin_metaroles' callback method. Furthermore Moose method modifiers 
+MooseX::App::Plugin::* namespace. Metaclasses can be altered via the
+'plugin_metaroles' callback method. Furthermore Moose method modifiers
 (around, after, before) can be used to alter the behaviour of MooseX::App or
 its meta classes.
 
 =head1 CALLBACKS
 
-=head2 plugin_metaroles 
+=head2 plugin_metaroles
 
 Optional callback method that should return a hash reference specifying which
-metaroles will be applied to the class metaclass and its contained metaclasses 
+metaroles will be applied to the class metaclass and its contained metaclasses
 and helper classes.
 
 Each key should in turn point to an array reference of role names.
@@ -59,7 +59,7 @@ It accepts the following keys:
 
 =item * destructor
 
-=item * error 
+=item * error
 
 =back
 

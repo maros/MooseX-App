@@ -24,7 +24,7 @@ MooseX::App::Plugin::Depends - Adds dependent options
 
 =head1 SYNOPSIS
 
-In your base class: 
+In your base class:
 
  package MyApp;
  use MooseX::App qw(Depends);
@@ -36,18 +36,18 @@ In your base class:
    isa => enum( [qw(tsv csv xml)] ),
  );
 
- option 'WriteToFile' => ( 
+ option 'WriteToFile' => (
    is       => 'ro',
    isa      => 'Bool',
    depends => [qw(FileFormat)],
  );
 
-In your script: 
+In your script:
 
  #!/usr/bin/env perl
 
  use strict;
- use warnings; 
+ use warnings;
 
  use MyApp;
 
@@ -56,16 +56,16 @@ In your script:
  # Option 'WriteToFile' requires 'FileFormat' to be defined
 
  MyApp->new_with_options( WriteToFile => 1, FileFormat => 'tsv );
- # generates no errors 
+ # generates no errors
 
- MyApp->new_with_options(); 
- # generates no errors 
+ MyApp->new_with_options();
+ # generates no errors
 
 =head1 DESCRIPTION
 
-In many real-world scenarios, sets of options are, by design, needed to be 
-specified together. This plugin adds the ability to create dependent options 
+In many real-world scenarios, sets of options are, by design, needed to be
+specified together. This plugin adds the ability to create dependent options
 to your application, options that require one or more other options
-for your application to perform properly. 
+for your application to perform properly.
 
 =cut

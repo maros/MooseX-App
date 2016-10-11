@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class       => ['MooseX::App::Plugin::Term::Meta::Class'],
         attribute   => ['MooseX::App::Plugin::Term::Meta::Attribute'],
@@ -34,7 +34,7 @@ In your base class:
  package MyApp;
  use MooseX::App qw(Term);
 
-In your command class: 
+In your command class:
 
  package MyApp::SomeCommand;
  use MooseX::App::Command;
@@ -63,7 +63,7 @@ In your shell
 
 =head1 DESCRIPTION
 
-This plugin can prompt the user for missing options/parameters on the 
+This plugin can prompt the user for missing options/parameters on the
 terminal. The user will only be promted if the parameter were not provided
 by different means (parameter and option or config files and environment
 values if the respectice plugins have been loaded before this plugin) and

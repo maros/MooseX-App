@@ -41,7 +41,7 @@ sub bash_completion {
     }
 
     my $syntax = '';
-    
+
     $syntax .= <<"EOT";
 #!/bin/bash
 

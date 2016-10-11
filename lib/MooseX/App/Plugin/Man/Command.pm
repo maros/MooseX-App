@@ -24,7 +24,7 @@ has 'command' => (
 
 sub man {
     my ($self,$app) = @_;
-    
+
     my $meta = $app->meta;
     my $class;
 
@@ -42,10 +42,10 @@ sub man {
     } else {
         $class = $meta->name;
     }
-    
+
     Class::Load::load_class($class);
     my $filename = MooseX::App::Utils::package_to_filename($class);
-    
+
     exec('perldoc',$filename);
     #return $MooseX::App::Null::NULL;
 }

@@ -10,7 +10,7 @@ use Moose::Role;
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
-    
+
     return {
         class   => ['MooseX::App::Plugin::BashCompletion::Meta::Class'],
     }
@@ -19,13 +19,13 @@ sub plugin_metaroles {
 around 'initialize_command_class' => sub {
     my $orig = shift;
     my $self = shift;
-    
+
     my $return = $self->$orig(@_);
-    if (blessed $return 
+    if (blessed $return
         && $return->isa('MooseX::App::Plugin::BashCompletion::Command')) {
         return $return->bash_completion($self);
     }
-    
+
     return $return;
 };
 
