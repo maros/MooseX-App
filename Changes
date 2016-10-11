@@ -1,14 +1,19 @@
 Release history for Perl module MooseX::App
 
-1.36 2016-05-XX
-    - Set encoding on STDERR
+1.36 2016-10-11
     - Documentation
+    - Set correct encoding on STDERR
+    - Fix order of options (fixed by J.R. Mash)
+    - Replace dashes in variable names with underscores in bash completion (implemented by Tina Müller)
+    - Do not autocomplete autocomplete itself (implemented by Lisa Hare)
+    - Create correct documentation for options with cmd_split
+    - Rename hints key to clarify purpose
     - Add ability to negate boolean options (implemented by Marc Logghe)
-    - Apply Spelling fixes github#39 (fixed by Gregor Herrmann)
-    - Improved retaining the initial element order for arrays
+    - Spelling fixes github#39 (fixed by Gregor Herrmann)
+    - Retain original order of elements from @ARGV
 
 1.35 2016-04-02
-    - Apply Spelling fixes RT112234 (fixed by Gregor Herrmann)
+    - Spelling fixes RT112234 (fixed by Gregor Herrmann)
     - Documentation
     - Allow to pass ARGV directly to constructor
     - use namespace::autoclean (reported by Mohammad S Anwar)
