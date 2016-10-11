@@ -14,7 +14,7 @@ SYNOPSIS
           documentation => q[Enable this to do fancy stuff],
       ); # Global option
   
-      has 'private' => ( 
+      has 'private' => (
           is              => 'rw',
       ); # not exposed
 
@@ -90,7 +90,7 @@ DESCRIPTION
     add a single line ("use MooseX-App qw(PluginA PluginB ...);") and create
     one class for each command in an underlying namespace. Options and
     positional parameters can be defined as simple Moose accessors using the
-    "option" and "parameter" keywords repectively.
+    "option" and "parameter" keywords respectively.
 
     MooseX-App will then
 
@@ -167,7 +167,7 @@ DESCRIPTION
     *   HashRef: Specify multiple key value pairs ('--opt key=value --opt
         key2=value2', also see app_permute)
 
-    *   Enum: Display all possibilites
+    *   Enum: Display all possibilities
 
     *   Bool: Flags that do not require values
 
@@ -219,13 +219,14 @@ GLOBAL OPTIONS
     default.
 
   app_strict
-     app_strict 0; # default 
+     app_strict 0; # default
      OR
      app_strict 1;
 
     If strict is enabled the program will terminate with an error message if
     superfluous/unknown positional parameters are supplied. If disabled all
-    extra parameters will be copied to the extra_argv attribute.
+    extra parameters will be copied to the extra_argv attribute. Unknown
+    options (with leading dashes) will always yield an error message.
 
     The command_strict config in the command classes allows one to set this
     option individually for each command in the respective command class.
@@ -327,8 +328,8 @@ ATTRIBUTE OPTIONS
 
 METADATA
     MooseX::App will use your class metadata and POD to construct the
-    commands and helpful error- or usage- messages. These bits of
-    information are utilised and should be provided if possible:
+    commands and helpful error- or usage-messages. These bits of information
+    are utilised and should be provided if possible:
 
     *   Package names
 
@@ -413,7 +414,8 @@ CAVEATS & KNOWN BUGS
 
     In some cases - especially when using non-standard class inheritance -
     you may end up with command classes lacking the help attribute. In this
-    case you need to include the following line in your base class
+    case you need to include the following line in your base class or
+    command classes.
 
      with qw(MooseX::App::Role::Common);
 
@@ -434,14 +436,13 @@ SEE ALSO
 
     For alternatives you can check out
 
-    MooseX::App::Cmd, MooseX::Getopt, MooX::Options, MooX::Cmd and App::Cmd
+    MooseX::App::Cmd, MooseX::Getopt, MooX::Options, MooX::Cmdand App::Cmd
 
 SUPPORT
-    Please report any bugs or feature requests to
-    "bug-moosex-app@rt.cpan.org", or through the web interface at
-    <http://rt.cpan.org/Public/Bug/Report.html?Queue=MooseX-App>. I will be
-    notified, and then you'll automatically be notified of progress on your
-    report as I make changes.
+    Please report any bugs or feature requests via
+    <https://github.com/maros/MooseX-App/issues/new>. I will be notified,
+    and then you'll automatically be notified of progress on your report as
+    I make changes.
 
 AUTHOR
         Maroš Kollár
@@ -456,7 +457,8 @@ CONTRIBUTORS
     In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
     Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David
     Golden, J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer
-    X, Roman F., Hunter McMillen, Maik Hentsche, Alexander Stoddard
+    X, Roman F., Hunter McMillen, Maik Hentsche, Alexander Stoddard, Marc
+    Logghe, Tina Müller, Lisa Hare
 
     You are more than welcome to contribute to MooseX-App. Please have a
     look at the
