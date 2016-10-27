@@ -361,14 +361,34 @@ sub command_parse_options {
         next
             unless exists $match->{$attribute->name};
 
-        my $raw = [
+        my @mapped_values;
+        foreach my $element (@{$match->{$attribute->name}}) {
+            foreach my $value ($element->all_values) {
+                # TODO
+                if ($attribute->has_type_constraint
+                    && $attribute->type_constraint->is_a_type_of('Bool')) {
+                    if ($attribute->has_cmd_negate
+                        && $element->key ~~ $attribute->cmd_negate) {
+
+                        push(@mapped_values,[ 0, $value->position ]);
+                    } else {
+                         push(@mapped_values,[ 1, $value->position ]);
+                    }
+                    # body...
+                } else {
+                    push(@mapped_values,[ $value->value, $value->position ]);
+                }
+            }
+        }
+
+        my $values = [
             map { $_->[0] }
             sort { $a->[1] <=> $b->[1] }
-            map { @{$_->value} }
-            @{$match->{$attribute->name}}
+            @mapped_values
         ];
 
-        my ($value,$errors) = $self->command_process_attribute( $attribute, $raw );
+        #warn Data::Dumper::Dumper($raw);
+        my ($value,$errors) = $self->command_process_attribute( $attribute, $values );
         push(@errors,@{$errors});
 
         $return->{$attribute->name} = $value;
@@ -422,7 +442,7 @@ sub command_process_attribute {
                 }
             }
         } elsif ($type_constraint->is_a_type_of('Bool')) {
-            $value = defined $raw->[-1] ? $raw->[-1] : 1;
+            $value = $raw->[-1];
 
 #            if ($self->has_default
 #                && ! $self->is_default_a_coderef
@@ -540,18 +560,21 @@ sub command_parser_hints {
     my %names;
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         my $permute = 0;
+        my $bool = 0;
         my $type_constraint = $attribute->type_constraint;
-        if ($type_constraint
-            && (
-                $type_constraint->is_a_type_of('ArrayRef')
-                || $type_constraint->is_a_type_of('HashRef')
-            )) {
-            $permute = 1;
+        if ($type_constraint) {
+            $permute = 1
+                if $type_constraint->is_a_type_of('ArrayRef')
+                || $type_constraint->is_a_type_of('HashRef');
+
+            $bool = 1
+                if $type_constraint->is_a_type_of('Bool');
         }
 
         my $hint = {
             name    => $attribute->name,
-            novalue => ! $attribute->cmd_has_value,
+            bool    => $bool,
+            novalue => $bool || $attribute->cmd_count,
             permute => $permute,
         };
 

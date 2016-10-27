@@ -45,6 +45,12 @@ has 'cmd_count' => (
     default     => sub { 0 },
 );
 
+has 'cmd_negate' => (
+    is          => 'rw',
+    isa         => 'ArrayRef[Str]',
+    predicate   => 'has_cmd_negate',
+);
+
 has 'cmd_env' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::Env',
@@ -74,34 +80,6 @@ around 'new' => sub {
 
     return $self;
 };
-
-sub cmd_has_value {
-    my ($self) = @_;
-
-    if ($self->has_type_constraint
-        && $self->type_constraint->is_a_type_of('Bool')) {
-
-        # Bool and defaults to true
-        #if ($self->has_default
-        #    && ! $self->is_default_a_coderef
-        #    && $self->default == 1) {
-        #    return 0;
-        ## Bool and is required
-        #} elsif (! $self->has_default
-        #    && $self->is_required) {
-        #    return 0;
-        #}
-
-        # Ordinary bool
-        return 0;
-    }
-
-    if ($self->cmd_count) {
-        return 0;
-    }
-
-    return 1;
-}
 
 sub cmd_type_constraint_description {
     my ($self,$type_constraint,$singular) = @_;
@@ -214,6 +192,11 @@ sub cmd_name_possible {
 
     if ($self->has_cmd_aliases) {
         push(@names, @{$self->cmd_aliases});
+    }
+
+    # TODO check boolean type constraint
+    if ($self->has_cmd_negate) {
+        push(@names, @{$self->cmd_negate});
     }
 
     return @names;
@@ -415,23 +398,6 @@ Returns the description as used by the usage text
  my @tags = $attribute->cmd_tags_list();
 
 Returns a list of tags
-
-=head2 cmd_has_value
-
- my $has_value = $attribute->cmd_has_value();
-
-Indicates if an commandline attribute has a value. Usually attributes with a
-boolean type constraint or counters don't have values.
-
-=over
-
-=item * undef: Does not have a boolean type constraint
-
-=item * true: Has a boolean type constraint
-
-=item * false: Has a boolean type constraint, and a true default value
-
-=back
 
 =head2 cmd_type_constraint_check
 

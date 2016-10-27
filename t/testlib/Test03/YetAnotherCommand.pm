@@ -21,6 +21,7 @@ option 'bool3' => (
     is            => 'rw',
     isa           => 'Bool',
     required      => 1,
+    cmd_negate    => ['no-bool3'],
 );
 
 option 'value' => (
