@@ -16,13 +16,13 @@ has 'key' => (
 
 has 'value' => (
     is              => 'ro',
-    isa             => 'ArrayRef[ArrayRef]',
+    isa             => 'ArrayRef[MooseX::App::ParsedArgv::Value]',
     traits          => ['Array'],
     default         => sub { [] },
     handles         => {
-        add_raw_value   => 'push',
-        has_values      => 'count',
-        raw_values      => 'elements',
+        push_value      => 'push',
+        count_values    => 'count',
+        list_values     => 'elements',
     }
 );
 
@@ -38,41 +38,36 @@ has 'type' => (
     required        => 1,
 );
 
-has 'raw' => (
-    is              => 'ro',
-    isa             => 'Str',
-    predicate       => 'has_raw',
-);
-
-has 'occurrence' => (
-    is              => 'ro',
-    isa             => 'Int',
-    default         => sub { 1 },
-    traits          => ['Counter'],
-    handles         => {
-        inc_occurrence   => 'inc',
-    }
-);
 
 sub original {
     my ($self) = @_;
-    if ($self->has_raw) {
-        return $self->raw;
+
+    # TODO fixthis
+    if ($self->count_values && $self->value->[-1]->has_raw) {
+        return $self->value->[-1]->has_raw;
     } else {
         return $self->key;
     }
 }
 
 sub add_value {
-    my ($self,$value,$position) = @_;
-    $position //= 999;
-    $self->add_raw_value([ $value,$position ]);
+    my ($self,$value,$position,$raw) = @_;
+
+    $self->push_value(MooseX::App::ParsedArgv::Value->new(
+        value       => $value,
+        (defined $position ? (position => $position):()),
+        (defined $raw ? (raw => $raw):()),
+    ));
+}
+
+sub all_scalar_values {
+    return map { $_->value }
+        $_[0]->all_values;
 }
 
 sub all_values {
-    return map { $_->[0] }
-        sort { $a->[1] <=> $b->[1] }
-        $_[0]->raw_values;
+    return sort { $a->position <=> $b->position }
+        $_[0]->list_values;
 }
 
 sub consume {
@@ -89,14 +84,14 @@ sub serialize {
     my ($self) = @_;
     given ($self->type) {
         when ('extra') {
-            return $self->key
+            return $self->key;
         }
         when ('parameter') {
-            return $self->key
+            return $self->key;
         }
         when ('option') {
             my $key = (length $self->key == 1 ? '-':'--').$self->key;
-            return join(' ',map { $key.' '.$_ } $self->all_values);
+            return join(' ',map { $key.' '.$_->value } $self->all_values);
         }
     }
     return;
@@ -109,7 +104,7 @@ __PACKAGE__->meta->make_immutable();
 
 =head1 NAME
 
-MooseX::App::ParsedArgv::Element - Parsed element from @ARGV
+MooseX::App::ParsedArgv::Element - Parsed logical element from @ARGV
 
 =head1 DESCRIPTION
 
@@ -123,20 +118,12 @@ Parameter value or option key
 
 =head2 value
 
-Arrayref of values. A value itself is an arrayref of the raw value and the
-original position in ARGV.
-
-=head2 raw
-
-Raw value as supplied by the user
+Arrayref of values. A value is represented by a MooseX::App::ParsedArgv::Value
+object.
 
 =head2 type
 
 Type of element. Can be 'option', 'parameter' or 'extra'
-
-=head2 occurrence
-
-Number of occurrences in @ARGV
 
 =head2 consumed
 
