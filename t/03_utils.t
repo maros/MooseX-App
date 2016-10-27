@@ -36,13 +36,13 @@ subtest 'Format text' => sub {
 };
 
 subtest 'Formater' => sub {
-    
+
     my $list = MooseX::App::Utils::format_list(
         ['part1','Lorem ipsum dolor sit amet, consectetur adipiscing elit. vitae lectus purus, quis dapibus orci.'],
         ['part2_something','Lorem ipsum dolor sit amet, consectetur adipiscing elit.'],
         ['part3',''],
     );
-    
+
     is(
         $list,
 '    part1            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -59,7 +59,7 @@ subtest 'Parser' => sub {
         hints_novalue   => ['bool'],
         hints_permute   => ['xxx'],
     });
-    
+
     is(scalar(@{$parser->elements}),13,'Has 13 elements');
     is($parser->elements->[0]->key,'hello','Parameter parsed ok');
     is($parser->elements->[0]->type,'parameter','Parameter type ok');

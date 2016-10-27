@@ -20,8 +20,8 @@ option 'another_option' => (
 
 sub run {
     my ($self) = @_;
-    
-    warn $self->dump;   
+
+    warn $self->dump;
 }
 
 1;

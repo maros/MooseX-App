@@ -6,10 +6,10 @@ extends qw(Test06);
 
 use Moose::Util::TypeConstraints;
 
-subtype 'Test06::local2' 
+subtype 'Test06::local2'
     => as 'Str'
     => where { $_  =~ /^[aA]/ };
-    #=> message { "Must start with an 'A'" };  
+    #=> message { "Must start with an 'A'" };
 
 no Moose::Util::TypeConstraints;
 
@@ -24,7 +24,7 @@ sub run {
     my ($self) = @_;
     print "NEW WITH A";
     ref($self)->initialize_command_class('Test06::CommandB')->run;
-    #$self->initialize_command_class('Test06::CommandB');   
+    #$self->initialize_command_class('Test06::CommandB');
 }
 
 1;

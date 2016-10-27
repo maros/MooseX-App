@@ -17,7 +17,7 @@ option 'param_b' => (
     required    => 1,
 );
 
-sub run { 
+sub run {
     print "RUN COMMAND-B";
 }
 

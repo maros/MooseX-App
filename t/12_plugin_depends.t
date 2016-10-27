@@ -14,7 +14,7 @@ subtest 'Depends' => sub {
    {
       my $test01 = Test08->new_with_options( WriteToFile => 1 );
       isa_ok( $test01, 'MooseX::App::Message::Envelope' );
-      
+
       my @errors = grep { $_->type eq 'error' } @{ $test01->blocks };
       is( scalar @errors, 1, 'only returned a single error' );
       is( $errors[0]->header,
@@ -22,11 +22,11 @@ subtest 'Depends' => sub {
           'generated an error when an option dependency was not present'
       );
    }
-   
+
    {
       my $test02 = Test08->new_with_options( ReadFromFile => 1 );
       isa_ok( $test02, 'MooseX::App::Message::Envelope' );
-      
+
       my @errors = grep { $_->type eq 'error' } @{ $test02->blocks };
       is( scalar @errors, 1, 'only returned a single error' );
       is( $errors[0]->header,
@@ -34,18 +34,18 @@ subtest 'Depends' => sub {
           'generated an error when an option dependency was not present'
       );
    }
-   
+
    {
       my $test03 = Test08->new_with_options( WriteToFile => 1, FileFormat => 'tsv' );
-      ok( ! $test03->can('blocks'), 
-          'generated no errors when both an option and its dependencies are defined' 
+      ok( ! $test03->can('blocks'),
+          'generated no errors when both an option and its dependencies are defined'
       );
    }
-     
+
    {
       my $test04 = Test08->new_with_options( ReadFromFile => 1, FileFormat => 'tsv' );
-      ok( ! $test04->can('blocks'), 
-          'generated no errors when both an option and its dependencies are defined' 
+      ok( ! $test04->can('blocks'),
+          'generated no errors when both an option and its dependencies are defined'
       );
-   } 
+   }
 };

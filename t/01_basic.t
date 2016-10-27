@@ -106,27 +106,27 @@ subtest 'Input errors type' => sub {
     my $test08 = Test01->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
     is($test08->blocks->[0]->header,"Invalid value for 'command_local1'",'Error message ok');
-    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok'); 
+    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok');
 };
 
 subtest 'Global help requested' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(help)]);
     my $test09 = Test01->new_with_command;
     isa_ok($test09,'MooseX::App::Message::Envelope');
-    like($test09->blocks->[0]->body,qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok'); 
+    like($test09->blocks->[0]->body,qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok');
 };
 
 subtest 'Missing command' => sub {
     MooseX::App::ParsedArgv->new(argv => []);
     my $test10 = Test01->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
-    is($test10->blocks->[0]->header,'Missing command','Error message ok'); 
+    is($test10->blocks->[0]->header,'Missing command','Error message ok');
 };
 
 subtest 'Extra params' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a something else)]);
     my $test11 = Test01->new_with_command;
     isa_ok($test11,'MooseX::App::Message::Envelope');
-    is($test11->blocks->[0]->header,"Unknown parameter 'else'",'Error message ok'); 
+    is($test11->blocks->[0]->header,"Unknown parameter 'else'",'Error message ok');
 };
 

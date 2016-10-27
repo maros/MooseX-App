@@ -13,7 +13,7 @@ subtest 'Command with config' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --config t/config.pl)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'Test01::CommandA');
-    
+
     is($test01->global,'234','Arg from command config');
     is($test01->command_local1,'22','Arg from command config');
     isa_ok($test01->config,'Path::Class::File');

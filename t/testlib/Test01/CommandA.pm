@@ -32,7 +32,7 @@ Cras eget mi nisi. In hac habitasse platea dictumst.";
 
 command_short_description "Command A!";
 
-sub run { 
+sub run {
     my ($self) = @_;
     print "RUN COMMAND-A:".($self->command_local2 // 'undef');
 }

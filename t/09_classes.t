@@ -29,7 +29,7 @@ subtest 'Wrong usage' => sub {
 
 subtest 'Conflicts' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(broken --conflict a)]);
-    throws_ok { 
+    throws_ok {
         Test03->new_with_command;
     } qr/Command line option conflict/, 'Conflict detected';
 };
@@ -37,11 +37,11 @@ subtest 'Conflicts' => sub {
 subtest 'Default args available with extra inheritance' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(yetanothercommand --help)]);
     my $another = Test03->new_with_command;
-    
+
     isa_ok($another,'MooseX::App::Message::Envelope');
     like($another->blocks->[0]->body,qr/test03\syetanothercommand/,'Help ok');
     is($another->blocks->[0]->header,'usage:','Help ok');
-   
+
     MooseX::App::ParsedArgv->new(argv => [qw(yetanothercommand -ab --bool3)]);
     my $yetanother = Test03->new_with_command(private => 'test');
     isa_ok($yetanother,'Test03::YetAnotherCommand');
@@ -62,5 +62,5 @@ subtest 'Correct order from role ' => sub {
     is($test03->param_c,'a1','First from role');
     is($test03->param_a,'b2','Second from role');
     is($test03->param_b,'ccc','Third from role');
-    
+
 };

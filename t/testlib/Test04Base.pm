@@ -18,7 +18,7 @@ has 'test3' => (
 );
 
 sub run {
-    print "RAN";   
+    print "RAN";
 }
 
 1;

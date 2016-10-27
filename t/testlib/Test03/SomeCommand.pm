@@ -40,7 +40,7 @@ has 'private' => (
     is              => 'rw',
     isa             => 'Str',
 );
- 
+
 sub run {
     my ($self) = @_;
     print "RUN:".($self->some_option||'').":".($self->another_option||'');

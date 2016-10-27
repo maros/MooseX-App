@@ -11,7 +11,7 @@ has 'email' => (
 
 sub run {
     my ($self) = @_;
-    warn $self;   
+    warn $self;
 }
 
 1;

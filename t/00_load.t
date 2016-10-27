@@ -4,7 +4,7 @@
 
 use Test::Most tests => 43;
 
-use_ok( 'MooseX::App' ); 
+use_ok( 'MooseX::App' );
 use_ok( 'MooseX::App::ParsedArgv' );
 use_ok( 'MooseX::App::Command' );
 #use_ok( 'MooseX::App::Role' ); # cannot test since it can only be loaded into a Moose::Role

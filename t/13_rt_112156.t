@@ -10,7 +10,7 @@ use lib 't/testlib';
 {
     package Test13;
     use MooseX::App qw(Depends);
-    
+
     option 'unrelated' => (
         is             => 'rw',
         isa            => 'Int',
@@ -22,20 +22,20 @@ use lib 't/testlib';
     package Test13::SomeCommand;
     use MooseX::App::Command;
     # no inheritance
-    
+
     option 'one' => (
         is             => 'rw',
         isa            => 'Int',
         documentation  => 'One thing',
         depends        => ['other'],
     );
-    
+
     option 'other' => (
         is             => 'rw',
         isa            => 'Int',
         documentation  => 'Other thing',
     );
-    
+
     sub run {
         my ($self) = @_;
         return "ok";
@@ -46,26 +46,26 @@ use lib 't/testlib';
     package Test13::AnotherCommand;
     use MooseX::App::Command;
     extends qw(Test13);
-    
+
     option 'one' => (
         is             => 'rw',
         isa            => 'Int',
         documentation  => 'One thing',
         depends        => ['other'],
     );
-    
+
     option 'other' => (
         is             => 'rw',
         isa            => 'Int',
         documentation  => 'Other thing',
     );
-    
+
     sub run {
         my ($self) = @_;
         return "ok";
     }
 }
- 
+
 subtest 'no inheritance' => sub {
    plan tests => 2;
 
@@ -74,7 +74,7 @@ subtest 'no inheritance' => sub {
       my $test01 = Test13->new_with_command();
       isa_ok($test01,'Test13::SomeCommand');
    }
-   
+
    {
       MooseX::App::ParsedArgv->new(argv => [qw(another --one 1 --other 2)]);
       my $test02 = Test13->new_with_command();

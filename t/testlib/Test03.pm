@@ -6,10 +6,10 @@ our $VERSION = '22.02';
 
 app_permute 1;
 app_base 'test03';
-app_command_name { 
+app_command_name {
     my ($package) = @_;
     return lc($package);
-}; 
+};
 
 option 'global_option' => (
     is            => 'rw',
@@ -24,7 +24,7 @@ has 'hidden_option' => (
 );
 
 sub run {
-    print "RAN";   
+    print "RAN";
 }
 
 1;

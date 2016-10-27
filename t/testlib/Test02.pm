@@ -9,7 +9,7 @@ app_namespace "Test02::Command","Test02::MoreCommands";
 #app_fuzzy;
 
 sub run {
-    print "RAN";   
+    print "RAN";
 }
 
 1;
