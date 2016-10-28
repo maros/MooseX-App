@@ -70,6 +70,11 @@ sub all_values {
         $_[0]->list_values;
 }
 
+sub last_value {
+    my ($self) = @_;
+    return ($self->all_values)[-1];
+}
+
 sub consume {
     my ($self,$attribute) = @_;
 
@@ -118,7 +123,7 @@ Parameter value or option key
 
 =head2 value
 
-Arrayref of values. A value is represented by a MooseX::App::ParsedArgv::Value
+Arrayref of values. A value is represented by a L<MooseX::App::ParsedArgv::Value>
 object.
 
 =head2 type

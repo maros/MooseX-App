@@ -171,7 +171,8 @@ sub cmd_usage_name {
     } else {
         return join(' ',
             map { (length($_) == 1) ? "-$_":"--$_" }
-            $self->cmd_name_possible);
+            $self->cmd_name_possible
+        );
     }
 }
 
@@ -185,7 +186,7 @@ sub cmd_name_primary {
     }
 }
 
-sub cmd_name_possible {
+sub cmd_name_list {
     my ($self) = @_;
 
     my @names = ($self->cmd_name_primary);
@@ -193,6 +194,14 @@ sub cmd_name_possible {
     if ($self->has_cmd_aliases) {
         push(@names, @{$self->cmd_aliases});
     }
+
+    return @names;
+}
+
+sub cmd_name_possible {
+    my ($self) = @_;
+
+    my @names = $self->cmd_name_list();
 
     # TODO check boolean type constraint
     if ($self->has_cmd_negate) {

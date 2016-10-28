@@ -363,27 +363,12 @@ sub command_parse_options {
 
         my @mapped_values;
         foreach my $element (@{$match->{$attribute->name}}) {
-            foreach my $value ($element->all_values) {
-                # TODO
-                if ($attribute->has_type_constraint
-                    && $attribute->type_constraint->is_a_type_of('Bool')) {
-                    if ($attribute->has_cmd_negate
-                        && $element->key ~~ $attribute->cmd_negate) {
-
-                        push(@mapped_values,[ 0, $value->position ]);
-                    } else {
-                         push(@mapped_values,[ 1, $value->position ]);
-                    }
-                    # body...
-                } else {
-                    push(@mapped_values,[ $value->value, $value->position ]);
-                }
-            }
+            push(@mapped_values,$element->all_values);
         }
 
         my $values = [
-            map { $_->[0] }
-            sort { $a->[1] <=> $b->[1] }
+            map { $_->value }
+            sort { $a->position <=> $b->position }
             @mapped_values
         ];
 
@@ -558,6 +543,7 @@ sub command_parser_hints {
 
     my %hints;
     my %names;
+    my $return = { permute => [], novalue => [], fixedvalue => {} };
     foreach my $attribute ($self->command_usage_attributes($metaclass,[qw(option proto)])) {
         my $permute = 0;
         my $bool = 0;
@@ -578,8 +564,22 @@ sub command_parser_hints {
             permute => $permute,
         };
 
-        foreach my $name ($attribute->cmd_name_possible) {
+        foreach my $name ($attribute->cmd_name_list) {
              $names{$name} = $hints{$name} = $hint;
+        }
+
+        # Negated values
+        if ($bool) {
+            $hint->{fixedvalue} = 1;
+            if ($attribute->has_cmd_negate) {
+                my $hint_neg = { %{$hint} }; # shallow copy
+                $hint_neg->{fixedvalue} = 0;
+                foreach my $name (@{$attribute->cmd_negate}) {
+                    $names{$name} = $hints{$name} = $hint_neg;
+                }
+            }
+        } elsif ($attribute->cmd_count) {
+            $hint->{fixedvalue} = 1;
         }
     }
 
@@ -607,7 +607,6 @@ sub command_parser_hints {
         }
     }
 
-    my $return = { permute => [], novalue => [] };
     foreach my $name (keys %hints) {
         if ($hints{$name}->{novalue}) {
             push(@{$return->{novalue}},$name);
@@ -615,7 +614,13 @@ sub command_parser_hints {
         if ($hints{$name}->{permute}) {
             push(@{$return->{permute}},$name);
         }
+        if (defined $hints{$name}->{fixedvalue}) {
+            $return->{fixedvalue}{$name} = $hints{$name}->{fixedvalue};
+        }
     }
+
+
+        #warn Data::Dumper::Dumper($return);
     return $return;
 }
 

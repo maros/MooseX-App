@@ -26,6 +26,7 @@ sub initialize_command_class {
     # Build MooseX::App::ParsedArgv and set hints
     my $parsed_argv = MooseX::App::ParsedArgv->instance();
     my $hints = $meta->command_parser_hints($command_meta);
+    $parsed_argv->hints_fixedvalue($hints->{fixedvalue});
     $parsed_argv->hints_novalue($hints->{novalue});
     if ($meta->app_permute) {
         $parsed_argv->hints_permute($hints->{permute});

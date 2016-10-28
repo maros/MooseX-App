@@ -51,6 +51,12 @@ has 'hints_permute' => (
     default         => sub { [] },
 ); # Permute hints for the parser
 
+has 'hints_fixedvalue' => (
+    is              => 'rw',
+    isa             => 'HashRef[Str]',
+    default         => sub { {} },
+); # fixed value hints for the parser
+
 has 'elements' => (
     is              => 'ro',
     isa             => 'ArrayRef[MooseX::App::ParsedArgv::Element]',
@@ -173,7 +179,7 @@ sub _build_elements {
                     # This is a boolean or counter key that does not expect a value
                     if ($key ~~ $self->hints_novalue) {
                         $options{$key}->add_value(
-                            1,
+                            ($self->hints_fixedvalue->{$key} // 1),
                             $position,
                             $element
                         );
