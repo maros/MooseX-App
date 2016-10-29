@@ -33,6 +33,19 @@ subtype 'MooseX::App::Types::Env'
     => as 'Str'
     => where { m/^[A-Z0-9_]+$/ };
 
+subtype 'MooseX::App::Types::Identifier'
+    => as 'Str'
+    => where {
+        $_ eq '?'
+        || (m/^[A-Za-z0-9][A-Za-z0-9_-]*$/ && m/[^-_]$/) };
+
+subtype 'MooseX::App::Types::IdentifierList'
+    => as 'ArrayRef[MooseX::App::Types::Identifier]';
+
+coerce 'MooseX::App::Types::IdentifierList'
+    => from 'MooseX::App::Types::Identifier'
+    => via { [$_] };
+
 no Moose::Util::TypeConstraints;
 
 no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;

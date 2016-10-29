@@ -8,6 +8,8 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
+use List::Util qw(uniq);
+
 has 'cmd_type' => (
     is          => 'rw',
     isa         => 'MooseX::App::Types::CmdTypes',
@@ -16,19 +18,20 @@ has 'cmd_type' => (
 
 has 'cmd_tags' => (
     is          => 'rw',
-    isa         => 'ArrayRef[Str]',
+    isa         => 'MooseX::App::Types::List',
+    coerce      => 1,
     predicate   => 'has_cmd_tags',
 );
 
 has 'cmd_flag' => (
     is          => 'rw',
-    isa         => 'Str',
+    isa         => 'MooseX::App::Types::Identifier',
     predicate   => 'has_cmd_flag',
 );
 
 has 'cmd_aliases' => (
     is          => 'rw',
-    isa         => 'MooseX::App::Types::List',
+    isa         => 'MooseX::App::Types::IdentifierList',
     predicate   => 'has_cmd_aliases',
     coerce      => 1,
 );
@@ -47,7 +50,8 @@ has 'cmd_count' => (
 
 has 'cmd_negate' => (
     is          => 'rw',
-    isa         => 'ArrayRef[Str]',
+    isa         => 'MooseX::App::Types::IdentifierList',
+    coerce      => 1,
     predicate   => 'has_cmd_negate',
 );
 
@@ -80,6 +84,66 @@ around 'new' => sub {
 
     return $self;
 };
+
+sub cmd_check {
+    my ($self) = @_;
+
+    my $name = $self->name;
+    my $from_constraint;
+    my $type_constraint = $self->type_constraint;
+    $from_constraint = $type_constraint->parameterized_from
+        if $type_constraint && $type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized');
+
+    # Check for useless flags
+    if ($self->cmd_type eq 'parameter') {
+        if ($self->cmd_count) {
+            Moose->throw_error("Parameter $name has 'cmd_count'. This attribute only works with options");
+        }
+        if ($self->has_cmd_negate) {
+            Moose->throw_error("Parameter $name has 'cmd_negate'. This attribute only works with options");
+        }
+        if ($self->has_cmd_negate) {
+            Moose->throw_error("Parameter $name has 'cmd_negate'. This attribute only works with options");
+        }
+        if (defined $type_constraint
+            && $type_constraint->is_a_type_of('Bool')) {
+            Moose->throw_error("Parameter $name has 'cmd_negate'. This attribute only works with options");
+        }
+        if (($from_constraint && $from_constraint->is_a_type_of('Ref'))
+            || ($type_constraint && $type_constraint->is_a_type_of('Ref'))) {
+            Moose->throw_error("Parameter $name may not have Ref type constraints");
+        }
+    }
+
+    # Check negate
+    if ($self->has_cmd_negate
+        && (!$type_constraint || $type_constraint->is_a_type_of('Bool'))) {
+        Moose->throw_error("Option $name has 'cmd_negate' but has no Bool type constraint");
+    }
+
+    # Check type constraints
+    if (defined $type_constraint) {
+        if ($self->cmd_count
+            && ! $type_constraint->is_a_type_of('Num')) {
+            Moose->throw_error("Option $name has 'cmd_count' but has no Num/Int type constraint");
+        }
+        if ($self->has_cmd_split
+            && ! (
+                ($from_constraint &&  $from_constraint->is_a_type_of('ArrayRef'))
+                || $type_constraint->is_a_type_of('ArrayRef'))
+            ) {
+            Moose->throw_error("Option $name has 'cmd_split' but has no ArrayRef type constraint");
+        }
+    }
+
+    # Check for uniqness
+    my @names = $self->cmd_name_possible;
+    if (scalar(uniq(@names)) != scalar(@names)) {
+        Moose->throw_error("Option $name has duplicate names/aliases");
+    }
+
+    return;
+}
 
 sub cmd_type_constraint_description {
     my ($self,$type_constraint,$singular) = @_;
@@ -200,6 +264,10 @@ sub cmd_name_list {
 
 sub cmd_name_possible {
     my ($self) = @_;
+
+    if ($self->cmd_type eq 'parameter') {
+        return $self->cmd_name_primary;
+    }
 
     my @names = $self->cmd_name_list();
 
@@ -377,6 +445,11 @@ would increment the resulting value by one
 =head1 METHODS
 
 These methods are only of interest to plugin authors.
+
+=head2 cmd_check
+
+Runs sanity checks on options and parameters. Will usually only be executed if
+either HARNESS_ACTIVE or APP_DEVELOPER environment are set.
 
 =head2 cmd_name_possible
 

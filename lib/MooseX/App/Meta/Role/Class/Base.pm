@@ -101,6 +101,15 @@ sub _build_app_commands {
     return { @list };
 }
 
+sub command_check {
+    my ($self) = @_;
+
+    foreach my $attribute ($self->command_usage_attributes($self,'all')) {
+        $attribute->cmd_check();
+    }
+    return;
+}
+
 sub command_scan_namespace {
     my ($self,$namespace) = @_;
 
@@ -927,6 +936,11 @@ Boolean flag that controls if command line arguments that take multiple values
 (ie ArrayRef or HashRef type constraints) can be permuted.
 
 =head1 METHODS
+
+=head2 command_check
+
+Runs sanity checks on options and parameters. Will usually only be executed if
+either HARNESS_ACTIVE or APP_DEVELOPER environment are set.
 
 =head2 command_register
 

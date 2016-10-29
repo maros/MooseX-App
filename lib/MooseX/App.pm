@@ -87,6 +87,9 @@ sub new_with_command {
         if $metameta->does_role('MooseX::App::Meta::Role::Class::Command')
         || ! $metameta->does_role('MooseX::App::Meta::Role::Class::Base');
 
+    $meta->command_check()
+        if $ENV{APP_DEVELOPER} || $ENV{HARNESS_ACTIVE};
+
     # Extra args
     my %args;
     if (scalar @args == 1
