@@ -506,6 +506,8 @@ Options and parameters accept extra attributes for customisation:
 
 =item * cmd_count - Value of option equals to number of occurrences in @ARGV
 
+=item * cmd_negate - Adds an option to negate boolean flags
+
 =back
 
 Refer to L<MooseX::App::Meta::Role::Attribute::Option> for detailed

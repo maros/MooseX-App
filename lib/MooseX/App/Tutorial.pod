@@ -239,6 +239,10 @@ by adding documentation (either by using the app_description, app_usage,
 command_short_description, ... functions or by writing POD), Moose type
 constraints and additional plugins (eg. colorise the output).
 
+Make sure to invoke your script with APP_DEVELOPER=1 during development. This
+will perform additional checks for detecting wrong attribute/type constraint
+combinations, name clashes, ...
+
 If you want custom behaviour you could start writing your own
 L<MooseX::App::WritingPlugins|plugins>.
 

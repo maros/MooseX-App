@@ -387,6 +387,7 @@ use the following attributes in option or parameter definitions.
      cmd_env            => 'MY_OPTION',
      cmd_position       => 1,
      cmd_split          => qr/,/,
+     cmd_negate         => 'notoption'
  );
 
 =head2 cmd_flag
@@ -432,7 +433,7 @@ Override the order of the parameters in the usage message.
 =head2 cmd_split
 
 Splits multiple values at the given separator string or regular expression.
-Only works in conjunction with an 'ArrayRef[*]' type constraint (isa).
+Only works in conjunction with an 'ArrayRef[*]' type constraint.
 ie. '--myattr value1,value2' with cmd_split set to ',' would produce an
 arrayref with to elements.
 
@@ -441,6 +442,12 @@ arrayref with to elements.
 Similar to the Getopt::Long '+' modifier, cmd_count turns the attribute into
 a counter. Every occurrence of the attribute in @ARGV (without any value)
 would increment the resulting value by one
+
+=head2 cmd_negate
+
+Sets names for the negated variant of a boolean field. Only works in conjunction
+with a 'Bool' type constraint.
+
 
 =head1 METHODS
 
@@ -456,6 +463,13 @@ either HARNESS_ACTIVE or APP_DEVELOPER environment are set.
  my @names = $attribute->cmd_name_possible();
 
 Returns a list of all possible option names.
+
+=head cmd_name_list
+
+ my @names = $attribute->cmd_name_list();
+
+Similar to cmd_name_possible this method returns a list of option names,
+except for names set via cmd_negate.
 
 =head2 cmd_name_primary
 
