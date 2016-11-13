@@ -448,7 +448,6 @@ would increment the resulting value by one
 Sets names for the negated variant of a boolean field. Only works in conjunction
 with a 'Bool' type constraint.
 
-
 =head1 METHODS
 
 These methods are only of interest to plugin authors.

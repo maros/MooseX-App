@@ -1,5 +1,10 @@
 Release history for Perl module MooseX::App
 
+1.37 2016-11-13
+    - Refactor the way values are parsed from @ARGV
+    - Rework boolean negation
+    - Add developer checks
+
 1.36 2016-10-11
     - Documentation
     - Set correct encoding on STDERR
