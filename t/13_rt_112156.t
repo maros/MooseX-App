@@ -2,7 +2,7 @@
 
 # t/13_rt_112156.t - RT112156 inheritance
 
-use Test::Most tests => 1+1;
+use Test::Most tests => 2+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
@@ -67,17 +67,39 @@ use lib 't/testlib';
 }
 
 subtest 'no inheritance' => sub {
-   plan tests => 2;
+    plan tests => 8;
 
-   {
-      MooseX::App::ParsedArgv->new(argv => [qw(some --one 1 --other 2)]);
-      my $test01 = Test13->new_with_command();
-      isa_ok($test01,'Test13::SomeCommand');
-   }
+    {
+        MooseX::App::ParsedArgv->new(argv => [qw(some --one 1 --other 2)]);
+        my $test01 = Test13->new_with_command();
+        isa_ok($test01,'Test13::SomeCommand');
+        is($test01->one,1,'Option ok');
+        is($test01->other,2,'Option ok');
+        ok(! $test01->can('unrelated'),'No option');
+    }
 
-   {
-      MooseX::App::ParsedArgv->new(argv => [qw(another --one 1 --other 2)]);
-      my $test02 = Test13->new_with_command();
-      isa_ok($test02,'Test13::AnotherCommand');
-   }
+    {
+        MooseX::App::ParsedArgv->new(argv => [qw(another --one 1 --other 2 --unrelated 3)]);
+        my $test02 = Test13->new_with_command();
+        isa_ok($test02,'Test13::AnotherCommand');
+        is($test02->one,1,'Option ok');
+        is($test02->other,2,'Option ok');
+        is($test02->unrelated,3,'Option ok');
+    }
+};
+
+subtest 'check plugin functionality' => sub {
+    plan tests => 2;
+
+    {
+        MooseX::App::ParsedArgv->new(argv => [qw(some --one 1)]);
+        my $test03 = Test13->new_with_command();
+        isa_ok( $test03, 'MooseX::App::Message::Envelope' );
+    }
+
+    {
+        MooseX::App::ParsedArgv->new(argv => [qw(another --one 1)]);
+        my $test03 = Test13->new_with_command();
+        isa_ok( $test03, 'MooseX::App::Message::Envelope' );
+    }
 };
