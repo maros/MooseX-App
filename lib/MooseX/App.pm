@@ -270,6 +270,7 @@ the user for additional parameters see L<MooseX::App::Plugin::Term>)
 
 =item * Provide helpful error messages if user input cannot be validated
 (either missing or wrong attributes or Moose type constraints not satisfied)
+or if the user requests help.
 
 =back
 
@@ -661,7 +662,7 @@ list of open wishlist issues for ideas.
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012-16 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-17 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as
 perl itself. The full text of the licence can be found in the LICENCE file
