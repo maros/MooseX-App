@@ -88,7 +88,14 @@ sub new_with_options {
         $parsed_argv = MooseX::App::ParsedArgv->instance();
     }
 
-    return $class->initialize_command_class($class,%args);
+    my $return = $class->initialize_command_class($class,%args);
+
+    # Set renderer class
+    $return->renderer($class->meta->app_renderer())
+        if blessed $return
+        && $return->isa('MooseX::App::Message::Envelope');
+
+    return $return;
 }
 
 no Moose;

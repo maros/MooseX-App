@@ -45,9 +45,9 @@ around 'command_check_attributes' => sub {
 
             push @$errors,
                 $self->command_message(
-                header => $error_msg,
-                type   => "error",
-            );
+                    header => $error_msg,
+                    type   => "error",
+                );
         }
     }
 

@@ -15,12 +15,19 @@ use overload
 
 has 'blocks' => (
     is          => 'ro',
-    isa         => 'ArrayRef[MooseX::App::Message::Block]',
+    isa         => 'MooseX::App::Types::BlockList',
+    coerce      => 1,
     traits      => ['Array'],
     handles     => {
         add_block       => 'push',
         list_blocks     => 'elements',
     },
+);
+
+has 'renderer' => (
+    is          => 'rw',
+    isa         => 'MooseX::App::Message::Renderer',
+    #required    => 1,
 );
 
 has 'exitcode' => (
@@ -54,9 +61,7 @@ around 'BUILDARGS' => sub {
                 && $element >= 0) {
                 $params->{exitcode} = $element;
             } else {
-                push(@{$params->{blocks}},MooseX::App::Message::Block->new(
-                    header  => $element,
-                ));
+                push(@{$params->{blocks}},MooseX::App::Message::Block->parse($element));
             }
         }
     }
@@ -85,8 +90,12 @@ sub stringify {
     my ($self) = @_;
 
     my $message = '';
+    my $renderer = $self->renderer;
+    Moose->throw_error('MooseX::App::Message::Envelope->stringify called without having a renderer')
+        unless defined $renderer;
+
     foreach my $block ($self->list_blocks) {
-        $message .= $block->stringify;
+        $message .= $renderer->render($block->for_renderer);
     }
 
     return $message;

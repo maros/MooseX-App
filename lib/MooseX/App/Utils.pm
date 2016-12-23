@@ -7,9 +7,6 @@ use warnings;
 
 use List::Util qw(max);
 
-our $SCREEN_WIDTH = 78;
-our $INDENT = 4;
-
 use Moose::Util::TypeConstraints;
 
 subtype 'MooseX::App::Types::List'
@@ -39,6 +36,19 @@ subtype 'MooseX::App::Types::Identifier'
         $_ eq '?'
         || (m/^[A-Za-z0-9][A-Za-z0-9_-]*$/ && m/[^-_]$/) };
 
+subtype 'MooseX::App::Types::BlockList'
+    => as 'ArrayRef[MooseX::App::Message::Block]';
+
+coerce 'MooseX::App::Types::BlockList'
+    => from 'MooseX::App::Message::Block'
+    => via { [$_] }
+    => from 'ArrayRef[Str]'
+    => via {
+        return [
+            map { MooseX::App::Message::Block->parse($_) } @{$_}
+        ]
+    };
+
 subtype 'MooseX::App::Types::IdentifierList'
     => as 'ArrayRef[MooseX::App::Types::Identifier]';
 
@@ -63,83 +73,6 @@ sub class_to_command {
         push (@commands,join('_',@parts));
     }
     return lc(join(" ",@commands));
-}
-
-# Format output text for fixed screen width
-sub format_text {
-    my ($text) = @_;
-
-    my @lines;
-    foreach my $line (split(/\n/,$text)) {
-        push(@lines,split_string($SCREEN_WIDTH-$INDENT,$line));
-    }
-
-    return join(
-        "\n",
-        map { (' ' x $INDENT).$_ }
-        @lines
-    );
-}
-
-# Format bullet list for fixed screen width
-sub format_list {
-    my (@list) = @_;
-
-    my $max_length = max(map { length($_->[0]) } @list);
-    my $description_length = $SCREEN_WIDTH - $max_length - 7;
-    my $prefix_length = $max_length + $INDENT + 2;
-    my @return;
-
-    # Loop all items
-    foreach my $command (@list) {
-        my $description = $command->[1] // '';
-        my @lines = split_string($description_length,$description);
-        push (@return,(' 'x$INDENT).sprintf('%-*s  %s',$max_length,$command->[0],shift(@lines)));
-        while (my $line = shift (@lines)) {
-            push(@return,' 'x $prefix_length.$line);
-        }
-    }
-    return join("\n",@return);
-}
-
-# Simple splitting of long sentences on whitespaces or punctuation
-sub split_string {
-    my ($maxlength, $string) = @_;
-
-    return
-        unless defined $string;
-
-    return $string
-        if length $string <= $maxlength;
-
-    my (@lines,$line);
-    $line = '';
-    foreach my $word (split(m/(\p{IsPunct}|\p{IsSpace})/,$string)) {
-        if (length($line.$word) <= $maxlength) {
-            $line .= $word;
-        } else {
-            push(@lines,$line)
-                if ($line ne '');
-            $line = '';
-
-            if (length($word) > $maxlength) {
-                my (@parts) = grep { $_ ne '' } split(/(.{$maxlength})/,$word);
-                my $lastline = pop(@parts);
-                push(@lines,@parts);
-                if (defined $lastline && $lastline ne '') {
-                    $line = $lastline;
-                }
-            } else {
-                $line = $word;
-            }
-        }
-    }
-    push(@lines,$line)
-        if ($line ne '');
-
-    @lines =  map { m/^\s*(.+?)\s*$/ ? $1 : $_  } @lines;
-
-    return @lines;
 }
 
 # Try to get filename for a given package name
@@ -279,6 +212,50 @@ sub _pod_node_to_text {
     return $return;
 }
 
+sub string_to_entity {
+    my ($string) = @_;
+
+    $string =~ s/>/&gt;/g;
+    $string =~ s/>/&gt;/g;
+    $string =~ s/&/&amp;/g;
+
+    return $string;
+}
+
+sub string_from_entity {
+    my ($string) = @_;
+
+    $string =~ s/&gt;/>/g;
+    $string =~ s/&lt;/</g;
+    $string =~ s/&amp;/&/g;
+
+    return $string;
+}
+
+sub build_list {
+    my (@list) = @_;
+
+    my @return;
+    foreach my $element (@list) {
+        if (ref($element) eq 'ARRAY') {
+            if (scalar @{$element} == 2) {
+                push(@return,'<item><key>'.
+                    string_to_entity($element->[0]).
+                    '</key><text>'.
+                    string_to_entity($element->[1]).
+                    '</text></item>');
+            } else {
+                push(@return,'<item><key>'.
+                    string_to_entity($element->[0]).
+                    '</key></item>');
+            }
+        } else {
+            push(@return,'<item>'.$element.'</item>');
+        }
+    }
+
+    return join("\n",'<list>',@return,'</list>');
+}
 
 1;
 
@@ -301,24 +278,12 @@ Unless you develop plugins you will not need to interact with this class.
 
 Tries to determine the filename containing the given package name.
 
-=head2 format_list
-
-=head2 format_text
-
 =head2 parse_pod
 
-=head2 split_string
+Parse POD for the given package.
 
+=head2 string_to_entity
 
-
-=head1 GLOBALS
-
-=head2 $MooseX::App::Utils::SCREEN_WIDTH
-
-Screen width for printing help and error messages
-
-=head2 $MooseX::App::Utils::INDENT
-
-Indent for printing help and error messages
+=head2 string_from_entity
 
 =cut

@@ -10,38 +10,38 @@ use Moose;
 
 use MooseX::App::Utils;
 
-use overload
-    '""' => "stringify";
-
-has 'header' => (
+has 'parsed' => (
     is          => 'ro',
     isa         => 'MooseX::App::Types::MessageString',
-    predicate   => 'has_header',
+    lazy_build  => 1,
+    builder     => '_parse_block',
 );
 
-has 'type' => (
-    is          => 'ro',
-    isa         => 'Str',
-    default     => sub {'default'},
-);
-
-has 'body' => (
+has 'block' => (
     is          => 'ro',
     isa         => 'MooseX::App::Types::MessageString',
-    predicate   => 'has_body',
+    coerce      => 1,
+    required    => 1,
 );
 
-sub stringify {
+sub raw {
+    my ($class,$string) = @_;
+
+    $string = '<raw>'.MooseX::App::Utils::string_to_entity($string).'</raw>';
+    return $class->new(block => $string);
+}
+
+sub parse {
+    my ($class,$string) = @_;
+    return $class->new(block => $string);
+}
+
+sub _parse_block {
     my ($self) = @_;
 
-    my $message = '';
-    $message .= $self->header."\n"
-        if $self->has_header;
+    my $parsed = [];
 
-    $message .= $self->body."\n\n"
-        if $self->has_body;
-
-    return $message;
+    return $parsed;
 }
 
 __PACKAGE__->meta->make_immutable;

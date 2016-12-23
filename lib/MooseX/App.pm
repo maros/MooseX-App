@@ -116,43 +116,55 @@ sub new_with_command {
     }
 
     my $first_argv  = $parsed_argv->first_argv;
+    my $return;
 
     # Requested help
     if (defined $first_argv
         && lc($first_argv) =~ m/^(help|h|\?|usage|-h|--help|-\?|--usage)$/) {
-        return MooseX::App::Message::Envelope->new(
+        $return = MooseX::App::Message::Envelope->new(
             $meta->command_usage_global(),
         );
     # No args
     } elsif (! defined $first_argv
         || $first_argv =~ m/^\s*$/
-        || $first_argv =~ m/^-{1,2}\w/) {
-        return MooseX::App::Message::Envelope->new(
-            $meta->command_message(
-                header          => "Missing command", # LOCALIZE
-                type            => "error",
-            ),
-            $meta->command_usage_global(),
-            127, # exitcode
-        );
+        || $first_argv =~ m/^-/) {
+        $return = MooseX::App::Message::Envelope->new({
+            exitcode    => 127,
+            blocks      => [
+                $meta->command_message(
+                    header          => "Missing command", # LOCALIZE
+                    type            => "error",
+                ),
+                $meta->command_usage_global(),
+            ]
+        });
     # Looks like a command
     } else {
-        my $return = $meta->command_find();
+        my $command = $meta->command_find();
 
         # Nothing found
-        if (blessed $return
-            && $return->isa('MooseX::App::Message::Block')) {
-            return MooseX::App::Message::Envelope->new(
-                $return,
-                $meta->command_usage_global(),
-                127, # exitcode
-            );
+        if (blessed $command
+            && $command->isa('MooseX::App::Message::Block')) {
+            $return = MooseX::App::Message::Envelope->new({
+                blocks    => [
+                    $command,
+                    $meta->command_usage_global(),
+                ],
+                exitcode    => 127, # exitcode
+            });
         # One command found
         } else {
-            my $command_class = $meta->command_get($return);
-            return $class->initialize_command_class($command_class,%args);
+            my $command_class = $meta->command_get($command);
+            $return = $class->initialize_command_class($command_class,%args);
         }
     }
+
+    # Set renderer class
+    $return->renderer($meta->app_renderer())
+        if blessed($return)
+        && $return->isa('MooseX::App::Message::Envelope');
+
+    return $return;
 }
 
 

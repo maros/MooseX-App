@@ -22,7 +22,7 @@ sub version {
 
     my @parts = ($renderer->new({
         header  => 'VERSION',
-        body    => MooseX::App::Utils::format_text($version)
+        body    => $version
     }));
 
     my %pod_raw = MooseX::App::Utils::parse_pod($app->meta->name);
@@ -31,7 +31,7 @@ sub version {
         if (defined $pod_raw{$part}) {
             push(@parts, $renderer->new({
                 header  => $part,
-                body    => MooseX::App::Utils::format_text($pod_raw{$part}),
+                body    => MooseX::App::Utils::string_to_entity($pod_raw{$part}),
             }));
         }
     }

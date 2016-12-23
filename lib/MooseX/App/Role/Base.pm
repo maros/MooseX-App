@@ -68,11 +68,13 @@ sub initialize_command_class {
     $meta->command_check_attributes($command_meta,\@errors,\%params);
 
     if (scalar @errors) {
-        return MooseX::App::Message::Envelope->new(
-            @errors,
-            $meta->command_usage_command($command_meta),
-            1, # exitcode
-        );
+        return MooseX::App::Message::Envelope->new({
+            exitcode    => 1,
+            blocks      => [
+                @errors,
+                $meta->command_usage_command($command_meta),
+            ]
+        });
     }
 
     my $command_object = $command_class->new(
@@ -80,13 +82,15 @@ sub initialize_command_class {
         extra_argv          => [ $parsed_argv->extra ],
     );
 
-    if (scalar @errors) {
-        return MooseX::App::Message::Envelope->new(
-            @errors,
-            $meta->command_usage_command($command_meta),
-            1, # exitcode
-        );
-    }
+    # if (scalar @errors) {
+    #     return MooseX::App::Message::Envelope->new({
+    #         exitcode    => 1,
+    #         blocks      => [
+    #             @errors,
+    #             $meta->command_usage_command($command_meta),
+    #         ]
+    #     });
+    # }
 
     return $command_object;
 }

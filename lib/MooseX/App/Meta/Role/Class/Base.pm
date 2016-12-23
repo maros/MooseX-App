@@ -13,11 +13,12 @@ use Moose::Role;
 use MooseX::App::Utils;
 use Path::Class;
 use Module::Pluggable::Object;
+use MooseX::App::Message::Renderer;
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'app_renderer' => (
     is          => 'rw',
-    isa         => 'ClassName',
+    isa         => 'MooseX::App::Message::Renderer',
     lazy        => 1,
     builder     => '_build_app_renderer',
 );
@@ -89,7 +90,7 @@ has 'app_commands' => (
 
 sub _build_app_renderer {
     my ($self) = @_;
-    return 'MooseX::App::Message::Renderer'
+    return MooseX::App::Message::Renderer::Basic->new();
 }
 
 sub _build_app_namespace {
@@ -371,7 +372,7 @@ sub command_parse_options {
                         $self->command_message(
                             header          => "Ambiguous option '".$option->key."'", # LOCALIZE
                             type            => "error",
-                            body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
+                            body            => "Could be\n".MooseX::App::Utils::build_list( # LOCALIZE
                                 map { [ $_ ] }
                                 sort
                                 map { $_->cmd_name_primary }
@@ -689,11 +690,19 @@ sub command_parser_hints {
 }
 
 sub command_message {
-    my ($self,@args) = @_;
-    my $renderer = $self->app_renderer;
-    Class::Load::load_class($renderer);
-    # TODO render
-    return $renderer->new(@args);
+    my ($self,%args) = @_;
+
+    my $message = '';
+    $args{type} //= 'default';
+    $message .= "<headline>".MooseX::App::Utils::string_to_entity($args{headline})."</headline>\n"
+        if defined $args{headline};
+    $message .= $args{body}
+        if defined $args{body};
+    if ($args{type} eq 'error') {
+        $message = '<error>'.$message.'</error>';
+    }
+
+    return MooseX::App::Message::Block->parse($message);
 }
 
 sub command_check_attributes {
@@ -766,7 +775,7 @@ sub command_usage_options {
 
     return $self->command_message(
         header  => $headline,
-        body    => MooseX::App::Utils::format_list(@options),
+        body    => MooseX::App::Utils::build_list(@options),
     );
 }
 
@@ -792,7 +801,7 @@ sub command_usage_parameters {
 
     return $self->command_message(
         header  => $headline,
-        body    => MooseX::App::Utils::format_list(@parameters),
+        body    => MooseX::App::Utils::build_list(@parameters),
     );
 }
 
@@ -811,7 +820,7 @@ sub command_usage_header {
     $command_meta_class ||= $self;
     if ($command_meta_class->can('command_usage')
         && $command_meta_class->command_usage_predicate) {
-        $usage = MooseX::App::Utils::format_text($command_meta_class->command_usage);
+        $usage = $command_meta_class->command_usage;
     }
 
     unless (defined $usage) {
@@ -828,7 +837,6 @@ sub command_usage_header {
         $usage .= "[long options...]
 $caller help
 $caller $command_name --help";
-        $usage = MooseX::App::Utils::format_text($usage);
     }
 
     return $self->command_message(
@@ -845,13 +853,13 @@ sub command_usage_description {
         && $command_meta_class->command_long_description_predicate) {
         return $self->command_message(
             header  => 'description:', # LOCALIZE
-            body    => MooseX::App::Utils::format_text($command_meta_class->command_long_description),
+            body    => MooseX::App::Utils::string_to_entity($command_meta_class->command_long_description),
         );
     } elsif ($command_meta_class->can('command_short_description')
         && $command_meta_class->command_short_description_predicate) {
         return $self->command_message(
             header  => 'short description:', # LOCALIZE
-            body    => MooseX::App::Utils::format_text($command_meta_class->command_short_description),
+            body    => MooseX::App::Utils::string_to_entity($command_meta_class->command_short_description),
         );
     }
     return;
@@ -949,9 +957,20 @@ sub command_usage_subcommands {
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
     push(@commands,['help','Prints this usage information']); # LOCALIZE
 
-    return $self->command_message(
-        header  => $headline,
-        body    => MooseX::App::Utils::format_list(@commands),
+    my @usage;
+    push(@usage,$self->command_usage_header());
+
+    my $description = $self->command_usage_description($self);
+    push(@usage,$description)
+        if $description;
+    push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
+    push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
+    push(@usage,
+        $self->command_message(
+            header  => 'available commands:', # LOCALIZE
+            body    => MooseX::App::Utils::build_list(@commands),
+        )
+    return @usage;
     );
 }
 
@@ -1061,7 +1080,7 @@ Returns the command moniker for the given command class.
     body    => $message
  );
 
-Generates a message object (using the class from L<app_messageclass>)
+Generates a message object
 
 =head2 command_usage_attributes
 

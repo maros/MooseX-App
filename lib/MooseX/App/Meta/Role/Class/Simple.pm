@@ -17,7 +17,7 @@ around 'command_usage_header' => sub {
     # Get usage from command if available
     if ($self->can('command_usage')
         && $self->command_usage_predicate) {
-        $usage = MooseX::App::Utils::format_text($self->command_usage);
+        $usage = $self->command_usage;
     }
 
     # Autobuild usage
@@ -31,8 +31,8 @@ around 'command_usage_header' => sub {
                 $command .= ' ['.$attribute->cmd_usage_name.']';
             }
         }
-        $usage = MooseX::App::Utils::format_text("$command [long options...]
-$caller --help")
+        $usage = "$command [long options...]
+$caller --help";
     }
 
     return $self->command_message(
