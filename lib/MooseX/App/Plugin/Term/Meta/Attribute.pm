@@ -131,121 +131,117 @@ sub cmd_term_read_string {
 
         KEY_STRING:
         while (1) {
-            my $key = ReadKey 0; # read a single character
-            my $length = length($return);
+            my $key         = ReadKey 0; # read a single character
+            my $length      = length($return);
+            my $key_code    = ord($key);
 
-            given (ord($key)) {
-                when (10) { # Enter
-                    print "\n";
-                    my $error;
-                    if ($return =~ m/^\s*$/) {
-                        if ($self->is_required) {
-                            $error = 'Value is required';
-                        } else {
-                            $return = undef;
-                            last TRY_STRING;
-                        }
+            if ($key_code == 10) { # Enter
+                print "\n";
+                my $error;
+                if ($return =~ m/^\s*$/) {
+                    if ($self->is_required) {
+                        $error = 'Value is required';
                     } else {
-                        $error = $self->cmd_type_constraint_check($return);
-                    }
-                    if ($error) {
-                        if (defined $Term::ANSIColor::VERSION) {
-                            say Term::ANSIColor::color('bright_red bold').$error.Term::ANSIColor::color('reset');
-                        } else {
-                            say $error;
-                        }
-                        $history_add->($return);
-                        next TRY_STRING;
-                    } else {
+                        $return = undef;
                         last TRY_STRING;
                     }
+                } else {
+                    $error = $self->cmd_type_constraint_check($return);
                 }
-                when (27) { # Escape sequence
-                    my $escape;
-                    while (1) { # Read rest of escape sequence
-                        my $code = ReadKey -1;
-                        last unless defined $code;
-                        $escape .= $code;
-                    }
-                    if (defined $escape) {
-                        given ($escape) {
-                            when ('[D') { # Cursor left
-                                if ($cursor > 0) {
-                                    print "\b";
-                                    $cursor--;
-                                }
-                            }
-                            when ($escape eq '[C') { # Cursor right
-                                if ($cursor < length($return)) {
-                                    print substr $return,$cursor,1;
-                                    $cursor++;
-                                }
-                            }
-                            when ($escape eq '[A') { # Cursor up
-                                $history_add->($return);
-                                print "\b" x $cursor;
-                                print " " x length($return);
-                                print "\b" x length($return);
-
-                                $history_index ++
-                                    if defined $history[$history_index]
-                                    && $history[$history_index] eq $return;
-                                $history_index = 0
-                                    unless defined $history[$history_index];
-
-                                $return = $history[$history_index];
-                                $cursor = length($return);
-                                print $return;
-                                $history_index++;
-                            }
-                            when ($escape eq '[3~') { # Del
-                                if ($cursor != length($return)) {
-                                    substr $return,$cursor,1,'';
-                                    print substr $return,$cursor;
-                                    print " ".(("\b") x (length($return) - $cursor + 1));
-                                }
-                            }
-                            when ($escape eq 'OH') { # Pos 1
-                                print (("\b") x $cursor);
-                                $cursor = 0;
-                            }
-                            when ($escape eq 'OF') { # End
-                                print substr $return,$cursor;
-                                $cursor = length($return);
-                            }
-                            #default {
-                            #    print $escape;
-                            #}
-                        }
+                if ($error) {
+                    if (defined $Term::ANSIColor::VERSION) {
+                        say Term::ANSIColor::color('bright_red bold').$error.Term::ANSIColor::color('reset');
                     } else {
-                        $history_add->($return);
-                        next TRY_STRING;
+                        say $error;
                     }
+                    $history_add->($return);
+                    next TRY_STRING;
+                } else {
+                    last TRY_STRING;
+                }
+            } elsif ($key_code == 27) { # Escape sequence
+                my $escape;
+                while (1) { # Read rest of escape sequence
+                    my $code = ReadKey -1;
+                    last unless defined $code;
+                    $escape .= $code;
+                }
+                if (defined $escape) {
+                    given ($escape) {
+                        when ('[D') { # Cursor left
+                            if ($cursor > 0) {
+                                print "\b";
+                                $cursor--;
+                            }
+                        }
+                        when ($escape eq '[C') { # Cursor right
+                            if ($cursor < length($return)) {
+                                print substr $return,$cursor,1;
+                                $cursor++;
+                            }
+                        }
+                        when ($escape eq '[A') { # Cursor up
+                            $history_add->($return);
+                            print "\b" x $cursor;
+                            print " " x length($return);
+                            print "\b" x length($return);
 
-                }
-                when (127) { # Backspace
-                    if ($cursor == 0) { # Ignore first
-                        next KEY_STRING;
+                            $history_index ++
+                                if defined $history[$history_index]
+                                && $history[$history_index] eq $return;
+                            $history_index = 0
+                                unless defined $history[$history_index];
+
+                            $return = $history[$history_index];
+                            $cursor = length($return);
+                            print $return;
+                            $history_index++;
+                        }
+                        when ($escape eq '[3~') { # Del
+                            if ($cursor != length($return)) {
+                                substr $return,$cursor,1,'';
+                                print substr $return,$cursor;
+                                print " ".(("\b") x (length($return) - $cursor + 1));
+                            }
+                        }
+                        when ($escape eq 'OH') { # Pos 1
+                            print (("\b") x $cursor);
+                            $cursor = 0;
+                        }
+                        when ($escape eq 'OF') { # End
+                            print substr $return,$cursor;
+                            $cursor = length($return);
+                        }
+                        #default {
+                        #    print $escape;
+                        #}
                     }
-                    $cursor--;
-                    substr $return,$cursor,1,''; # string
-                    print "\b".substr $return,$cursor; # print
-                    print " ".(("\b") x (length($return) - $cursor + 1)); # cursor
+                } else {
+                    $history_add->($return);
+                    next TRY_STRING;
                 }
-                default { # Character
-                    if ($_ <= 31) { # ignore controll chars
-                        print "\a";
-                        next KEY_STRING;
-                    } elsif (defined $allowed
-                        && $key !~ /$allowed/) {
-                        print "\a";
-                        next KEY_STRING;
-                    }
-                    substr $return,$cursor,0,$key; # string
-                    print substr $return,$cursor; # print
-                    $cursor++;
-                    print (("\b") x (length($return) - $cursor)); # cursor
+
+            } elsif ($key_code == 127) { # Backspace
+                if ($cursor == 0) { # Ignore first
+                    next KEY_STRING;
                 }
+                $cursor--;
+                substr $return,$cursor,1,''; # string
+                print "\b".substr $return,$cursor; # print
+                print " ".(("\b") x (length($return) - $cursor + 1)); # cursor
+            } else { # Character
+                if ($_ <= 31) { # ignore controll chars
+                    print "\a";
+                    next KEY_STRING;
+                } elsif (defined $allowed
+                    && $key !~ /$allowed/) {
+                    print "\a";
+                    next KEY_STRING;
+                }
+                substr $return,$cursor,0,$key; # string
+                print substr $return,$cursor; # print
+                $cursor++;
+                print (("\b") x (length($return) - $cursor)); # cursor
             }
         }
     }

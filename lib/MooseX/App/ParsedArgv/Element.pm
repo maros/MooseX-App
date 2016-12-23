@@ -6,7 +6,6 @@ use 5.010;
 use utf8;
 
 use Moose;
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'key' => (
     is              => 'ro',
@@ -87,18 +86,16 @@ sub consume {
 
 sub serialize {
     my ($self) = @_;
-    given ($self->type) {
-        when ('extra') {
-            return $self->key;
-        }
-        when ('parameter') {
-            return $self->key;
-        }
-        when ('option') {
-            my $key = (length $self->key == 1 ? '-':'--').$self->key;
-            return join(' ',map { $key.' '.$_->value } $self->all_values);
-        }
+    my $type = $self->type;
+    if ($type eq 'extra') {
+        return $self->key;
+    } elsif ($type eq 'parameter') {
+        return $self->key;
+    } elsif ($type eq 'option') {
+        my $key = (length $self->key == 1 ? '-':'--').$self->key;
+        return join(' ',map { $key.' '.$_->value } $self->all_values);
     }
+
     return;
 }
 

@@ -10,7 +10,7 @@ use warnings;
 use Moose::Exporter;
 use MooseX::App::Utils;
 use MooseX::App::ParsedArgv;
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
+use List::Util qw(first);
 
 my %PLUGIN_SPEC;
 
@@ -70,9 +70,10 @@ sub _handle_attribute {
             # Apply missing meta roles if required to do so
             unless ($meta->has_app_attribute_metaroles) {
                 my @extra_classes;
+                my $name = $meta->name;
                 foreach my $class (keys %PLUGIN_SPEC) {
                     my @commands = $class->meta->command_classes;
-                    if ($meta->name ~~ \@commands) {
+                    if (first { $name eq $_ } @commands) {
                         my $attribute_metaclass = $class->meta->attribute_metaclass;
                         push @extra_classes,
                             map { $_->name }
@@ -103,8 +104,8 @@ sub _handle_attribute {
             unless ($meta_attribute->does('MooseX::App::Meta::Role::Attribute::Option')) {
                 $local_attributes{traits} ||= [];
                 push @{$local_attributes{traits}},'MooseX::App::Meta::Role::Attribute::Option'
-                    unless 'AppOption' ~~ $local_attributes{traits}
-                    || 'MooseX::App::Meta::Role::Attribute::Option' ~~ $local_attributes{traits};
+                    unless (first { $_ eq 'AppOption' || $_ eq 'MooseX::App::Meta::Role::Attribute::Option' }
+                        @{$local_attributes{traits}});
             }
         }
 
@@ -174,7 +175,7 @@ sub process_init_meta {
 
     # Add common role
     push(@{$apply_roles},'MooseX::App::Role::Common')
-        unless $apply_roles ~~ 'MooseX::App::Role::Common';
+        unless first { $_ eq 'MooseX::App::Role::Common' } @{$apply_roles};
 
     # Process all plugins in the given order
     foreach my $plugin_class (@{$plugins}) {
