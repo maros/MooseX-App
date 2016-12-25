@@ -241,9 +241,9 @@ sub build_list {
             if (scalar @{$element} == 2) {
                 push(@return,'<item><key>'.
                     string_to_entity($element->[0]).
-                    '</key><text>'.
+                    '</key><description>'.
                     string_to_entity($element->[1]).
-                    '</text></item>');
+                    '</description></item>');
             } else {
                 push(@return,'<item><key>'.
                     string_to_entity($element->[0]).

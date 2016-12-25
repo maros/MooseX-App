@@ -94,11 +94,7 @@ sub stringify {
     Moose->throw_error('MooseX::App::Message::Envelope->stringify called without having a renderer')
         unless defined $renderer;
 
-    foreach my $block ($self->list_blocks) {
-        $message .= $renderer->render($block->for_renderer);
-    }
-
-    return $message;
+    return $renderer->render($self->blocks);
 }
 
 sub AUTOLOAD {
@@ -136,8 +132,10 @@ MooseX::App::Message::Envelope - Message presented to the user
 
 Whenever MooseX::App needs to pass a message to the user, it does so by
 generating a MooseX::App::Message::Envelope object. The object usually
-contains one or more blocks (L<MooseX::App::Message::Block>) and can be
-easily stringified.
+contains one or more blocks (L<MooseX::App::Message::Block>), an exitcode
+and a renderer (L<MooseX::App::Message::Renderer::*>) to render the blocks.
+The envelope object contains all required information to create output for
+the user.
 
 Usually a MooseX::App::Message::Envelope object is generated and returned
 by the L<new_with_command method in MooseX::App::Base|MooseX::App::Base/new_with_command>
@@ -148,8 +146,6 @@ MooseX::App::Message::Envelope follows the Null-class pattern. So you can do
 this, no matter if new_with_command fails or not:
 
  MyApp->new_with_command->some_method->only_called_if_successful;
-
-If
 
 =head1 METHODS
 
@@ -182,6 +178,10 @@ Exitcode accessor.
 =head2 has_exitcode
 
 Check if exitcode is set.
+
+=head2 renderer
+
+Renderer accessor. The must be a MooseX::App::Message::Renderer::* object.
 
 =head2 OVERLOAD
 

@@ -28,6 +28,7 @@ around 'initialize_command_class' => sub {
 
     return $return;
 };
+
 1;
 
 __END__

@@ -11,8 +11,6 @@ use Moose::Role;
 around 'command_usage_header' => sub {
     my ($orig,$self) = @_;
 
-    my $caller = $self->app_base;
-
     my $usage;
     # Get usage from command if available
     if ($self->can('command_usage')
@@ -22,17 +20,18 @@ around 'command_usage_header' => sub {
 
     # Autobuild usage
     unless ($usage) {
-        my $command = $caller;
-        my @parameter= $self->command_usage_attributes($self,'parameter');
+        my $caller      = '<tag=caller>'.$self->app_base.'</tag>';
+        my @parameter   = $self->command_usage_attributes($self,'parameter');
+        my $command     = $caller;
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                $command .= " <".$attribute->cmd_usage_name.'>';
+                $command .= " <tag=attribute_required>&lt;".$attribute->cmd_usage_name.'&gt;</tag>';
             } else {
-                $command .= ' ['.$attribute->cmd_usage_name.']';
+                $command .= ' <tag=attribute_optional>['.$attribute->cmd_usage_name.']</tag>';
             }
         }
-        $usage = "$command [long options...]
-$caller --help";
+        $usage = "$command <tag=attribute_optional>[long options...]</tag>\n";
+        $usage .= "$caller <tag=attribute_optional>--help</tag>";
     }
 
     return $self->command_message(

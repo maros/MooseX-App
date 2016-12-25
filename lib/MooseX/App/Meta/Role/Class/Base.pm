@@ -90,6 +90,7 @@ has 'app_commands' => (
 
 sub _build_app_renderer {
     my ($self) = @_;
+    require MooseX::App::Message::Renderer::Basic;
     return MooseX::App::Message::Renderer::Basic->new();
 }
 
@@ -694,12 +695,20 @@ sub command_message {
 
     my $message = '';
     $args{type} //= 'default';
-    $message .= "<headline>".MooseX::App::Utils::string_to_entity($args{headline})."</headline>\n"
-        if defined $args{headline};
-    $message .= $args{body}
-        if defined $args{body};
-    if ($args{type} eq 'error') {
-        $message = '<error>'.$message.'</error>';
+    if (defined $args{header}) {
+        $message .= "<headline".
+            ($args{type} eq 'error' ? '=error':'').
+            ">".
+            MooseX::App::Utils::string_to_entity($args{header}).
+            "</headline>\n";
+    }
+
+    if (defined $args{body}) {
+        $message .= "<paragraph".
+            ($args{type} eq 'error' ? '=error':'').
+            ">".
+            $args{body}.
+            "</paragraph>\n";
     }
 
     return MooseX::App::Message::Block->parse($message);
@@ -808,13 +817,11 @@ sub command_usage_parameters {
 sub command_usage_header {
     my ($self,$command_meta_class) = @_;
 
-    my $caller = $self->app_base;
-
     my ($command_name,$usage);
     if ($command_meta_class) {
         $command_name = $self->command_class_to_command($command_meta_class->name);
     } else {
-        $command_name = '<command>';
+        $command_name = '&lt;command&gt;';
     }
 
     $command_meta_class ||= $self;
@@ -824,19 +831,20 @@ sub command_usage_header {
     }
 
     unless (defined $usage) {
+        my $caller = '<tag=caller>'.$self->app_base.'</tag>';
         # LOCALIZE
-        $usage = "$caller $command_name ";
+        $usage = "$caller <tag=command>$command_name</tag> ";
         my @parameter= $self->command_usage_attributes($command_meta_class,'parameter');
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                $usage .= "<".$attribute->cmd_usage_name.'> ';
+                $usage .= "<tag=attribute_required>&lt;".$attribute->cmd_usage_name.'&gt;</tag> ';
             } else {
-                $usage .= '['.$attribute->cmd_usage_name.'] ';
+                $usage .= '<tag=attribute_optional>['.$attribute->cmd_usage_name.']</tag> ';
             }
         }
-        $usage .= "[long options...]
-$caller help
-$caller $command_name --help";
+        $usage .= "<tag=attribute_optional>[long options...]</tag>
+$caller <tag=command>help</tag>
+$caller <tag=command>$command_name</tag> <tag=attribute_optional>--help</tag>";
     }
 
     return $self->command_message(
