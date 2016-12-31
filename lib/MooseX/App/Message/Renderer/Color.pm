@@ -5,7 +5,7 @@ use utf8;
 
 use namespace::autoclean;
 use Moose;
-extends qw(MooseX::App::Message::Renderer);
+extends qw(MooseX::App::Message::Renderer::Basic);
 
 use Term::ANSIColor qw();
 use IO::Interactive qw(is_interactive);

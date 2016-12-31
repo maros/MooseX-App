@@ -11,7 +11,8 @@ use Moose::Role;
 use MooseX::App::Message::BlockColor;
 
 around '_build_app_renderer' => sub {
-    return 'MooseX::App::Message::RendererColor'
+    require MooseX::App::Message::Renderer::Color;
+    return MooseX::App::Message::Renderer::Color->new();
 };
 
 1;

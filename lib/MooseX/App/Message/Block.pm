@@ -15,7 +15,7 @@ use Scalar::Util qw(weaken);
 our %KEYWORDS = (
     _root       => {
         type        => 'block',
-        children    => [qw(headline list paragraph)],
+        children    => [qw(headline list paragraph raw)],
     },
     headline    => {
         type        => 'block',

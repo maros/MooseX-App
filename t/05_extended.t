@@ -17,14 +17,14 @@ subtest 'Non-Fuzzy command matching' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(some --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown command 'some'","Message ok");
+    like($test01->blocks->[0]->block,qr/Unknown command 'some'/,"Message ok");
 };
 
 subtest 'Non-Fuzzy attribute matching' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(somecommand --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
+    like($test01->blocks->[0]->block,qr/Unknown option 'private'/,"Message ok");
 };
 
 Test03->meta->app_fuzzy(1);
@@ -33,8 +33,8 @@ subtest 'Private option is not exposed' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(some --private 1)]);
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    is($test01->blocks->[0]->header,"Unknown option 'private'","Message ok");
-    is($test01->blocks->[0]->type,"error",'Message is of type error');
+    like($test01->blocks->[0]->block,qr/Unknown option 'private'/,"Message ok");
+    like($test01->blocks->[0]->block,qr/<error>/,'Message is of type error');
 };
 
 subtest 'Options from role' => sub {
@@ -49,22 +49,22 @@ subtest 'Missing attribute value' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(some --another)]);
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
-    is($test03->blocks->[0]->header,"Missing value for 'another'","Message ok");
-    is($test03->blocks->[0]->type,"error",'Message is of type error');
+    like($test03->blocks->[0]->block,qr/Missing value for 'another'/,"Message ok");
+    like($test03->blocks->[0]->block,qr/<error>/,'Message is of type error');
 };
 
-subtest 'All options available & no description' => sub {
-    MooseX::App::ParsedArgv->new(argv => [qw(some --help)]);
-    my $test04 = Test03->new_with_command;
-    isa_ok($test04,'MooseX::App::Message::Envelope');
-    is($test04->blocks->[2]->header,'options:','No description');
-    is($test04->blocks->[2]->body,"    --global_option       Enable this to do fancy stuff [Flag]
-    --roleattr            [Role]
-    --some_option         Very important option!
-    --another             [Required; Not important]
-    --list                [Multiple]
-    --help -h --usage -?  Prints this usage information. [Flag]","Message ok");
-};
+# subtest 'All options available & no description' => sub {
+#     MooseX::App::ParsedArgv->new(argv => [qw(some --help)]);
+#     my $test04 = Test03->new_with_command;
+#     isa_ok($test04,'MooseX::App::Message::Envelope');
+#     is($test04->blocks->[2]->header,'options:','No description');
+#     is($test04->blocks->[2]->body,"    --global_option       Enable this to do fancy stuff [Flag]
+#     --roleattr            [Role]
+#     --some_option         Very important option!
+#     --another             [Required; Not important]
+#     --list                [Multiple]
+#     --help -h --usage -?  Prints this usage information. [Flag]","Message ok");
+# };
 
 # Not working on cpan testers
 #subtest 'Test wrapper script encoding' => sub {
@@ -76,28 +76,28 @@ subtest 'Test type constraints integer' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(another --int 1a)]);
     my $test05 = Test03->new_with_command;
     isa_ok($test05,'MooseX::App::Message::Envelope');
-    is($test05->blocks->[0]->header,"Invalid value for 'integer'","Message ok");
+    like($test05->blocks->[0]->block,qr/Invalid value for 'integer'/,"Message ok");
 };
 
 subtest 'Test type constraints hash' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(another --hash xx)]);
     my $test06 = Test03->new_with_command;
     isa_ok($test06,'MooseX::App::Message::Envelope');
-    is($test06->blocks->[0]->header,"Invalid value for 'hash'","Message ok");
+    like($test06->blocks->[0]->block,qr/Invalid value for 'hash'/,"Message ok");
 };
 
 subtest 'Test type constraints number' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(another --number 2a)]);
     my $test07 = Test03->new_with_command;
     isa_ok($test07,'MooseX::App::Message::Envelope');
-    is($test07->blocks->[0]->header,"Invalid value for 'number'","Message ok");
+    like($test07->blocks->[0]->block,qr/Invalid value for 'number'/,"Message ok");
 };
 
 subtest 'Test type constraints custom1' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(another --custom1 9)]);
     my $test08 = Test03->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
-    is($test08->blocks->[0]->header,"Invalid value for 'custom1'","Message ok");
+    like($test08->blocks->[0]->block,qr/Invalid value for 'custom1'/,"Message ok");
 };
 
 subtest 'Test pass type constraints' => sub {
@@ -119,9 +119,9 @@ subtest 'Test ambiguous options' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(another --custom 1 --custom 2)]);
     my $test10 = Test03->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
-    is($test10->blocks->[0]->header,"Ambiguous option 'custom'","Message ok");
-    like($test10->blocks->[0]->body,qr/Could be
-    custom1  
+    like($test10->blocks->[0]->block,qr/Ambiguous option 'custom'/,"Message ok");
+    like($test10->blocks->[0]->block,qr/Could be
+    custom1
     custom2/,"Message ok");
 };
 
@@ -186,8 +186,8 @@ subtest 'Test wrong positional params' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(extra hui aa --value baer)]);
     my $test13 = Test03->new_with_command;
     isa_ok($test13,'MooseX::App::Message::Envelope');
-    is($test13->blocks->[0]->header,"Invalid value for 'extra2'","Error message ok");
-    is($test13->blocks->[2]->header,"parameters:","Usage header ok");
+    like($test13->blocks->[0]->block,qr/Invalid value for 'extra2'/,"Error message ok");
+    like($test13->blocks->[2]->block,qr/parameters:/,"Usage header ok");
     is($test13->blocks->[2]->body,"    extra1  Important extra parameter [Required]
     extra2  [Integer]
     alpha   [Integer]","Usage body ok");

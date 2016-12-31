@@ -15,24 +15,23 @@ sub version {
     my ($self,$app) = @_;
 
     my $version = '';
-    $version .= $app->meta->app_base. ' version '.$app->VERSION."\n";
-    $version .= "MooseX::App version ".$MooseX::App::VERSION."\n";
-    $version .= "Perl version ".sprintf("%vd", $^V);
-    my $renderer = $app->meta->app_renderer;
+    $version .= $app->meta->app_base. ' version <tag=version>'.$app->VERSION."</tag>\n";
+    $version .= "MooseX::App version <tag=version>".$MooseX::App::VERSION."</tag>\n";
+    $version .= "Perl version <tag=version>".sprintf("%vd", $^V)."</tag>";
 
-    my @parts = ($renderer->new({
-        header  => 'VERSION',
-        body    => $version
-    }));
+    my @parts = (MooseX::App::Message::Block->parse('<headline>VERSION</headline><paragraph>'.$version.'</paragraph>'));
 
     my %pod_raw = MooseX::App::Utils::parse_pod($app->meta->name);
 
     foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE','AUTHOR','AUTHORS') {
         if (defined $pod_raw{$part}) {
-            push(@parts, $renderer->new({
-                header  => $part,
-                body    => MooseX::App::Utils::string_to_entity($pod_raw{$part}),
-            }));
+            push(@parts, MooseX::App::Message::Block->parse(
+                '<headline>'.
+                $part.
+                '</headline><paragraph><raw>'.
+                MooseX::App::Utils::string_to_entity($pod_raw{$part}).
+                '</raw></paragraph>'
+            ));
         }
     }
 

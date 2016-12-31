@@ -13,7 +13,7 @@ subtest 'Single command' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw()]);
     my $test05 = Test05->new_with_options;
     isa_ok($test05,'MooseX::App::Message::Envelope');
-    is($test05->blocks->[0]->header,"Required option 'another_option' missing","Check for error message");
+    like($test05->blocks->[0]->block,qr/Required option 'another_option' missing/,"Check for error message");
 };
 
 subtest 'Single command' => sub {
@@ -28,5 +28,5 @@ subtest 'Single command help' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(--help)]);
     my $test05 = Test05->new_with_options();
     isa_ok($test05,'MooseX::App::Message::Envelope');
-    is($test05->blocks->[0]->header,"usage:","Usage header is first");
+    like($test05->blocks->[0]->block,qr/usage:/,"Usage header is first");
 };

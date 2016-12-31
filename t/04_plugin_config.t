@@ -39,5 +39,5 @@ subtest 'Missing config' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --config t/nosuchfile.pl --global 1234)]);
     my $test01 = Test01->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    like($test01->blocks->[0]->header,qr/Could not find/,'Error message set');
+    like($test01->blocks->[0]->block,qr/Could not find/,'Error message set');
 };

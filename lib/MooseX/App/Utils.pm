@@ -282,8 +282,16 @@ Tries to determine the filename containing the given package name.
 
 Parse POD for the given package.
 
+=head2 build_list
+
+TODO
+
 =head2 string_to_entity
 
+TODO
+
 =head2 string_from_entity
+
+TODO
 
 =cut

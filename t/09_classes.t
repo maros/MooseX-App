@@ -14,9 +14,9 @@ subtest 'Extend base class' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw()]);
     my $test01 = Test04->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    like($test01->blocks->[2]->body,qr/--test1\s+\[Integer\]/,'--test1 included');
-    like($test01->blocks->[2]->body,qr/--test2\s+\[Flag\]/,'--test2 included');
-    unlike($test01->blocks->[2]->body,qr/--test3/,'--test3 not included');
+    like($test01->blocks->[2]->block,qr/--test1<\/key><description>\[Integer\]/,'--test1 included');
+    like($test01->blocks->[2]->block,qr/--test2<\/key><description>\[Flag\]/,'--test2 included');
+    unlike($test01->blocks->[2]->block,qr/--test3/,'--test3 not included');
 };
 
 subtest 'Wrong usage' => sub {
@@ -39,8 +39,8 @@ subtest 'Default args available with extra inheritance' => sub {
     my $another = Test03->new_with_command;
 
     isa_ok($another,'MooseX::App::Message::Envelope');
-    like($another->blocks->[0]->body,qr/test03\syetanothercommand/,'Help ok');
-    is($another->blocks->[0]->header,'usage:','Help ok');
+    like($another->blocks->[0]->block,qr/test03<\/tag> <tag=command>yetanothercommand/,'Help ok');
+    like($another->blocks->[0]->block,qr/<headline>usage:<\/headline>/,'Help ok');
 
     MooseX::App::ParsedArgv->new(argv => [qw(yetanothercommand -ab --bool3)]);
     my $yetanother = Test03->new_with_command(private => 'test');

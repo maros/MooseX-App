@@ -17,7 +17,7 @@ is(join(',',sort values %{$commands}),'Test01::CommandA,Test01::CommandB,Test01:
 
 cmp_deeply($meta->app_namespace,[qw(Test01)],'Command namespace ok');
 is($meta->app_base,'02_meta.t','Command base ok');
-is($meta->app_renderer,'MooseX::App::Message::Renderer','Renderer class');
+isa_ok($meta->app_renderer,'MooseX::App::Message::Renderer','Renderer class');
 
 ok(Test01->can('new_with_command'),'Role applied to base class');
 ok(Test01->can('initialize_command_class'),'Role applied to base class');
@@ -46,7 +46,7 @@ require Test01::CommandA;
 my $description = $meta->command_usage_description(Test01::CommandA->meta);
 
 isa_ok($description,'MooseX::App::Message::Block');
-like($description->body,qr/varius nec iaculis vitae/,'Description body ok');
+like($description->block,qr/varius nec iaculis vitae/,'Description body ok');
 
 require Test01::CommandB;
 is(Test01::CommandB->meta->command_short_description,'Test class command B for test 01','Pod short description parsed ok');

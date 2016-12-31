@@ -15,10 +15,10 @@ subtest 'Depends' => sub {
         my $test01 = Test08->new_with_options( WriteToFile => 1 );
         isa_ok( $test01, 'MooseX::App::Message::Envelope' );
 
-        my @errors = grep { $_->type eq 'error' } @{ $test01->blocks };
+        my @errors = grep { $_->block =~ /<headline=error>/ } @{ $test01->blocks };
         is( scalar @errors, 1, 'only returned a single error' );
-        is( $errors[0]->header,
-            'Option \'WriteToFile\' requires \'FileFormat\' to be defined',
+        like( $errors[0]->block,
+            qr/Option 'WriteToFile' requires 'FileFormat' to be defined/,
             'generated an error when an option dependency was not present'
         );
     }
@@ -27,10 +27,10 @@ subtest 'Depends' => sub {
         my $test02 = Test08->new_with_options( ReadFromFile => 1 );
         isa_ok( $test02, 'MooseX::App::Message::Envelope' );
 
-        my @errors = grep { $_->type eq 'error' } @{ $test02->blocks };
+        my @errors = grep { $_->block =~ /<headline=error>/ } @{ $test02->blocks };
         is( scalar @errors, 1, 'only returned a single error' );
-        is( $errors[0]->header,
-            'Option \'ReadFromFile\' requires \'FileFormat\' to be defined',
+        like( $errors[0]->block,
+            qr/Option 'ReadFromFile' requires 'FileFormat' to be defined/,
             'generated an error when an option dependency was not present'
         );
     }
