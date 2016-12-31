@@ -80,6 +80,8 @@ sub DEMOLISH {
     $SINGLETON = undef
         if defined $SINGLETON
         && $SINGLETON == $self;
+
+    return;
 }
 
 sub instance {

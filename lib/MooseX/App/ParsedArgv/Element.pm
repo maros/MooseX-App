@@ -57,14 +57,15 @@ sub add_value {
         (defined $position ? (position => $position):()),
         (defined $raw ? (raw => $raw):()),
     ));
+    return $value;
 }
 
-sub all_scalar_values {
+sub all_scalar_values { ## no perlcritic(RequireArgUnpacking)
     return map { $_->value }
         $_[0]->all_values;
 }
 
-sub all_values {
+sub all_values { ## no perlcritic(RequireArgUnpacking)
     return sort { $a->position <=> $b->position }
         $_[0]->list_values;
 }
