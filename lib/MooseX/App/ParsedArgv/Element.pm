@@ -123,6 +123,22 @@ Parameter value or option key
 Arrayref of values. A value is represented by a L<MooseX::App::ParsedArgv::Value>
 object.
 
+=head2 add_value
+
+Append a value
+
+=head2 all_scalar_values
+
+All values as scalars (in supplied order)
+
+=head2 all_values
+
+All values as L<MooseX::App::ParsedArgv::Value> objects (in supplied order)
+
+=head2 last_value
+
+Last value as L<MooseX::App::ParsedArgv::Value> object (as given by supplied order)
+
 =head2 type
 
 Type of element. Can be 'option', 'parameter' or 'extra'
@@ -138,5 +154,9 @@ Consumes element. Dies if element is already consumed
 =head2 serialize
 
 Serializes element (Does not procuce output that is identical with original @ARGV)
+
+=head2 original
+
+Tries to re-create the original input
 
 =cut

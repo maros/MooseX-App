@@ -463,7 +463,7 @@ either HARNESS_ACTIVE or APP_DEVELOPER environment are set.
 
 Returns a list of all possible option names.
 
-=head cmd_name_list
+=head2 cmd_name_list
 
  my @names = $attribute->cmd_name_list();
 
