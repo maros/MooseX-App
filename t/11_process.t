@@ -101,20 +101,20 @@ sub test_subprocess {
     }
 
     if (exists $params{exit}) {
-        is($exit,$params{exit},'Exitcode ok');
+        is($exit,$params{exit},'Exitcode '.$params{bin}.' ok');
     }
     if (exists $params{out}) {
         if (ref $params{out} eq 'Regexp') {
-            like($out,$params{out},'Output ok');
+            like($out,$params{out},'Output '.$params{bin}.' ok');
         } else {
-            is($out,$params{out},'Output ok');
+            is($out,$params{out},'Output '.$params{bin}.' ok');
         }
     }
     if (exists $params{err}) {
         if (ref $params{err} eq 'Regexp') {
-            like($err,$params{err},'Error ok');
+            like($err,$params{err},'Error '.$params{bin}.' ok');
         } else {
-            is($err,$params{err},'Error ok');
+            is($err,$params{err},'Error '.$params{bin}.' ok');
         }
     }
 

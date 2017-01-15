@@ -32,7 +32,7 @@ command_short_description "Command A!";
 
 sub run {
     my ($self) = @_;
-    print "RUN COMMAND-A:".($self->command_local2 // 'undef');
+    print "RUN COMMAND-D:".($self->command_local1 // 'undef');
 }
 
 1;
