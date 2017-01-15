@@ -55,6 +55,8 @@ is(Test01::CommandB->meta->command_long_description,'Some description of *comman
  some code
  some code
 
+SUB HEADLINE
+
 some more desc
 
 * item 1

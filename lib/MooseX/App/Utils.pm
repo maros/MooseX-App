@@ -254,6 +254,9 @@ sub _pod_node_to_text {
                         push (@lines,"\n");
                         ${$indent}--;
                     }
+                    when (qr/head\d/) {
+                        push (@lines,"\n",$node->content,"\n");
+                    }
                 }
             }
         }

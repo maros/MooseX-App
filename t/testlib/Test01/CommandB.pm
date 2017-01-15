@@ -38,6 +38,8 @@ Some description of B<command B>
  some code
  some code
 
+=head2 SUB HEADLINE
+
 some more desc
 
 =over
