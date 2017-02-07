@@ -18,7 +18,7 @@ requires        'Module::Pluggable'             => 0;
 requires        'Path::Class'                   => 0;
 requires        'MooseX::Types::Path::Class'    => 0;
 requires        'Config::Any'                   => 0;
-requires        'List::Util'                    => 0;
+requires        'List::Util'                    => '1.44';
 requires        'Pod::Elemental'                => 0;
 
 recommends      'IO::Interactive'               => 0;
