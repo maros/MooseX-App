@@ -125,9 +125,8 @@ sub command_scan_namespace {
     foreach my $command_class ($mpo->plugins) {
         my $command_class_name =  substr($command_class,length($namespace)+2);
 
-        # Check for odd class names - needs to be refactored for subcommands support
-        next
-            if $command_class_name =~ m/::/;
+        # subcommands
+        $command_class_name =~ s/::/ /g;
 
         # Extract command name
         $command_class_name =~ s/^\Q$namespace\E:://;
@@ -500,46 +499,60 @@ sub command_candidates {
 }
 
 sub command_find {
-    my ($self,$command) = @_;
+    my ($self,$command,$parsed_argv) = @_;
 
     my $lc_command = lc($command);
     my $commands = $self->app_commands;
 
-    # Exact match
-    if (defined $commands->{$lc_command}) {
-        return $lc_command;
-    } else {
-        my $candidate =  $self->command_candidates($command);
+    my @bits = ( $command, @{ $parsed_argv->argv } );
 
-        if (ref $candidate eq '') {
-            return $candidate;
-        } else {
-            given (scalar @{$candidate}) {
-                when (0) {
+    # basically do a longest-match search
+    while(@bits) {
+        my $name = join ' ', @bits;
+
+        if( $commands->{$name} ) {
+
+            # remove the subcommand tokens
+            $parsed_argv->first_argv for 2..@bits;
+
+            return $name;
+        }
+
+        pop @bits;
+    }
+
+    # didn't find an exact match, let's go to plan B
+
+    my $candidate =  $self->command_candidates($command);
+
+    if (ref $candidate eq '') {
+        return $candidate;
+    } else {
+        given (scalar @{$candidate}) {
+            when (0) {
+                return $self->command_message(
+                    header          => "Unknown command '$command'", # LOCALIZE
+                    type            => "error",
+                );
+            }
+            when (1) {
+                if ($self->app_fuzzy) {
+                    return $candidate->[0];
+                } else {
                     return $self->command_message(
                         header          => "Unknown command '$command'", # LOCALIZE
                         type            => "error",
+                        body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
                     );
                 }
-                when (1) {
-                    if ($self->app_fuzzy) {
-                        return $candidate->[0];
-                    } else {
-                        return $self->command_message(
-                            header          => "Unknown command '$command'", # LOCALIZE
-                            type            => "error",
-                            body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
-                        );
-                    }
-                }
-                default {
-                    return $self->command_message(
-                        header          => "Ambiguous command '$command'", # LOCALIZE
-                        type            => "error",
-                        body            => "Which command did you mean?\n". # LOCALIZE
-                            MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
-                    );
-                }
+            }
+            default {
+                return $self->command_message(
+                    header          => "Ambiguous command '$command'", # LOCALIZE
+                    type            => "error",
+                    body            => "Which command did you mean?\n". # LOCALIZE
+                        MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                );
             }
         }
     }
@@ -1004,7 +1017,7 @@ Returns a message containing the basic usage documentation
 
 =head2 command_find
 
- my @commands = $meta->command_find($user_command_input);
+ my @commands = $meta->command_find($user_command_input, $parsed_argv);
 
 Returns a list of command names matching the user input
 
