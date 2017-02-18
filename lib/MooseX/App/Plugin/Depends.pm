@@ -4,12 +4,12 @@ use Moose::Role;
 use namespace::autoclean;
 
 sub plugin_metaroles {
-   my ($self, $class) = @_;
-   
-   return {
-      attribute => ['MooseX::App::Plugin::Depends::Meta::Attribute'],
-      class     => ['MooseX::App::Plugin::Depends::Meta::Class'],
-   }
+    my ($self, $class) = @_;
+
+    return {
+        attribute => ['MooseX::App::Plugin::Depends::Meta::Attribute'],
+        class     => ['MooseX::App::Plugin::Depends::Meta::Class'],
+    }
 }
 
 1;
