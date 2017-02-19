@@ -17,7 +17,7 @@ use Moose::Exporter;
 use Scalar::Util qw(blessed);
 
 my ($IMPORT,$UNIMPORT,$INIT_META) = Moose::Exporter->build_import_methods(
-    with_meta           => [ qw(app_usage app_description app_namespace app_base app_fuzzy app_command_name app_command_register app_strict app_prefer_commandline option parameter app_permute) ],
+    with_meta           => [ qw(app_usage app_description app_namespace app_exclude app_base app_fuzzy app_command_name app_command_register app_strict app_prefer_commandline option parameter app_permute) ],
     also                => [ 'Moose' ],
     as_is               => [ 'new_with_command' ],
     install             => [ 'unimport','init_meta' ],
@@ -71,6 +71,11 @@ sub app_command_register(%) {
 sub app_namespace(@) {
     my ( $meta, @namespaces ) = @_;
     return $meta->app_namespace( \@namespaces );
+}
+
+sub app_exclude(@) {
+    my ( $meta, @namespaces ) = @_;
+    return $meta->app_exclude( \@namespaces );
 }
 
 sub new_with_command {
@@ -425,6 +430,13 @@ multiple extra namespaces.
 
 If app_namespace is called with no arguments then autoloading of command
 classes will be disabled entirely.
+
+=head2 app_exclude
+
+ app_exclude 'MyApp::Commands::Roles','MyApp::Commands::Utils';
+
+A sub namespace included via app_namespace (or the default behaviour) can
+be excluded using app_exclude.
 
 =head2 app_command_name
 

@@ -30,6 +30,13 @@ has 'app_namespace' => (
     builder     => '_build_app_namespace',
 );
 
+has 'app_exclude' => (
+    is          => 'rw',
+    isa         => 'MooseX::App::Types::List',
+    coerce      => 1,
+    default     => sub { [] },
+);
+
 has 'app_base' => (
     is          => 'rw',
     isa         => 'Str',
@@ -93,12 +100,22 @@ sub _build_app_namespace {
 sub _build_app_commands {
     my ($self) = @_;
 
-    my @list;
+    my (@list);
+    # Process namespace list
     foreach my $namespace ( @{ $self->app_namespace } ) {
         push(@list,$self->command_scan_namespace($namespace));
     }
+    my $commands = { @list };
 
-    return { @list };
+    # Process excludes
+    foreach my $exclude ( @{ $self->app_exclude } ) {
+        foreach my $command (keys %{$commands}) {
+            delete $commands->{$command}
+                if $commands->{$command} =~ m/^\Q$exclude\E(::|$)/;
+        }
+    }
+
+    return $commands;
 }
 
 sub command_check {
@@ -896,6 +913,10 @@ the C<_build_app_messageclass> method. Defaults to MooseX::App::Message::Block
 
 Usually MooseX::App will take the package name of the base class as the
 namespace for commands. This namespace can be changed.
+
+=head2 app_exclude
+
+Exclude namespaces included in app_namespace
 
 =head2 app_base
 

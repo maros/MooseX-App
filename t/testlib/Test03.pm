@@ -10,6 +10,7 @@ app_command_name {
     my ($package) = @_;
     return lc($package);
 };
+app_exclude qw(Test03::Role);
 
 option 'global_option' => (
     is            => 'rw',
