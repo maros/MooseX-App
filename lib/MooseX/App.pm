@@ -137,7 +137,7 @@ sub new_with_command {
         );
     # Looks like a command
     } else {
-        my $return = $meta->command_find($first_argv);
+        my $return = $meta->command_find();
 
         # Nothing found
         if (blessed $return

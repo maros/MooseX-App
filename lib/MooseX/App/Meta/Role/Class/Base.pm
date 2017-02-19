@@ -142,9 +142,8 @@ sub command_scan_namespace {
     foreach my $command_class ($mpo->plugins) {
         my $command_class_name =  substr($command_class,length($namespace)+2);
 
-        # Check for odd class names - needs to be refactored for subcommands support
-        next
-            if $command_class_name =~ m/::/;
+        # subcommands support
+        $command_class_name =~ s/::/ /g;
 
         # Extract command name
         $command_class_name =~ s/^\Q$namespace\E:://;
@@ -164,6 +163,10 @@ sub command_args {
 
     $metaclass ||= $self;
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
+
+    unless ($metaclass->does_role('MooseX::App::Role::Common')) {
+        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+    }
 
     # Process options
     my @attributes_option = $self->command_usage_attributes($metaclass,'option');
@@ -517,49 +520,84 @@ sub command_candidates {
 }
 
 sub command_find {
-    my ($self,$command) = @_;
+    my ($self,$commands) = @_;
 
-    my $lc_command = lc($command);
-    my $commands = $self->app_commands;
+    my $parsed_argv     = MooseX::App::ParsedArgv->instance;
+    my $all_commands    = $self->app_commands;
 
-    # Exact match
-    if (defined $commands->{$lc_command}) {
-        return $lc_command;
-    } else {
-        my $candidate =  $self->command_candidates($command);
-
-        if (ref $candidate eq '') {
-            return $candidate;
+    # Get parts
+    my (@parts,@command_parts);
+    if (defined $commands) {
+        if (ref($commands) eq 'ARRAY') {
+            @parts = map { lc } @{$commands};
         } else {
-            given (scalar @{$candidate}) {
-                when (0) {
+            @parts = ( lc($commands) );
+        }
+    } else {
+        @parts = $parsed_argv->elements_argv;
+    }
+
+    # Extract possible parts
+    foreach my $part (@parts) {
+        # Anyting staring with a dash cannot be a command
+        last
+            if $part =~ m/^-/;
+        push(@command_parts,lc($part));
+    }
+
+    # Shortcut
+    return
+        unless scalar @command_parts;
+
+    # basically do a longest-match search
+    for my $index (reverse(0..$#command_parts)) {
+        my $command = join ' ', @command_parts[0..$index];
+        if( $all_commands->{$command} ) {
+            $parsed_argv->shift_argv for 0..$index;
+            return $command;
+        }
+    }
+
+    # didn't find an exact match, let's go to plan B
+    foreach my $index (reverse(0..$#command_parts)) {
+        my $command     = join ' ', @command_parts[0..$index];
+        my $candidate   = $self->command_candidates($command);
+        if (ref $candidate eq '') {
+            $parsed_argv->shift_argv;
+            return $candidate;
+        }
+        given (scalar @{$candidate}) {
+            when (0) {
+                next;
+            }
+            when (1) {
+                if ($self->app_fuzzy) {
+                    $parsed_argv->shift_argv;
+                    return $candidate->[0];
+                } else {
                     return $self->command_message(
                         header          => "Unknown command '$command'", # LOCALIZE
                         type            => "error",
-                    );
-                }
-                when (1) {
-                    if ($self->app_fuzzy) {
-                        return $candidate->[0];
-                    } else {
-                        return $self->command_message(
-                            header          => "Unknown command '$command'", # LOCALIZE
-                            type            => "error",
-                            body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
-                        );
-                    }
-                }
-                default {
-                    return $self->command_message(
-                        header          => "Ambiguous command '$command'", # LOCALIZE
-                        type            => "error",
-                        body            => "Which command did you mean?\n". # LOCALIZE
-                            MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                        body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
                     );
                 }
             }
+            default {
+                return $self->command_message(
+                    header          => "Ambiguous command '$command'", # LOCALIZE
+                    type            => "error",
+                    body            => "Which command did you mean?\n". # LOCALIZE
+                        MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                );
+            }
         }
     }
+
+    my $command = $command_parts[0];
+    return $self->command_message(
+        header          => "Unknown command '$command'", # LOCALIZE
+        type            => "error",
+    );
 }
 
 sub command_parser_hints {
@@ -684,6 +722,10 @@ sub command_usage_attributes {
 
     $metaclass ||= $self;
     $types ||= [qw(option proto)];
+
+    unless ($metaclass->does_role('MooseX::App::Role::Common')) {
+        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+    }
 
     my @return;
     foreach my $attribute ($metaclass->get_all_attributes) {
@@ -855,6 +897,16 @@ sub command_usage_global {
     foreach my $command (keys %$commands) {
         my $class = $commands->{$command};
         Class::Load::load_class($class);
+    }
+
+    foreach my $command (keys %$commands) {
+        my $class = $commands->{$command};
+
+        unless ($class->can('meta')
+            && $class->DOES('MooseX::App::Role::Common')) {
+            Moose->throw_error('Class '.$class.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+        }
+
         my $command_description;
         $command_description = $class->meta->command_short_description
             if $class->meta->can('command_short_description');
@@ -1025,7 +1077,7 @@ Returns a message containing the basic usage documentation
 
 =head2 command_find
 
- my @commands = $meta->command_find($user_command_input);
+ my @commands = $meta->command_find($commands_arrayref);
 
 Returns a list of command names matching the user input
 

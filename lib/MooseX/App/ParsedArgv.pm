@@ -18,6 +18,12 @@ my $SINGLETON;
 has 'argv' => (
     is              => 'ro',
     isa             => 'ArrayRef[Str]',
+    traits          => ['Array'],
+    handles         => {
+        length_argv     => 'count',
+        elements_argv   => 'elements',
+        _shift_argv     => 'shift',
+    },
     default         => sub {
         my @argv;
         @argv = eval {
@@ -94,9 +100,13 @@ sub instance {
 
 sub first_argv {
     my ($self) = @_;
+    return ($self->elements_argv)[0];
+}
 
+sub shift_argv {
+    my ($self) = @_;
     $self->reset_elements;
-    return shift(@{$self->argv});
+    return $self->_shift_argv;
 }
 
 sub _build_elements {
@@ -112,7 +122,7 @@ sub _build_elements {
     my $expecting       = 0; # Flag that indicates that a value is expected
 
     # Loop all elements of our ARGV copy
-    foreach my $element (@{$self->argv}) {
+    foreach my $element ($self->elements_argv) {
         # We are behind first ' -- ' occurrence: Do not process further
         if ($stopprocessing) {
             push (@elements,MooseX::App::ParsedArgv::Element->new(

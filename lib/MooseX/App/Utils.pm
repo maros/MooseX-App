@@ -57,8 +57,9 @@ sub class_to_command {
     return
         unless defined $class;
 
-    my @parts = split( /[_\s]+|\b|(?<![A-Z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/, $class );
-    return lc(join('_',@parts));
+    $class =~ s/(?=[a-z][A-Z][a-z])/_/g;
+    #my @parts = split( /[_\s]+|\b|(?<![A-Z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/, $class );
+    return lc($class);
 }
 
 # Format output text for fixed screen width

@@ -14,7 +14,7 @@ command_short_description q(Full manpage);
 
 has 'command' => (
     is              => 'ro',
-    isa             => 'Str',
+    isa             => 'ArrayRef',
     predicate       => 'has_command',
     documentation   => q[Command],
     traits          => ['MooseX::App::Meta::Role::Attribute::Option'],
