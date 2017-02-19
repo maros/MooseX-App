@@ -165,7 +165,7 @@ sub command_args {
     my $parsed_argv = MooseX::App::ParsedArgv->instance;
 
     unless ($metaclass->does_role('MooseX::App::Role::Common')) {
-        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_exclude')
     }
 
     # Process options
@@ -724,7 +724,7 @@ sub command_usage_attributes {
     $types ||= [qw(option proto)];
 
     unless ($metaclass->does_role('MooseX::App::Role::Common')) {
-        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+        Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_exclude')
     }
 
     my @return;
@@ -934,7 +934,7 @@ sub command_usage_subcommands {
 
         unless ($class->can('meta')
             && $class->DOES('MooseX::App::Role::Common')) {
-            Moose->throw_error('Class '.$class.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_namespace')
+            Moose->throw_error('Class '.$class.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_exclude')
         }
 
         my $command_description;
