@@ -5,7 +5,8 @@
 use strict;
 use warnings;
 
-use Test::More tests => 2;
+use Test::More tests => 3+1;
+use Test::NoWarnings;
 
 use lib 't/testlib';
 
@@ -46,7 +47,7 @@ subtest 'Basic Subcommands' => sub {
     isa_ok(Test15->new_with_command( ARGV => [ 'foo','qux' ] ),'Test15::Foo');
 };
 
-subtest 'Help' => sub {
+subtest 'Help Subcommand' => sub {
     my $help = Test15->new_with_command( ARGV => [ 'help' ] );
     isa_ok($help,'MooseX::App::Message::Envelope');
     is($help->blocks->[2]->header,'available commands:','Command headline set');
@@ -54,4 +55,13 @@ subtest 'Help' => sub {
     foo bar  Bar subcommand
     foo baz  Baz subcommand
     help     Prints this usage information",'Command body set');
+};
+
+subtest 'Help Parent' => sub {
+    my $help = Test15->new_with_command( ARGV => [ 'foo','--help' ] );
+    isa_ok($help,'MooseX::App::Message::Envelope');
+    is($help->blocks->[3]->header,'available subcommands:','Command headline set');
+    is($help->blocks->[3]->body,"    bar   Bar subcommand
+    baz   Baz subcommand
+    help  Prints this usage information",'Command body set');
 };

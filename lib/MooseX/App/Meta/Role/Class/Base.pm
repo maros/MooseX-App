@@ -869,19 +869,36 @@ sub command_class_to_command {
     return;
 }
 
+sub command_subcommands {
+    my ($self,$command_meta_class) = @_;
+
+    $command_meta_class ||= $self;
+    my $command_class = $command_meta_class->name;
+    my $command_name = $self->command_class_to_command($command_class);
+
+    my $commands    = $self->app_commands;
+    my $subcommands = {};
+    foreach my $command (keys %{$commands}) {
+        next
+            if $command eq $command_name
+            || $command !~ m/^\Q$command_name\E\s(.+)/;
+        $subcommands->{$1} = $commands->{$command};
+    }
+
+    return $subcommands;
+}
+
 sub command_usage_command {
     my ($self,$command_meta_class) = @_;
 
     $command_meta_class ||= $self;
-
-    my $command_class = $command_meta_class->name;
-    my $command_name = $self->command_class_to_command($command_class);
 
     my @usage;
     push(@usage,$self->command_usage_header($command_meta_class));
     push(@usage,$self->command_usage_description($command_meta_class));
     push(@usage,$self->command_usage_parameters($command_meta_class,'parameters:')); # LOCALIZE
     push(@usage,$self->command_usage_options($command_meta_class,'options:')); # LOCALIZE
+    push(@usage,$self->command_usage_subcommands('available subcommands:',$self->command_subcommands($command_meta_class))); # LOCALIZE
 
     return @usage;
 }
@@ -889,10 +906,23 @@ sub command_usage_command {
 sub command_usage_global {
     my ($self) = @_;
 
-    my @commands;
-    push(@commands,['help','Prints this usage information']); # LOCALIZE
+    my @usage;
+    push(@usage,$self->command_usage_header());
 
-    my $commands = $self->app_commands;
+    my $description = $self->command_usage_description($self);
+    push(@usage,$description)
+        if $description;
+    push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
+    push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
+    push(@usage,$self->command_usage_subcommands('available commands:',$self->app_commands)); # LOCALIZE
+
+    return @usage;
+}
+
+sub command_usage_subcommands {
+    my ($self,$headline,$commands) = @_;
+
+    my @commands;
 
     foreach my $command (keys %$commands) {
         my $class = $commands->{$command};
@@ -916,23 +946,12 @@ sub command_usage_global {
     }
 
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
+    push(@commands,['help','Prints this usage information']); # LOCALIZE
 
-    my @usage;
-    push(@usage,$self->command_usage_header());
-
-    my $description = $self->command_usage_description($self);
-    push(@usage,$description)
-        if $description;
-    push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
-    push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
-    push(@usage,
-        $self->command_message(
-            header  => 'available commands:', # LOCALIZE
-            body    => MooseX::App::Utils::format_list(@commands),
-        )
+    return $self->command_message(
+        header  => $headline,
+        body    => MooseX::App::Utils::format_list(@commands),
     );
-
-    return @usage;
 }
 
 1;
