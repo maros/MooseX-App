@@ -13,7 +13,7 @@ use MooseX::App::Exporter qw(option parameter command_short_description command_
 use Moose::Exporter;
 
 Moose::Exporter->setup_import_methods(
-    with_meta => [qw(command_short_description command_long_description command_strict command_usage option parameter)],
+    with_meta => [qw(command_short_description command_long_description command_strict command_usage option parameter extends)],
     also      => 'Moose',
 );
 
@@ -21,7 +21,20 @@ sub init_meta {
     my ($class,%args) = @_;
 
     my $meta = Moose->init_meta( %args );
+    init_class($meta);
 
+    return $meta;
+}
+
+sub extends {
+    my $meta = shift;
+    $meta->superclasses(@_);
+    # Need to re-init meta class, just in case
+    init_class($meta);
+}
+
+sub init_class {
+    my $meta = shift;
     Moose::Util::MetaRole::apply_metaroles(
         for             => $meta,
         class_metaroles => {
@@ -35,12 +48,12 @@ sub init_meta {
         },
     );
 
-    Moose::Util::MetaRole::apply_base_class_roles(
-        for             => $args{for_class},
-        roles           => ['MooseX::App::Role::Common'],
-    );
-
-    return $meta;
+    unless ($meta->DOES('MooseX::App::Role::Common')) {
+        Moose::Util::MetaRole::apply_base_class_roles(
+            for             => $meta->name,
+            roles           => ['MooseX::App::Role::Common'],
+        );
+    }
 }
 
 1;
