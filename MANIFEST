@@ -78,6 +78,7 @@ t/11_process.t
 t/12_plugin_depends.t
 t/13_rt_112156.t
 t/14_gh_45.t
+t/15_subcommands.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl

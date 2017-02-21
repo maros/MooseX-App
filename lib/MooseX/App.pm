@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = 1.37;
+our $VERSION = 1.37_01;
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline app_permute option parameter);
@@ -185,7 +185,8 @@ In your base class:
   ); # not exposed
 
 Write multiple command classes (If you have only a single command class
-you should use L<MooseX::App::Simple> instead)
+you should use L<MooseX::App::Simple> instead). Packackes in the namespace may be
+deeply nested.
 
   package MyApp::SomeCommand;
   use MooseX::App::Command; # important (also imports Moose)

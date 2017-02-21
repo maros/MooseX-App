@@ -78,12 +78,14 @@ L<MooseX::App::Meta::Role::Attribute::Option>)
 
 =head1 COMMAND CLASSES
 
-After you have created a base class it is time to create one class for each
-command you want to provide (unless you are using L<MooseX::App::Simple>).
-The command classes must reside in the namespace of the base class
-(eg. 'MyApp::SomeCommand'). The namespace for the command classes however can
-be changed via the 'app_namespace' function in the base class, or by simply
-registering command classes manually via 'app_command_register'.
+After you created a base class it is time to create one class for each command
+you want to provide (unless you are using L<MooseX::App::Simple>). The command
+classes must reside in the namespace of the base class (eg. 'MyApp::SomeCommand').
+You can also deeply nest classes in the main namespace to create subcommand.
+The namespace for the command classes however can be changed via the
+'app_namespace' function in the base class, or by simply registering command
+classes manually via 'app_command_register'. Use 'app_exclude' to exclude certain
+sub namespaces.
 
 All command classes must use MooseX::App::Command, which will also load Moose.
 

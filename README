@@ -19,7 +19,8 @@ SYNOPSIS
       ); # not exposed
 
     Write multiple command classes (If you have only a single command class
-    you should use MooseX::App::Simple instead)
+    you should use MooseX::App::Simple instead). Packackes in the namespace
+    may be deeply nested.
 
       package MyApp::SomeCommand;
       use MooseX::App::Command; # important (also imports Moose)
@@ -107,7 +108,7 @@ DESCRIPTION
 
     *   Provide helpful error messages if user input cannot be validated
         (either missing or wrong attributes or Moose type constraints not
-        satisfied)
+        satisfied) or if the user requests help.
 
     Commandline options are defined using the 'option' keyword which accepts
     the same attributes as Moose' 'has' keyword.
@@ -250,6 +251,12 @@ GLOBAL OPTIONS
 
     If app_namespace is called with no arguments then autoloading of command
     classes will be disabled entirely.
+
+  app_exclude
+     app_exclude 'MyApp::Commands::Roles','MyApp::Commands::Utils';
+
+    A sub namespace included via app_namespace (or the default behaviour)
+    can be excluded using app_exclude.
 
   app_command_name
      app_command_name {
@@ -468,7 +475,7 @@ CONTRIBUTORS
     %3AWishlist> list of open wishlist issues for ideas.
 
 COPYRIGHT
-    MooseX::App is Copyright (c) 2012-16 Maroš Kollár.
+    MooseX::App is Copyright (c) 2012-17 Maroš Kollár.
 
     This library is free software and may be distributed under the same
     terms as perl itself. The full text of the licence can be found in the
