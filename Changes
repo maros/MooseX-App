@@ -1,5 +1,10 @@
 Release history for Perl module MooseX::App
 
+1.38 2017-06-20
+    - Cleanups (get rid of smartmatch, inentation, documentation, tests)
+    - Also handle =head[2-4] tags when processing pod (#47)
+    - Subcommands (based on work by Yanick Champoux)
+
 1.37 2016-11-13
     - Refactor the way values are parsed from @ARGV
     - Rework boolean negation
@@ -9,7 +14,8 @@ Release history for Perl module MooseX::App
     - Documentation
     - Set correct encoding on STDERR
     - Fix order of options (fixed by J.R. Mash)
-    - Replace dashes in variable names with underscores in bash completion (implemented by Tina Müller)
+    - Replace dashes in variable names with underscores in bash completion
+      (implemented byTina Müller)
     - Do not autocomplete autocomplete itself (implemented by Lisa Hare)
     - Create correct documentation for options with cmd_split
     - Rename hints key to clarify purpose
@@ -78,7 +84,7 @@ Release history for Perl module MooseX::App
     - Fix warnings on warnings on 5.18 again
     - Documentation
     - Fix spelling (fixed by Gregor Herrmann)
-    
+
 1.26 2014-02-24
     - Fix failing tests
 
@@ -118,7 +124,7 @@ Release history for Perl module MooseX::App
     - Fixed on MSWin
 
 1.18 2013-03-24
-    - Added positional parameters with 'parameter' keyword 
+    - Added positional parameters with 'parameter' keyword
       (Attention: this change might break things if you used to work with @extra)
     - Parameters are handled in the meta class
     - Usage meta class methods refactored
@@ -178,7 +184,7 @@ Release history for Perl module MooseX::App
 
 1.07 2012-08-22
     - Fix failing load tests
-    
+
 1.06 2012-08-20
     - Single command interface (MooseX::App::Simple)
     - Fuzzy command matching plugin
@@ -198,10 +204,10 @@ Release history for Perl module MooseX::App
     - Fix pod to text conversion
 
 1.03 2012-06-02
-    - Do not expose all attributes as options but only those defined via 
+    - Do not expose all attributes as options but only those defined via
       'option' keyword
     - More tests
-    - Internal changes (move methods to meta class, calculate loadable commands 
+    - Internal changes (move methods to meta class, calculate loadable commands
       only once, ...)
     - Fix various bugs
 
