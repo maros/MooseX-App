@@ -248,4 +248,7 @@ combinations, name clashes, ...
 If you want custom behaviour you could start writing your own
 L<MooseX::App::WritingPlugins|plugins>.
 
+Make sure to run your application in the APP_DEVELOPER=1 environment. In this mode
+additional sanity checks will be performed upon startup.
+
 =cut

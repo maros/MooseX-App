@@ -76,6 +76,9 @@ sub new_with_options {
         Moose->throw_error('new_with_command got invalid extra arguments');
     }
 
+    $class->meta->command_check()
+        if $ENV{APP_DEVELOPER} || $ENV{HARNESS_ACTIVE};
+
     # Get ARGV
     my $argv = delete $args{ARGV};
     my $parsed_argv;
