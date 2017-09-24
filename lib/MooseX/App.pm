@@ -298,6 +298,13 @@ This is equivalent to
   );
 
 Single letter options are treated as flags and may be combined with eachother.
+However such options must have a Boolean type constraint.
+
+ option 'verbose' => (
+      is            => 'rw',
+      isa           => 'Bool',
+      cmd_flag      => 'v',
+  );
 
 Positional parameters are defined with the 'parameter' keyword
 
