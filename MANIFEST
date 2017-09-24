@@ -79,6 +79,7 @@ t/12_plugin_depends.t
 t/13_rt_112156.t
 t/14_gh_45.t
 t/15_subcommands.t
+t/16_rt122946.t
 t/config.pl
 t/example/test01.pl
 t/example/test02.pl
