@@ -8,7 +8,7 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
-use List::Util qw(uniq);
+use List::Util qw(uniq first);
 
 has 'cmd_type' => (
     is          => 'rw',
@@ -94,6 +94,8 @@ sub cmd_check {
     $from_constraint = $type_constraint->parameterized_from
         if $type_constraint && $type_constraint->isa('Moose::Meta::TypeConstraint::Parameterized');
 
+    my $cmd_type = ucfirst($self->cmd_type);
+
     # Check for useless flags
     if ($self->cmd_type eq 'parameter') {
         if ($self->cmd_count) {
@@ -113,33 +115,38 @@ sub cmd_check {
             || ($type_constraint && $type_constraint->is_a_type_of('Ref'))) {
             Moose->throw_error("Parameter $name may not have Ref type constraints");
         }
-    }
+    } else {
+        if (! $type_constraint->is_a_type_of('Bool')
+            && first { length($_) == 1 } $self->cmd_name_list) {
+            Moose->throw_error("Option $name has a single letter flag but no Bool type constraint");
+        }
 
-    # Check negate
-    if ($self->has_cmd_negate
-        && (!$type_constraint || $type_constraint->is_a_type_of('Bool'))) {
-        Moose->throw_error("Option $name has 'cmd_negate' but has no Bool type constraint");
+        # Check negate
+        if ($self->has_cmd_negate
+            && (!$type_constraint || ! $type_constraint->is_a_type_of('Bool'))) {
+            Moose->throw_error("Option $name has 'cmd_negate' but has no Bool type constraint");
+        }
     }
 
     # Check type constraints
     if (defined $type_constraint) {
         if ($self->cmd_count
             && ! $type_constraint->is_a_type_of('Num')) {
-            Moose->throw_error("Option $name has 'cmd_count' but has no Num/Int type constraint");
+            Moose->throw_error("$cmd_type $name has 'cmd_count' but has no Num/Int type constraint");
         }
         if ($self->has_cmd_split
             && ! (
                 ($from_constraint &&  $from_constraint->is_a_type_of('ArrayRef'))
                 || $type_constraint->is_a_type_of('ArrayRef'))
             ) {
-            Moose->throw_error("Option $name has 'cmd_split' but has no ArrayRef type constraint");
+            Moose->throw_error("$cmd_type $name has 'cmd_split' but has no ArrayRef type constraint");
         }
     }
 
     # Check for uniqness
     my @names = $self->cmd_name_possible;
     if (scalar(uniq(@names)) != scalar(@names)) {
-        Moose->throw_error("Option $name has duplicate names/aliases");
+        Moose->throw_error("$cmd_type $name has duplicate names/aliases");
     }
 
     return;

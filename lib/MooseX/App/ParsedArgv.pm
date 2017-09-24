@@ -157,7 +157,7 @@ sub _build_elements {
                     }
                 }
                 # Key-value combined (--key=value)
-                when (m/^--([^-=][^=]*)=(.+)$/) {
+                when (m/^--([^-=][^=]+)=(.+)$/) {
                     undef $lastkey;
                     undef $lastelement;
                     $expecting = 0;
@@ -177,7 +177,7 @@ sub _build_elements {
                     );
                 }
                 # Ordinary key
-                when (m/^--?([^-].*)/) {
+                when (m/^--?([^-].+)/) {
                     my $key = $1;
 
                     unless (defined $options{$key} ) {
