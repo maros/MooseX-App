@@ -589,7 +589,7 @@ sub command_find {
                     header          => "Ambiguous command '$command'", # LOCALIZE
                     type            => "error",
                     body            => "Which command did you mean?\n". # LOCALIZE
-                        MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                        MooseX::App::Utils::build_list(map { [ $_ ] } sort @{$candidate}),
                 );
             }
         }
@@ -915,7 +915,10 @@ sub command_usage_command {
     push(@usage,$self->command_usage_description($command_meta_class));
     push(@usage,$self->command_usage_parameters($command_meta_class,'parameters:')); # LOCALIZE
     push(@usage,$self->command_usage_options($command_meta_class,'options:')); # LOCALIZE
-    push(@usage,$self->command_usage_subcommands('available subcommands:',$self->command_subcommands($command_meta_class))); # LOCALIZE
+
+    my $subcommands = $self->command_subcommands($command_meta_class);
+    push(@usage,$self->command_usage_subcommands('available subcommands:',$subcommands))
+        if scalar keys %{$subcommands};
 
     return @usage;
 }
@@ -965,20 +968,9 @@ sub command_usage_subcommands {
     @commands = sort { $a->[0] cmp $b->[0] } @commands;
     push(@commands,['help','Prints this usage information']); # LOCALIZE
 
-    my @usage;
-    push(@usage,$self->command_usage_header());
-
-    my $description = $self->command_usage_description($self);
-    push(@usage,$description)
-        if $description;
-    push(@usage,$self->command_usage_parameters($self,'global parameters:')); # LOCALIZE
-    push(@usage,$self->command_usage_options($self,'global options:')); # LOCALIZE
-    push(@usage,
-        $self->command_message(
-            header  => 'available commands:', # LOCALIZE
-            body    => MooseX::App::Utils::build_list(@commands),
-        )
-    return @usage;
+    return $self->command_message(
+        header  => $headline,
+        body    => MooseX::App::Utils::build_list(@commands),
     );
 }
 

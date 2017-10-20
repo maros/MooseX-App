@@ -53,7 +53,7 @@ sub render_node {
                 push(@list,{ k => $key, v => $value });
             }
 
-            $return .= $self->_format_list(0,\@list)."\n";
+            $return .= $self->_format_list(0,\@list,$indent)."\n";
         } elsif ($node->{c}) {
             $local_indent++
                 if ($tag eq 'indent' || $tag eq 'paragraph') && $local_indent >= 0;

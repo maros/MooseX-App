@@ -51,11 +51,12 @@ sub _format_text {
 
 # Format bullet list for fixed screen width
 sub _format_list {
-    my ($self,$indent,$list) = @_;
+    my ($self,$indent,$list,$list_indent) = @_;
 
-    $indent                 = $indent // 0;
+    $list_indent            //= 0;
+    $indent                 //= 0;
     my $max_length          = max(map { length($_->{k}) } @{$list});
-    my $description_length  = $self->screen_width - $max_length - 2 - ($self->indent * $indent) - 1;
+    my $description_length  = $self->screen_width - $max_length - 2 - ($self->indent * ($indent+$list_indent)) - 1;
     my $prefix_length       = $max_length + ($indent * $self->indent) + 2;
     my @return;
 

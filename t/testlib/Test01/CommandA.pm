@@ -15,7 +15,7 @@ option 'command_local1' => (
 option 'command_local2' => (
     isa             => 'Str',
     is              => 'rw',
-    documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperly],
+    documentation   => q[Verylongwordwithoutwhitespacestotestiftextformatingworksproperlyandreallybrakes],
     cmd_env         => 'LOCAL2',
 );
 
