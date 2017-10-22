@@ -250,7 +250,7 @@ sub build_list {
                     '</key></item>');
             }
         } else {
-            push(@return,'<item>'.$element.'</item>');
+            push(@return,'<item>'.string_to_entity($element).'</item>');
         }
     }
 

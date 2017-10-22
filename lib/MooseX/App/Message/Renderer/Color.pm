@@ -17,15 +17,40 @@ BEGIN {
 };
 
 sub _wrap_color {
-    my ($self,$color,$string) = @_;
+    my ($color,$string) = @_;
 
     return $string
-        unless is_interactive()
+        unless is_interactive() # TODO cache
         && defined $color;
 
     return Term::ANSIColor::color($color)
         .$string
         .Term::ANSIColor::color('reset');
+}
+
+around 'render_node' => sub {
+    my ($orig, $self,$block,$indent) = @_;
+
+    my $ret = $orig->($self,$block,$indent);
+
+    if ($block->{a}
+        && $block->{a} eq 'error') {
+        return _wrap_color('red',$ret);
+    } elsif ($block->{t} eq 'headline') {
+        return _wrap_color('bold',$ret);
+    }
+    return $ret;
+};
+
+
+sub render_list_key {
+    my ($self,$value) = @_;
+    return _wrap_color('yellow',$value);
+}
+
+sub render_list_value {
+    my ($self,$value) = @_;
+    return $value;
 }
 
 __PACKAGE__->meta->make_immutable;

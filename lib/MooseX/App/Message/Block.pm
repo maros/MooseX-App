@@ -48,7 +48,7 @@ our %KEYWORDS = (
     },
     tag         => {
         type        => 'semantic',
-        attr        => ['*'],
+        attr        => ['ANY'],
         parents     => [qw(key description headline paragraph)]
     },
 );
@@ -157,10 +157,11 @@ sub _parse_block {
                 push(@{$current->{c}},$new);
                 $current = $new;
 
+                            say "MATCGED $current->{t}";
                 if (defined $keyword->{attr}) {
                     my $match = 0;
                     foreach my $attr (@{$keyword->{attr}}) {
-                        if ($attr eq '*'
+                        if ($attr eq 'ANY'
                             && defined $+{attr}) {
                             $match = 1;
                             last;
@@ -182,6 +183,7 @@ sub _parse_block {
                             )
                         );
                     }
+                    $current->{a} = $+{attr};
                 } elsif (defined $+{attr}) {
                    Moose->throw_error(
                         sprintf(

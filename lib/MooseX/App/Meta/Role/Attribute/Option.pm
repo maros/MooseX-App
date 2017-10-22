@@ -229,7 +229,7 @@ sub cmd_usage_description {
     if (scalar @tags) {
         $description .= ' '
             if $description;
-        $description .= '['.join('; ',@tags).']';
+        $description .= '['.join('; ',map { '<tag=attr>'.$_.'</tag>' } @tags).']';
     }
     return $description
 }

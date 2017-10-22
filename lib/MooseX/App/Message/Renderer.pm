@@ -24,7 +24,7 @@ has 'indent' => (
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 # Format output text for fixed screen width
-sub _format_text {
+sub render_text {
     my ($self,$text,$indent) = @_;
 
     $text = MooseX::App::Utils::string_from_entity($text);
@@ -49,15 +49,26 @@ sub _format_text {
     );
 }
 
+sub render_list_key {
+    my ($self,$value) = @_;
+    return $value;
+}
+
+sub render_list_value {
+    my ($self,$value) = @_;
+    return $value;
+}
+
 # Format bullet list for fixed screen width
-sub _format_list {
+sub render_list {
     my ($self,$indent,$list,$list_indent) = @_;
 
     $list_indent            //= 0;
     $indent                 //= 0;
+    my $space               = 2;
     my $max_length          = max(map { length($_->{k}) } @{$list});
-    my $description_length  = $self->screen_width - $max_length - 2 - ($self->indent * ($indent+$list_indent)) - 1;
-    my $prefix_length       = $max_length + ($indent * $self->indent) + 2;
+    my $description_length  = $self->screen_width - $max_length - $space - ($self->indent * ($indent+$list_indent)) - 1;
+    my $prefix_length       = $max_length + ($indent * $self->indent) + $space;
     my @return;
 
     # Loop all items
@@ -65,9 +76,16 @@ sub _format_list {
         my $description = $element->{v} // '';
         my @lines = $self->_split_string($description_length,$description);
 
-        push (@return,(' ' x ($indent * $self->indent) ).sprintf('%-*s  %s',$max_length,$element->{k},shift(@lines)));
-        while (my $line = shift (@lines)) {
-            push(@return,' ' x $prefix_length.$line);
+        push (@return,
+            (' ' x ($indent * $self->indent) )
+            #.sprintf('%-*s  %s',
+            #    $max_length,
+            .$self->render_list_key($element->{k})
+            .(' ' x ($max_length - length($element->{k}) + $space) )
+            .$self->render_list_value(shift(@lines))
+        );
+        while (my $line = shift @lines) {
+            push(@return,' ' x $prefix_length.$self->render_list_value($line));
         }
     }
     return join("\n",@return);
@@ -85,7 +103,7 @@ sub _split_string {
 
     my (@lines,$line);
     $line = '';
-    foreach my $word (split(m/(\p{IsPunct}|\p{IsSpace})/,$string)) {
+    foreach my $word (split(m/([^[:alnum:]])/,$string)) {
         if (length($line.$word) <= $max_length) {
             $line .= $word;
         } else {
