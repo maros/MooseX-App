@@ -215,9 +215,11 @@ sub _pod_node_to_text {
 sub string_to_entity {
     my ($string) = @_;
 
+    $string =~ s/<(tag=[^>]+|\/tag)>/\0$1\0/g;
     $string =~ s/>/&gt;/g;
-    $string =~ s/>/&gt;/g;
+    $string =~ s/</&lt;/g;
     $string =~ s/&/&amp;/g;
+    $string =~ s/\0([^\0]+)\0/<$1>/g;
 
     return $string;
 }
@@ -284,14 +286,15 @@ Parse POD for the given package.
 
 =head2 build_list
 
-TODO
+Builds a list for the renderer. Expects either a list of strings,
+or a list of array references for key-value pairs.
 
 =head2 string_to_entity
 
-TODO
+Escapes entities that might interfere with the parser syntax
 
 =head2 string_from_entity
 
-TODO
+Unescapes entities that might interfere with the parser syntax
 
 =cut

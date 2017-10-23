@@ -22,6 +22,11 @@ sub render {
     return $rendered;
 }
 
+sub render_tag {
+    my ($self,$content,$tag) = @_;
+    return $content;
+}
+
 sub render_node {
     my ($self,$block,$indent) = @_;
 
@@ -64,6 +69,9 @@ sub render_node {
             if ($type eq 'block') {
                 chomp($local_return);
                 $local_return = $self->render_text($local_return,$local_indent)."\n";
+            }
+            if ($tag eq 'tag') {
+                $local_return = $self->render_tag($local_return,$node->{a});
             }
             $return .= $local_return;
         } elsif (($tag eq '_text' || $tag eq 'raw')

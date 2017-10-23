@@ -43,6 +43,14 @@ around 'render_node' => sub {
 };
 
 
+sub render_tag {
+    my ($self,$value,$tag) = @_;
+    if ($tag eq 'attr' || $tag eq 'version') {
+        return _wrap_color('green',$value);
+    }
+    return $value;
+}
+
 sub render_list_key {
     my ($self,$value) = @_;
     return _wrap_color('yellow',$value);

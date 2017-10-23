@@ -45,7 +45,7 @@ MooseX::App::Role - Define attributes in a role
 
  package MyApp::Role::SomeRole;
  
- use MooseX::App::Role; # Alo loads Moose::Role
+ use MooseX::App::Role; # Also loads Moose::Role
  
  option 'testattr' => (
     isa             => 'rw',

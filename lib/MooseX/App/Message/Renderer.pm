@@ -49,6 +49,15 @@ sub render_text {
     );
 }
 
+sub display_length {
+    my ($string) = @_;
+
+    $string =~ s/\e\[[\d;]*m//msg;
+    $string =~ s/[^[:print:]]//g;
+
+    return length($string);
+}
+
 sub render_list_key {
     my ($self,$value) = @_;
     return $value;
@@ -66,7 +75,7 @@ sub render_list {
     $list_indent            //= 0;
     $indent                 //= 0;
     my $space               = 2;
-    my $max_length          = max(map { length($_->{k}) } @{$list});
+    my $max_length          = max(map { display_length($_->{k}) } @{$list});
     my $description_length  = $self->screen_width - $max_length - $space - ($self->indent * ($indent+$list_indent)) - 1;
     my $prefix_length       = $max_length + ($indent * $self->indent) + $space;
     my @return;
@@ -81,7 +90,7 @@ sub render_list {
             #.sprintf('%-*s  %s',
             #    $max_length,
             .$self->render_list_key($element->{k})
-            .(' ' x ($max_length - length($element->{k}) + $space) )
+            .(' ' x ($max_length - display_length($element->{k}) + $space) )
             .$self->render_list_value(shift(@lines))
         );
         while (my $line = shift @lines) {
@@ -103,15 +112,16 @@ sub _split_string {
 
     my (@lines,$line);
     $line = '';
+    #TODO honour escape sequence
     foreach my $word (split(m/([^[:alnum:]])/,$string)) {
-        if (length($line.$word) <= $max_length) {
+        if (display_length($line.$word) <= $max_length) {
             $line .= $word;
         } else {
             push(@lines,$line)
                 if ($line ne '');
             $line = '';
 
-            if (length($word) > $max_length) {
+            if (display_length($word) > $max_length) {
                 my (@parts) = grep { $_ ne '' } split(/(.{$max_length})/,$word);
                 my $lastline = pop(@parts);
                 push(@lines,@parts);
