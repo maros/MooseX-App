@@ -8,7 +8,7 @@ use namespace::autoclean;
 use Moose;
 extends qw(MooseX::App::Message::Renderer);
 
-use List::Util qw(first);
+use List::Util qw(first max);
 
 sub render {
     my ($self,$blocks) = @_;
@@ -20,11 +20,6 @@ sub render {
         $rendered .= $self->render_node($block->parsed);
     }
     return $rendered;
-}
-
-sub render_tag {
-    my ($self,$content,$tag) = @_;
-    return $content;
 }
 
 sub render_node {
@@ -70,8 +65,11 @@ sub render_node {
                 chomp($local_return);
                 $local_return = $self->render_text($local_return,$local_indent)."\n";
             }
+
             if ($tag eq 'tag') {
                 $local_return = $self->render_tag($local_return,$node->{a});
+            } elsif ($tag eq 'headline') {
+                $local_return = $self->render_headline($local_return);
             }
             $return .= $local_return;
         } elsif (($tag eq '_text' || $tag eq 'raw')
@@ -89,6 +87,86 @@ sub render_node {
 
     return $return;
 }
+
+
+# Format output text for fixed screen width
+sub render_text {
+    my ($self,$text,$indent) = @_;
+
+    $text = MooseX::App::Utils::string_from_entity($text);
+
+    $indent //= 0;
+    if ($indent < 0) {
+        return $text;
+    }
+
+    my $indent_pos = ($indent * $self->indent);
+    my $max_length = $self->screen_width - $indent_pos;
+
+    my @lines;
+    foreach my $line (split(/\n/,$text)) {
+        push(@lines,MooseX::App::Utils::string_split($max_length,$line));
+    }
+
+    return join(
+        "\n",
+        map { (' ' x $indent_pos).$_ }
+        @lines
+    );
+}
+
+sub render_tag {
+    my ($self,$content,$tag) = @_;
+    return $content;
+}
+
+sub render_list_key {
+    my ($self,$value) = @_;
+    return $value;
+}
+
+sub render_list_value {
+    my ($self,$value) = @_;
+    return $value;
+}
+
+sub render_headline {
+    my ($self,$value) = @_;
+    return $value;
+}
+
+# Format bullet list for fixed screen width
+sub render_list {
+    my ($self,$indent,$list,$list_indent) = @_;
+
+    $list_indent            //= 0;
+    $indent                 //= 0;
+    my $space               = 2;
+    my $max_length          = max(map { MooseX::App::Utils::string_length($_->{k}) } @{$list});
+    my $description_length  = $self->screen_width - $max_length - $space - ($self->indent * ($indent+$list_indent)) - 1;
+    my $prefix_length       = $max_length + ($indent * $self->indent) + $space;
+    my @return;
+
+    # Loop all items
+    foreach my $element (@{$list}) {
+        my $description = $element->{v} // '';
+        my @lines = MooseX::App::Utils::string_split($description_length,$description);
+
+        push (@return,
+            (' ' x ($indent * $self->indent) )
+            #.sprintf('%-*s  %s',
+            #    $max_length,
+            .$self->render_list_key($element->{k})
+            .(' ' x ($max_length - MooseX::App::Utils::string_length($element->{k}) + $space) )
+            .$self->render_list_value(shift(@lines))
+        );
+        while (my $line = shift @lines) {
+            push(@return,' ' x $prefix_length.$self->render_list_value($line));
+        }
+    }
+    return join("\n",@return);
+}
+
 
 __PACKAGE__->meta->make_immutable;
 1;

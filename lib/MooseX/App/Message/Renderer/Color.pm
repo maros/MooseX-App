@@ -61,5 +61,10 @@ sub render_list_value {
     return $value;
 }
 
+sub render_headline {
+    my ($self,$value) = @_;
+    return _wrap_color('bold',$value);
+}
+
 __PACKAGE__->meta->make_immutable;
 1;

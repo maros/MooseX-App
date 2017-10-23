@@ -9,6 +9,8 @@ use List::Util qw(max);
 
 use Moose::Util::TypeConstraints;
 
+my $ESCAPE_RE = qr/\e\[[\d;]*m/;
+
 subtype 'MooseX::App::Types::List'
     => as 'ArrayRef';
 
@@ -212,28 +214,6 @@ sub _pod_node_to_text {
     return $return;
 }
 
-sub string_to_entity {
-    my ($string) = @_;
-
-    $string =~ s/<(tag=[^>]+|\/tag)>/\0$1\0/g;
-    $string =~ s/>/&gt;/g;
-    $string =~ s/</&lt;/g;
-    $string =~ s/&/&amp;/g;
-    $string =~ s/\0([^\0]+)\0/<$1>/g;
-
-    return $string;
-}
-
-sub string_from_entity {
-    my ($string) = @_;
-
-    $string =~ s/&gt;/>/g;
-    $string =~ s/&lt;/</g;
-    $string =~ s/&amp;/&/g;
-
-    return $string;
-}
-
 sub build_list {
     my (@list) = @_;
 
@@ -257,6 +237,80 @@ sub build_list {
     }
 
     return join("\n",'<list>',@return,'</list>');
+}
+
+sub string_to_entity {
+    my ($string) = @_;
+
+    $string =~ s/<(tag=[^>]+|\/tag)>/\0$1\0/g;
+    $string =~ s/>/&gt;/g;
+    $string =~ s/</&lt;/g;
+    $string =~ s/&/&amp;/g;
+    $string =~ s/\0([^\0]+)\0/<$1>/g;
+
+    return $string;
+}
+
+sub string_from_entity {
+    my ($string) = @_;
+
+    $string =~ s/&gt;/>/g;
+    $string =~ s/&lt;/</g;
+    $string =~ s/&amp;/&/g;
+
+    return $string;
+}
+
+sub string_length {
+    my ($string) = @_;
+
+    $string =~ s/$ESCAPE_RE//msg;
+    $string =~ s/[^[:print:]]//g;
+
+    return length($string);
+}
+
+# Simple splitting of long sentences on whitespaces or punctuation
+sub string_split {
+    my ($max_length,$string) = @_;
+
+    return
+        unless defined $string;
+
+    return $string
+        if length $string <= $max_length;
+
+    my (@lines,$line);
+    $line = '';
+
+    #TODO honour escape sequence
+    foreach my $word (split(m/($ESCAPE_RE|[^[:alnum:]])/,$string)) {
+        if ($word =~ /^$ESCAPE_RE$/ || string_length($line.$word) <= $max_length) {
+            $line .= $word;
+        } else {
+            push(@lines,$line)
+                if ($line ne '');
+            $line = '';
+
+            if (string_length($word) > $max_length) {
+                my (@parts) = grep { $_ ne '' } split(/(.{$max_length})/,$word);
+                my $lastline = pop(@parts);
+                push(@lines,@parts);
+                if (defined $lastline && $lastline ne '') {
+                    $line = $lastline;
+                }
+            } else {
+                $line = $word;
+            }
+        }
+    }
+    #say "####";
+    push(@lines,$line)
+        if ($line ne '');
+
+    @lines =  map { m/^\s*(.+?)\s*$/ ? $1 : $_  } @lines;
+
+    return @lines;
 }
 
 1;

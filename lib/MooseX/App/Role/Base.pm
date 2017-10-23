@@ -51,6 +51,7 @@ sub initialize_command_class {
     push(@errors,@{$errors});
 
     my %params;
+    # Set the processing order
     if ($meta->app_prefer_commandline) {
         %params = (
             %args,              # configs passed to new
@@ -65,6 +66,7 @@ sub initialize_command_class {
         );
     }
 
+    # check for errors
     $meta->command_check_attributes($command_meta,\@errors,\%params);
 
     if (scalar @errors) {
