@@ -49,7 +49,7 @@ our %KEYWORDS = (
     tag         => {
         type        => 'semantic',
         attr        => ['ANY'],
-        parents     => [qw(key description headline paragraph)]
+        parents     => [qw(key description headline paragraph tag)]
     },
 );
 

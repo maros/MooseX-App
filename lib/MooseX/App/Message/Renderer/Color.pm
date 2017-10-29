@@ -47,6 +47,12 @@ sub render_tag {
     my ($self,$value,$tag) = @_;
     if ($tag eq 'attr' || $tag eq 'version') {
         return _wrap_color('green',$value);
+    } elsif ($tag eq 'bold') {
+        return  _wrap_color('bold',$value);
+    } elsif ($tag eq 'italic') {
+        return _wrap_color('italic',$value);
+    } elsif ($tag eq 'code') {
+        return '"'.$value.'"';
     }
     return $value;
 }

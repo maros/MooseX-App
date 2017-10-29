@@ -140,12 +140,13 @@ sub parse_pod {
                 next unless defined $content;
                 $content =~ s/^$package(\s-)?\s//;
                 chomp($content);
-                $pod{NAME} = $content;
+                # TODO remove fomrat
+                $pod{NAME} = _pod_formatting_codes($content);
             } else {
                 my $content = _pod_node_to_text($element->children);
                 next unless defined $content;
                 chomp($content);
-                $pod{uc($element->content)} = $content;
+                $pod{uc($element->content)} = _pod_formatting_codes($content);
             }
         }
     }
@@ -193,8 +194,8 @@ sub _pod_node_to_text {
                         push (@lines,"\n");
                         ${$indent}--;
                     }
-                    when (qr/head\d/) {
-                        push (@lines,"\n",$node->content,"\n");
+                    when (qr/^head(\d)/) {
+                        push (@lines,"\n",'<tag=headline'.$1.'>'.$node->content."</tag>\n");
                     }
                 }
             }
@@ -206,12 +207,20 @@ sub _pod_node_to_text {
 
     # Convert text markup
     my $return = join ("\n", grep { defined $_ } @lines);
-    $return =~ s/\n\n\n+/\n\n/g; # Max one empty line
-    $return =~ s/I<([^>]+)>/_$1_/g;
-    $return =~ s/B<([^>]+)>/*$1*/g;
-    $return =~ s/[LCBI]<([^>]+)>/$1/g;
-    $return =~ s/[LCBI]<([^>]+)>/$1/g;
+
     return $return;
+}
+
+sub _pod_formatting_codes {
+    my ($text) = @_;
+
+    $text =~ s|\n\n\n+|\n\n|g; # Max one empty line
+    $text =~ s|I<([^>]+)>|<tag=italic>${1}</tag>|g;
+    $text =~ s|B<([^>]+)>|<tag=bold>${1}</tag>|g;
+    $text =~ s|C<([^>]+)>|<tag=code>${1}</tag>|g;
+    $text =~ s|[LFSX]<([^>]+)>|$1|g;
+
+    return $text;
 }
 
 sub build_list {
@@ -284,8 +293,10 @@ sub string_split {
     $line = '';
 
     #TODO honour escape sequence
-    foreach my $word (split(m/($ESCAPE_RE|[^[:alnum:]])/,$string)) {
-        if ($word =~ /^$ESCAPE_RE$/ || string_length($line.$word) <= $max_length) {
+    foreach my $word (split(m/($ESCAPE_RE)|([^[:alnum:]])/,$string)) {
+        next
+            unless defined $word;
+        if ($1 || string_length($line.$word) <= $max_length) {
             $line .= $word;
         } else {
             push(@lines,$line)

@@ -116,8 +116,15 @@ sub render_text {
 }
 
 sub render_tag {
-    my ($self,$content,$tag) = @_;
-    return $content;
+    my ($self,$value,$tag) = @_;
+    if ($tag eq 'bold') {
+        return '*'.$value.'*';
+    } elsif ($tag eq 'italic') {
+        return '_'.$value.'_';
+    } elsif ($tag eq 'code') {
+        return '"'.$value.'"';
+    }
+    return $value;
 }
 
 sub render_list_key {
