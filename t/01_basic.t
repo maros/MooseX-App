@@ -27,47 +27,43 @@ subtest 'Wrong command' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(xxxx --global 10)]);
     my $test03 = Test01->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
-    is($test03->blocks->[0]->header,"Unknown command 'xxxx'",'Message is set');
-    is($test03->blocks->[0]->type,"error",'Message is of type error');
-    is($test03->blocks->[1]->header,"usage:",'Usage set');
-    is($test03->blocks->[1]->body,"    01_basic.t <command> [long options...]
-    01_basic.t help
-    01_basic.t <command> --help",'Usage body set');
-    is($test03->blocks->[3]->header,"global options:",'Global options set');
-    is($test03->blocks->[3]->body,"    --global              test [Required; Integer; Important!]
-    --config              Path to command config file
-    --help -h --usage -?  Prints this usage information. [Flag]",'Global options body set');
-    is($test03->blocks->[4]->header,"available commands:",'Available commands set');
-    is($test03->blocks->[4]->body,"    command_a   Command A!
-    command_b   Test class command B for test 01
-    command_c1  Test C1
-    command_d   Command A!
-    help        Prints this usage information",'Available commands body set');
+
+    like($test03->blocks->[0]->block,qr/<headline=error>Unknown command 'xxxx'/,'Message is set');
+    like($test03->blocks->[1]->block,qr/usage:/,'Usage set');
+    like($test03->blocks->[1]->block,qr|<tag=caller>01_basic.t</tag> <tag=command>&lt;command&gt;</tag> <tag=attribute_optional>\[long options\.\.\.\]</tag>|,'Usage body set');
+    like($test03->blocks->[3]->block,qr|global options:|,'Global options set');
+    like($test03->blocks->[3]->block,qr|<key>--config</key>|,'Config key is set');
+    like($test03->blocks->[3]->block,qr|<key>--help -h --usage -\?</key>|,'Help key is set');
+    like($test03->blocks->[4]->block,qr|<description>Test class command B for test 01</description>|,'Command is set');
 };
 
 subtest 'Help for command' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --help)]);
     my $test04 = Test01->new_with_command;
     isa_ok($test04,'MooseX::App::Message::Envelope');
-    is($test04->blocks->[0]->header,"usage:",'Usage is set');
-    is($test04->blocks->[0]->body,"    01_basic.t command_a [long options...]
+    my $rendered = $test04->stringify;
+    is($rendered,'usage:
+    01_basic.t command_a [long options...]
     01_basic.t help
-    01_basic.t command_a --help",'Usage body set');
-    is($test04->blocks->[1]->header,"description:",'Description is set');
-    is($test04->blocks->[1]->body,"    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dui velit,
+    01_basic.t command_a --help
+
+description:
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras dui velit,
     varius nec iaculis vitae, elementum eget mi.
     * bullet1
     * bullet2
     * bullet3
-    Cras eget mi nisi. In hac habitasse platea dictumst.",'Description body set');
-    is($test04->blocks->[2]->header,"options:",'Options header is set');
-    is($test04->blocks->[2]->body,"    --global              test [Required; Integer; Important!]
+    Cras eget mi nisi. In hac habitasse platea dictumst.
+
+options:
+    --global              test [Required; Integer; Important!]
     --command_local1      some docs about the long texts that seem to occur
                           randomly [Integer; Env: LOCAL1; Important]
     --command_local2      Verylongwordwithoutwhitespacestotestiftextformating
-                          worksproperly [Env: LOCAL2]
+                          worksproperlyandreallybrakes [Env: LOCAL2]
     --config              Path to command config file
-    --help -h --usage -?  Prints this usage information. [Flag]",'Options body is set');
+    --help -h --usage -?  Prints this usage information [Flag]
+','Rendered message ok');
 };
 
 subtest 'With extra args' => sub {
@@ -88,45 +84,45 @@ subtest 'Custom help text' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_b --help)]);
     my $test06 = Test01->new_with_command;
     isa_ok($test06,'MooseX::App::Message::Envelope');
-    is($test06->blocks->[0]->header,"usage:",'Usage is set');
-    is($test06->blocks->[0]->body,"    use with care",'Usage is ok');
-    is($test06->blocks->[1]->header,"description:",'description is set');
-    like($test06->blocks->[1]->body,qr/    Some description of \*command B\*/,'Description is ok');
+    like($test06->blocks->[0]->block,qr|usage:|,'Usage is set');
+    like($test06->blocks->[0]->block,qr|use with care|,'Usage is ok');
+    like($test06->blocks->[1]->block,qr|description:|,'description is set');
+    like($test06->blocks->[1]->block,qr|Some description of <tag=bold>command B</tag>|,'Description is ok');
 };
 
 subtest 'Input errors missing' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1)]);
     my $test07 = Test01->new_with_command;
     isa_ok($test07,'MooseX::App::Message::Envelope');
-    is($test07->blocks->[0]->header,"Missing value for 'command_local1'",'Error message ok');
+    like($test07->blocks->[0]->block,qr|Missing value for 'command_local1'|,'Error message ok');
 };
 
 subtest 'Input errors type' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a --command_local1 sss)]);
     my $test08 = Test01->new_with_command;
     isa_ok($test08,'MooseX::App::Message::Envelope');
-    is($test08->blocks->[0]->header,"Invalid value for 'command_local1'",'Error message ok');
-    is($test08->blocks->[0]->body,"Value must be an integer (not 'sss')",'Error message ok');
+    like($test08->blocks->[0]->block,qr|Invalid value for 'command_local1'|,'Error message ok');
+    like($test08->blocks->[0]->block,qr|Value must be an integer \(not 'sss'\)|,'Error message ok');
 };
 
 subtest 'Global help requested' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(help)]);
     my $test09 = Test01->new_with_command;
     isa_ok($test09,'MooseX::App::Message::Envelope');
-    like($test09->blocks->[0]->body,qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok');
+    like($test09->renderer->render($test09->blocks->[0]),qr/    01_basic\.t <command> \[long options\.\.\.\]/,'Help message ok');
 };
 
 subtest 'Missing command' => sub {
     MooseX::App::ParsedArgv->new(argv => []);
     my $test10 = Test01->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
-    is($test10->blocks->[0]->header,'Missing command','Error message ok');
+    like($test10->renderer->render($test10->blocks->[0]),qr|Missing command|,'Error message ok');
 };
 
 subtest 'Extra params' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(command_a something else)]);
     my $test11 = Test01->new_with_command;
     isa_ok($test11,'MooseX::App::Message::Envelope');
-    is($test11->blocks->[0]->header,"Unknown parameter 'else'",'Error message ok');
+    like($test11->renderer->render($test11->blocks->[0]),qr|Unknown parameter 'else'|,'Error message ok');
 };
 

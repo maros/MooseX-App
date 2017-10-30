@@ -14,11 +14,10 @@ subtest 'Extend base class' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw()]);
     my $test01 = Test04->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
-    like($test01->blocks->[2]->block,qr/--test1<\/key><description>\[Integer\]/,'--test1 included');
-    like($test01->blocks->[2]->block,qr/--test2<\/key><description>\[Flag\]/,'--test2 included');
-    unlike($test01->blocks->[2]->block,qr/--test3/,'--test3 not included');
+    like($test01->blocks->[2]->block,qr|--test1</key><description>\[<tag=attr>Integer</tag>\]|,'--test1 included');
+    like($test01->blocks->[2]->block,qr|--test2</key><description>\[<tag=attr>Flag</tag>\]|,'--test2 included');
+    unlike($test01->blocks->[2]->block,qr|--test3|,'--test3 not included');
 };
-
 subtest 'Wrong usage' => sub {
     throws_ok { Test03->new->new_with_command } qr/new_with_command is a class method/, 'Only callable as class method';
     use Test03::SomeCommand;

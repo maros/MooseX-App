@@ -32,10 +32,10 @@ is($meta->command_candidates('command_c1'),'command_c1','Command C1 matched exac
 my @attributes = $meta->command_usage_attributes;
 is(scalar(@attributes),3,'Has three attributes');
 is($attributes[0]->cmd_usage_name,'--global','Usage name ok');
-is($attributes[0]->cmd_usage_description,'test [Required; Integer; Important!]','Usage description ok');
+is($attributes[0]->cmd_usage_description,'test [<tag=attr>Required</tag>; <tag=attr>Integer</tag>; <tag=attr>Important!</tag>]','Usage description ok');
 is($attributes[1]->cmd_usage_name,'--config','Usage name ok');
 is($attributes[2]->cmd_usage_name,'--help -h --usage -?','Usage name ok');
-is($attributes[2]->cmd_usage_description,'Prints this usage information. [Flag]','Usage description ok');
+is($attributes[2]->cmd_usage_description,'Prints this usage information [<tag=attr>Flag</tag>]','Usage description ok');
 
 my $meta_attribute = $meta->find_attribute_by_name('global');
 is(join(',',$meta_attribute->cmd_tags_list($meta_attribute)),'Required,Integer,Important!','Tags ok');
@@ -50,12 +50,12 @@ like($description->block,qr/varius nec iaculis vitae/,'Description body ok');
 
 require Test01::CommandB;
 is(Test01::CommandB->meta->command_short_description,'Test class command B for test 01','Pod short description parsed ok');
-is(Test01::CommandB->meta->command_long_description,'Some description of *command B*
+is(Test01::CommandB->meta->command_long_description,'Some description of <tag=bold>command B</tag>
 
  some code
  some code
 
-SUB HEADLINE
+<tag=headline2>SUB HEADLINE</tag>
 
 some more desc
 

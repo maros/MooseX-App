@@ -44,3 +44,8 @@ subtest 'Parser' => sub {
     is($parser->elements->[11]->key,'hase','Extra parsed ok');
     is($parser->elements->[12]->key,'--luchs','Extra parsed ok');
 };
+
+# TODO test string_to_entity
+# TODO test string_from_entity
+# TODO test string_length
+# TODO test string_split

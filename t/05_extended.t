@@ -34,7 +34,7 @@ subtest 'Private option is not exposed' => sub {
     my $test01 = Test03->new_with_command;
     isa_ok($test01,'MooseX::App::Message::Envelope');
     like($test01->blocks->[0]->block,qr/Unknown option 'private'/,"Message ok");
-    like($test01->blocks->[0]->block,qr/<error>/,'Message is of type error');
+    like($test01->blocks->[0]->block,qr/<headline=error>/,'Message is of type error');
 };
 
 subtest 'Options from role' => sub {
@@ -50,21 +50,21 @@ subtest 'Missing attribute value' => sub {
     my $test03 = Test03->new_with_command;
     isa_ok($test03,'MooseX::App::Message::Envelope');
     like($test03->blocks->[0]->block,qr/Missing value for 'another'/,"Message ok");
-    like($test03->blocks->[0]->block,qr/<error>/,'Message is of type error');
+    like($test03->blocks->[0]->block,qr/<headline=error>/,'Message is of type error');
 };
 
-# subtest 'All options available & no description' => sub {
-#     MooseX::App::ParsedArgv->new(argv => [qw(some --help)]);
-#     my $test04 = Test03->new_with_command;
-#     isa_ok($test04,'MooseX::App::Message::Envelope');
-#     is($test04->blocks->[2]->header,'options:','No description');
-#     is($test04->blocks->[2]->body,"    --global_option       Enable this to do fancy stuff [Flag]
-#     --roleattr            [Role]
-#     --some_option         Very important option!
-#     --another             [Required; Not important]
-#     --list                [Multiple]
-#     --help -h --usage -?  Prints this usage information. [Flag]","Message ok");
-# };
+subtest 'All options available & no description' => sub {
+    MooseX::App::ParsedArgv->new(argv => [qw(some --help)]);
+    my $test04 = Test03->new_with_command;
+    isa_ok($test04,'MooseX::App::Message::Envelope');
+    like($test04->blocks->[2]->block,qr|options|,'No description');
+    like($test04->blocks->[2]->block,qr|<item><key>--global_option</key><description>Enable this to do fancy stuff \[<tag=attr>Flag</tag>\]</description></item>
+<item><key>--roleattr</key><description>\[<tag=attr>Role</tag>\]</description></item>
+<item><key>--some_option</key><description>Very important option!</description></item>
+<item><key>--another</key><description>\[<tag=attr>Required</tag>; <tag=attr>Not important</tag>\]</description></item>
+<item><key>--list</key><description>\[<tag=attr>Multiple</tag>\]</description></item>
+<item><key>--help -h --usage -\?</key><description>Prints this usage information \[<tag=attr>Flag</tag>\]</description></item>|,"Message ok");
+};
 
 # Not working on cpan testers
 #subtest 'Test wrapper script encoding' => sub {
@@ -120,9 +120,11 @@ subtest 'Test ambiguous options' => sub {
     my $test10 = Test03->new_with_command;
     isa_ok($test10,'MooseX::App::Message::Envelope');
     like($test10->blocks->[0]->block,qr/Ambiguous option 'custom'/,"Message ok");
-    like($test10->blocks->[0]->block,qr/Could be
-    custom1
-    custom2/,"Message ok");
+    like($test10->blocks->[0]->block,qr|<paragraph=error>Could be
+<list>
+<item><key>custom1</key></item>
+<item><key>custom2</key></item>
+</list></paragraph>|,"Message ok");
 };
 
 subtest 'Test flags & defaults' => sub {
@@ -188,16 +190,19 @@ subtest 'Test wrong positional params' => sub {
     isa_ok($test13,'MooseX::App::Message::Envelope');
     like($test13->blocks->[0]->block,qr/Invalid value for 'extra2'/,"Error message ok");
     like($test13->blocks->[2]->block,qr/parameters:/,"Usage header ok");
-    is($test13->blocks->[2]->body,"    extra1  Important extra parameter [Required]
-    extra2  [Integer]
-    alpha   [Integer]","Usage body ok");
+    like($test13->blocks->[2]->block,qr|<headline>parameters:</headline>
+<paragraph><list>
+<item><key>extra1</key><description>Important extra parameter \[<tag=attr>Required</tag>\]</description></item>
+<item><key>extra2</key><description>\[<tag=attr>Integer</tag>\]</description></item>
+<item><key>alpha</key><description>\[<tag=attr>Integer</tag>\]</description></item>
+</list></paragraph>|,"Usage body ok");
 };
 
 subtest 'Test missing positional params' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(extra  --value  baer)]);
     my $test14 = Test03->new_with_command;
     isa_ok($test14,'MooseX::App::Message::Envelope');
-    is($test14->blocks->[0]->header,"Required parameter 'extra1' missing","Message ok");
+    like($test14->blocks->[0]->block,qr|Required parameter 'extra1' missing|,"Message ok");
 };
 
 Test03->meta->app_fuzzy(1);
@@ -241,7 +246,7 @@ subtest 'Test enum error message' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(somecommand --another hase hh h ggg)]);
     my $test18 = Test03->new_with_command();
     isa_ok($test18,'MooseX::App::Message::Envelope');
-    is($test18->blocks->[0]->body,"Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff (not 'ggg')","Check enum error message");
+    like($test18->blocks->[0]->block,qr|Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff \(not 'ggg'\)|,"Check enum error message");
 };
 
 subtest 'Test empty multi' => sub {
