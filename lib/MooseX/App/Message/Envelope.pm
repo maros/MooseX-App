@@ -94,7 +94,7 @@ sub stringify {
     Moose->throw_error('MooseX::App::Message::Envelope->stringify called without having a renderer')
         unless defined $renderer;
 
-    return $renderer->render($self->blocks);
+    return $renderer->render(@{$self->blocks});
 }
 
 sub AUTOLOAD {

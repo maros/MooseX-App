@@ -21,7 +21,7 @@ has 'help_flag' => (
     cmd_aliases     => [ qw(h usage ?) ], # LOCALIZE
     cmd_type        => 'proto',
     cmd_position    => 99999,
-    documentation   => 'Prints this usage information.', # LOCALIZE
+    documentation   => 'Prints this usage information', # LOCALIZE
 );
 
 1;

@@ -711,6 +711,8 @@ sub command_message {
             "</paragraph>\n";
     }
 
+    chomp($message);
+
     return MooseX::App::Message::Block->parse($message);
 }
 

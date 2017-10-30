@@ -11,10 +11,10 @@ extends qw(MooseX::App::Message::Renderer);
 use List::Util qw(first max);
 
 sub render {
-    my ($self,$blocks) = @_;
+    my ($self,@blocks) = @_;
 
     my $rendered = '';
-    foreach my $block (@{$blocks}) {
+    foreach my $block (@blocks) {
         $rendered .= "\n"
             if $rendered ne '';
         $rendered .= $self->render_node($block->parsed);
