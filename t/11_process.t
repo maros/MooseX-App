@@ -15,6 +15,8 @@ subtest 'Test basic exit codes' => sub {
     SKIP: {
         skip "Cannot test on MSWin",7
             if $^O =~ /^MSWin/;
+        skip "Cannot test on *BSD",7
+            if $^O =~ /bsd$/;
 
         test_subprocess(
             bin     => 'test02.pl',
@@ -66,8 +68,6 @@ subtest 'Test basic exit codes' => sub {
     }
 };
 
-
-
 sub test_subprocess {
     my (%params) = @_;
     $params{args} ||= [];
@@ -80,8 +80,8 @@ sub test_subprocess {
             $BASE.'/'.$params{bin},
         );
     };
-    if ($@) {
-        fail('Error running '.$params{bin}.' :'.$@);
+    if ($@ || ! $pid) {
+        fail('Error running '.$params{bin}.' :'.($@ || 'unknown'));
         return;
     }
 
