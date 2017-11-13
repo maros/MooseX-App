@@ -73,50 +73,68 @@ sub test_subprocess {
     $params{args} ||= [];
 
     my($in_fh, $out_fh, $err_fh, $out, $err, $pid, $exit);
-    $err_fh = gensym;
     eval {
+        # Set timeout
+        local $SIG{ALRM} = sub { die('timeout') };
+        alarm(3);
+
+        $err_fh = gensym();
         $pid = open3(
             $in_fh, $out_fh, $err_fh,
             $BASE.'/'.$params{bin},
         );
+
+        if (defined $pid) {
+            waitpid($pid,0);
+            $pid = undef;
+            $exit = $? >> 8;
+
+            $out = '';
+            while(<$out_fh>) {
+                $out .= $_;
+            }
+
+            $err = '';
+            while(<$err_fh>) {
+                $err .= $_;
+            }
+
+            # Compare exitcode
+            if (exists $params{exit}) {
+                is($exit,$params{exit},'Exitcode '.$params{bin}.' ok');
+            }
+
+            # Comare STDOUT
+            if (exists $params{out}) {
+                if (ref $params{out} eq 'Regexp') {
+                    like($out,$params{out},'Output '.$params{bin}.' ok');
+                } else {
+                    is($out,$params{out},'Output '.$params{bin}.' ok');
+                }
+            }
+
+            # Compare STDERR
+            if (exists $params{err}) {
+                if (ref $params{err} eq 'Regexp') {
+                    like($err,$params{err},'Error '.$params{bin}.' ok');
+                } else {
+                    is($err,$params{err},'Error '.$params{bin}.' ok');
+                }
+            }
+        } else {
+            fail('Could not start process :'.$!);
+        }
+
     };
-    if ($@ || ! $pid) {
+    alarm(0);
+    kill 'KILL', $pid
+        if defined $pid;
+    if ($@ ) {
+        # Kill pid if still there
         fail('Error running '.$params{bin}.' :'.($@ || 'unknown'));
         return;
     }
 
-    if (defined $pid) {
-        waitpid($pid,0);
-        $exit = $? >> 8;
-
-        $out = '';
-        while(<$out_fh>) {
-            $out .= $_;
-        }
-
-        $err = '';
-        while(<$err_fh>) {
-            $err .= $_;
-        }
-    }
-
-    if (exists $params{exit}) {
-        is($exit,$params{exit},'Exitcode '.$params{bin}.' ok');
-    }
-    if (exists $params{out}) {
-        if (ref $params{out} eq 'Regexp') {
-            like($out,$params{out},'Output '.$params{bin}.' ok');
-        } else {
-            is($out,$params{out},'Output '.$params{bin}.' ok');
-        }
-    }
-    if (exists $params{err}) {
-        if (ref $params{err} eq 'Regexp') {
-            like($err,$params{err},'Error '.$params{bin}.' ok');
-        } else {
-            is($err,$params{err},'Error '.$params{bin}.' ok');
-        }
-    }
 
     return;
 }
