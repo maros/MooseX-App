@@ -1,19 +1,19 @@
-package Test03::AnotherCommand;
+package Test05::AnotherCommand;
 
 use MooseX::App::Command;
-extends qw(Test03CommandBase);
+extends qw(Test05CommandBase);
 
 use Moose::Util::TypeConstraints;
 
-subtype 'Test03::Type::Custom1',
+subtype 'Test05::Type::Custom1',
     as 'Int',
     where { $_ > 10 },
     message { "Must be greater than 10" };
 
-subtype 'Test03::Type::Custom2',
+subtype 'Test05::Type::Custom2',
     as 'ScalarRef';
 
-coerce 'Test03::Type::Custom2',
+coerce 'Test05::Type::Custom2',
     from 'Str',
     via { \$_ };
 
@@ -36,12 +36,12 @@ option 'number' => (
 
 option 'custom1' => (
     is            => 'rw',
-    isa           => 'Test03::Type::Custom1',
+    isa           => 'Test05::Type::Custom1',
 );
 
 option 'custom2' => (
     is            => 'rw',
-    isa           => 'Test03::Type::Custom2',
+    isa           => 'Test05::Type::Custom2',
     coerce        => 1,
 );
 

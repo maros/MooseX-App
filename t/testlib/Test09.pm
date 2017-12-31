@@ -1,8 +1,8 @@
-package Test04;
+package Test09;
 
 #use Moose;
 use MooseX::App;
-extends qw(Test04Base);
+extends qw(Test09Base);
 
 option 'test1' => (
     is              => 'rw',

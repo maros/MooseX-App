@@ -6,13 +6,48 @@ use Test::Most tests => 1+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
-use Test08;
+use testlib;
+
+{
+    package Test12;
+
+    use MooseX::App::Simple qw(MutexGroup Depends);
+    use Moose::Util::TypeConstraints;
+
+    option 'FileFormat' => (
+       is  => 'ro',
+       isa => enum([qw(csv tsv xml)]),
+    );
+
+    option 'WriteToFile' => (
+       is         => 'ro',
+       isa        => 'Bool',
+       mutexgroup => 'FileOp',
+       depends    => [qw(FileFormat)],
+    );
+
+    option 'ReadFromFile' => (
+       is         => 'ro',
+       isa        => 'Bool',
+       mutexgroup => 'FileOp',
+       depends    => [qw(FileFormat)],
+    );
+
+    has 'private_option' => (
+       is      => 'ro',
+       isa     => 'Int',
+       default => 0,
+    );
+
+}
+
+testlib::run_testclass('Test12');
 
 subtest 'Depends' => sub {
     plan tests => 8;
 
     {
-        my $test01 = Test08->new_with_options( WriteToFile => 1 );
+        my $test01 = Test12->new_with_options( WriteToFile => 1 );
         isa_ok( $test01, 'MooseX::App::Message::Envelope' );
 
         my @errors = grep { $_->block =~ /<headline=error>/ } @{ $test01->blocks };
@@ -24,7 +59,7 @@ subtest 'Depends' => sub {
     }
 
     {
-        my $test02 = Test08->new_with_options( ReadFromFile => 1 );
+        my $test02 = Test12->new_with_options( ReadFromFile => 1 );
         isa_ok( $test02, 'MooseX::App::Message::Envelope' );
 
         my @errors = grep { $_->block =~ /<headline=error>/ } @{ $test02->blocks };
@@ -36,14 +71,14 @@ subtest 'Depends' => sub {
     }
 
     {
-        my $test03 = Test08->new_with_options( WriteToFile => 1, FileFormat => 'tsv' );
+        my $test03 = Test12->new_with_options( WriteToFile => 1, FileFormat => 'tsv' );
         ok( ! $test03->can('blocks'),
             'generated no errors when both an option and its dependencies are defined'
         );
     }
 
     {
-        my $test04 = Test08->new_with_options( ReadFromFile => 1, FileFormat => 'tsv' );
+        my $test04 = Test12->new_with_options( ReadFromFile => 1, FileFormat => 'tsv' );
         ok( ! $test04->can('blocks'),
             'generated no errors when both an option and its dependencies are defined'
         );

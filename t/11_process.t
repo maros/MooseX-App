@@ -19,48 +19,48 @@ subtest 'Test basic exit codes' => sub {
             if $^O =~ /bsd$/;
 
         test_subprocess(
-            bin     => 'test02.pl',
+            bin     => 'test11.pl',
             exit    => 127,
             out     => '',
             err     => qr/Missing command/,
         );
 
         test_subprocess(
-            bin     => 'test02.pl error',
+            bin     => 'test11.pl error',
             exit    => 25,
             err     => qr/XXX/,
         );
 
         test_subprocess(
-            bin     => 'test02.pl version',
+            bin     => 'test11.pl version',
             exit    => 0,
             out     => qr/VERSION/,
             err     => '',
         );
 
         test_subprocess(
-            bin     => 'test02.pl version',
+            bin     => 'test11.pl version',
             exit    => 0,
             out     => qr/VERSION/,
             err     => '',
         );
 
         test_subprocess(
-            bin     => 'test02.pl record --help',
+            bin     => 'test11.pl record --help',
             exit    => 0,
             out     => qr/usage:/,
             err     => '',
         );
 
         test_subprocess(
-            bin     => 'test02.pl record',
+            bin     => 'test11.pl record',
             exit    => 0,
             out     => qr/RAN/,
             err     => '',
         );
 
         test_subprocess(
-            bin     => 'test02.pl record --notthere',
+            bin     => 'test11.pl record --notthere',
             exit    => 1,
             out     => '',
             err     => qr/Unknown option 'notthere'/,

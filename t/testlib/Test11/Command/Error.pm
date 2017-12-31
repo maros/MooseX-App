@@ -1,8 +1,8 @@
-package Test02::Command::Error;
+package Test11::Command::Error;
 
 use Moose;
 use MooseX::App::Command;
-extends qw(Test02);
+extends qw(Test11);
 
 sub BUILD {
     warn('XXX');

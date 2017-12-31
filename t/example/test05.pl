@@ -8,4 +8,4 @@ use FindBin qw();
 use lib $FindBin::Bin.'/../testlib';
 
 use Test05;
-Test05->new_with_options->run;
+Test05->new_with_command->run;

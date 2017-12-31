@@ -1,4 +1,4 @@
-package Test03::BrokenCommand;
+package Test05::BrokenCommand;
 
 use MooseX::App::Command;
 

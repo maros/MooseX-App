@@ -1,5 +1,5 @@
 # ============================================================================
-package Test02::MoreCommands::Test;
+package Test11::MoreCommands::Test;
 # ============================================================================
 use strict;
 use warnings;
@@ -7,7 +7,7 @@ use utf8;
 
 use Moose;
 use MooseX::App::Command;
-extends qw(Test02);
+extends qw(Test11);
 
 use Moose::Util::TypeConstraints;
 

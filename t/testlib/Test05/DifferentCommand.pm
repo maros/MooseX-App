@@ -1,7 +1,7 @@
-package Test03::DifferentCommand;
+package Test05::DifferentCommand;
 
 use MooseX::App::Command;
-extends qw(Test03CommandBase);
+extends qw(Test05CommandBase);
 
 option 'hash' => (
     is            => 'rw',

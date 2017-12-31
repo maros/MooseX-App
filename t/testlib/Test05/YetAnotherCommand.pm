@@ -1,22 +1,27 @@
-package Test03::ExtraCommand;
+package Test05::YetAnotherCommand;
 
 use MooseX::App::Command;
+extends qw(Test05CommandBase);
+with qw(MooseX::App::Role::Common);
 
-parameter 'extra1' => (
+option 'bool1' => (
     is            => 'rw',
-    isa           => 'Str',
+    isa           => 'Bool',
+    cmd_flag      => 'a',
+);
+
+option 'bool2' => (
+    is            => 'rw',
+    isa           => 'Bool',
+    cmd_flag      => 'b',
+    default       => 1,
+);
+
+option 'bool3' => (
+    is            => 'rw',
+    isa           => 'Bool',
     required      => 1,
-    documentation => q[Important extra parameter],
-);
-
-parameter 'extra2' => (
-    is            => 'rw',
-    isa           => 'Int',
-);
-
-parameter 'alpha' => (
-    is            => 'rw',
-    isa           => 'Int',
+    cmd_negate    => ['no-bool3'],
 );
 
 option 'value' => (
@@ -25,17 +30,6 @@ option 'value' => (
     required      => 1,
     default       => sub { return "hase" },
 );
-
-option 'flag' => (
-    is            => 'rw',
-    isa           => 'Bool',
-);
-
-option 'flaggo' => (
-    is            => 'rw',
-    isa           => 'Bool',
-);
-
 
 sub run {
     my ($self) = @_;

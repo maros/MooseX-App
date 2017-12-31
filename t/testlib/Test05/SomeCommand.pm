@@ -1,8 +1,8 @@
-package Test03::SomeCommand;
+package Test05::SomeCommand;
 
 use MooseX::App::Command;
-extends qw(Test03);
-with qw(Test03::Role::TestRole);
+extends qw(Test05);
+with qw(Test05::Role::TestRole);
 
 use Moose::Util::TypeConstraints;
 

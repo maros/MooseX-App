@@ -9,6 +9,7 @@ use Test::More tests => 3+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
+use testlib;
 
 {
     package Test15;
@@ -39,6 +40,7 @@ use lib 't/testlib';
     command_short_description "Baz subcommand";
 }
 
+testlib::run_testclass('Test15');
 
 subtest 'Basic Subcommands' => sub {
     isa_ok(Test15->new_with_command( ARGV => [ 'foo' ] ),'Test15::Foo');

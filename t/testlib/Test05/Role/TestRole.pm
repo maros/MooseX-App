@@ -1,15 +1,20 @@
 # ============================================================================
-package Test03CommandBase;
+package Test05::Role::TestRole;
 # ============================================================================
 use utf8;
 
 use namespace::autoclean;
-use Moose;
+use MooseX::App::Role;
 
-has 'private' => (
+option 'roleattr' => (
     is              => 'rw',
     isa             => 'Str',
+    cmd_tags        => ['Role'],
 );
 
-__PACKAGE__->meta->make_immutable;
+parameter 'param_c' => (
+    is            => 'rw',
+    isa           => 'Str',
+);
+
 1;

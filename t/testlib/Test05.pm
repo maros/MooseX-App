@@ -1,35 +1,37 @@
 package Test05;
 
-#use Moose;
-use MooseX::App::Simple qw(Config);
-app_fuzzy 1;
+use MooseX::App qw(BashCompletion Version);
 
-option 'some_option' => (
+our $VERSION = '22.02';
+
+app_permute 1;
+app_base 'test05';
+app_command_name {
+    my ($package) = @_;
+    return lc($package);
+};
+app_exclude qw(Test05::Role);
+
+option 'global_option' => (
     is            => 'rw',
     isa           => 'Bool',
+    #default       => 0,
+    #required      => 1,
     documentation => q[Enable this to do fancy stuff],
 );
 
-option 'another_option' => (
+has 'hidden_option' => (
     is            => 'rw',
-    isa           => 'Str',
-    documentation => q[Enable this to do fancy stuff],
-    required      => 1,
-    cmd_env       => 'ANOTHER',
 );
 
 sub run {
-    my ($self) = @_;
-
-    warn $self->dump;
+    print "RAN";
 }
 
 1;
 
-=head1 DESCRIPTION
+=head1 LICENSE
 
-this is how we use this command
+This library is free software and may be distributed under the same terms as perl itself.
 
 =cut
-
-

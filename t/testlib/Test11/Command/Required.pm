@@ -1,8 +1,8 @@
-package Test02::Command::Required;
+package Test11::Command::Required;
 
 use Moose;
 use MooseX::App::Command;
-extends qw(Test02);
+extends qw(Test11);
 
 option 'local1' => (
     isa             => 'Int',

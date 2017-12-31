@@ -6,6 +6,7 @@ use Test::Most tests => 2+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
+use testlib;
 
 {
     package Test13;
@@ -65,6 +66,8 @@ use lib 't/testlib';
         return "ok";
     }
 }
+
+testlib::run_testclass('Test13');
 
 subtest 'no inheritance' => sub {
     plan tests => 8;

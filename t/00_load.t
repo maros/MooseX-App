@@ -2,7 +2,8 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 43;
+use Test::Most tests => 46 + 1;
+use Test::NoWarnings;
 
 use_ok( 'MooseX::App' );
 use_ok( 'MooseX::App::ParsedArgv' );
@@ -11,6 +12,9 @@ use_ok( 'MooseX::App::Command' );
 use_ok( 'MooseX::App::Utils' );
 use_ok( 'MooseX::App::Message::Block' );
 use_ok( 'MooseX::App::Message::Envelope' );
+use_ok( 'MooseX::App::Message::Renderer' );
+use_ok( 'MooseX::App::Message::Renderer::Color' );
+use_ok( 'MooseX::App::Message::Renderer::Basic' );
 use_ok( 'MooseX::App::Meta::Role::Attribute::Option' );
 use_ok( 'MooseX::App::Meta::Role::Class::Base' );
 use_ok( 'MooseX::App::Meta::Role::Class::Command' );

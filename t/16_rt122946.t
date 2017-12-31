@@ -10,6 +10,7 @@ use Test::NoWarnings;
 use Test::Exception;
 
 use lib 't/testlib';
+use testlib;
 
 {
     package Test16;
@@ -32,7 +33,11 @@ use lib 't/testlib';
         isa => 'Int',
         cmd_aliases => ['ab']
     );
+
+    sub run { print "OK"; }
 }
+
+testlib::run_testclass('Test16');
 
 subtest 'Option flags' => sub {
     throws_ok {

@@ -6,6 +6,7 @@ use Test::Most tests => 3+1;
 use Test::NoWarnings;
 
 use lib 't/testlib';
+use testlib;
 
 {
     package Test14;
@@ -33,6 +34,8 @@ use lib 't/testlib';
         return "ok";
     }
 }
+
+testlib::run_testclass('Test14');
 
 subtest 'boolean negation' => sub {
     plan tests => 4;
