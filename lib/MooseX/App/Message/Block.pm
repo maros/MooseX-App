@@ -51,6 +51,9 @@ our %KEYWORDS = (
         attr        => ['ANY'],
         parents     => [qw(key description headline paragraph tag)]
     },
+    raw         => {
+        type        => 'block',
+    },
 );
 
 my $KEYWORDS_RE = join('|', grep { ! m/^_/ } keys %KEYWORDS);

@@ -50,18 +50,22 @@ subtest 'Basic Subcommands' => sub {
 subtest 'Help Subcommand' => sub {
     my $help = Test15->new_with_command( ARGV => [ 'help' ] );
     isa_ok($help,'MooseX::App::Message::Envelope');
-    is($help->blocks->[2]->block,'available commands:','Command headline set');
-    is($help->blocks->[2]->block,"    foo      Toplevel command
-    foo bar  Bar subcommand
-    foo baz  Baz subcommand
-    help     Prints this usage information",'Command body set');
+    is($help->blocks->[2]->block,'<headline>available commands:</headline>
+<paragraph><list>
+<item><key>foo</key><description>Toplevel command</description></item>
+<item><key>foo bar</key><description>Bar subcommand</description></item>
+<item><key>foo baz</key><description>Baz subcommand</description></item>
+<item><key>help</key><description>Prints this usage information</description></item>
+</list></paragraph>', 'help text ok');
 };
 
 subtest 'Help Parent' => sub {
     my $help = Test15->new_with_command( ARGV => [ 'foo','--help' ] );
     isa_ok($help,'MooseX::App::Message::Envelope');
-    is($help->blocks->[3]->block,'available subcommands:','Command headline set');
-    is($help->blocks->[3]->block,"    bar   Bar subcommand
-    baz   Baz subcommand
-    help  Prints this usage information",'Command body set');
+    is($help->blocks->[3]->block,'<headline>available subcommands:</headline>
+<paragraph><list>
+<item><key>bar</key><description>Bar subcommand</description></item>
+<item><key>baz</key><description>Baz subcommand</description></item>
+<item><key>help</key><description>Prints this usage information</description></item>
+</list></paragraph>', 'subcommand list ok');
 };
