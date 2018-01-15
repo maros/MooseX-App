@@ -160,7 +160,6 @@ sub _parse_block {
                 push(@{$current->{c}},$new);
                 $current = $new;
 
-                            say "MATCGED $current->{t}";
                 if (defined $keyword->{attr}) {
                     my $match = 0;
                     foreach my $attr (@{$keyword->{attr}}) {

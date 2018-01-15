@@ -274,7 +274,7 @@ sub string_length {
     my ($string) = @_;
 
     $string =~ s/$ESCAPE_RE//msg;
-    $string =~ s/[^[:print:]]//g;
+    $string =~ s/[^[:print:]\p{NonspacingMark}]//g;
 
     return length($string);
 }
