@@ -16,7 +16,7 @@ subtest 'Command with config' => sub {
 
     is($test01->global,'234','Arg from command config');
     is($test01->command_local1,'22','Arg from command config');
-    isa_ok($test01->config,'Path::Class::File');
+    isa_ok($test01->config,'Path::Tiny');
     is($test01->_config_data->{global}{global},'123','Config loaded');
 };
 

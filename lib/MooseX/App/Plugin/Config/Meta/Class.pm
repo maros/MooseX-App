@@ -26,7 +26,7 @@ sub proto_config {
         unless defined $result->{config};
 
     # Read config
-    my $config_file = Path::Class::File->new($result->{config});
+    my $config_file = Path::Tiny->new($result->{config});
 
     unless (-e $config_file->stringify) {
         push(@{$errors},

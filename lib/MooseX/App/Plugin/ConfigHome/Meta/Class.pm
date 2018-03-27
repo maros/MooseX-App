@@ -15,7 +15,7 @@ around 'proto_config' => sub {
     my ($self,$command_class,$result,$errors) = @_;
 
     unless (defined $result->{config}) {
-        my $home_dir = Path::Class::Dir->new(File::HomeDir->my_home);
+        my $home_dir = Path::Tiny->new(File::HomeDir->my_home);
         my $data_dir = $home_dir->subdir('.'.$self->app_base);
         foreach my $extension (Config::Any->extensions) {
             my $check_file = $data_dir->file('config.'.$extension);

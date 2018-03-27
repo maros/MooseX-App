@@ -9,12 +9,12 @@ use namespace::autoclean;
 use Moose::Role;
 use MooseX::App::Role;
 
-use MooseX::Types::Path::Class;
+use MooseX::Types::Path::Tiny;
 use Config::Any;
 
 has 'config' => (
     is              => 'ro',
-    isa             => 'Path::Class::File',
+    isa             => 'Path::Tiny',
     coerce          => 1,
     predicate       => 'has_config',
     documentation   => q[Path to command config file],
