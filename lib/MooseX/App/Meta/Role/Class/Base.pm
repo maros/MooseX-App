@@ -11,7 +11,7 @@ use namespace::autoclean;
 use Moose::Role;
 
 use MooseX::App::Utils;
-use Path::Class;
+use Path::Tiny;
 use Module::Pluggable::Object;
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
@@ -40,7 +40,7 @@ has 'app_exclude' => (
 has 'app_base' => (
     is          => 'rw',
     isa         => 'Str',
-    default     => sub { Path::Class::File->new($0)->basename },
+    default     => sub { Path::Tiny->new($0)->basename },
 );
 
 has 'app_strict' => (
