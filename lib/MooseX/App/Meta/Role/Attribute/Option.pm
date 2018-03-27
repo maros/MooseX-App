@@ -116,7 +116,8 @@ sub cmd_check {
             Moose->throw_error("Parameter $name may not have Ref type constraints");
         }
     } else {
-        if (! $type_constraint->is_a_type_of('Bool')
+        if ($type_constraint
+            && ! $type_constraint->is_a_type_of('Bool')
             && first { length($_) == 1 } $self->cmd_name_list) {
             Moose->throw_error("Option $name has a single letter flag but no Bool type constraint");
         }
