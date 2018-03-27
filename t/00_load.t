@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 46 + 1;
+use Test::Most tests => 45 + 1;
 use Test::NoWarnings;
 
 use_ok( 'MooseX::App' );
@@ -61,7 +61,6 @@ SKIP :{
         Class::Load::load_class('Term::ANSIColor');
         Class::Load::load_class('IO::Interactive');
         use_ok( 'MooseX::App::Plugin::Color' );
-        use_ok( 'MooseX::App::Message::BlockColor' );
         use_ok( 'MooseX::App::Plugin::Color::Meta::Class');
     };
     unless ($ok) {
