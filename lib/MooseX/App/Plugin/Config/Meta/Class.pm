@@ -26,21 +26,20 @@ sub proto_config {
         unless defined $result->{config};
 
     # Read config
-    my $config_file = Path::Tiny->new($result->{config});
+    my $config_file = $result->{config};
 
-    unless (-e $config_file->stringify) {
+    unless (-e $config_file) {
         push(@{$errors},
             $self->command_message(
-                header          => "Could not find config file '".$config_file->stringify."'",
+                header          => "Could not find config file '".$config_file."'",
                 type            => "error",
             ),
         );
         return ($result,$errors);
     }
 
-    my $config_file_name = $config_file->stringify;
     my $configs = Config::Any->load_files({
-        files   => [ $config_file_name ],
+        files   => [ $config_file ],
         use_ext => 1,
     });
 
