@@ -1,5 +1,8 @@
 Release history for Perl module MooseX::App
 
+1.41 2019-05-13
+    - Switch to Dist::Zilla
+
 1.40 2019-05-13
     - Disable 11_process.t on NetBSD since fork is failing (forking is only done
       during testing and not by the actual module)
