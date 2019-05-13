@@ -1,7 +1,8 @@
 requires 'Moose', '2.00';
 requires 'namespace::autoclean';
 requires 'Module::Pluggable';
-requires 'Path::Class';
+requires 'File::Basename';
+requires 'File::Spec';
 requires 'MooseX::Types::Path::Class';
 requires 'Config::Any';
 requires 'List::Util', '1.44';
@@ -23,5 +24,4 @@ on develop => sub {
   requires 'Test::Pod', '1.14';
   requires 'Test::Pod::Coverage', '1.04';
   requires 'Test::Perl::Critic';
-  requires 'Module::Install::ReadmeFromPod';
 };
