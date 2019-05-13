@@ -8,6 +8,8 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
+use MooseX::App::Message::Builder;
+
 around 'command_usage_header' => sub {
     my ($orig,$self) = @_;
 
@@ -20,18 +22,25 @@ around 'command_usage_header' => sub {
 
     # Autobuild usage
     unless ($usage) {
-        my $caller      = '<tag=caller>'.$self->app_base.'</tag>';
+        my $caller      = TAG({ type => 'caller'},$self->app_base);
         my @parameter   = $self->command_usage_attributes($self,'parameter');
-        my $command     = $caller;
+        my @command     = $caller;
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                $command .= " <tag=attribute_required>&lt;".$attribute->cmd_usage_name.'&gt;</tag>';
+                push @command,' ',TAG({ type => 'attribute_required' },'<'.$attribute->cmd_usage_name.'>');
             } else {
-                $command .= ' <tag=attribute_optional>['.$attribute->cmd_usage_name.']</tag>';
+                push @command,' ',TAG({ type => 'attribute_optional' },'['.$attribute->cmd_usage_name.']');
             }
         }
-        $usage = "$command <tag=attribute_optional>[long options...]</tag>\n";
-        $usage .= "$caller <tag=attribute_optional>--help</tag>";
+        $usage = [
+            @command,
+            ' ',
+            TAG({ type => 'attribute_optional'},'[long options...]'),
+            NEWLINE(),
+            $caller,
+            ' ',
+            TAG({ type => 'attribute_optional'},'--help'),
+        ]
     }
 
     return $self->command_message(

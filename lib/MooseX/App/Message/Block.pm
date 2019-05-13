@@ -67,15 +67,15 @@ has 'parsed' => (
 
 has 'block' => (
     is          => 'ro',
-    isa         => 'MooseX::App::Types::MessageString',
-    coerce      => 1,
+    #isa         => 'MooseX::App::Types::MessageString',
+    #coerce      => 1,
     required    => 1,
 );
 
 sub raw {
     my ($class,$string) = @_;
 
-    $string = '<raw>'.MooseX::App::Utils::string_to_entity($string).'</raw>';
+    $string = RAW( $string );
     return $class->new(block => $string);
 }
 

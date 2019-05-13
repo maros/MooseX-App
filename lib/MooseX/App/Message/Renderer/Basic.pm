@@ -25,10 +25,6 @@ sub render {
 sub render_node {
     my ($self,$block,$indent) = @_;
 
-# use Data::Dumper;
-# warn Data::Dumper::Dumper($block)
-#     if $block->{t} eq 'root';
-
     $indent //= 0;
     my $return = '';
 
@@ -92,8 +88,6 @@ sub render_node {
 # Format output text for fixed screen width
 sub render_text {
     my ($self,$text,$indent) = @_;
-
-    $text = MooseX::App::Utils::string_from_entity($text);
 
     $indent //= 0;
     if ($indent < 0) {

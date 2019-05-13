@@ -8,6 +8,7 @@ use warnings;
 use List::Util qw(max);
 
 use Moose::Util::TypeConstraints;
+use MooseX::App::Message::Builder;
 
 my $ESCAPE_RE = qr/\e\[[\d;]*m/;
 
@@ -18,15 +19,35 @@ coerce 'MooseX::App::Types::List'
     => from 'Str'
     => via { [$_] };
 
+class_type 'MooseX::App::Types::Node'
+    => { class => 'MooseX::App::Message::Node' };
+
+subtype 'MooseX::App::Types::Output'
+    => as 'ArrayRef[Str|MooseX::App::Types::Node]';
+
+subtype 'MooseX::App::Types::NodeList'
+    => as 'ArrayRef[MooseX::App::Types::Node]';
+
+coerce 'MooseX::App::Types::NodeList'
+    => from 'MooseX::App::Message::Node'
+    => via { [$_] }
+    => from 'Str'
+    => via {
+        return [ PARAGRAPH($_) ];
+    }
+    => from 'ArrayRef[Str]'
+    => via {
+        return [ map { PARAGRAPH($_) } @{$_} ];
+    };
+
+coerce 'MooseX::App::Types::Output'
+    => from 'Str'
+    => via { [ $_ ] }
+    => from 'MooseX::App::Types::Node'
+    => via { [ $_ ] };
+
 subtype 'MooseX::App::Types::CmdTypes'
     => as enum([qw(proto option parameter)]);
-
-subtype 'MooseX::App::Types::MessageString'
-    => as 'Str';
-
-coerce 'MooseX::App::Types::MessageString'
-    => from 'ArrayRef'
-    => via { sprintf(@{$_}) };
 
 subtype 'MooseX::App::Types::Env'
     => as 'Str'
@@ -37,19 +58,6 @@ subtype 'MooseX::App::Types::Identifier'
     => where {
         $_ eq '?'
         || (m/^[A-Za-z0-9][A-Za-z0-9_-]*$/ && m/[^-_]$/) };
-
-subtype 'MooseX::App::Types::BlockList'
-    => as 'ArrayRef[MooseX::App::Message::Block]';
-
-coerce 'MooseX::App::Types::BlockList'
-    => from 'MooseX::App::Message::Block'
-    => via { [$_] }
-    => from 'ArrayRef[Str]'
-    => via {
-        return [
-            map { MooseX::App::Message::Block->parse($_) } @{$_}
-        ]
-    };
 
 subtype 'MooseX::App::Types::IdentifierList'
     => as 'ArrayRef[MooseX::App::Types::Identifier]';
@@ -195,7 +203,7 @@ sub _pod_node_to_text {
                         ${$indent}--;
                     }
                     when (qr/^head(\d)/) {
-                        push (@lines,"\n",'<tag=headline'.$1.'>'.$node->content."</tag>\n");
+                        push (@lines,"\n",TAG({ type => 'headline'.$1 },$node->content),\n");
                     }
                 }
             }
@@ -215,9 +223,9 @@ sub _pod_formatting_codes {
     my ($text) = @_;
 
     $text =~ s|\n\n\n+|\n\n|g; # Max one empty line
-    $text =~ s|I<([^>]+)>|<tag=italic>${1}</tag>|g;
-    $text =~ s|B<([^>]+)>|<tag=bold>${1}</tag>|g;
-    $text =~ s|C<([^>]+)>|<tag=code>${1}</tag>|g;
+    $text =~ s|I<([^>]+)>|TAG({ type=> 'italic'},${1})|ge;
+    $text =~ s|B<([^>]+)>|TAG({ type=> 'bold'},${1})|ge;
+    $text =~ s|C<([^>]+)>|TAG({ type=> 'code'},${1})|ge;
     $text =~ s|[LFSX]<([^>]+)>|$1|g;
 
     return $text;
@@ -230,44 +238,21 @@ sub build_list {
     foreach my $element (@list) {
         if (ref($element) eq 'ARRAY') {
             if (scalar @{$element} == 2) {
-                push(@return,'<item><key>'.
-                    string_to_entity($element->[0]).
-                    '</key><description>'.
-                    string_to_entity($element->[1]).
-                    '</description></item>');
+                push(@return,ITEM(
+                    KEY($element->[0]),
+                    DESCRIPTION($element->[1]),
+                );
             } else {
-                push(@return,'<item><key>'.
-                    string_to_entity($element->[0]).
-                    '</key></item>');
+                push(@return,ITEM(
+                    KEY($element->[0])
+                ));
             }
         } else {
-            push(@return,'<item>'.string_to_entity($element).'</item>');
+            push(@return,ITEM($element));
         }
     }
 
-    return join("\n",'<list>',@return,'</list>');
-}
-
-sub string_to_entity {
-    my ($string) = @_;
-
-    $string =~ s/<(tag=[^>]+|\/tag)>/\0$1\0/g;
-    $string =~ s/>/&gt;/g;
-    $string =~ s/</&lt;/g;
-    $string =~ s/&/&amp;/g;
-    $string =~ s/\0([^\0]+)\0/<$1>/g;
-
-    return $string;
-}
-
-sub string_from_entity {
-    my ($string) = @_;
-
-    $string =~ s/&gt;/>/g;
-    $string =~ s/&lt;/</g;
-    $string =~ s/&amp;/&/g;
-
-    return $string;
+    return join("\n",LIST(@return));
 }
 
 sub string_length {
@@ -353,13 +338,5 @@ Parse POD for the given package.
 
 Builds a list for the renderer. Expects either a list of strings,
 or a list of array references for key-value pairs.
-
-=head2 string_to_entity
-
-Escapes entities that might interfere with the parser syntax
-
-=head2 string_from_entity
-
-Unescapes entities that might interfere with the parser syntax
 
 =cut

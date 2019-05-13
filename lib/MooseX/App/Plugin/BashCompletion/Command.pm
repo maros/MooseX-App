@@ -8,6 +8,7 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 use MooseX::App::Command;
+use MooseX::App::Message::Builder;
 
 command_short_description q(Bash completion automator);
 
@@ -89,7 +90,7 @@ EOT
     $syntax .= "complete -o default -F _${prefix}_macc ". $app_meta->app_base. "\n";
 
     return MooseX::App::Message::Envelope->new(
-        MooseX::App::Message::Block->raw($syntax)
+        RAW($syntax)
     );
 }
 

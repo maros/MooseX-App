@@ -8,14 +8,14 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 
-use MooseX::App::Message::Block;
+use MooseX::App::Message::Node;
 
 use overload
     '""' => "overload";
 
-has 'blocks' => (
+has 'nodes' => (
     is          => 'ro',
-    isa         => 'MooseX::App::Types::BlockList',
+    isa         => 'MooseX::App::Types::NodeList',
     coerce      => 1,
     traits      => ['Array'],
     handles     => {

@@ -32,7 +32,7 @@ sub man {
         my $return = $meta->command_find($self->command);
         # Nothing found
         if (blessed $return
-            && $return->isa('MooseX::App::Message::Block')) {
+            && $return->isa('MooseX::App::Message::Node')) {
             return MooseX::App::Message::Envelope->new(
                 $return,
                 $meta->command_usage_command($self->meta),

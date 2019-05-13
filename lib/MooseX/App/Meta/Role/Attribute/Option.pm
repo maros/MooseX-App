@@ -225,12 +225,12 @@ sub cmd_type_constraint_check {
 sub cmd_usage_description {
     my ($self) = @_;
 
-    my $description = ($self->has_documentation) ? $self->documentation : '';
+    my $description = ($self->has_documentation) ? [ $self->documentation ] : [];
     my @tags = $self->cmd_tags_list();
     if (scalar @tags) {
-        $description .= ' '
-            if $description;
-        $description .= '['.join('; ',map { '<tag=attr>'.$_.'</tag>' } @tags).']';
+        push( @$description, ' ')
+            if scalar @$description;
+        push( @$description, '[', (map { TAG({ type => 'attr'}, $_) } @tags), ']');
     }
     return $description
 }
@@ -298,9 +298,11 @@ sub cmd_tags_list {
         push(@tags,'Required')
     }
 
+    my $type_constraint = $self->type_constraint;
+
     if ($self->has_default && ! $self->is_default_a_coderef) {
-        if ($self->has_type_constraint
-            && $self->type_constraint->is_a_type_of('Bool')) {
+        if ($type_constraint
+            && $type_constraint->is_a_type_of('Bool')) {
 #            if ($attribute->default) {
 #                push(@tags,'Default:Enabled');
 #            } else {
@@ -320,8 +322,7 @@ sub cmd_tags_list {
         push(@tags,'Multiple','Split by "'.$split.'"');
     }
 
-    if ($self->has_type_constraint) {
-        my $type_constraint = $self->type_constraint;
+    if ($type_constraint) {
         if ($type_constraint->is_a_type_of('ArrayRef')) {
             if (! $self->has_cmd_split) {
                 push(@tags,'Multiple');

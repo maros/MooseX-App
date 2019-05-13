@@ -8,30 +8,37 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 use MooseX::App::Command;
+use MooseX::App::Message::Builder;
 
 command_short_description q(Print the current version);
 
 sub version {
     my ($self,$app) = @_;
 
-    my $version = '';
-    $version .= $app->meta->app_base. ' version <tag=version>'.$app->VERSION."</tag>\n";
-    $version .= "MooseX::App version <tag=version>".$MooseX::App::VERSION."</tag>\n";
-    $version .= "Perl version <tag=version>".sprintf("%vd", $^V)."</tag>";
-
-    my @parts = (MooseX::App::Message::Block->parse('<headline>VERSION</headline><paragraph>'.$version.'</paragraph>'));
+    my @parts = (
+        HEADLINE('VERSION'),
+        PARAGRAPH(
+            $app->meta->app_base. ' version ',
+            TAG({type => 'version'}, $app->VERSION),
+            NEWLINE(),
+            'MooseX::App version ',
+            TAG({type => 'version'}, $MooseX::App::VERSION),
+            NEWLINE(),
+            'Perl version ',
+            TAG({type => 'version'}, sprintf("%vd", $^V)),
+        )
+    );
 
     my %pod_raw = MooseX::App::Utils::parse_pod($app->meta->name);
 
     foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE','AUTHOR','AUTHORS') {
         if (defined $pod_raw{$part}) {
-            push(@parts, MooseX::App::Message::Block->parse(
-                '<headline>'.
-                $part.
-                '</headline><paragraph><raw>'.
-                MooseX::App::Utils::string_to_entity($pod_raw{$part}).
-                '</raw></paragraph>'
-            ));
+            push(@parts,
+                HEADLINE($part),
+                PARAGRAPH(RAW(
+                    $pod_raw{$part}
+                ))
+            );
         }
     }
 

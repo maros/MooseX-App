@@ -13,6 +13,7 @@ use Moose::Role;
 use MooseX::App::Utils;
 use Module::Pluggable::Object;
 use MooseX::App::Message::Renderer;
+use MooseX::App::Message::Builder;
 use File::Basename qw();
 no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
@@ -696,27 +697,23 @@ sub command_parser_hints {
 sub command_message {
     my ($self,%args) = @_;
 
-    my $message = '';
+    my @message;
     $args{type} //= 'default';
     if (defined $args{header}) {
-        $message .= "<headline".
-            ($args{type} eq 'error' ? '=error':'').
-            ">".
-            MooseX::App::Utils::string_to_entity($args{header}).
-            "</headline>\n";
+        push @message, HEADLINE(
+            { type => $args{type} },
+            $args{header}
+        );
     }
 
     if (defined $args{body}) {
-        $message .= "<paragraph".
-            ($args{type} eq 'error' ? '=error':'').
-            ">".
-            $args{body}.
-            "</paragraph>\n";
+        push @message, PARAGRAPH(
+            { type => $args{type} },
+            $args{body}
+        );
     }
 
-    chomp($message);
-
-    return MooseX::App::Message::Block->parse($message);
+    return BLOCK(@message);
 }
 
 sub command_check_attributes {
@@ -836,20 +833,33 @@ sub command_usage_header {
     }
 
     unless (defined $usage) {
-        my $caller = '<tag=caller>'.$self->app_base.'</tag>';
+        my $caller = TAG({ type => 'caller' },$self->app_base);
         # LOCALIZE
-        $usage = "$caller <tag=command>$command_name</tag> ";
+        $usage = [
+            $caller,
+            ' ',
+            TAG({ type => 'command' },$command_name),
+            ' ',
+        ];
         my @parameter= $self->command_usage_attributes($command_meta_class,'parameter');
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                $usage .= "<tag=attribute_required>&lt;".$attribute->cmd_usage_name.'&gt;</tag> ';
+                push @$usage, TAG({ type => 'attribute_required' },'<',$attribute->cmd_usage_name,'>');
             } else {
-                $usage .= '<tag=attribute_optional>['.$attribute->cmd_usage_name.']</tag> ';
+                push @$usage, TAG({ type => 'attribute_optional' },'[',$attribute->cmd_usage_name,']');
             }
         }
-        $usage .= "<tag=attribute_optional>[long options...]</tag>
-$caller <tag=command>help</tag>
-$caller <tag=command>$command_name</tag> <tag=attribute_optional>--help</tag>";
+        push @$usage, TAG({ type => 'attribute_optional' },'[long options...]'),
+            "\n",
+            $caller,
+            ' ',
+            TAG({ type => 'command' },'help'),
+            "\n",
+            $caller,
+            ' ',
+            TAG({ type => 'command' },$command_name),
+            ' ',
+            TAG({ type => 'attribute_optional' },'--help');
     }
 
     return $self->command_message(
@@ -866,13 +876,13 @@ sub command_usage_description {
         && $command_meta_class->command_long_description_predicate) {
         return $self->command_message(
             header  => 'description:', # LOCALIZE
-            body    => MooseX::App::Utils::string_to_entity($command_meta_class->command_long_description),
+            body    => $command_meta_class->command_long_description,
         );
     } elsif ($command_meta_class->can('command_short_description')
         && $command_meta_class->command_short_description_predicate) {
         return $self->command_message(
             header  => 'short description:', # LOCALIZE
-            body    => MooseX::App::Utils::string_to_entity($command_meta_class->command_short_description),
+            body    => $command_meta_class->command_short_description,
         );
     }
     return;

@@ -144,7 +144,7 @@ sub new_with_command {
 
         # Nothing found
         if (blessed $command
-            && $command->isa('MooseX::App::Message::Block')) {
+            && $command->isa('MooseX::App::Message::Node')) {
             $return = MooseX::App::Message::Envelope->new({
                 blocks    => [
                     $command,
