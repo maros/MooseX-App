@@ -21,7 +21,8 @@ To create a simple command-line application with MooseX::App you need
 =head1 BASE CLASS
 
 The simplest possible base class just contains a single use statement which
-loads all roles and metaclasses you need to get started as well as Moose.
+loads all roles and metaclasses you need to get started as well as Moose and
+hence strictures as well as warnings.
 
   package MyApp;
   use MooseX::App;
@@ -129,7 +130,7 @@ MooseX-App (see L<MooseX::App::Meta::Role::Attribute::Option>)
       required          => 1,
       documentation     => q[Some important option],
       cmd_tags          => [qw(Important!)], # Extra tags. Displayed in square brackets
-      cmd_aliases       => [qw(s)], # Alternative option name
+      cmd_aliases       => [qw(any)], # Alternative option name
       cmd_flag          => 'some', # Option should be called 'some' instead of 'some_option'
   );
 
@@ -164,7 +165,7 @@ usage headers):
     --help --usage -?  Prints this usage information. [Flag]
 
 In case you want to include an attribute not defined with the 'option' or
-'parameter' keyword you can use the 'AppOption' trait and 'cmd_type'
+'parameter' keyword (eg from a Role) you can use the 'AppOption' trait and 'cmd_type'
 attribute. (see L<MooseX::App::Meta::Attribute::Option>).
 
   has 'myoption' => (
@@ -189,10 +190,10 @@ the application logic in the base class:
   package MyApp;
   use MooseX::App::Simple qw(Config); # Loads the Config plugin
   
-  option 'some_global_option' => (
+  option 'some_option' => (
       is                => 'rw',
       isa               => 'Str',
-      documentation     => q[Some important global option],
+      documentation     => q[Some important option],
   );
   
   sub run {
@@ -242,13 +243,10 @@ command_short_description, ... functions or by writing POD), Moose type
 constraints and additional plugins (eg. colorise the output).
 
 Make sure to invoke your script with APP_DEVELOPER=1 during development. This
-will perform additional checks for detecting wrong attribute/type constraint
-combinations, name clashes, ...
+will come with a starup penalty but perform additional checks for detecting wrong
+attribute/type constraint combinations, name clashes, ...
 
 If you want custom behaviour you could start writing your own
 L<MooseX::App::WritingPlugins|plugins>.
-
-Make sure to run your application in the APP_DEVELOPER=1 environment. In this mode
-additional sanity checks will be performed upon startup.
 
 =cut
