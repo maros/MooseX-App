@@ -2,7 +2,7 @@
 
 # t/00_load.t - check module loading and create testing directory
 
-use Test::Most tests => 43;
+use Test::Most tests => 45;
 
 use_ok( 'MooseX::App' );
 use_ok( 'MooseX::App::ParsedArgv' );
@@ -70,6 +70,8 @@ SKIP :{
         Class::Load::load_class('File::HomeDir');
         use_ok( 'MooseX::App::Plugin::ConfigHome' );
         use_ok( 'MooseX::App::Plugin::ConfigHome::Meta::Class');
+        use_ok( 'MooseX::App::Plugin::ConfigXDG' );
+        use_ok( 'MooseX::App::Plugin::ConfigXDG::Meta::Class');
     };
     unless ($ok) {
         skip "File::HomeDir is not installed",2;
