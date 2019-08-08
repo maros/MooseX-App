@@ -1,6 +1,5 @@
 package MooseX::App::Plugin::ConfigXDG;
 
-
 use 5.010;
 use utf8;
 
