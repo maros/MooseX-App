@@ -1,8 +1,7 @@
+dzil-local/
 blib
 _build
-Makefile
 inc
-Makefile
 META.yml
 pm_to_blib
 .project

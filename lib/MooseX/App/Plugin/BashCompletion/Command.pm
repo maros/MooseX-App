@@ -18,7 +18,7 @@ sub bash_completion {
     my %command_map;
     my $app_meta        = $app->meta;
     my $commands        = $app_meta->app_commands;
-    my @commands_to_complete = grep { $_ ne 'bash_completion' } keys %{$commands};
+    my @commands_to_complete = grep { $_ ne 'bash_completion' } sort keys %{$commands};
     my $command_list    = join (' ', @commands_to_complete);
     my $package         = __PACKAGE__;
     my $prefix          = $app_meta->app_base;
@@ -60,7 +60,7 @@ _${prefix}_macc_help() {
 
 EOT
 
-    foreach my $command (keys %command_map) {
+    foreach my $command (sort keys %command_map) {
         $syntax .= "_${prefix}_macc_${command}() {\n    _${prefix}_compreply \"";
         #$syntax .= join(" ", @{$data->{parameters}});
         $syntax .= join(" ", @{$command_map{$command}->{options}});

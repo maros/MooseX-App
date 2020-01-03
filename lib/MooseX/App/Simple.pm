@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = 1.39;
+our $VERSION = '1.41';
 
 use Moose::Exporter;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline app_permute option parameter command_short_description command_long_description command_usage command_strict);
@@ -144,7 +144,7 @@ And then in some simple wrapper script:
 
 =head1 DESCRIPTION
 
-MooseX-App-Simple works basically just as MooseX::App, however it does
+MooseX::App::Simple works basically just as MooseX::App, however it does
 not search for commands and assumes that you have all options and parameters
 defined in the current class.
 
@@ -173,12 +173,13 @@ However, if you do so you must take care of propper @ARGV encoding yourself.
 
 =head1 OPTIONS
 
-Same as in L<MooseX::App>
+Same as in L<MooseX::App>, however all options regarding command loading such
+as L<app_namespace> and L<app_exclude> are not available.
 
 =head1 PLUGINS
 
-Same as in L<MooseX::App>. However plugings adding commands (eg. version)
-will not work with MooseX::App::Simple.
+Same as in L<MooseX::App>. However plugings adding additional commands
+(eg. version) will have no effect with MooseX::App::Simple.
 
 =head1 SEE ALSO
 

@@ -1,5 +1,19 @@
 Release history for Perl module MooseX::App
 
+1.41 2019-05-13
+    - Switch to Dist::Zilla
+
+1.40 2019-05-13
+    - Disable 11_process.t on NetBSD since fork is failing (forking is only done
+      during testing and not by the actual module)
+    - Sort keys operations to get a predictable order of keys (implemented by Jose Luis Martinez)
+    - Simplify dependencies: No need for Path::Class. File::Spec and File::Basename that are
+      loaded via Module::Pluggable::Object are sufficient
+
+1.39 2017-09-24
+    - APP_DEVELOPER environment for extended module checks
+    - Improved command checks: Die on single letter flags without Bool type constraints
+
 1.38 2017-06-20
     - Cleanups (get rid of smartmatch, inentation, documentation, tests)
     - Also handle =head[2-4] tags when processing pod (#47)
