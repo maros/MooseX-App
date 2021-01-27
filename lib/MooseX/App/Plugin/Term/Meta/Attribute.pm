@@ -230,7 +230,7 @@ sub cmd_term_read_string {
                 print "\b".substr $return,$cursor; # print
                 print " ".(("\b") x (length($return) - $cursor + 1)); # cursor
             } else { # Character
-                if ($_ <= 31) { # ignore controll chars
+                if ($key_code <= 31) { # ignore controll chars
                     print "\a";
                     next KEY_STRING;
                 } elsif (defined $allowed
