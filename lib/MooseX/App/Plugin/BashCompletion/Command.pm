@@ -62,7 +62,7 @@ EOT
     foreach my $command (sort keys %command_map) {
         $syntax .= "_${prefix}_macc_${command}() {\n    _${prefix}_compreply \"";
         #$syntax .= join(" ", @{$data->{parameters}});
-        $syntax .= join(" ", @{$command_map{$command}->{options}});
+        $syntax .= join(" ", sort @{$command_map{$command}->{options}});
         $syntax .= "\"\n}\n\n";
     }
 
