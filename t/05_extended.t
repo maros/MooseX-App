@@ -241,7 +241,10 @@ subtest 'Test enum error message' => sub {
     MooseX::App::ParsedArgv->new(argv => [qw(somecommand --another hase hh h ggg)]);
     my $test18 = Test03->new_with_command();
     isa_ok($test18,'MooseX::App::Message::Envelope');
-    is($test18->blocks->[0]->body,"Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff (not 'ggg')","Check enum error message");
+    my $msg = $test18->blocks->[0]->body;
+    my $result = $msg eq 'Value must be one of these values: aaa, bbb, ccc, ddd, eee, fff (not \'ggg\')' 
+              || $msg eq 'Validation failed for \'__ANON__\' with value "ggg". Value must be equal to "aaa", "bbb", "ccc", "ddd", "eee", or "fff".';
+    ok($result, "Check enum error message");
 };
 
 subtest 'Test empty multi' => sub {
