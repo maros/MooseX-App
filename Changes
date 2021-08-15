@@ -1,5 +1,11 @@
 Release history for Perl module MooseX::App
 
+1.42 2021-08-15
+    - Documentation
+    - Fix failing tests with new Moose versions (implemented by Frank Schreiner)
+    - Sort option in bash completion plugin (implemented by Frank Schreiner)
+    - Fixed term plugin warning (implemented by J.R. Mash)
+
 1.41 2019-05-13
     - Switch to Dist::Zilla
 

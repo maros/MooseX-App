@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 our $AUTHORITY = 'cpan:MAROS';
-our $VERSION = '1.41';
+our $VERSION = '1.42';
 
 use MooseX::App::Meta::Role::Attribute::Option;
 use MooseX::App::Exporter qw(app_usage app_description app_base app_fuzzy app_strict app_prefer_commandline app_permute option parameter);
@@ -680,7 +680,7 @@ In no particular order: Andrew Jones, George Hartzell, Steve Nolte,
 Michael G, Thomas Klausner, Yanick Champoux, Edward Baudrez, David Golden,
 J.R. Mash, Thilo Fester, Gregor Herrmann, Sergey Romanov, Sawyer X, Roman F.,
 Hunter McMillen, Maik Hentsche, Alexander Stoddard, Marc Logghe, Tina Müller,
-Lisa Hare, Jose Luis Martinez
+Lisa Hare, Jose Luis Martinez, Frank Schreiner
 
 You are more than welcome to contribute to MooseX-App. Please have a look
 at the L<https://github.com/maros/MooseX-App/issues?q=is%3Aissue+is%3Aopen+label%3AWishlist>
@@ -688,7 +688,7 @@ list of open wishlist issues for ideas.
 
 =head1 COPYRIGHT
 
-MooseX::App is Copyright (c) 2012-19 Maroš Kollár.
+MooseX::App is Copyright (c) 2012-21 Maroš Kollár.
 
 This library is free software and may be distributed under the same terms as
 perl itself. The full text of the licence can be found in the LICENCE file
