@@ -230,7 +230,7 @@ sub cmd_usage_description {
     if (scalar @tags) {
         push( @$description, ' ')
             if scalar @$description;
-        push( @$description, '[', (map { TAG({ type => 'attr'}, $_) } @tags), ']');
+        push( @$description, '[', (map { TAG('attr', $_) } @tags), ']');
     }
     return $description
 }

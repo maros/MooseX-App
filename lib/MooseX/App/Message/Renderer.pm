@@ -19,5 +19,7 @@ has 'indent' => (
     default     => 4,
 );
 
+sub render { ... }
+
 __PACKAGE__->meta->make_immutable;
 1;

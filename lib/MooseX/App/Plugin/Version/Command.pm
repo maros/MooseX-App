@@ -16,16 +16,16 @@ sub version {
     my ($self,$app) = @_;
 
     my @parts = (
-        HEADLINE('VERSION'),
+        HEADLINE('default','VERSION'),
         PARAGRAPH(
             $app->meta->app_base. ' version ',
-            TAG({type => 'version'}, $app->VERSION),
+            TAG('version', $app->VERSION),
             NEWLINE(),
             'MooseX::App version ',
-            TAG({type => 'version'}, $MooseX::App::VERSION),
+            TAG('version', $MooseX::App::VERSION),
             NEWLINE(),
             'Perl version ',
-            TAG({type => 'version'}, sprintf("%vd", $^V)),
+            TAG('version', sprintf("%vd", $^V)),
         )
     );
 
@@ -34,7 +34,7 @@ sub version {
     foreach my $part ('COPYRIGHT','LICENSE','COPYRIGHT AND LICENSE','AUTHOR','AUTHORS') {
         if (defined $pod_raw{$part}) {
             push(@parts,
-                HEADLINE($part),
+                HEADLINE('default',$part),
                 PARAGRAPH(RAW(
                     $pod_raw{$part}
                 ))

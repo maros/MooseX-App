@@ -23,8 +23,6 @@ use_ok( 'MooseX::App::Meta::Role::Class::Documentation');
 use_ok( 'MooseX::App::Plugin::BashCompletion' );
 use_ok( 'MooseX::App::Plugin::BashCompletion::Command');
 use_ok( 'MooseX::App::Plugin::BashCompletion::Meta::Class');
-use_ok( 'MooseX::App::Plugin::Config' );
-use_ok( 'MooseX::App::Plugin::Config::Meta::Class');
 use_ok( 'MooseX::App::Plugin::Version' );
 use_ok( 'MooseX::App::Plugin::Version::Command');
 use_ok( 'MooseX::App::Plugin::Version::Meta::Class');
@@ -45,14 +43,27 @@ use_ok( 'MooseX::App::Role::Common');
 
 SKIP :{
     my $ok = eval {
+        Class::Load::load_class('Config::Any');
+    };
+    unless ($ok) {
+        skip "Config::Any is installed",2;
+    } else {
+        use_ok( 'MooseX::App::Plugin::Config' );
+        use_ok( 'MooseX::App::Plugin::Config::Meta::Class');
+    }
+}
+
+SKIP :{
+    my $ok = eval {
         Class::Load::load_class('Term::ReadKey');
         Class::Load::load_class('IO::Interactive');
-        use_ok( 'MooseX::App::Plugin::Term' );
-        use_ok( 'MooseX::App::Plugin::Term::Meta::Class');
-        use_ok( 'MooseX::App::Plugin::Term::Meta::Attribute');
     };
     unless ($ok) {
         skip "Term::ReadKey and/or IO::Interactive are not installed",3;
+    } else {
+        use_ok( 'MooseX::App::Plugin::Term' );
+        use_ok( 'MooseX::App::Plugin::Term::Meta::Class');
+        use_ok( 'MooseX::App::Plugin::Term::Meta::Attribute');
     }
 }
 
@@ -60,32 +71,36 @@ SKIP :{
     my $ok = eval {
         Class::Load::load_class('Term::ANSIColor');
         Class::Load::load_class('IO::Interactive');
-        use_ok( 'MooseX::App::Plugin::Color' );
-        use_ok( 'MooseX::App::Plugin::Color::Meta::Class');
     };
     unless ($ok) {
-        skip "Term::ANSIColor and/or IO::Interactive are not installed",3;
+        skip "Term::ANSIColor and/or IO::Interactive are not installed",2;
+    } else {
+        use_ok( 'MooseX::App::Plugin::Color' );
+        use_ok( 'MooseX::App::Plugin::Color::Meta::Class');
     }
 }
 
 SKIP :{
     my $ok = eval {
         Class::Load::load_class('File::HomeDir');
-        use_ok( 'MooseX::App::Plugin::ConfigHome' );
-        use_ok( 'MooseX::App::Plugin::ConfigHome::Meta::Class');
+        Class::Load::load_class('Config::Any');
     };
     unless ($ok) {
         skip "File::HomeDir is not installed",2;
+    } else {
+        use_ok( 'MooseX::App::Plugin::ConfigHome' );
+        use_ok( 'MooseX::App::Plugin::ConfigHome::Meta::Class');
     }
 }
 
 SKIP :{
     my $ok = eval {
         Class::Load::load_class('Text::WagnerFischer');
-        use_ok( 'MooseX::App::Plugin::Typo' );
-        use_ok( 'MooseX::App::Plugin::Typo::Meta::Class');
     };
     unless ($ok) {
         skip "Text::WagnerFischer is not installed",2;
+    } else {
+        use_ok( 'MooseX::App::Plugin::Typo' );
+        use_ok( 'MooseX::App::Plugin::Typo::Meta::Class');
     }
 }

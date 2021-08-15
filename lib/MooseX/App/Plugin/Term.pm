@@ -7,13 +7,18 @@ use utf8;
 
 use namespace::autoclean;
 use Moose::Role;
+use IO::Interactive qw(is_interactive);
 
 sub plugin_metaroles {
     my ($self,$class) = @_;
 
-    return {
-        class       => ['MooseX::App::Plugin::Term::Meta::Class'],
-        attribute   => ['MooseX::App::Plugin::Term::Meta::Attribute'],
+    if (is_interactive()) {
+        return {
+            class       => ['MooseX::App::Plugin::Term::Meta::Class'],
+            attribute   => ['MooseX::App::Plugin::Term::Meta::Attribute'],
+        }
+    } else {
+        return {};
     }
 }
 

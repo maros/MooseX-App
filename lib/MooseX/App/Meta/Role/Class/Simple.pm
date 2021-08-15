@@ -22,24 +22,24 @@ around 'command_usage_header' => sub {
 
     # Autobuild usage
     unless ($usage) {
-        my $caller      = TAG({ type => 'caller'},$self->app_base);
+        my $caller      = TAG('caller',$self->app_base);
         my @parameter   = $self->command_usage_attributes($self,'parameter');
         my @command     = $caller;
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                push @command,' ',TAG({ type => 'attribute_required' },'<'.$attribute->cmd_usage_name.'>');
+                push @command,' ',TAG('attribute_required','<'.$attribute->cmd_usage_name.'>');
             } else {
-                push @command,' ',TAG({ type => 'attribute_optional' },'['.$attribute->cmd_usage_name.']');
+                push @command,' ',TAG('attribute_optional','['.$attribute->cmd_usage_name.']');
             }
         }
         $usage = [
             @command,
             ' ',
-            TAG({ type => 'attribute_optional'},'[long options...]'),
+            TAG('attribute_optional','[long options...]'),
             NEWLINE(),
             $caller,
             ' ',
-            TAG({ type => 'attribute_optional'},'--help'),
+            TAG('attribute_optional','--help'),
         ]
     }
 

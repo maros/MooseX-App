@@ -68,8 +68,6 @@ coerce 'MooseX::App::Types::IdentifierList'
 
 no Moose::Util::TypeConstraints;
 
-no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;
-
 # Default package name to command name translation function
 sub class_to_command {
     my ($class) = @_;
@@ -171,42 +169,32 @@ sub _pod_node_to_text {
         $indent = \$indent_init;
     }
 
+    my $node_ref = ref $node;
     my (@lines);
-    if (ref $node eq 'ARRAY') {
+    if ($node_ref eq 'ARRAY') {
         foreach my $element (@$node) {
             push (@lines,_pod_node_to_text($element,$indent));
         }
-
-    } else {
-        given (ref($node)) {
-            when ('Pod::Elemental::Element::Pod5::Ordinary') {
-                my $content = $node->content;
-                return
-                    if $content =~ m/^=cut/;
-                $content =~ s/\n/ /g;
-                $content =~ s/\s+/ /g;
-                push (@lines,$content."\n");
-            }
-            when ('Pod::Elemental::Element::Pod5::Verbatim') {
-                push (@lines,$node->content."\n");
-            }
-            when ('Pod::Elemental::Element::Pod5::Command') {
-                given ($node->command) {
-                    when ('over') {
-                        ${$indent}++;
-                    }
-                    when ('item') {
-                        push (@lines,('  ' x ($$indent-1)) . $node->content);
-                    }
-                    when ('back') {
-                        push (@lines,"\n");
-                        ${$indent}--;
-                    }
-                    when (qr/^head(\d)/) {
-                        push (@lines,"\n",TAG({ type => 'headline'.$1 },$node->content),\n");
-                    }
-                }
-            }
+    } elsif ($node_ref eq 'Pod::Elemental::Element::Pod5::Ordinary') {
+        my $content = $node->content;
+        return
+            if $content =~ m/^=cut/;
+        $content =~ s/\n/ /g;
+        $content =~ s/\s+/ /g;
+        push (@lines,$content."\n");
+    } elsif ($node_ref eq 'Pod::Elemental::Element::Pod5::Verbatim') {
+        push (@lines,$node->content."\n");
+    } elsif ($node_ref eq 'Pod::Elemental::Element::Pod5::Command') {
+        my $node_command = $node->command;
+        if ($node_command  eq 'over') {
+            ${$indent}++;
+        } elsif ($node_command eq 'item') {
+            push (@lines,('  ' x ($$indent-1)) . $node->content);
+        } elsif ($node_command eq 'back') {
+            push (@lines,"\n");
+            ${$indent}--;
+        } elsif ($node_comman =~ m/^head(\d)/) {
+            push (@lines,"\n",TAG('headline'.$1,$node->content),"\n");
         }
     }
 
@@ -223,9 +211,9 @@ sub _pod_formatting_codes {
     my ($text) = @_;
 
     $text =~ s|\n\n\n+|\n\n|g; # Max one empty line
-    $text =~ s|I<([^>]+)>|TAG({ type=> 'italic'},${1})|ge;
-    $text =~ s|B<([^>]+)>|TAG({ type=> 'bold'},${1})|ge;
-    $text =~ s|C<([^>]+)>|TAG({ type=> 'code'},${1})|ge;
+    $text =~ s|I<([^>]+)>|TAG('italic',${1})|ge;
+    $text =~ s|B<([^>]+)>|TAG('bold',${1})|ge;
+    $text =~ s|C<([^>]+)>|TAG('code',${1})|ge;
     $text =~ s|[LFSX]<([^>]+)>|$1|g;
 
     return $text;
@@ -239,12 +227,12 @@ sub build_list {
         if (ref($element) eq 'ARRAY') {
             if (scalar @{$element} == 2) {
                 push(@return,ITEM(
-                    KEY($element->[0]),
-                    DESCRIPTION($element->[1]),
+                    $element->[0],
+                    $element->[1],
                 );
             } else {
                 push(@return,ITEM(
-                    KEY($element->[0])
+                    $element->[0]
                 ));
             }
         } else {
@@ -255,6 +243,7 @@ sub build_list {
     return join("\n",LIST(@return));
 }
 
+# Get string length - ignoring escape sequences
 sub string_length {
     my ($string) = @_;
 

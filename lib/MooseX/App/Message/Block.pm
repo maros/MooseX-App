@@ -72,13 +72,6 @@ has 'block' => (
     required    => 1,
 );
 
-sub raw {
-    my ($class,$string) = @_;
-
-    $string = RAW( $string );
-    return $class->new(block => $string);
-}
-
 sub parse {
     my ($class,$string) = @_;
 

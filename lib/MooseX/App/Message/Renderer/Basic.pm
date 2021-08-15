@@ -28,19 +28,19 @@ sub render_node {
     $indent //= 0;
     my $return = '';
 
-    foreach my $node (@{$block->{c}}) {
+    foreach my $node ($block->children) {
         my $local_indent    = $indent;
-        my $tag             = $node->{t};
-        my $type            = $MooseX::App::Message::Block::KEYWORDS{$tag}{type} || 'text';
+        my $tag             = $node->tag;
+        my $type            = $node->type || 'text';
 
-        if ($tag eq 'list') {
+        if ($type eq 'list') {
             my @list;
-            foreach my $item (@{$node->{c}}) {
+            foreach my $item ($node->children) {
                 my $key     = $self->render_node(
-                    (first { $_->{t} eq 'key' } @{$item->{c}}),
+                    (first { $_->tag eq 'key' } @{$item->{c}}),
                     -1
                 );
-                my $value   = first { $_->{t} eq 'description' } @{$item->{c}};
+                my $value   = first { $_->tag eq 'description' } @{$item->{c}};
                 if ($value) {
 
                     #use Data::Dumper;
@@ -53,7 +53,7 @@ sub render_node {
             }
 
             $return .= $self->render_list(0,\@list,$indent)."\n";
-        } elsif ($node->{c}) {
+        } elsif ($node->has_children) {
             $local_indent++
                 if ($tag eq 'indent' || $tag eq 'paragraph') && $local_indent >= 0;
             my $local_return = $self->render_node($node,$local_indent);
@@ -69,9 +69,9 @@ sub render_node {
             }
             $return .= $local_return;
         } elsif (($tag eq '_text' || $tag eq 'raw')
-            && $node->{v}) {
+            && $node->value) {
 
-            $return .= $self->render_text($node->{v},-1);
+            $return .= $self->render_text($node->value,-1);
         }
     }
 
@@ -143,22 +143,22 @@ sub render_list {
     $list_indent            //= 0;
     $indent                 //= 0;
     my $space               = 2;
-    my $max_length          = max(map { MooseX::App::Utils::string_length($_->{k}) } @{$list});
+    my $max_length          = max(map { MooseX::App::Utils::string_length($_->key) } @{$list});
     my $description_length  = $self->screen_width - $max_length - $space - ($self->indent * ($indent+$list_indent)) - 1;
     my $prefix_length       = $max_length + ($indent * $self->indent) + $space;
     my @return;
 
     # Loop all items
     foreach my $element (@{$list}) {
-        my $description = $element->{v} // '';
+        my $description = $element->value // '';
         my @lines = MooseX::App::Utils::string_split($description_length,$description);
 
         push (@return,
             (' ' x ($indent * $self->indent) )
             #.sprintf('%-*s  %s',
             #    $max_length,
-            .$self->render_list_key($element->{k})
-            .(' ' x ($max_length - MooseX::App::Utils::string_length($element->{k}) + $space) )
+            .$self->render_list_key($element->key)
+            .(' ' x ($max_length - MooseX::App::Utils::string_length($element->key) + $space) )
             .$self->render_list_value(shift(@lines))
         );
         while (my $line = shift @lines) {

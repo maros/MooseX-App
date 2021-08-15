@@ -5,7 +5,7 @@ package MooseX::App::Meta::Role::Class::Base;
 use utf8;
 use 5.010;
 
-use List::Util qw(max);
+use List::Util qw(max first);
 
 use namespace::autoclean;
 use Moose::Role;
@@ -360,19 +360,17 @@ sub command_parse_options {
             }
 
             # Process matches
-            given (scalar @{$match_attributes}) {
-                # No match
-                when(0) {}
+            my $match_found = scalar @{$match_attributes};
+
+            if ($match_found) {
+                $option->consume();
                 # One match
-                when(1) {
+                if ($match_found == 1) {
                     my $attribute = $match_attributes->[0];
-                    $option->consume();
                     $match->{$attribute->name} ||= [];
                     push(@{$match->{$attribute->name}},$option);
-                }
                 # Multiple matches
-                default {
-                    $option->consume();
+                } elsif ($match_found > 1) {
                     push(@errors,
                         $self->command_message(
                             header          => "Ambiguous option '".$option->key."'", # LOCALIZE
@@ -572,30 +570,27 @@ sub command_find {
             $parsed_argv->shift_argv;
             return $candidate;
         }
-        given (scalar @{$candidate}) {
-            when (0) {
-                next;
-            }
-            when (1) {
-                if ($self->app_fuzzy) {
-                    $parsed_argv->shift_argv;
-                    return $candidate->[0];
-                } else {
-                    return $self->command_message(
-                        header          => "Unknown command '$command'", # LOCALIZE
-                        type            => "error",
-                        body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
-                    );
-                }
-            }
-            default {
+        my $candidate_count = scalar @{$candidate};
+        if ($candidate_count == 0) {
+            next;
+        } elsif ($candidate_count == 1) {
+            if ($self->app_fuzzy) {
+                $parsed_argv->shift_argv;
+                return $candidate->[0];
+            } else {
                 return $self->command_message(
-                    header          => "Ambiguous command '$command'", # LOCALIZE
+                    header          => "Unknown command '$command'", # LOCALIZE
                     type            => "error",
-                    body            => "Which command did you mean?\n". # LOCALIZE
-                        MooseX::App::Utils::build_list(map { [ $_ ] } sort @{$candidate}),
+                    body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
                 );
             }
+        } else {
+            return $self->command_message(
+                header          => "Ambiguous command '$command'", # LOCALIZE
+                type            => "error",
+                body            => "Which command did you mean?\n". # LOCALIZE
+                    MooseX::App::Utils::build_list(map { [ $_ ] } sort @{$candidate}),
+            );
         }
     }
 
@@ -701,14 +696,13 @@ sub command_message {
     $args{type} //= 'default';
     if (defined $args{header}) {
         push @message, HEADLINE(
-            { type => $args{type} },
+            $args{type},
             $args{header}
         );
     }
 
     if (defined $args{body}) {
         push @message, PARAGRAPH(
-            { type => $args{type} },
             $args{body}
         );
     }
@@ -756,7 +750,7 @@ sub command_usage_attributes {
 
         next
             unless $types eq 'all'
-            || $attribute->cmd_type ~~ $types;
+            || first { $attribute->cmd_type eq $_ } @$types;
 
         push(@return,$attribute);
     }
@@ -833,7 +827,7 @@ sub command_usage_header {
     }
 
     unless (defined $usage) {
-        my $caller = TAG({ type => 'caller' },$self->app_base);
+        my $caller = TAG('caller',$self->app_base);
         # LOCALIZE
         $usage = [
             $caller,
@@ -844,22 +838,22 @@ sub command_usage_header {
         my @parameter= $self->command_usage_attributes($command_meta_class,'parameter');
         foreach my $attribute (@parameter) {
             if ($attribute->is_required) {
-                push @$usage, TAG({ type => 'attribute_required' },'<',$attribute->cmd_usage_name,'>');
+                push @$usage, TAG('attribute_required','<',$attribute->cmd_usage_name,'>');
             } else {
-                push @$usage, TAG({ type => 'attribute_optional' },'[',$attribute->cmd_usage_name,']');
+                push @$usage, TAG('attribute_optional','[',$attribute->cmd_usage_name,']');
             }
         }
-        push @$usage, TAG({ type => 'attribute_optional' },'[long options...]'),
+        push @$usage, TAG('attribute_optional','[long options...]'),
             "\n",
             $caller,
             ' ',
-            TAG({ type => 'command' },'help'),
+            TAG('command','help'),
             "\n",
             $caller,
             ' ',
-            TAG({ type => 'command' },$command_name),
+            TAG('command',$command_name),
             ' ',
-            TAG({ type => 'attribute_optional' },'--help');
+            TAG('attribute_optional','--help');
     }
 
     return $self->command_message(
