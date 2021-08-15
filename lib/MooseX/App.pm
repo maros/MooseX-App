@@ -519,7 +519,7 @@ Options and parameters accept extra attributes for customisation:
 
 =item * cmd_aliases - Additional option/parameter name aliases
 
-=item * cmd_split - Split values into ArrayRefs on this token
+=item * cmd_split - Split values into ArrayRefs on this token or RegEx
 
 =item * cmd_position - Specify option/parameter order in help
 
