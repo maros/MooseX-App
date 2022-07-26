@@ -147,13 +147,20 @@ sub _build_elements {
                             );
                             push(@elements,$options{$flag});
                         }
-                        $options{$flag}->add_value(
-                            1,
-                            $position,
-                            $element,
-                        );
-                        $lastkey = $options{$flag};
-                        $lastelement = $element;
+                        # This is a boolean or counter key that does not expect a value
+                        if ($flag ~~ $self->hints_novalue) {
+                            $options{$key}->add_value(
+                                ($self->hints_fixedvalue->{$key} // 1),
+                                $position,
+                                $element
+                            );
+                            $expecting = 0;
+                        # We are expecting a value
+                        } else {
+                            $expecting = 1;
+                            $lastelement = $element;
+                            $lastkey = $options{$key};
+                        }
                     }
                 }
                 # Key-value combined (--key=value)
