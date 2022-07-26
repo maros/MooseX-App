@@ -149,8 +149,8 @@ sub _build_elements {
                         }
                         # This is a boolean or counter key that does not expect a value
                         if ($flag ~~ $self->hints_novalue) {
-                            $options{$key}->add_value(
-                                ($self->hints_fixedvalue->{$key} // 1),
+                            $options{$flag}->add_value(
+                                ($self->hints_fixedvalue->{$flag} // 1),
                                 $position,
                                 $element
                             );
@@ -159,7 +159,7 @@ sub _build_elements {
                         } else {
                             $expecting = 1;
                             $lastelement = $element;
-                            $lastkey = $options{$key};
+                            $lastkey = $options{$flag};
                         }
                     }
                 }
