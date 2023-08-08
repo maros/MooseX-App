@@ -48,8 +48,6 @@ coerce 'MooseX::App::Types::IdentifierList'
 
 no Moose::Util::TypeConstraints;
 
-no if $] >= 5.018000, warnings => qw/ experimental::smartmatch /;
-
 # Default package name to command name translation function
 sub class_to_command {
     my ($class) = @_;
@@ -234,34 +232,32 @@ sub _pod_node_to_text {
         }
 
     } else {
-        given (ref($node)) {
-            when ('Pod::Elemental::Element::Pod5::Ordinary') {
-                my $content = $node->content;
-                return
-                    if $content =~ m/^=cut/;
-                $content =~ s/\n/ /g;
-                $content =~ s/\s+/ /g;
-                push (@lines,$content."\n");
+        my $class = ref($node);
+        if ($class eq 'Pod::Elemental::Element::Pod5::Ordinary') {
+            my $content = $node->content;
+            return
+                if $content =~ m/^=cut/;
+            $content =~ s/\n/ /g;
+            $content =~ s/\s+/ /g;
+            push (@lines,$content."\n");
+        }
+        elsif ($class eq 'Pod::Elemental::Element::Pod5::Verbatim') {
+            push (@lines,$node->content."\n");
+        }
+        elsif ($class eq 'Pod::Elemental::Element::Pod5::Command') {
+            my $command = $node->command;
+            if ($command eq 'over') {
+                ${$indent}++;
             }
-            when ('Pod::Elemental::Element::Pod5::Verbatim') {
-                push (@lines,$node->content."\n");
+            elsif ($command eq 'item') {
+                push (@lines,('  ' x ($$indent-1)) . $node->content);
             }
-            when ('Pod::Elemental::Element::Pod5::Command') {
-                given ($node->command) {
-                    when ('over') {
-                        ${$indent}++;
-                    }
-                    when ('item') {
-                        push (@lines,('  ' x ($$indent-1)) . $node->content);
-                    }
-                    when ('back') {
-                        push (@lines,"\n");
-                        ${$indent}--;
-                    }
-                    when (qr/head\d/) {
-                        push (@lines,"\n",$node->content,"\n");
-                    }
-                }
+            elsif ($command eq 'back') {
+                push (@lines,"\n");
+                ${$indent}--;
+            }
+            elsif ($command =~ qr/head\d/) {
+                push (@lines,"\n",$node->content,"\n");
             }
         }
     }
