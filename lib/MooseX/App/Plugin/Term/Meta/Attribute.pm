@@ -105,7 +105,7 @@ sub cmd_term_read_string {
         if (! $history_disable
             && defined $entry
             && $entry !~ m/^\s*$/
-            && ! first { $entry eq $_ } @history)) {
+            && ! first { $entry eq $_ } @history) {
             push(@history,$entry);
         }
     };
