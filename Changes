@@ -1,5 +1,12 @@
 Release history for Perl module MooseX::App
 
+1.43 2023-10-21
+    - Remove duplicate license
+    - Require Config::Any
+    - Fix cmd_aliases for flags (fixed by William Barker)
+    - Remove smartmatch (implemented by Petr Pisar)
+    - Allow to override build date with SOURCE_DATE_EPOCH (implemented by Bernhard M. Wiedemann)
+
 1.42 2021-08-15
     - Documentation
     - Fix failing tests with new Moose versions (implemented by Frank Schreiner)
