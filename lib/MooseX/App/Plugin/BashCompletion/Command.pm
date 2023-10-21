@@ -22,7 +22,7 @@ sub bash_completion {
     my $package         = __PACKAGE__;
     my $prefix          = $app_meta->app_base;
 
-    my ($sec,$min,$hour,$mday,$mon,$year) = localtime(time);
+    my ($sec,$min,$hour,$mday,$mon,$year) = gmtime($ENV{SOURCE_DATE_EPOCH} || time);
     $year               += 1900;
     $mday               = sprintf('%02i',$mday);
     $mon                = sprintf('%02i',$mon+1);
