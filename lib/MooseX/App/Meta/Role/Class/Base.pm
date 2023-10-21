@@ -5,7 +5,7 @@ package MooseX::App::Meta::Role::Class::Base;
 use utf8;
 use 5.010;
 
-use List::Util qw(max);
+use List::Util qw(max first);
 
 use namespace::autoclean;
 use Moose::Role;
@@ -735,7 +735,7 @@ sub command_usage_attributes {
             && $attribute->has_cmd_type;
 
         next
-            unless map {($attribute->cmd_type eq $_ or 'all' eq $_) ? (1) : ()} @$types;
+            unless first { $attribute->cmd_type eq $_ or 'all' eq $_ } @$types;
 
         push(@return,$attribute);
     }

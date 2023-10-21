@@ -10,6 +10,7 @@ use Moose;
 use Encode qw(decode);
 use MooseX::App::ParsedArgv::Element;
 use MooseX::App::ParsedArgv::Value;
+use List::Util qw(first);
 
 my $SINGLETON;
 
@@ -186,7 +187,7 @@ sub _build_elements {
                     push(@elements,$options{$key});
                 }
                 # This is a boolean or counter key that does not expect a value
-                if (map {$key eq $_ ? (1) : ()} @{$self->hints_novalue}) {
+                if (first {$key eq $_} @{$self->hints_novalue}) {
                     $options{$key}->add_value(
                         ($self->hints_fixedvalue->{$key} // 1),
                         $position,
@@ -211,13 +212,13 @@ sub _build_elements {
             else {
                 if (defined $lastkey) {
                     # This is a parameter - last key was a flag
-                    if (map {$lastkey->key eq $_ ? (1) : ()} @{$self->hints_novalue}) {
+                    if (first {$lastkey->key eq $_} @{$self->hints_novalue}) {
                         push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                         undef $lastkey;
                         undef $lastelement;
                         $expecting = 0;
                     # Permute values
-                    } elsif (map {$lastkey->key eq $_ ? (1) : ()} @{$self->hints_permute}) {
+                    } elsif (first {$lastkey->key eq $_} @{$self->hints_permute}) {
                         $expecting = 0;
                         $lastkey->add_value(
                             $element,

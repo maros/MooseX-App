@@ -8,6 +8,7 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
+use List::Util qw(first);
 use Term::ReadKey;
 
 has 'cmd_term' => (
@@ -104,7 +105,7 @@ sub cmd_term_read_string {
         if (! $history_disable
             && defined $entry
             && $entry !~ m/^\s*$/
-            && ! (map {$entry eq $_ ? (1) : ()} @history)) {
+            && ! first { $entry eq $_ } @history)) {
             push(@history,$entry);
         }
     };
