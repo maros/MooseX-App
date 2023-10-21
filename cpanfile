@@ -5,9 +5,9 @@ requires 'File::Basename';
 requires 'File::Spec';
 requires 'List::Util', '1.44';
 requires 'Pod::Elemental';
+requires 'Config::Any';
 
 feature 'config', 'Config plugins' => sub {
-    requires 'Config::Any'; # or recommends
     requires 'File::HomeDir';
 };
 
