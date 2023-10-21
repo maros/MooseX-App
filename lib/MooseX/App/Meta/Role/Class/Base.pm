@@ -5,7 +5,7 @@ package MooseX::App::Meta::Role::Class::Base;
 use utf8;
 use 5.010;
 
-use List::Util qw(max);
+use List::Util qw(max first);
 
 use namespace::autoclean;
 use Moose::Role;
@@ -13,7 +13,6 @@ use Moose::Role;
 use MooseX::App::Utils;
 use Module::Pluggable::Object;
 use File::Basename qw();
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 has 'app_messageclass' => (
     is          => 'rw',
@@ -357,32 +356,30 @@ sub command_parse_options {
             }
 
             # Process matches
-            given (scalar @{$match_attributes}) {
-                # No match
-                when(0) {}
-                # One match
-                when(1) {
-                    my $attribute = $match_attributes->[0];
-                    $option->consume();
-                    $match->{$attribute->name} ||= [];
-                    push(@{$match->{$attribute->name}},$option);
-                }
-                # Multiple matches
-                default {
-                    $option->consume();
-                    push(@errors,
-                        $self->command_message(
-                            header          => "Ambiguous option '".$option->key."'", # LOCALIZE
-                            type            => "error",
-                            body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
-                                map { [ $_ ] }
-                                sort
-                                map { $_->cmd_name_primary }
-                                @{$match_attributes}
-                            ),
-                        )
-                    );
-                }
+            # No match
+            if(@{$match_attributes} == 0) {}
+            # One match
+            elsif(@{$match_attributes} == 1) {
+                my $attribute = $match_attributes->[0];
+                $option->consume();
+                $match->{$attribute->name} ||= [];
+                push(@{$match->{$attribute->name}},$option);
+            }
+            # Multiple matches
+            else {
+                $option->consume();
+                push(@errors,
+                    $self->command_message(
+                        header          => "Ambiguous option '".$option->key."'", # LOCALIZE
+                        type            => "error",
+                        body            => "Could be\n".MooseX::App::Utils::format_list( # LOCALIZE
+                            map { [ $_ ] }
+                            sort
+                            map { $_->cmd_name_primary }
+                            @{$match_attributes}
+                        ),
+                    )
+                );
             }
         }
     }
@@ -569,30 +566,28 @@ sub command_find {
             $parsed_argv->shift_argv;
             return $candidate;
         }
-        given (scalar @{$candidate}) {
-            when (0) {
-                next;
-            }
-            when (1) {
-                if ($self->app_fuzzy) {
-                    $parsed_argv->shift_argv;
-                    return $candidate->[0];
-                } else {
-                    return $self->command_message(
-                        header          => "Unknown command '$command'", # LOCALIZE
-                        type            => "error",
-                        body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
-                    );
-                }
-            }
-            default {
+        if (@{$candidate} == 0) {
+            next;
+        }
+        elsif (@{$candidate} == 1) {
+            if ($self->app_fuzzy) {
+                $parsed_argv->shift_argv;
+                return $candidate->[0];
+            } else {
                 return $self->command_message(
-                    header          => "Ambiguous command '$command'", # LOCALIZE
+                    header          => "Unknown command '$command'", # LOCALIZE
                     type            => "error",
-                    body            => "Which command did you mean?\n". # LOCALIZE
-                        MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+                    body            => "Did you mean '".$candidate->[0]."'?", # LOCALIZE
                 );
             }
+        }
+        else {
+            return $self->command_message(
+                header          => "Ambiguous command '$command'", # LOCALIZE
+                type            => "error",
+                body            => "Which command did you mean?\n". # LOCALIZE
+                    MooseX::App::Utils::format_list(map { [ $_ ] } sort @{$candidate}),
+            );
         }
     }
 
@@ -725,6 +720,9 @@ sub command_usage_attributes {
 
     $metaclass ||= $self;
     $types ||= [qw(option proto)];
+    if ('' eq ref $types) {
+        $types = [$types];
+    }
 
     unless ($metaclass->does_role('MooseX::App::Role::Common')) {
         Moose->throw_error('Class '.$metaclass->name.' is not a proper MooseX::App::Command class. You either need to use MooseX::App::Command or exclude this class via app_exclude')
@@ -737,8 +735,7 @@ sub command_usage_attributes {
             && $attribute->has_cmd_type;
 
         next
-            unless $types eq 'all'
-            || $attribute->cmd_type ~~ $types;
+            unless first { $attribute->cmd_type eq $_ or 'all' eq $_ } @$types;
 
         push(@return,$attribute);
     }

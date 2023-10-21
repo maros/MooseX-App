@@ -8,7 +8,6 @@ use utf8;
 use namespace::autoclean;
 use Moose;
 extends qw(MooseX::App::Message::Block);
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
 
 use Term::ANSIColor qw();
 use IO::Interactive qw(is_interactive);
@@ -24,17 +23,16 @@ sub stringify {
 
     my $header_color;
     my $body_color;
-    given ($self->type) {
-        when('error') {
-            $header_color = 'bright_red bold';
-            $body_color = 'bright_red';
-        }
-        when('default') {
-            $header_color = 'bold';
-        }
-        default {
-            $header_color = $_;
-        }
+    my $type = $self->type;
+    if($type eq 'error') {
+        $header_color = 'bright_red bold';
+        $body_color = 'bright_red';
+    }
+    elsif($type eq 'default') {
+        $header_color = 'bold';
+    }
+    else {
+        $header_color = $type;
     }
 
     my $message = '';

@@ -10,8 +10,7 @@ use Moose;
 use Encode qw(decode);
 use MooseX::App::ParsedArgv::Element;
 use MooseX::App::ParsedArgv::Value;
-
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
+use List::Util qw(first);
 
 my $SINGLETON;
 
@@ -131,119 +130,110 @@ sub _build_elements {
             ));
         # Process element
         } else {
-            given ($element) {
-                # Flags with only one leading dash (-h or -vh)
-                when (m/^-([^-][[:alnum:]]*)$/) {
-                    undef $lastkey;
-                    undef $lastelement;
-                    $expecting = 0;
-                    # Split into single letter flags
-                    foreach my $flag (split(//,$1)) {
-                        unless (defined $options{$flag}) {
-                            $options{$flag} = MooseX::App::ParsedArgv::Element->new(
-                                key => $flag,
-                                type => 'option',
-                                raw => $element,
-                            );
-                            push(@elements,$options{$flag});
-                        }
-                        # This is a boolean or counter key that does not expect a value
-                        if ($flag ~~ $self->hints_novalue) {
-                            $options{$flag}->add_value(
-                                ($self->hints_fixedvalue->{$flag} // 1),
-                                $position,
-                                $element
-                            );
-                            $expecting = 0;
-                        # We are expecting a value
-                        } else {
-                            $expecting = 1;
-                            $lastelement = $element;
-                            $lastkey = $options{$flag};
-                        }
-                    }
-                }
-                # Key-value combined (--key=value)
-                when (m/^--([^-=][^=]+)=(.+)$/) {
-                    undef $lastkey;
-                    undef $lastelement;
-                    $expecting = 0;
-                    my ($key,$value) = ($1,$2);
-                    unless (defined $options{$key}) {
-                        $options{$key} = MooseX::App::ParsedArgv::Element->new(
-                            key => $key,
+            # Flags with only one leading dash (-h or -vh)
+            if ($element =~ m/^-([^-][[:alnum:]]*)$/) {
+                undef $lastkey;
+                undef $lastelement;
+                $expecting = 0;
+                # Split into single letter flags
+                foreach my $flag (split(//,$1)) {
+                    unless (defined $options{$flag}) {
+                        $options{$flag} = MooseX::App::ParsedArgv::Element->new(
+                            key => $flag,
                             type => 'option',
                             raw => $element,
                         );
-                        push(@elements,$options{$key});
+                        push(@elements,$options{$flag});
                     }
-                    $options{$key}->add_value(
-                        $value,
+                    $options{$flag}->add_value(
+                        1,
                         $position,
                         $element,
                     );
+                    $lastkey = $options{$flag};
+                    $lastelement = $element;
                 }
-                # Ordinary key
-                when (m/^--?([^-].+)/) {
-                    my $key = $1;
+            }
+            # Key-value combined (--key=value)
+            elsif ($element =~ m/^--([^-=][^=]+)=(.+)$/) {
+                undef $lastkey;
+                undef $lastelement;
+                $expecting = 0;
+                my ($key,$value) = ($1,$2);
+                unless (defined $options{$key}) {
+                    $options{$key} = MooseX::App::ParsedArgv::Element->new(
+                        key => $key,
+                        type => 'option',
+                        raw => $element,
+                    );
+                    push(@elements,$options{$key});
+                }
+                $options{$key}->add_value(
+                    $value,
+                    $position,
+                    $element,
+                );
+            }
+            # Ordinary key
+            elsif ($element =~ m/^--?([^-].+)/) {
+                my $key = $1;
 
-                    unless (defined $options{$key} ) {
-                        $options{$key} = MooseX::App::ParsedArgv::Element->new(
-                            key => $key,
-                            type => 'option',
-                            raw => $element,
-                        );
-                        push(@elements,$options{$key});
-                    }
-                    # This is a boolean or counter key that does not expect a value
-                    if ($key ~~ $self->hints_novalue) {
-                        $options{$key}->add_value(
-                            ($self->hints_fixedvalue->{$key} // 1),
-                            $position,
-                            $element
-                        );
-                        $expecting = 0;
-                    # We are expecting a value
-                    } else {
-                        $expecting = 1;
-                        $lastelement = $element;
-                        $lastkey = $options{$key};
-                    }
+                unless (defined $options{$key} ) {
+                    $options{$key} = MooseX::App::ParsedArgv::Element->new(
+                        key => $key,
+                        type => 'option',
+                        raw => $element,
+                    );
+                    push(@elements,$options{$key});
                 }
-                # Extra values - stop processing after this token
-                when ('--') {
-                    undef $lastkey;
-                    undef $lastelement;
-                    $stopprocessing = 1;
+                # This is a boolean or counter key that does not expect a value
+                if (first {$key eq $_} @{$self->hints_novalue}) {
+                    $options{$key}->add_value(
+                        ($self->hints_fixedvalue->{$key} // 1),
+                        $position,
+                        $element
+                    );
                     $expecting = 0;
+                # We are expecting a value
+                } else {
+                    $expecting = 1;
+                    $lastelement = $element;
+                    $lastkey = $options{$key};
                 }
-                # Value
-                default {
-                    if (defined $lastkey) {
-                        # This is a parameter - last key was a flag
-                        if ($lastkey->key ~~ $self->hints_novalue) {
-                            push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
-                            undef $lastkey;
-                            undef $lastelement;
-                            $expecting = 0;
-                        # Permute values
-                        } elsif ($lastkey->key ~~ $self->hints_permute) {
-                            $expecting = 0;
-                            $lastkey->add_value(
-                                $element,
-                                $position,
-                                $lastelement
-                            );
-                        # Has value
-                        } else {
-                            $expecting = 0;
-                            $lastkey->add_value($element,$position);
-                            undef $lastkey;
-                            undef $lastelement;
-                        }
-                    } else {
+            }
+            # Extra values - stop processing after this token
+            elsif ($element eq '--') {
+                undef $lastkey;
+                undef $lastelement;
+                $stopprocessing = 1;
+                $expecting = 0;
+            }
+            # Value
+            else {
+                if (defined $lastkey) {
+                    # This is a parameter - last key was a flag
+                    if (first {$lastkey->key eq $_} @{$self->hints_novalue}) {
                         push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
+                        undef $lastkey;
+                        undef $lastelement;
+                        $expecting = 0;
+                    # Permute values
+                    } elsif (first {$lastkey->key eq $_} @{$self->hints_permute}) {
+                        $expecting = 0;
+                        $lastkey->add_value(
+                            $element,
+                            $position,
+                            $lastelement
+                        );
+                    # Has value
+                    } else {
+                        $expecting = 0;
+                        $lastkey->add_value($element,$position);
+                        undef $lastkey;
+                        undef $lastelement;
                     }
+                } else {
+                    push(@elements,MooseX::App::ParsedArgv::Element->new( key => $element, type => 'parameter' ));
                 }
             }
         }

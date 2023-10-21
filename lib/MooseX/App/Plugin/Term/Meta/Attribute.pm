@@ -8,8 +8,7 @@ use 5.010;
 use namespace::autoclean;
 use Moose::Role;
 
-no if $] >= 5.018000, warnings => qw(experimental::smartmatch);
-
+use List::Util qw(first);
 use Term::ReadKey;
 
 has 'cmd_term' => (
@@ -106,7 +105,7 @@ sub cmd_term_read_string {
         if (! $history_disable
             && defined $entry
             && $entry !~ m/^\s*$/
-            && ! ($entry ~~ \@history)) {
+            && ! first { $entry eq $_ } @history)) {
             push(@history,$entry);
         }
     };
@@ -167,55 +166,53 @@ sub cmd_term_read_string {
                     $escape .= $code;
                 }
                 if (defined $escape) {
-                    given ($escape) {
-                        when ('[D') { # Cursor left
-                            if ($cursor > 0) {
-                                print "\b";
-                                $cursor--;
-                            }
+                    if ($escape eq '[D') { # Cursor left
+                        if ($cursor > 0) {
+                            print "\b";
+                            $cursor--;
                         }
-                        when ($escape eq '[C') { # Cursor right
-                            if ($cursor < length($return)) {
-                                print substr $return,$cursor,1;
-                                $cursor++;
-                            }
-                        }
-                        when ($escape eq '[A') { # Cursor up
-                            $history_add->($return);
-                            print "\b" x $cursor;
-                            print " " x length($return);
-                            print "\b" x length($return);
-
-                            $history_index ++
-                                if defined $history[$history_index]
-                                && $history[$history_index] eq $return;
-                            $history_index = 0
-                                unless defined $history[$history_index];
-
-                            $return = $history[$history_index];
-                            $cursor = length($return);
-                            print $return;
-                            $history_index++;
-                        }
-                        when ($escape eq '[3~') { # Del
-                            if ($cursor != length($return)) {
-                                substr $return,$cursor,1,'';
-                                print substr $return,$cursor;
-                                print " ".(("\b") x (length($return) - $cursor + 1));
-                            }
-                        }
-                        when ($escape eq 'OH') { # Pos 1
-                            print (("\b") x $cursor);
-                            $cursor = 0;
-                        }
-                        when ($escape eq 'OF') { # End
-                            print substr $return,$cursor;
-                            $cursor = length($return);
-                        }
-                        #default {
-                        #    print $escape;
-                        #}
                     }
+                    elsif ($escape eq '[C') { # Cursor right
+                        if ($cursor < length($return)) {
+                            print substr $return,$cursor,1;
+                            $cursor++;
+                        }
+                    }
+                    elsif ($escape eq '[A') { # Cursor up
+                        $history_add->($return);
+                        print "\b" x $cursor;
+                        print " " x length($return);
+                        print "\b" x length($return);
+
+                        $history_index ++
+                            if defined $history[$history_index]
+                            && $history[$history_index] eq $return;
+                        $history_index = 0
+                            unless defined $history[$history_index];
+
+                        $return = $history[$history_index];
+                        $cursor = length($return);
+                        print $return;
+                        $history_index++;
+                    }
+                    elsif ($escape eq '[3~') { # Del
+                        if ($cursor != length($return)) {
+                            substr $return,$cursor,1,'';
+                            print substr $return,$cursor;
+                            print " ".(("\b") x (length($return) - $cursor + 1));
+                        }
+                    }
+                    elsif ($escape eq 'OH') { # Pos 1
+                        print (("\b") x $cursor);
+                        $cursor = 0;
+                    }
+                    elsif ($escape eq 'OF') { # End
+                        print substr $return,$cursor;
+                        $cursor = length($return);
+                    }
+                    #else {
+                    #    print $escape;
+                    #}
                 } else {
                     $history_add->($return);
                     next TRY_STRING;
