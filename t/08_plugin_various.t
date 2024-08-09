@@ -19,6 +19,10 @@ subtest 'Bash completion' => sub {
     like($bash_completion,qr/_test03_macc_somecommand\(\)\s\{/,'some_command present');
     like($bash_completion,qr/--global_option/,'global_option present');
     like($bash_completion,qr/--roleattr/,'roleattr present');
+    like($bash_completion,qr/_test03_macc_cmdwithsubcommands_subb/,'subcommand B present');
+    like($bash_completion,qr/_test03_macc_cmdwithsubcommands_subb/,'subcommand B present');
+    unlike($bash_completion,qr/_test03_macc_cmdwithsubcommands subb/,'subcommand B present');
+    unlike($bash_completion,qr/_test03_macc_cmdwithsubcommands subb/,'subcommand B present');
     unlike($bash_completion,qr/bash_completion/,'bash_completion is not included');
 };
 
